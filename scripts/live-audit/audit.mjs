@@ -83,7 +83,6 @@ async function readerAudit(ref, expectedCount) {
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ userAgent: USER_AGENT, viewport: { width: 1080, height: 1920 } });
     const page = await context.newPage();
-    const bridge = `kitsugi${randomUUID().replaceAll('-', '')}`;
     const channel = `kitsugi${randomUUID().replaceAll('-', '')}`;
     const binding = `kitsugi${randomUUID().replaceAll('-', '')}`;
     const images = new Map();
@@ -196,5 +195,22 @@ try {
     await mkdir(out, { recursive: true });
     await writeFile(join(out, 'report.json'), JSON.stringify(report, null, 2));
     console.log(JSON.stringify(report, null, 2));
+    if (process.env.GITHUB_ACTIONS === 'true') {
+        const notice = (value) => console.log('::notice title=KitsugiAuditEvidence::' + JSON.stringify(value).replaceAll('%', '%25').replaceAll('\r', '%0D').replaceAll('\n', '%0A'));
+        notice({ kind: 'report', report });
+        const snippets = [];
+        for (const asset of report.assets.filter((item) => item.markers.some((marker) => ['deliverySystem', 'imageEnc', 'rdr_diag_ovr', 'data-reader-page', 'createImageBitmap', 'turnstile'].includes(marker)))) {
+            const text = await readFile(join(out, asset.file), 'utf8');
+            snippets.push({ file: asset.file, sha256: asset.sha256, excerpts: asset.markers.map((marker) => {
+                const start = text.indexOf(marker);
+                return { marker, start, source: text.slice(Math.max(0, start - 2200), start + 3800) };
+            }) });
+        }
+        const evidence = Buffer.from(JSON.stringify(snippets));
+        const maximum = 8 * 24_000;
+        for (let start = 0; start < Math.min(evidence.length, maximum); start += 24_000) {
+            notice({ kind: 'public-javascript-excerpts', part: start / 24_000, totalBytes: evidence.length, truncated: evidence.length > maximum, base64: evidence.subarray(start, start + 24_000).toString('base64') });
+        }
+    }
     if (report.status !== 'browser_chain_passed') process.exitCode = 2;
 }
