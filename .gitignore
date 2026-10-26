@@ -11,3 +11,4 @@ Thumbs.db
 
 !builds/apk/*.apk
 !builds/*.apk
+!apk/*.apk
