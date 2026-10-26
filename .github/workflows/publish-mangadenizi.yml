@@ -1,0 +1,52 @@
+name: Publish tested MangaDenizi MEX and single-source index
+
+on:
+  push:
+    branches: [arena/35425e65-kitsugi-manga-plugins]
+    paths: [extensions/mangadenizi/release-request.json]
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: publish-native-mangadenizi
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arena/35425e65-kitsugi-manga-plugins
+          fetch-depth: 0
+      - name: Validate the exact tested source revision
+        id: request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/release-mangadenizi.py --validate
+      - uses: actions/download-artifact@v4
+        with:
+          name: mangadenizi-native-mex
+          path: .audit/publish/package
+          run-id: ${{ steps.request.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mangadenizi-android-*-evidence
+          path: .audit/publish/evidence
+          run-id: ${{ steps.request.outputs.run_id }}
+          github-token: ${{ github.token }}
+      - name: Check all native pixels; publish immutable package, honest compatibility notes and index
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/release-mangadenizi.py --publish
+      - name: Preserve the small requested installable deliverable on this branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.json packages/mangadenizi.mex docs/mangadenizi-installation.json docs/audits/mangadenizi-android-29.json docs/audits/mangadenizi-android-34.json
+          git commit -m 'Publish verified native MangaDenizi package and one-entry repository index'
+          git push origin arena/35425e65-kitsugi-manga-plugins

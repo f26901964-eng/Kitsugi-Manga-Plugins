@@ -81,7 +81,8 @@ public final class SmokeInstrumentation extends Instrumentation {
                 @SuppressWarnings("unchecked") java.util.Map<String, List<Object>> registry = (java.util.Map<String, List<Object>>) registryField.get(null);
                 Object tr = dummySource(contract, "tr", "other.tr.disabled");
                 Object en = dummySource(contract, "en", "other.en.kept");
-                registry.put("test-other-tr", java.util.Arrays.asList(tr));
+                String disabledPath = new File(app.getFilesDir(), "manga_extensions/test-other-tr.mex").getAbsolutePath();
+                registry.put(disabledPath, java.util.Arrays.asList(tr));
                 registry.put("test-other-en", java.util.Arrays.asList(en));
                 List<?> active = (List<?>) loader.getMethod("getLoadedSources").invoke(singleton);
                 int turkish = 0; boolean foreignKept = false; boolean disabledTrPresent = false;
@@ -91,8 +92,11 @@ public final class SmokeInstrumentation extends Instrumentation {
                     if (candidate == tr) disabledTrPresent = true;
                 }
                 require(turkish == 1 && foreignKept && !disabledTrPresent, "Recovery policy leaves exactly MangaDenizi TR, preserves non-TR, deletes no files");
+                Object disabledCached = loader.getMethod("getSource", String.class, Context.class).invoke(singleton, "test-other-tr", context);
+                require(disabledCached == null, "A cached disabled TR source cannot bypass the recovery policy");
+                require(loader.getMethod("getSource", String.class, Context.class).invoke(singleton, id, context) == source, "Selected native MangaDenizi remains available in source lookup");
                 report.put("singleTurkishSourceProfileVerified", true);
-                registry.remove("test-other-tr"); registry.remove("test-other-en");
+                registry.remove(disabledPath); registry.remove("test-other-en");
             }
             // All interface defaults are implemented by the plugin, rather than compile-only stubs.
             require("https://mangadenizi.net".equals(get(source, "getOriginalBaseUrl")), "Original URL ABI");

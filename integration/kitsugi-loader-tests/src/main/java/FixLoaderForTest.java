@@ -29,6 +29,7 @@ public final class FixLoaderForTest {
     private static final String TYPE = "Lcom/kitsugi/animelist/data/manga/MangaExtensionLoader;";
     private static int patched;
     private static int filtered;
+    private static int singleFiltered;
     public static void main(String[] args) throws Exception {
         Path original = Path.of(args[0]), output = Path.of(args[1]);
         byte[] apkBytes = Files.readAllBytes(original);
@@ -59,7 +60,7 @@ public final class FixLoaderForTest {
                     replacements.put(name, replacement);
                 }
             }
-            if (changed == null || patched != 2 || filtered < 1) throw new IllegalStateException("Expected exactly APK and MEX loader methods, got " + patched);
+            if (changed == null || patched != 2 || filtered < 1 || singleFiltered < 2) throw new IllegalStateException("Expected exactly APK and MEX loader methods, got " + patched);
             Path newDex = temp.resolve("changed.dex");
             List<ClassDef> additions = new ArrayList<>(); additions.add(changed);
             try (InputStream policyInput = new BufferedInputStream(Files.newInputStream(Path.of(args[2])))) {
@@ -88,14 +89,17 @@ public final class FixLoaderForTest {
         System.out.println("TEST FIXTURE ONLY: two File.setReadOnly calls plus temporary TR selection; no fake host API classes; not a signed APK update");
     }
     static Method fix(Method method) {
-        if (method.getName().equals("getLoadedSources")) {
+        if (method.getName().equals("getLoadedSources") || method.getName().equals("getSource") || method.getName().equals("loadExtension")) {
+            boolean list = method.getName().equals("getLoadedSources");
+            String type = list ? "Ljava/util/List;" : "Lcom/kitsugi/animelist/data/manga/MangaSource;";
+            String filter = list ? "filterSources" : "filterSource";
             MutableMethodImplementation body = new MutableMethodImplementation(method.getImplementation());
             for (int i = body.getInstructions().size() - 1; i >= 0; i--) {
                 if (body.getInstructions().get(i).getOpcode() != Opcode.RETURN_OBJECT) continue;
                 int register = ((OneRegisterInstruction) body.getInstructions().get(i)).getRegisterA();
                 MethodLocation oldReturn = body.getInstructions().get(i).getLocation();
                 List<Label> targets = new ArrayList<>(oldReturn.getLabels());
-                BuilderInstruction3rc call = new BuilderInstruction3rc(Opcode.INVOKE_STATIC_RANGE, register, 1, new ImmutableMethodReference("Lcom/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy;", "filterSources", List.of("Ljava/util/List;"), "Ljava/util/List;"));
+                BuilderInstruction3rc call = new BuilderInstruction3rc(Opcode.INVOKE_STATIC_RANGE, register, 1, new ImmutableMethodReference("Lcom/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy;", filter, List.of(type), type));
                 body.addInstruction(i, call);
                 body.addInstruction(i + 1, new BuilderInstruction11x(Opcode.MOVE_RESULT_OBJECT, register));
                 // Branches to the old return must pass through the policy, not jump over it.
@@ -103,7 +107,7 @@ public final class FixLoaderForTest {
                     oldReturn.getLabels().remove(label);
                     call.getLocation().getLabels().add(label);
                 }
-                filtered++;
+                if (list) filtered++; else singleFiltered++;
             }
             return new ImmutableMethod(method.getDefiningClass(), method.getName(), method.getParameters(), method.getReturnType(), method.getAccessFlags(), method.getAnnotations(), method.getHiddenApiRestrictions(), body);
         }

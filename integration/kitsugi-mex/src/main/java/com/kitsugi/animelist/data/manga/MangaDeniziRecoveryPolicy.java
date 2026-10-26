@@ -6,6 +6,10 @@ import java.util.List;
 /** Temporary recovery selection. No files, source settings or reading data are deleted. */
 public final class MangaDeniziRecoveryPolicy {
     private MangaDeniziRecoveryPolicy() { }
+    public static MangaSource filterSource(MangaSource source) {
+        if (source == null || !"tr".equalsIgnoreCase(source.getLang())) return source;
+        return "com.kitsugi.extension.tr.mangadenizi".equals(source.getPkgName()) ? source : null;
+    }
     public static List<MangaSource> filterSources(List<MangaSource> sources) {
         List<MangaSource> active = new ArrayList<>();
         boolean selected = false;

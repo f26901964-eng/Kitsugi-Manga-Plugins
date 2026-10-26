@@ -1,6 +1,6 @@
 --- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
 +++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
-@@ -59,8 +59,8 @@
+@@ -59,15 +59,16 @@
          val apkMexSources = loadedSources.values.flatten()
          // Sadece aktif dillerdeki Kotatsu kaynakları — Futon mantığıyla aynı
          val kotatsuSources = KotatsuExtensionAdapter.getActiveSources()
@@ -11,27 +11,67 @@
      }
  
      fun getSource(extensionId: String, context: Context): MangaSource? {
-@@ -204,6 +204,8 @@
+         val apkFile = apkFile(context, extensionId)
+         val mexFile = mexFile(context, extensionId)
+-        return loadedSources[apkFile.absolutePath]?.firstOrNull()
++        val candidate = loadedSources[apkFile.absolutePath]?.firstOrNull()
+             ?: loadedSources[mexFile.absolutePath]?.firstOrNull()
++        return MangaDeniziRecoveryPolicy.filterSource(candidate)
+     }
+ 
+     fun getExtensionIdForSource(source: MangaSource): String? {
+@@ -163,7 +164,6 @@
+                 temp.delete()
+                 return false
+             }
+-            // NOT: setReadOnly() KALDIRILDI — Android 10+ PathClassLoader read-only dosyayı yükleyemez
+             Log.i(TAG, "$extensionId başarıyla indirildi (${target.length()} bytes) [$targetExt]")
+             true
+         } catch (e: Exception) {
+@@ -179,7 +179,10 @@
+      * İndirilen eklentiyi belleğe yükler.
+      * Önce .apk uzantılı Mihon formatını dener, bulamazsa .mex formatını dener.
+      */
+-    fun loadExtension(context: Context, extensionId: String): MangaSource? {
++    fun loadExtension(context: Context, extensionId: String): MangaSource? =
++        MangaDeniziRecoveryPolicy.filterSource(loadExtensionUnfiltered(context, extensionId))
++
++    private fun loadExtensionUnfiltered(context: Context, extensionId: String): MangaSource? {
+         val apk = apkFile(context, extensionId)
+         val mex = mexFile(context, extensionId)
+ 
+@@ -204,11 +207,12 @@
       * 4) Source örneğini MihonSourceWrapper ile sarar ve döndürür.
       */
      private fun loadMihonApk(context: Context, extensionId: String, file: File): MangaSource? {
-+        // Keep code readable but not writable before Android 14+ class loading.
++        // Keep code readable, not writable, before Android 14+ class loading.
 +        file.setReadOnly()
          // Önbellekten döndür (ilk source'u ver)
          loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
  
-@@ -320,6 +322,8 @@
+         return try {
+-            // NOT: setReadOnly() kaldırıldı — Android 10+ PathClassLoader için dosya readable olmalı
+ 
+             // AndroidManifest.xml meta-data'dan paket adı ve sınıf adını oku
+             val (packageName, className) = readMihonClassNameFromManifest(context, file, extensionId)
+@@ -320,12 +324,13 @@
       * Kitsugi native .mex yükleyici (eski format, manifest.json tabanlı).
       */
      private fun loadNativeMex(context: Context, extensionId: String, file: File): MangaSource? {
-+        // Keep code readable but not writable before Android 14+ class loading.
++        // Keep code readable, not writable, before Android 14+ class loading.
 +        file.setReadOnly()
          loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
  
          return try {
+             val valid = try { ZipFile(file).use { true } } catch (_: Exception) { false }
+             if (!valid) { Log.e(TAG, "$extensionId [MEX]: bozuk ZIP"); return null }
+-            // NOT: setReadOnly() kaldırıldı
+ 
+             val loader = PathClassLoader(file.absolutePath, context.classLoader)
+             val className = readSourceClassNameFromJson(loader, file, extensionId) ?: return null
 --- /dev/null
 +++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy.java
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,26 @@
 +package com.kitsugi.animelist.data.manga;
 +
 +import java.util.ArrayList;
@@ -40,6 +80,10 @@
 +/** Temporary recovery selection. No files, source settings or reading data are deleted. */
 +public final class MangaDeniziRecoveryPolicy {
 +    private MangaDeniziRecoveryPolicy() { }
++    public static MangaSource filterSource(MangaSource source) {
++        if (source == null || !"tr".equalsIgnoreCase(source.getLang())) return source;
++        return "com.kitsugi.extension.tr.mangadenizi".equals(source.getPkgName()) ? source : null;
++    }
 +    public static List<MangaSource> filterSources(List<MangaSource> sources) {
 +        List<MangaSource> active = new ArrayList<>();
 +        boolean selected = false;
