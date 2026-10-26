@@ -2,12 +2,6 @@ name: Audit live Golge Bahcesi HTML and reader
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - arena/35425e65-kitsugi-manga-plugins
-    paths:
-      - scripts/live-audit/**
-      - .github/workflows/audit-golgebahcesi.yml
 
 permissions:
   contents: read

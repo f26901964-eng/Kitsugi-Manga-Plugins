@@ -1,0 +1,38 @@
+name: Audit MangaDenizi actual chapter pixels
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/35425e65-kitsugi-manga-plugins]
+    paths:
+      - scripts/live-audit/mangadenizi.mjs
+      - .github/workflows/audit-mangadenizi.yml
+
+permissions:
+  contents: read
+
+jobs:
+  live-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: scripts/live-audit/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: scripts/live-audit
+      - run: npx playwright install --with-deps chromium
+        working-directory: scripts/live-audit
+      - name: Anonymous API, covers, every chapter image and normal website reader
+        run: node scripts/live-audit/mangadenizi.mjs
+      - name: Keep numerical evidence only (not copyrighted chapter images)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangadenizi-numerical-evidence
+          path: .audit/mangadenizi/report.json
+          retention-days: 3
+          if-no-files-found: error
