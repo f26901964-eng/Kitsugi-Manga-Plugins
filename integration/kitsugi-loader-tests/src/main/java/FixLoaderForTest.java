@@ -1,6 +1,8 @@
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.builder.MutableMethodImplementation;
+import org.jf.dexlib2.builder.Label;
+import org.jf.dexlib2.builder.MethodLocation;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction3rc;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction11x;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
@@ -85,14 +87,22 @@ public final class FixLoaderForTest {
         }
         System.out.println("TEST FIXTURE ONLY: two File.setReadOnly calls plus temporary TR selection; no fake host API classes; not a signed APK update");
     }
-    private static Method fix(Method method) {
+    static Method fix(Method method) {
         if (method.getName().equals("getLoadedSources")) {
             MutableMethodImplementation body = new MutableMethodImplementation(method.getImplementation());
             for (int i = body.getInstructions().size() - 1; i >= 0; i--) {
                 if (body.getInstructions().get(i).getOpcode() != Opcode.RETURN_OBJECT) continue;
                 int register = ((OneRegisterInstruction) body.getInstructions().get(i)).getRegisterA();
-                body.addInstruction(i, new BuilderInstruction3rc(Opcode.INVOKE_STATIC_RANGE, register, 1, new ImmutableMethodReference("Lcom/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy;", "filterSources", List.of("Ljava/util/List;"), "Ljava/util/List;")));
+                MethodLocation oldReturn = body.getInstructions().get(i).getLocation();
+                List<Label> targets = new ArrayList<>(oldReturn.getLabels());
+                BuilderInstruction3rc call = new BuilderInstruction3rc(Opcode.INVOKE_STATIC_RANGE, register, 1, new ImmutableMethodReference("Lcom/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy;", "filterSources", List.of("Ljava/util/List;"), "Ljava/util/List;"));
+                body.addInstruction(i, call);
                 body.addInstruction(i + 1, new BuilderInstruction11x(Opcode.MOVE_RESULT_OBJECT, register));
+                // Branches to the old return must pass through the policy, not jump over it.
+                for (Label label : targets) {
+                    oldReturn.getLabels().remove(label);
+                    call.getLocation().getLabels().add(label);
+                }
                 filtered++;
             }
             return new ImmutableMethod(method.getDefiningClass(), method.getName(), method.getParameters(), method.getReturnType(), method.getAccessFlags(), method.getAnnotations(), method.getHiddenApiRestrictions(), body);

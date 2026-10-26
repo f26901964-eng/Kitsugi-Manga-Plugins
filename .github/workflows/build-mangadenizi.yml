@@ -6,9 +6,15 @@ on:
     branches: [arena/35425e65-kitsugi-manga-plugins]
     paths:
       - extensions/mangadenizi/**
+      - "!extensions/mangadenizi/release-request.json"
+      - "!extensions/mangadenizi/README.md"
       - integration/kitsugi-loader-tests/**
       - integration/kitsugi-mex/**
       - .github/workflows/build-mangadenizi.yml
+
+concurrency:
+  group: native-mangadenizi-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -92,7 +98,7 @@ jobs:
         if: matrix.api == 34
         run: |
           API_JAR="$PWD/.audit/android/host-contract.jar"
-          python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-loader-tests classes -PhostApiJar="$API_JAR" --no-daemon --console=plain
+          python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-loader-tests test classes -PhostApiJar="$API_JAR" --no-daemon --console=plain
           mkdir -p .audit/android/recovery-dex
           "$ANDROID_HOME/build-tools/35.0.0/d8" --min-api 26 --lib "$ANDROID_HOME/platforms/android-35/android.jar" --classpath "$API_JAR" --output .audit/android/recovery-dex integration/kitsugi-loader-tests/build/classes/java/main/com/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy.class
           python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-loader-tests run -PhostApiJar="$API_JAR" --args="$PWD/.audit/android/Kitsugi-Beta-v2.4.381-foss.apk $PWD/.audit/android/host-readonly-test-fixture.apk $PWD/.audit/android/recovery-dex/classes.dex" --no-daemon --console=plain
