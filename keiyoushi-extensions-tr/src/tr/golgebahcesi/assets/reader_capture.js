@@ -59,6 +59,7 @@
     let since = 0;
     let visible = -1;
     let lastVisibleAt = 0;
+    let challengeSince = null;
 
     const cleanup = () => {
         stopped = true;
@@ -118,7 +119,24 @@
     };
 
     timer = setInterval(() => {
-        if (stopped || !count) return;
+        if (stopped) return;
+        // Inspect ONLY rendered text. Merely downloading a challenge script does not mean
+        // a challenge failed. Allow automatic verification time before reporting the gate.
+        const text = document.body?.innerText || "";
+        if (text.includes("Güvenlik Doğrulaması")) {
+            if (challengeSince === null) challengeSince = Date.now();
+            if (Date.now() - challengeSince >= 15000) {
+                fail("site_verification_required");
+                return;
+            }
+        } else {
+            challengeSince = null;
+        }
+        if (text.includes("Bu bölüm bu tarayıcıda görüntülenemedi")) {
+            fail("site_reader_environment_rejected");
+            return;
+        }
+        if (!count) return;
         let wanted = 0;
         while (wanted < count && captured.has(wanted)) wanted++;
         if (wanted === count) return;

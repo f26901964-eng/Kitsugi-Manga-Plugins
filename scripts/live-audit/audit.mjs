@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, join } from 'node:path';
 import { chromium } from 'playwright';
 import sharp from 'sharp';
+import { gzipSync } from 'node:zlib';
 
 const SITE = 'https://golgebahcesi.com';
 const API = 'https://api.golgebahcesi.com/api';
@@ -79,7 +80,8 @@ async function scriptsFrom(htmlSources) {
     }
 }
 
-async function readerAudit(ref, expectedCount) {
+async function readerAudit(ref, expectedPages) {
+    const expectedCount = expectedPages.length;
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ userAgent: USER_AGENT, viewport: { width: 1080, height: 1920 } });
     const page = await context.newPage();
@@ -91,25 +93,31 @@ async function readerAudit(ref, expectedCount) {
     const consoleErrors = [];
     page.on('pageerror', (error) => consoleErrors.push(String(error.message).slice(0, 300)));
     await page.exposeFunction(binding, async (message) => {
-        if (message.startsWith('count:')) {
-            count = Number(message.slice(6));
-            return;
-        }
-        if (message.startsWith('error:')) { errors.push(message.slice(6)); return; }
-        if (!message.startsWith('page:')) { errors.push('Unknown bridge message'); return; }
-        const comma = message.indexOf(',');
-        const index = Number(message.slice(5, comma));
-        if (!Number.isInteger(index) || index < 0 || index >= expectedCount || message.length > 32 * 1024 * 1024) {
-            errors.push('Invalid page message'); return;
-        }
-        const data = message.slice(comma + 1);
-        if (!/^data:[^,]*;base64,/.test(data)) { errors.push('Invalid image data URL'); return; }
-        const bytes = Buffer.from(data.slice(data.indexOf(',') + 1), 'base64');
-        // Decode ALL page pixels, not just an HTTP status or file signature.
-        const metadata = await sharp(bytes).metadata();
-        await sharp(bytes).stats();
-        if (!metadata.width || !metadata.height) { errors.push('Image has no dimensions'); return; }
-        images.set(index, { index, width: metadata.width, height: metadata.height, format: metadata.format, bytes: bytes.length, sha256: sha256(bytes) });
+        try {
+            if (message.startsWith('count:')) {
+                count = Number(message.slice(6));
+                return;
+            }
+            if (message.startsWith('error:')) { errors.push(message.slice(6)); return; }
+            if (!message.startsWith('page:')) { errors.push('Unknown bridge message'); return; }
+            const comma = message.indexOf(',');
+            const index = Number(message.slice(5, comma));
+            if (!Number.isInteger(index) || index < 0 || index >= expectedCount || message.length > 32 * 1024 * 1024) {
+                errors.push('Invalid page message'); return;
+            }
+            const data = message.slice(comma + 1);
+            if (!/^data:[^,]*;base64,/.test(data)) { errors.push('Invalid image data URL'); return; }
+            const bytes = Buffer.from(data.slice(data.indexOf(',') + 1), 'base64');
+            // Decode ALL page pixels, not just an HTTP status or file signature.
+            const metadata = await sharp(bytes).metadata();
+            await sharp(bytes).stats();
+            if (!metadata.width || !metadata.height) { errors.push('Image has no dimensions'); return; }
+            const expected = expectedPages.find((item) => item.index === index);
+            if (!expected || (expected.width && expected.width !== metadata.width) || (expected.height && expected.height !== metadata.height)) {
+                errors.push(`Page ${index} dimensions do not match API metadata`); return;
+            }
+            images.set(index, { index, width: metadata.width, height: metadata.height, format: metadata.format, bytes: bytes.length, sha256: sha256(bytes) });
+        } catch (error) { errors.push(String(error.message)); }
     });
     const assets = fileURLToPath(new URL('../../keiyoushi-extensions-tr/src/tr/golgebahcesi/assets/', import.meta.url));
     const worker = `(${await readFile(join(assets, 'worker_hook.js'), 'utf8')})(${JSON.stringify(channel)});\n`;
@@ -169,23 +177,27 @@ try {
         if (!selected) throw new Error(`${slug}: no public accessible chapter`);
         const content = await json(`${API}/chapters/${selected.id}`, `${slug}-chapter-content`);
         check(`${slug}: chapter identity and readable page metadata`, content.id === selected.id && content.slug === selected.slug && content.seriesSlug === slug && !content.isLocked && content.pages?.length > 0, `${content.pages?.length} pages, ${content.deliverySystem}, imageEnc=${content.imageEnc}`);
+        check(`${slug}: page indices are complete and ordered`, content.pages.every((item, index) => item.index === index), `indices 0..${content.pages.length - 1}`);
         const seriesHtml = await html(`${SITE}/manga/${slug}`, `${slug}-series`);
         const chapterHtml = await html(`${SITE}/manga/${slug}/bolum/${selected.slug}`, `${slug}-reader`);
         check(`${slug}: HTML references selected series and chapter`, seriesHtml.includes(slug) && chapterHtml.includes(selected.slug), selected.slug);
+        const coverUrl = details.coverImage || details.cover;
+        check(`${slug}: HTML uses the same cover as API`, seriesHtml.includes(coverUrl) || seriesHtml.includes(encodeURIComponent(coverUrl)), 'Same selected-series cover URL');
         const summary = { slug, title: details.title, type: details.type, chapterCount: chapters.length, selectedChapterId: selected.id, selectedChapterNumber: selected.number, pageCount: content.pages.length, deliverySystem: content.deliverySystem, imageEnc: content.imageEnc };
         report.series.push(summary);
         covers.push({ slug, url: details.coverImage || details.cover, summary });
         sources.push(seriesHtml, chapterHtml);
-        if (slug === 'mairimashita-iruma-kun') report.selected = { ref: selected, count: content.pages.length };
+        if (slug === 'mairimashita-iruma-kun') report.selected = { ref: selected, pages: content.pages };
     }
     await scriptsFrom([home, ...sources]);
     for (const { slug, url, summary } of covers) {
         const coverBytes = await response(url);
         const cover = await sharp(coverBytes).metadata();
+        await sharp(coverBytes).stats();
         check(`${slug}: real cover decodes`, cover.width > 0 && cover.height > 0, `${cover.width}x${cover.height} ${cover.format}`);
         summary.cover = { width: cover.width, height: cover.height, format: cover.format, sha256: sha256(coverBytes) };
     }
-    await readerAudit(report.selected.ref, report.selected.count);
+    await readerAudit(report.selected.ref, report.selected.pages);
     report.status = 'browser_chain_passed';
 } catch (error) {
     if (report.status === 'running') report.status = 'failed';
@@ -202,8 +214,6 @@ try {
                 notice({ kind, part: start / 2000, totalBytes: bytes.length, truncated: bytes.length > maximum, base64: bytes.subarray(start, start + 2000).toString('base64') });
             }
         };
-        // GitHub runner annotations truncate individual messages at 4096 characters.
-        chunks('report-json', Buffer.from(JSON.stringify(report)), 20_000);
         const snippets = [];
         for (const asset of report.assets.filter((item) => item.markers.some((marker) => ['deliverySystem', 'imageEnc', 'rdr_diag_ovr', 'data-reader-page', 'createImageBitmap', 'turnstile'].includes(marker)))) {
             const text = await readFile(join(out, asset.file), 'utf8');
@@ -212,8 +222,11 @@ try {
                 return { marker, start, source: text.slice(Math.max(0, start - 1400), start + 2600) };
             }) });
         }
-        const evidence = Buffer.from(JSON.stringify(snippets));
-        chunks('public-javascript-excerpts', evidence, 80_000);
+        // GitHub truncates messages at 4096 characters AND retains at most 10 notices per
+        // step. Compress the public evidence and keep the whole stream within both limits.
+        const evidence = gzipSync(Buffer.from(JSON.stringify({ report, javascriptExcerpts: snippets })), { level: 9 });
+        if (evidence.length <= 20_000) chunks('gzip-audit-evidence', evidence, 20_000);
+        else notice({ kind: 'summary', status: report.status, reader: report.reader, evidenceTooLarge: true });
     }
     if (report.status !== 'browser_chain_passed') process.exitCode = 2;
 }

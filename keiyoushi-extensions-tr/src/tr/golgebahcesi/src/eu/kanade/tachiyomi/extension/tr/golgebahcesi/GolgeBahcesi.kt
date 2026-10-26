@@ -127,8 +127,12 @@ abstract class GolgeBahcesi : KeiSource() {
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val chapterId = "$baseUrl${chapter.url}".toHttpUrl().pathSegments[0]
+        val segments = "$baseUrl${chapter.url}".toHttpUrl().pathSegments
+        val chapterId = segments[0]
         val dto = client.get("$apiBaseUrl/chapters/$chapterId").parseAs<ChapterDto>()
+        if (dto.id != chapterId || dto.seriesSlug != segments[1] || dto.slug != segments[2]) {
+            throw IOException("Kaynak yanlış bölümü döndürdü")
+        }
         if (dto.isLocked) throw IOException("Bu bölüm kilitli; sitede erişim izni gerekiyor")
         val encrypted = dto.imageEnc || dto.deliverySystem.equals("secure", ignoreCase = true) ||
             dto.pages.orEmpty().any { it.url.substringBefore('?').endsWith(".enc", ignoreCase = true) }
@@ -142,7 +146,7 @@ abstract class GolgeBahcesi : KeiSource() {
                 Page(index, url = getChapterUrl(chapter), imageUrl = imageUrl.toString())
             }
         }
-        return captureSecurePages(getChapterUrl(chapter)).mapIndexed { index, data ->
+        return captureSecurePages(getChapterUrl(chapter), dto.pages?.size?.takeIf { it > 0 }).mapIndexed { index, data ->
             val imageUrl = HttpUrl.Builder().scheme("https").host(PAGE_HOST)
                 .addPathSegment(index.toString())
                 .fragment(data)
@@ -152,7 +156,7 @@ abstract class GolgeBahcesi : KeiSource() {
     }
 
     // Secure chapters decoded by the site's reader
-    private suspend fun captureSecurePages(chapterUrl: String): List<String> {
+    private suspend fun captureSecurePages(chapterUrl: String, expectedPageCount: Int?): List<String> {
         val bridge = randomName()
         val channel = randomName()
         val workerHook = "(${asset("worker_hook.js")})(${channel.toJsonString()});\n"
@@ -175,6 +179,7 @@ abstract class GolgeBahcesi : KeiSource() {
                             challengeSeen.set(true)
                             null
                         }
+                        host == "c2.skycdn.online" || host == "hcaptcha.com" || host?.endsWith(".hcaptcha.com") == true -> null
                         host == null || host == siteHost || host.endsWith(".$siteHost") -> null
                         else -> WebResourceResponse("text/plain", null, 403, "Blocked", null, ByteArrayInputStream(ByteArray(0)))
                     }
@@ -184,7 +189,8 @@ abstract class GolgeBahcesi : KeiSource() {
                     when (message.substringBefore(':')) {
                         "count" -> {
                             val value = data.toInt()
-                            require(value in 1..2000 && (count.get() == 0 || count.get() == value)) {
+                            require(value in 1..2000 && (count.get() == 0 || count.get() == value) &&
+                                (expectedPageCount == null || value == expectedPageCount)) {
                                 "Invalid reader page count"
                             }
                             count.set(value)
@@ -196,7 +202,11 @@ abstract class GolgeBahcesi : KeiSource() {
                             pages[index] = data.substringAfter("base64,")
                             if (pages.size == count.get()) resolve(List(pages.size) { pages.getValue(it) })
                         }
-                        "error" -> reject(Exception(data))
+                        "error" -> reject(IOException(when (data) {
+                            "site_verification_required" -> "Bu bölümde site doğrulaması tamamlanamadı"
+                            "site_reader_environment_rejected" -> "Sitenin güncel okuyucusu bu ortamı reddetti"
+                            else -> data
+                        }))
                     }
                 }
                 injectAtDocumentStart(bootstrap, setOf(baseUrl))

@@ -194,7 +194,16 @@ internal class GolgeBahcesiReader(private val context: Context, private val user
                                         }
                                     }
                                 }
-                                "error" -> result.completeExceptionally(IOException(text.substringAfter(':')))
+                                "error" -> {
+                                    val error = when (val detail = text.substringAfter(':')) {
+                                        "site_verification_required" -> CaptchaRequiredException("Gölge Bahçesi",
+                                            "Bu bölüm site doğrulaması istiyor; arka plan okuyucusu doğrulamayı tamamlayamadı")
+                                        "site_reader_environment_rejected" -> IOException(
+                                            "Gölge Bahçesi güncel okuyucusu bu ortamı reddetti; görseller alınamadı")
+                                        else -> IOException(detail)
+                                    }
+                                    result.completeExceptionally(error)
+                                }
                                 else -> throw IOException("Bilinmeyen okuyucu mesajı")
                             }
                         } catch (e: Exception) {
@@ -205,7 +214,7 @@ internal class GolgeBahcesiReader(private val context: Context, private val user
                     view.loadUrl(readerUrl)
                 }
                 result.await()
-            } ?: throw CaptchaRequiredException("Gölge Bahçesi", "Okuyucu zaman aşımı; siteyi tarayıcıda açıp doğrulamayı tamamlayın")
+            } ?: throw IOException("Okuyucu zaman aşımı; doğrulama, okuyucu değişikliği veya bağlantı sorunu nedeniyle görseller tamamlanamadı")
         } finally {
             withContext(NonCancellable) { writerJob.cancelAndJoin() }
             // Cancellation and renderer failure must not leak Chromium instances.

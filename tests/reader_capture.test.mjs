@@ -42,7 +42,7 @@ function reader({ previous = null, readError = false, nested = false } = {}) {
             setItem: (key, value) => storage.set(key, value),
             removeItem: (key) => storage.delete(key),
         },
-        document: { querySelectorAll: () => pages },
+        document: { body: { innerText: '' }, querySelectorAll: () => pages },
         setInterval: (callback) => { tick = callback; return 42; },
         clearInterval: (id) => { assert.equal(id, 42); cleared = true; },
     };
@@ -221,4 +221,36 @@ test('worker reports excessive unmatched images instead of dropping data invisib
     w.store(['https://site/0']);
     for (let i = 0; i < 17; i++) await w.decode(100);
     assert.match(w.messages.at(-1).error, /matched safely/);
+});
+
+
+test('visible verification gate gets a grace period, then a specific non-success error', () => {
+    const r = reader();
+    r.sandbox.document.body.innerText = 'Güvenlik Doğrulaması';
+    r.tick();
+    r.tick(14999);
+    assert.deepEqual(r.messages, []);
+    r.tick(1);
+    assert.deepEqual(r.messages, ['error:site_verification_required']);
+    assert.equal(r.storage.has('rdr_diag_ovr'), false);
+});
+
+test('automatically completed verification is not misclassified as a failed challenge', () => {
+    const r = reader();
+    r.sandbox.document.body.innerText = 'Güvenlik Doğrulaması';
+    r.tick();
+    r.tick(10000);
+    r.sandbox.document.body.innerText = 'Bölüm 462';
+    r.tick(10000);
+    r.emit({ count: 1 });
+    r.page(0);
+    assert.deepEqual(r.messages.map((m) => m.split(',')[0]), ['count:1', 'page:0']);
+});
+
+test('current official-reader environment rejection is a failure, not a captcha or success', () => {
+    const r = reader();
+    r.sandbox.document.body.innerText = 'Bu bölüm bu tarayıcıda görüntülenemedi';
+    r.tick();
+    assert.deepEqual(r.messages, ['error:site_reader_environment_rejected']);
+    assert.equal(r.cleared(), true);
 });
