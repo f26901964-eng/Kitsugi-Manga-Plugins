@@ -6,11 +6,15 @@ from pathlib import Path
 import re
 import tempfile
 import unittest
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location("integration_installer", ROOT / "scripts/apply_kitsugi_integration.py")
 installer = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(installer)
+PROFILE_SPEC = importlib.util.spec_from_file_location("source_profile", ROOT / "scripts/source_profile.py")
+profile_reader = importlib.util.module_from_spec(PROFILE_SPEC)
+PROFILE_SPEC.loader.exec_module(profile_reader)
 
 
 def patch_preimage(target: Path) -> None:
@@ -61,11 +65,11 @@ def fingerprint(directory: Path) -> dict[str, str]:
 
 class SingleSourceProfileTests(unittest.TestCase):
     def test_exactly_one_logical_source_and_no_legacy_parser_enabled(self):
-        profile = installer.read_profile()
-        self.assertEqual("golgebahcesi", profile["activeSource"])
-        self.assertEqual(["tr:golgebahcesi"], profile["keiyoushi.enabled"].split(","))
+        profile = profile_reader.read_profile()
+        self.assertEqual("mangadenizi", profile["activeSource"])
+        self.assertEqual(["tr:mangadenizi"], profile["keiyoushi.enabled"].split(","))
         self.assertEqual("", profile["kotatsu.enabled"])
-        self.assertEqual("native", profile["kitsugi.adapter"])
+        self.assertEqual("mex", profile["kitsugi.adapter"])
 
     def test_legacy_source_files_have_not_been_deleted(self):
         modules = list((ROOT / "keiyoushi-extensions-tr/src/tr").glob("*/build.gradle.kts"))
@@ -112,8 +116,13 @@ class SingleSourceProfileTests(unittest.TestCase):
         self.assertNotIn("override fun onReceivedSslError", reader)
 
 
-class IntegrationInstallerTests(unittest.TestCase):
+class HistoricalGolgeIntegrationInstallerTests(unittest.TestCase):
+    """Safety tests of the historical tool, NOT active source acceptance."""
     def setUp(self):
+        historical = {"activeSource": "golgebahcesi", "keiyoushi.enabled": "tr:golgebahcesi", "kotatsu.enabled": "", "kitsugi.adapter": "native"}
+        guard = patch.object(installer, "read_profile", return_value=historical)
+        guard.start()
+        self.addCleanup(guard.stop)
         self.temporary = tempfile.TemporaryDirectory()
         self.app = Path(self.temporary.name)
         patch_preimage(self.app)

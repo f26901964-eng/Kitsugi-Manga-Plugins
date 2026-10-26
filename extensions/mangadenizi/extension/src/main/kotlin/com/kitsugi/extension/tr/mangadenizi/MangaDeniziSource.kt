@@ -25,7 +25,7 @@ class MangaDeniziSource : MangaSource {
     override val originalBaseUrl = MangaDeniziApi.SITE
     override val lang = "tr"
     override val pkgName = "com.kitsugi.extension.tr.mangadenizi"
-    override val engineType = ExtensionEngine.INERTIA
+    override val engineType = ExtensionEngine.CUSTOM_HTML
     override val isArchive = false
 
     private val api = MangaDeniziApi(OkHttpClient.Builder().connectTimeout(30, TimeUnit.SECONDS).readTimeout(45, TimeUnit.SECONDS).callTimeout(60, TimeUnit.SECONDS).build())

@@ -36,8 +36,8 @@ val sourceProfile = java.util.Properties().apply {
 }
 val enabledExtensions = sourceProfile.getProperty("keiyoushi.enabled", "")
     .split(',').map(String::trim).filter(String::isNotEmpty)
-check(enabledExtensions == listOf("tr:golgebahcesi")) {
-    "The recovery profile must contain only tr:golgebahcesi"
+check(enabledExtensions == listOf("tr:mangadenizi")) {
+    "The recovery profile must contain only tr:mangadenizi"
 }
 enabledExtensions.forEach { module ->
     check(file("src/${module.replace(':', '/')}/build.gradle.kts").isFile) {
@@ -48,4 +48,5 @@ enabledExtensions.forEach { module ->
 
 include(":core")
 include(":compiler")
-// Golge Bahcesi is API-based; no archived multisrc/library module is needed.
+// MangaDenizi is API-based; archived multisrc/library modules remain disabled.
+// Kitsugi releases use extensions/mangadenizi native MEX, NOT a modern KeiSource APK.

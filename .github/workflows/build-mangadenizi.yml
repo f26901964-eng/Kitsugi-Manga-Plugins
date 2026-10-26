@@ -6,6 +6,8 @@ on:
     branches: [arena/35425e65-kitsugi-manga-plugins]
     paths:
       - extensions/mangadenizi/**
+      - integration/kitsugi-loader-tests/**
+      - integration/kitsugi-mex/**
       - .github/workflows/build-mangadenizi.yml
 
 permissions:
@@ -46,6 +48,11 @@ jobs:
           path: extensions/mangadenizi/build/mangadenizi.mex
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
+        with:
+          name: kitsugi-compile-only-host-api
+          path: extensions/mangadenizi/host-contract/build/libs/host-contract.jar
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: mangadenizi-junit
@@ -57,7 +64,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        api: [30, 35]
+        api: [29, 34]
     runs-on: ubuntu-24.04
     timeout-minutes: 25
     steps:
@@ -70,6 +77,10 @@ jobs:
         with:
           name: mangadenizi-native-mex
           path: .audit/android
+      - uses: actions/download-artifact@v4
+        with:
+          name: kitsugi-compile-only-host-api
+          path: .audit/android
       - name: Download unchanged official Kitsugi APK (not rebuilt host test stubs)
         env:
           GH_TOKEN: ${{ github.token }}
@@ -77,6 +88,16 @@ jobs:
           gh release download v2.4.381 --repo f26901964-eng/Kitsugi-Beta --pattern Kitsugi-Beta-v2.4.381-foss.apk --dir .audit/android
           sha256sum .audit/android/*.apk
           python3 extensions/mangadenizi/run-gradle.py bash extensions/mangadenizi/android-smoke/build.sh
+      - name: Test Android 14 with the exact read-only fix in real host bytecode
+        if: matrix.api == 34
+        run: |
+          API_JAR="$PWD/.audit/android/host-contract.jar"
+          python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-loader-tests classes -PhostApiJar="$API_JAR" --no-daemon --console=plain
+          mkdir -p .audit/android/recovery-dex
+          "$ANDROID_HOME/build-tools/35.0.0/d8" --min-api 26 --lib "$ANDROID_HOME/platforms/android-35/android.jar" --classpath "$API_JAR" --output .audit/android/recovery-dex integration/kitsugi-loader-tests/build/classes/java/main/com/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy.class
+          python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-loader-tests run -PhostApiJar="$API_JAR" --args="$PWD/.audit/android/Kitsugi-Beta-v2.4.381-foss.apk $PWD/.audit/android/host-readonly-test-fixture.apk $PWD/.audit/android/recovery-dex/classes.dex" --no-daemon --console=plain
+          echo 'HOST_APK=.audit/android/host-readonly-test-fixture.apk' >> "$GITHUB_ENV"
+          echo 'HOST_VARIANT=release-with-readonly-loader-test-fixture' >> "$GITHUB_ENV"
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules

@@ -180,7 +180,7 @@ internal class MangaDeniziApi(private val client: OkHttpClient, private val endp
         error("Unreachable")
     }
     private suspend fun requestOnce(url: HttpUrl, referer: String): ByteArray = suspendCancellableCoroutine { continuation ->
-        val call = client.newCall(Request.Builder().url(url).header("User-Agent", USER_AGENT).header("Referer", referer).header("Origin", SITE).header("Accept", "application/json,image/avif,image/webp,image/*,*/*").build())
+        val call = client.newCall(Request.Builder().url(url).header("User-Agent", USER_AGENT).header("Referer", referer).header("Origin", SITE).header("Accept", "application/json,image/webp,image/png,image/jpeg,*/*;q=0.8").build())
         continuation.invokeOnCancellation { call.cancel() }
         call.enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {

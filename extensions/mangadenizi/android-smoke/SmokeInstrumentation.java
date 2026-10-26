@@ -27,12 +27,13 @@ import java.util.concurrent.atomic.AtomicReference;
 /** No recreated host models: load the actual, unmodified, published Kitsugi APK. */
 public final class SmokeInstrumentation extends Instrumentation {
     private ClassLoader host;
+    private String hostVariant;
     private JSONObject report;
     private final JSONArray images = new JSONArray();
     private final JSONArray checks = new JSONArray();
     private final String id = "com_kitsugi_extension_tr_mangadenizi";
 
-    @Override public void onCreate(Bundle args) { super.onCreate(args); start(); }
+    @Override public void onCreate(Bundle args) { super.onCreate(args); hostVariant = args == null ? "original-release" : args.getString("hostVariant", "original-release"); start(); }
     @Override public void onStart() {
         Context app = getTargetContext();
         report = new JSONObject();
@@ -41,6 +42,13 @@ public final class SmokeInstrumentation extends Instrumentation {
             report.put("androidApi", Build.VERSION.SDK_INT).put("testAppTargetSdk", app.getApplicationInfo().targetSdkVersion).put("hostRelease", "v2.4.381");
             report.put("checks", checks).put("images", images);
             File hostApk = new File(app.getFilesDir(), "host.apk");
+            android.content.pm.PackageInfo info = app.getPackageManager().getPackageArchiveInfo(hostApk.getAbsolutePath(), 0);
+            require(info != null && info.applicationInfo != null, "Read actual reference APK metadata");
+            report.put("hostVariant", hostVariant).put("hostTargetSdk", info.applicationInfo.targetSdkVersion).put("hostVersionName", info.versionName).put("hostDebuggable", (info.applicationInfo.flags & android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0);
+            require(info.applicationInfo.targetSdkVersion == app.getApplicationInfo().targetSdkVersion, "Test process targetSdk matches real host APK");
+            File installedMex = new File(app.getFilesDir(), "manga_extensions/" + id + ".mex");
+            report.put("inputMexWritableBeforeLoad", installedMex.canWrite());
+            require(installedMex.canWrite(), "Fresh installer file is writable before actual loader runs");
             // Only the reference APK is read-only. Leave MEX writable, like the real installer.
             require(hostApk.setReadOnly(), "Reference APK is readable and read-only");
             host = new PathClassLoader(hostApk.getAbsolutePath(), app.getClassLoader());
@@ -54,7 +62,8 @@ public final class SmokeInstrumentation extends Instrumentation {
             Method load = loader.getMethod("loadExtension", Context.class, String.class);
             Object source = load.invoke(singleton, context, id);
             boolean original = source != null;
-            report.put("originalInstallerWritableMexLoaded", original);
+            report.put("installerWritableMexLoaded", original);
+            report.put("mexReadOnlyAfterLoader", !installedMex.canWrite());
             if (!original) {
                 // Diagnose, don't conceal, the Android 14+ dynamic-code installer bug.
                 File mex = new File(app.getFilesDir(), "manga_extensions/" + id + ".mex");
@@ -65,7 +74,26 @@ public final class SmokeInstrumentation extends Instrumentation {
             require(source != null && contract.isInstance(source), "Actual host loader creates native MangaSource (no duplicate API classes)");
             require("MangaDenizi".equals(get(source, "getName")), "Source identity");
             require("tr".equals(get(source, "getLang")), "Turkish source language");
+            require("CUSTOM_HTML".equals(get(source, "getEngineType").toString()), "Current custom REST adapter, not obsolete Inertia scraping");
             require(Boolean.FALSE.equals(get(source, "isArchive")), "Normal network reader, not archive adapter");
+            if (hostVariant.equals("release-with-readonly-loader-test-fixture")) {
+                java.lang.reflect.Field registryField = loader.getDeclaredField("loadedSources"); registryField.setAccessible(true);
+                @SuppressWarnings("unchecked") java.util.Map<String, List<Object>> registry = (java.util.Map<String, List<Object>>) registryField.get(null);
+                Object tr = dummySource(contract, "tr", "other.tr.disabled");
+                Object en = dummySource(contract, "en", "other.en.kept");
+                registry.put("test-other-tr", java.util.Arrays.asList(tr));
+                registry.put("test-other-en", java.util.Arrays.asList(en));
+                List<?> active = (List<?>) loader.getMethod("getLoadedSources").invoke(singleton);
+                int turkish = 0; boolean foreignKept = false; boolean disabledTrPresent = false;
+                for (Object candidate : active) {
+                    if ("tr".equals(get(candidate, "getLang"))) turkish++;
+                    if (candidate == en) foreignKept = true;
+                    if (candidate == tr) disabledTrPresent = true;
+                }
+                require(turkish == 1 && foreignKept && !disabledTrPresent, "Recovery policy leaves exactly MangaDenizi TR, preserves non-TR, deletes no files");
+                report.put("singleTurkishSourceProfileVerified", true);
+                registry.remove("test-other-tr"); registry.remove("test-other-en");
+            }
             // All interface defaults are implemented by the plugin, rather than compile-only stubs.
             require("https://mangadenizi.net".equals(get(source, "getOriginalBaseUrl")), "Original URL ABI");
             Object popular = call(source, "fetchPopularManga", 1);
@@ -135,6 +163,16 @@ public final class SmokeInstrumentation extends Instrumentation {
             Bundle results = new Bundle(); results.putString("status", passed ? "passed" : "failed");
             finish(passed ? -1 : 0, results);
         }
+    }
+    private Object dummySource(Class<?> contract, String language, String pkg) {
+        return Proxy.newProxyInstance(host, new Class<?>[]{contract}, (proxy, method, args) -> {
+            if (method.getName().equals("getLang")) return language;
+            if (method.getName().equals("getPkgName")) return pkg;
+            if (method.getName().equals("getName")) return pkg;
+            if (method.getName().equals("hashCode")) return System.identityHashCode(proxy);
+            if (method.getName().equals("equals")) return proxy == args[0];
+            return null;
+        });
     }
     private Object get(Object value, String name) throws Exception { return value.getClass().getMethod(name).invoke(value); }
     private Object call(Object source, String name, Object... args) throws Exception {

@@ -1,0 +1,56 @@
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
+@@ -59,8 +59,8 @@
+         val apkMexSources = loadedSources.values.flatten()
+         // Sadece aktif dillerdeki Kotatsu kaynakları — Futon mantığıyla aynı
+         val kotatsuSources = KotatsuExtensionAdapter.getActiveSources()
+-        return if (kotatsuSources.isEmpty()) apkMexSources
+-        else apkMexSources + kotatsuSources
++        val combined = if (kotatsuSources.isEmpty()) apkMexSources else apkMexSources + kotatsuSources
++        return MangaDeniziRecoveryPolicy.filterSources(combined)
+     }
+ 
+     fun getSource(extensionId: String, context: Context): MangaSource? {
+@@ -204,6 +204,8 @@
+      * 4) Source örneğini MihonSourceWrapper ile sarar ve döndürür.
+      */
+     private fun loadMihonApk(context: Context, extensionId: String, file: File): MangaSource? {
++        // Keep code readable but not writable before Android 14+ class loading.
++        file.setReadOnly()
+         // Önbellekten döndür (ilk source'u ver)
+         loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
+ 
+@@ -320,6 +322,8 @@
+      * Kitsugi native .mex yükleyici (eski format, manifest.json tabanlı).
+      */
+     private fun loadNativeMex(context: Context, extensionId: String, file: File): MangaSource? {
++        // Keep code readable but not writable before Android 14+ class loading.
++        file.setReadOnly()
+         loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
+ 
+         return try {
+--- /dev/null
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaDeniziRecoveryPolicy.java
+@@ -0,0 +1,22 @@
++package com.kitsugi.animelist.data.manga;
++
++import java.util.ArrayList;
++import java.util.List;
++
++/** Temporary recovery selection. No files, source settings or reading data are deleted. */
++public final class MangaDeniziRecoveryPolicy {
++    private MangaDeniziRecoveryPolicy() { }
++    public static List<MangaSource> filterSources(List<MangaSource> sources) {
++        List<MangaSource> active = new ArrayList<>();
++        boolean selected = false;
++        for (MangaSource source : sources) {
++            if (!"tr".equalsIgnoreCase(source.getLang())) {
++                active.add(source); // Other languages are outside the requested TR recovery profile.
++            } else if ("com.kitsugi.extension.tr.mangadenizi".equals(source.getPkgName()) && !selected) {
++                active.add(source);
++                selected = true; // Don't activate both a manually installed and repository-installed copy.
++            }
++        }
++        return active;
++    }
++}

@@ -24,7 +24,7 @@ with zipfile.ZipFile(jar) as file:
 manifest = json.loads((root / 'manifest.json').read_text())
 package = root / 'build/mangadenizi.mex'
 with zipfile.ZipFile(package, 'w', compression=zipfile.ZIP_DEFLATED, compresslevel=9) as file:
-    for name, data in [('classes.dex', (out / 'classes.dex').read_bytes()), ('manifest.json', (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode())]:
+    for name, data in [('classes.dex', (out / 'classes.dex').read_bytes()), ('manifest.json', (json.dumps(manifest, ensure_ascii=False, indent=2) + '\n').encode()), ('LICENSE', (root / 'LICENSE').read_bytes()), ('NOTICE', (root / 'NOTICE').read_bytes())]:
         info = zipfile.ZipInfo(name, date_time=(1980, 1, 1, 0, 0, 0))
         info.compress_type = zipfile.ZIP_DEFLATED
         file.writestr(info, data)

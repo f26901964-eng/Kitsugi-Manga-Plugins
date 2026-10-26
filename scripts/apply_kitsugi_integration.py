@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-"""Install the native single-source integration into an existing Kitsugi-Beta checkout.
+"""HISTORICAL tool, refused for the active MangaDenizi MEX profile.
+
+Install the old native single-source integration into an existing Kitsugi-Beta checkout.
 
 Default is read-only --check. Never clones, changes branches, commits, pushes, or deletes
 installed extensions/user data. A conflicting destination file stops the whole preflight.
@@ -37,7 +39,7 @@ def read_profile(path: Path = ROOT / "sources.properties") -> dict[str, str]:
         "kitsugi.adapter": "native",
     }
     if any(profile.get(key) != value for key, value in required.items()):
-        raise ValueError("Expected the native Golge Bahcesi-only recovery profile")
+        raise ValueError("Retired Golge integration: the active MangaDenizi profile uses a native MEX. Do not apply the old patch: it disables MEX loading. See the repository README.")
     return profile
 
 

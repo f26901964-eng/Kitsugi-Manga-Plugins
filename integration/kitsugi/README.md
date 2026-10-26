@@ -1,4 +1,10 @@
-# Kitsugi → yalnızca Gölge Bahçesi
+# ARŞİV — eski Gölge Bahçesi uygulama yaması
+
+> **Bu entegrasyon artık seçili değildir. Uygulamayın.** Aktif kaynak MangaDenizi,
+> yeni dağıtım biçimi native `.mex` paketidir: [güncel kurulum](../../README.md).
+> Eski `single-source.patch` harici MEX/APK yüklemesini kapatır ve yeni kurulumla çakışır.
+> `apply_kitsugi_integration.py` aktif profilde bu nedenle yazma yapmadan durur.
+> Aşağıdaki metin geçmiş denemenin teknik kaydıdır; çalışan kurulum vaadi değildir.
 
 ## Kapsam ve gerçek durum
 

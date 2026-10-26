@@ -1,0 +1,9 @@
+MangaDenizi native Kitsugi extension
+
+Public API adapter and Android image reconstruction for Kitsugi MangaSource.
+The tiled-v1 interoperability work references the MangaDenizi adapter and
+UnscramblerInterceptor in Keiyoushi extensions-source (Apache License 2.0),
+retained under keiyoushi-extensions-tr/src/tr/mangadenizi in this repository.
+
+Only this extension's own code is packaged. Host API classes, Kotlin runtime,
+OkHttp, coroutines, Jsoup and copyrighted chapter images are not bundled.
