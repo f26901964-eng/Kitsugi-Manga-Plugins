@@ -16,15 +16,29 @@ function check(name, condition, detail) {
     if (!condition) throw Error(`${name}: ${detail}`);
 }
 async function fetchBytes(url, referer = `${SITE}/`) {
-    const res = await fetch(url, { headers: { ...headers, Referer: referer }, signal: AbortSignal.timeout(30_000) });
-    if (!res.ok) throw Error(`HTTP ${res.status}: ${new URL(url).hostname}${new URL(url).pathname}`);
-    const parts = []; let count = 0;
-    for await (const part of res.body) {
-        count += part.length;
-        if (count > 32 * 1024 * 1024) throw Error('Response too large');
-        parts.push(part);
+    for (let attempt = 1; attempt <= 3; attempt++) {
+        let retryable = true;
+        try {
+            const res = await fetch(url, { headers: { ...headers, Referer: referer }, signal: AbortSignal.timeout(45_000) });
+            if (!res.ok) {
+                retryable = res.status >= 500 || res.status === 429;
+                await res.body?.cancel();
+                throw Error(`HTTP ${res.status}: ${new URL(url).hostname}${new URL(url).pathname}`);
+            }
+            const parts = []; let count = 0;
+            for await (const part of res.body) {
+                count += part.length;
+                if (count > 32 * 1024 * 1024) { retryable = false; throw Error('Response too large'); }
+                parts.push(part);
+            }
+            return Buffer.concat(parts);
+        } catch (error) {
+            if (!retryable || attempt === 3) throw error;
+            report.transportRetries ??= [];
+            report.transportRetries.push({ host: new URL(url).hostname, path: new URL(url).pathname, attempt, error: String(error.cause?.message || error.message) });
+            await new Promise((resolve) => setTimeout(resolve, attempt * 1200));
+        }
     }
-    return Buffer.concat(parts);
 }
 async function json(path, name) {
     const bytes = await fetchBytes(`${SITE}${path}`);
@@ -112,7 +126,37 @@ try {
         check(`${slug}: public reader is not an authentication/challenge page`, !/Güvenlik Doğrulaması|Checking your browser|Just a moment/i.test(body) && body.includes(summary.title), (await page.title()).slice(0, 120));
         const canvases = await page.locator('canvas').count();
         const images = await page.locator('img').count();
-        report.browser.push({ slug, canvasCount: canvases, imageCount: images, title: await page.title() });
+        const modules = await page.evaluate(() => performance.getEntriesByType('resource').map((item) => item.name).filter((url) => url.endsWith('.js')));
+        const excerpts = [];
+        for (const module of modules.filter((url) => url.startsWith(`${SITE}/`))) {
+            const js = (await fetchBytes(module)).toString('utf8');
+            for (const marker of ['tiled-v1', '2654435769', '2246822507']) {
+                const offset = js.indexOf(marker);
+                if (offset >= 0) excerpts.push({ module, marker, excerpt: js.slice(Math.max(0, offset - 1600), offset + 2600) });
+            }
+        }
+        report.browser.push({ slug, canvasCount: canvases, imageCount: images, title: await page.title(), modules, rendererExcerpts: excerpts });
+        if (canvases > 0) {
+            const firstCanvas = page.locator('canvas').first();
+            await firstCanvas.scrollIntoViewIfNeeded();
+            await page.waitForTimeout(3000);
+            const exported = await firstCanvas.evaluate((canvas) => {
+                try { return { width: canvas.width, height: canvas.height, data: canvas.toDataURL('image/png') }; }
+                catch (error) { return { width: canvas.width, height: canvas.height, error: error.message }; }
+            });
+            const result = report.browser.at(-1);
+            if (exported.data) {
+                const bytes = Buffer.from(exported.data.split(',')[1], 'base64');
+                const actual = await sharp(bytes).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+                const expected = await sharp(join(out, `${slug}-0.png`)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+                let error = 0, maximum = 0;
+                if (actual.info.width === expected.info.width && actual.info.height === expected.info.height) {
+                    for (let i = 0; i < expected.data.length; i++) { const diff = Math.abs(actual.data[i] - expected.data[i]); error += diff; maximum = Math.max(maximum, diff); }
+                    result.firstPagePixelComparison = { width: actual.info.width, height: actual.info.height, meanAbsoluteError: error / expected.data.length, maxError: maximum };
+                    check(`${slug}: restored pixels match official public canvas`, error / expected.data.length < 1, JSON.stringify(result.firstPagePixelComparison));
+                } else result.canvasSizeMismatch = { actual: actual.info, expected: expected.info };
+            } else result.canvasExportError = exported.error;
+        }
         await writeFile(join(out, `${slug}-reader.html`), await page.content());
         await page.close();
     }
