@@ -185,6 +185,29 @@ class GolgeBahcesiApiTest {
         assertTrue(content.images.isEmpty())
     }
 
+    @Test fun liveManhwaMetadataKeepsCorrectIdentityCoverAndType() = runBlocking {
+        val live = JSONObject(javaClass.getResource("/golgebahcesi/live-2026-10-26.json")!!.readText())
+        responseText = live.getJSONObject("details").toString()
+        val result = api.details("golge-kole")
+        assertEquals("golge-kole", result.slug)
+        assertEquals("Gölge Köle", result.title)
+        assertEquals("https://c2.skycdn.online/series-thumbnail/1787185398_9c06e0d978f42896b3f8b915fa8e283f.webp", result.coverUrl)
+        assertEquals(listOf("Aksiyon", "Fantastik", "Macera", "MANHWA"), result.genres)
+        assertNull(result.author)
+    }
+
+    @Test fun liveEncryptedChapterKeepsAll18PagesAndNeverExposesCiphertextAsImages() = runBlocking {
+        val live = JSONObject(javaClass.getResource("/golgebahcesi/live-2026-10-26.json")!!.readText())
+        responseText = live.getJSONObject("chapter462").toString()
+        val chapter = GolgeBahcesiApi.ChapterRef("6ad522327d73db9753612074", "mairimashita-iruma-kun", "chapter-462")
+        val result = api.content(chapter)
+        assertEquals(chapter, result.ref)
+        assertTrue(result.isSecure)
+        assertEquals(18, result.expectedPageCount)
+        assertTrue(result.images.isEmpty())
+        assertEquals("https://golgebahcesi.com/manga/mairimashita-iruma-kun/bolum/chapter-462", api.readerUrl(result.ref))
+    }
+
     @Test fun changedOrEmptyPageDataIsAnError() = runBlocking {
         for (pages in listOf(JSONArray(), JSONArray("[{\"index\":0,\"url\":\"/0.webp\"},{\"index\":0,\"url\":\"/1.webp\"}]"),
             JSONArray("[{\"index\":0,\"url\":\"http://insecure.test/0.webp\"}]"))) {

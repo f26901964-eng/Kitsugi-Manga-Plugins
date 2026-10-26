@@ -39,6 +39,6 @@ jobs:
           reports = list(Path('integration/kitsugi-api-tests/build/test-results/test').glob('TEST-*.xml'))
           assert reports, 'No executed JUnit test report'
           totals = {key: sum(int(ET.parse(path).getroot().get(key, '0')) for path in reports) for key in ['tests', 'failures', 'errors', 'skipped']}
-          assert totals['tests'] >= 25 and not any(totals[key] for key in ['failures', 'errors', 'skipped']), totals
+          assert totals['tests'] >= 27 and not any(totals[key] for key in ['failures', 'errors', 'skipped']), totals
           print('::notice title=Native API JUnit results::' + str(totals))
           PY

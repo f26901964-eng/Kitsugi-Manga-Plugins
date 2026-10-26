@@ -1,0 +1,59 @@
+{
+  "_provenance": {
+    "observedOn": "2026-10-26",
+    "method": "Fields transcribed from successful public API fetches. Metadata projection, not browser/image verification.",
+    "urls": [
+      "https://api.golgebahcesi.com/api/series/golge-kole",
+      "https://api.golgebahcesi.com/api/chapters/6ad522327d73db9753612074"
+    ]
+  },
+  "details": {
+    "id": "6a75d3a9f1e630d45d40ff0d",
+    "slug": "golge-kole",
+    "title": "Gölge Köle",
+    "alternativeTitles": ["Shadow Slave", "섀도우 슬레이브", "Gölge Köle Oku", "Gölgelerin Kölesi", "Gölgelerin Kölesi Oku"],
+    "coverImage": "https://c2.skycdn.online/series-thumbnail/1787185398_9c06e0d978f42896b3f8b915fa8e283f.webp",
+    "type": "MANHWA",
+    "status": "ONGOING",
+    "genres": ["Aksiyon", "Fantastik", "Macera"],
+    "author": "",
+    "artist": "",
+    "chapterCount": 0
+  },
+  "chapter462": {
+    "id": "6ad522327d73db9753612074",
+    "seriesId": "6aa32d108e8d067cf1ba87f0",
+    "seriesSlug": "mairimashita-iruma-kun",
+    "number": 462,
+    "title": "Bölüm 462",
+    "slug": "chapter-462",
+    "pages": [
+      {"index":0,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/fc5428f956f58fac6156c41c.png.enc","width":1062,"height":687},
+      {"index":1,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/503fa415f6c73fbc7fb3a9bd.jpg.enc","width":836,"height":1500},
+      {"index":2,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/5060cae99bb9489f9c74c926.jpg.enc","width":836,"height":1500},
+      {"index":3,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/10a4c384b3f97cec53a671da.jpg.enc","width":836,"height":1500},
+      {"index":4,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/65f7f2f8ec08b797efd88b85.jpg.enc","width":836,"height":1500},
+      {"index":5,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/bd738dd5d4710889f004459a.jpg.enc","width":836,"height":1500},
+      {"index":6,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/25e7d8aeb7d573e668a1012b.jpg.enc","width":836,"height":1500},
+      {"index":7,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/b7ef305c4e2f0094c838b6a0.jpg.enc","width":836,"height":1500},
+      {"index":8,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/251758b3b0429328a47680ef.jpg.enc","width":836,"height":1500},
+      {"index":9,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/17523185742e389d5f811ccf.jpg.enc","width":836,"height":800},
+      {"index":10,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/02f070d1368e762ed1103c57.jpg.enc","width":836,"height":1500},
+      {"index":11,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/8bff96249aafec219da7cf8a.jpg.enc","width":836,"height":1500},
+      {"index":12,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/da388bd090fc0e029bcf7a67.jpg.enc","width":836,"height":1500},
+      {"index":13,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/7c974ae150d0ce931c45f702.jpg.enc","width":836,"height":1500},
+      {"index":14,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/9d0552e5d24dba16941fb90e.jpg.enc","width":836,"height":1500},
+      {"index":15,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/db3dea926b7a80863271bd3a.jpg.enc","width":836,"height":1500},
+      {"index":16,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/7f0bcabfd443abd8becc4314.jpg.enc","width":836,"height":409},
+      {"index":17,"url":"/series/mairimashita-iruma-kun/AWSbmlCAiu0Z-wFn8t7flR84Cpkuf222IGJTMyEwqp0/ea316f76f25879c0f9212cab.jpg.enc","width":375,"height":373}
+    ],
+    "deliverySystem": "secure",
+    "imageEnc": true,
+    "encSlug": "mairimashita-iruma-kun",
+    "isLocked": false,
+    "lock": {"type":"none","coinCost":2600,"cashCost":0,"vipBypass":false,"unlockAt":"2026-10-19T19:46:00Z"},
+    "releaseDate": "2026-10-18T19:46:58.992Z",
+    "createdAt": "2026-10-18T19:46:58.992Z",
+    "updatedAt": "2026-10-18T19:46:58.992Z"
+  }
+}

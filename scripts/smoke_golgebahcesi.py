@@ -96,7 +96,11 @@ def check(
         raise ValueError("Chapter identity mismatch")
     if content.get("isLocked", False):
         raise NeedsDevice("Chapter requires access on the source website")
-    if str(content.get("deliverySystem", "")).lower() == "secure":
+    encrypted_paths = any(
+        isinstance(page, dict) and urlparse(str(page.get("url", ""))).path.lower().endswith(".enc")
+        for page in content.get("pages") or []
+    )
+    if content.get("imageEnc") or str(content.get("deliverySystem", "")).lower() == "secure" or encrypted_paths:
         raise NeedsDevice("API/search/chapters reached; secure pages require the native Android WebView reader. NOT a full pass.")
     pages = content.get("pages")
     if not isinstance(pages, list) or not pages:

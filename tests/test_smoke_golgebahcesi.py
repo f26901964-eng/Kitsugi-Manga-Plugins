@@ -53,6 +53,18 @@ class SmokeTests(unittest.TestCase):
             self.check()
         self.assertEqual([], self.images)
 
+    def test_image_enc_flag_without_secure_label_is_not_a_false_plain_success(self):
+        self.content["imageEnc"] = True
+        with self.assertRaises(smoke.NeedsDevice):
+            self.check()
+        self.assertEqual([], self.images)
+
+    def test_enc_path_without_either_flag_is_not_a_false_plain_success(self):
+        self.content["pages"][0]["url"] = "/series/test/2.jpg.enc?signature=public"
+        with self.assertRaises(smoke.NeedsDevice):
+            self.check()
+        self.assertEqual([], self.images)
+
     def test_locked_chapter_never_fetches_or_decrypts_images(self):
         self.content = self.fixtures["locked"]
         with self.assertRaises(smoke.NeedsDevice):
