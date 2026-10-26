@@ -1,0 +1,10 @@
+{
+  "repository": "f26901964-eng/Kitsugi-Beta",
+  "revision": "fd5c3387c2e5f69d00b9e9dee43cc667796556aa",
+  "release": "v2.4.381",
+  "releaseApk": "Kitsugi-Beta-v2.4.381-foss.apk",
+  "files": {
+    "MangaSource.kt": "2bd03489f8dc03318a94183931c9751275c309f8",
+    "MangaModels.kt": "fc45df6d1ad33f5e460d39c32f98ceefcad044f3"
+  }
+}

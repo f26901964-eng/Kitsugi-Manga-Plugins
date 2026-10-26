@@ -1,0 +1,10 @@
+{
+  "name": "MangaDenizi",
+  "packageName": "com.kitsugi.extension.tr.mangadenizi",
+  "versionName": "1.0.0",
+  "versionCode": 1,
+  "lang": "tr",
+  "sourceClassName": "com.kitsugi.extension.tr.mangadenizi.MangaDeniziSource",
+  "hostContract": "Kitsugi v2.4.381",
+  "minSdk": 26
+}

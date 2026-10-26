@@ -1,0 +1,53 @@
+name: Build native MangaDenizi installable package
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/35425e65-kitsugi-manga-plugins]
+    paths:
+      - extensions/mangadenizi/**
+      - .github/workflows/build-mangadenizi.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build-mex:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Fetch verified compile-only API from actual Kitsugi release source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 extensions/mangadenizi/prepare-contract.py
+      - name: Compile all source and Android image code; execute native API regressions
+        run: |
+          echo "ANDROID_JAR=$ANDROID_HOME/platforms/android-35/android.jar" >> "$GITHUB_ENV"
+          ANDROID_JAR="$ANDROID_HOME/platforms/android-35/android.jar" bash kotatsu-parsers-tr/gradlew -p extensions/mangadenizi :extension:test :extension:exportClasspath --no-daemon --console=plain
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          reports = list(Path('extensions/mangadenizi/extension/build/test-results/test').glob('TEST-*.xml'))
+          assert reports, 'No executed native extension JUnit report'
+          totals = {key: sum(int(ET.parse(path).getroot().get(key, '0')) for path in reports) for key in ['tests', 'failures', 'errors', 'skipped']}
+          assert totals['tests'] >= 27 and not any(totals[key] for key in ['failures', 'errors', 'skipped']), totals
+          print('::notice title=MangaDenizi JUnit::' + str(totals))
+          PY
+      - name: Dex only plugin classes and create installable native MEX
+        run: python3 extensions/mangadenizi/build-mex.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mangadenizi-native-mex
+          path: extensions/mangadenizi/build/mangadenizi.mex
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mangadenizi-junit
+          path: extensions/mangadenizi/extension/build/test-results/test/
+          if-no-files-found: warn

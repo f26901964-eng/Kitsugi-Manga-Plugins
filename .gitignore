@@ -17,3 +17,9 @@ __pycache__/
 # Browser/network audit captures stay local or in CI artifacts, never in Git
 /.audit/
 node_modules/
+
+# Pinned host ABI downloaded by prepare-contract.py (compile-only, never shipped).
+/extensions/mangadenizi/host-contract/src/
+
+# The one small, requested installable package is a published deliverable.
+!packages/mangadenizi.mex
