@@ -1,0 +1,16 @@
+{
+  "indexUrl": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/releases/download/native-mangadenizi-v1/index.json",
+  "packageUrl": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/releases/download/native-mangadenizi-v1/com_kitsugi_extension_tr_mangadenizi.mex",
+  "packageSha256": "b189c86162e04c39a7056a2a954d85db080e538ba36bedae741803a9fd3952c8",
+  "dexSha256": "a990750ec5bf4d7166458bb78dfebe219cc71f5b3f776fad1e161c9a78b07e1b",
+  "packageBytes": 33218,
+  "builtAndTestedRevision": "9c458d86d1ca1844b4e0889b1a1da84e661fe6cb",
+  "acceptanceWorkflow": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40396276343",
+  "compatibility": {
+    "android10": "53/53 pixels matched; original Kitsugi v2.4.381 loader",
+    "android14": "53/53 pixels matched ONLY with the supplied app-side loader fix in a CI test copy",
+    "requiresAppLoaderFixFromApi": 34,
+    "signedAndroid14AppUpdateIncluded": false,
+    "warning": "MEX cannot repair its own host loader. An unmodified v2.4.381 on Android 14+ is NOT a verified normal installation. Do not uninstall the app or disable Android code-loading protection."
+  }
+}

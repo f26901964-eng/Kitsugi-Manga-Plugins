@@ -1,0 +1,639 @@
+{
+  "androidApi": 29,
+  "testAppTargetSdk": 36,
+  "hostRelease": "v2.4.381",
+  "checks": [
+    {
+      "name": "Read actual reference APK metadata",
+      "passed": true
+    },
+    {
+      "name": "Test process targetSdk matches real host APK",
+      "passed": true
+    },
+    {
+      "name": "Fresh installer file is writable before actual loader runs",
+      "passed": true
+    },
+    {
+      "name": "Reference APK is readable and read-only",
+      "passed": true
+    },
+    {
+      "name": "Actual host loader creates native MangaSource (no duplicate API classes)",
+      "passed": true
+    },
+    {
+      "name": "Source identity",
+      "passed": true
+    },
+    {
+      "name": "Turkish source language",
+      "passed": true
+    },
+    {
+      "name": "Current custom REST adapter, not obsolete Inertia scraping",
+      "passed": true
+    },
+    {
+      "name": "Normal network reader, not archive adapter",
+      "passed": true
+    },
+    {
+      "name": "Original URL ABI",
+      "passed": true
+    },
+    {
+      "name": "Popular catalogue in native source",
+      "passed": true
+    },
+    {
+      "name": "Native catalogue pagination",
+      "passed": true
+    },
+    {
+      "name": "black-clover: native search returns the selected title",
+      "passed": true
+    },
+    {
+      "name": "black-clover: native details belong to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: cover and description present",
+      "passed": true
+    },
+    {
+      "name": "black-clover: full native chapter list",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    },
+    {
+      "name": "black-clover: chapter belongs to selected manga",
+      "passed": true
+    },
+    {
+      "name": "black-clover: descending chapter order",
+      "passed": true
+    }
+  ],
+  "images": [
+    {
+      "slug": "black-clover",
+      "index": 0,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "1068751e45c5bb600581b593797ed080bb0811fc2b2fe50eda2a38c2101d9daf",
+      "elapsedMs": 3464,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 1,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "a20dceb60ccd52d6fc5f779357be0b80531aa7506996f0de41e28c36489574c0",
+      "elapsedMs": 3345,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 2,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "d26301bef12db1ce5cfc6d4d4d606ee564838ed9f5ff0a6c00273c8a5fca7b8d",
+      "elapsedMs": 2056,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 3,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "d5514469ddd113cffb4457329584d5b1b34b39203bf235abc00f7d181c4c3f1a",
+      "elapsedMs": 2206,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 4,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "00947e31fb87f3020b6e93142a30f07a0db4f8a8669252a4c0aa41c526af6aef",
+      "elapsedMs": 1516,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 5,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "ecbefabd9a7d8a7405a4c85320d0ebc76a2535b5b461f8aded0b63edc8369836",
+      "elapsedMs": 1163,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 6,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "ffb14dcb40cf28af5479144f3ffec0f75e02271a293e81afa45cb195cf172cd1",
+      "elapsedMs": 1996,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 7,
+      "width": 784,
+      "height": 1145,
+      "pixelSha256": "6d90814bc7eac10270714ea4c6dc1d93faf249d3a4d62b24d34b1610f926266b",
+      "elapsedMs": 554,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 8,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "82e56800c0dfdecd2f268b36a8d55171808835980c2ed488a73c62a4251a3761",
+      "elapsedMs": 1787,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 9,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "8568af2639e6849965c325ee48839ed17782e5e171f5e3095e7c4ee5839495a2",
+      "elapsedMs": 938,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 10,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "7c9f1c1eb0a17c99feb6361f1b3ad107f84c51248fe4fef65b979ad35324675d",
+      "elapsedMs": 1037,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 11,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "c0935b69c4badfd9b86b8ca8690381427cb5a70a1d381d23c083e912c55983b6",
+      "elapsedMs": 1202,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 12,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "e6bc56f9ae6c31531a389f044844792234e44800f54b4fb2375d76f51d425cc4",
+      "elapsedMs": 1457,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 13,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "94b77e74c9feeb344e6b7564f068c1468ac00c3c9c8a3d918d27c635429db1dd",
+      "elapsedMs": 1278,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 14,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "d1ba4f7948059f8469d1960e2dce432f8a7697bbf1eb161cadef4ad29eec48c4",
+      "elapsedMs": 918,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 15,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "0de491874ac94f8091a8daa670b7d762cb08f139005aa899b8ac25cab24cbb9c",
+      "elapsedMs": 791,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 16,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "2bcc49dda4f1540c7c599dca476bb3b67db9675c3f460ff45c2e990fb2842ff8",
+      "elapsedMs": 1719,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 17,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "8703982ec61e84d44e31e6430113775cdb327db0e7c8d4f17c329e942eef6b77",
+      "elapsedMs": 1789,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 18,
+      "width": 1486,
+      "height": 2100,
+      "pixelSha256": "c658d60e46aca85a11ce57a9a445bcd8bf54cd583d39044737f4d358318fc604",
+      "elapsedMs": 1065,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "black-clover",
+      "index": 19,
+      "width": 2858,
+      "height": 2100,
+      "pixelSha256": "7a5d6320436f52cb5263d3ad2cecaf16f15343491608c8cf7d015453a86c00d5",
+      "elapsedMs": 1429,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 0,
+      "width": 800,
+      "height": 2951,
+      "pixelSha256": "04a6e700877983ffb1ab98a62c47b66389fbe660754241f214e7900fbc84f57c",
+      "elapsedMs": 1235,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 1,
+      "width": 800,
+      "height": 3055,
+      "pixelSha256": "48b8412dc6f5550bdcfc0528eef2006a708d76731926e18d1eb4d67d924690ef",
+      "elapsedMs": 978,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 2,
+      "width": 800,
+      "height": 2751,
+      "pixelSha256": "486c8eeaf2ada975c282c22955779c7ed5a73b332d212de2ce630b054249fb9d",
+      "elapsedMs": 497,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 3,
+      "width": 800,
+      "height": 3255,
+      "pixelSha256": "1167be341c3d432478baac8638caed0d2b4c79792d31a4f18bbb16fff5792f9c",
+      "elapsedMs": 557,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 4,
+      "width": 800,
+      "height": 4436,
+      "pixelSha256": "fc66198dbf38142530666838b6fafa1ac5a6f12de60183b9fbfecdb26ff27003",
+      "elapsedMs": 1599,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 5,
+      "width": 800,
+      "height": 3237,
+      "pixelSha256": "b5894f9f23b31b4d29a096a876c7ad1dc16969fc30cc98a2eaa1c412e604f99d",
+      "elapsedMs": 1038,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 6,
+      "width": 800,
+      "height": 2838,
+      "pixelSha256": "79ebe9651e619c02b922f081038d4baa5bcfef593214d0a35df6e37ed823b98e",
+      "elapsedMs": 1071,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 7,
+      "width": 800,
+      "height": 4076,
+      "pixelSha256": "dda8edb1f7d456546eaf71c58539abbac4aa21a178159906659606e5cbae85bb",
+      "elapsedMs": 1700,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 8,
+      "width": 800,
+      "height": 3060,
+      "pixelSha256": "afec5f4ce3397f368d9030af3f512f2673a39e269c552e80445fc804633cd31d",
+      "elapsedMs": 976,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 9,
+      "width": 800,
+      "height": 4618,
+      "pixelSha256": "b2f04b0f6b2cbb0ffa91f963bf220b5935001a41b0b80fee5d9e2921f88512bf",
+      "elapsedMs": 1126,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 10,
+      "width": 800,
+      "height": 2628,
+      "pixelSha256": "cc8a5272a3161acea4af6417721ede99207996bb10531ddf8440e6275a108ae1",
+      "elapsedMs": 564,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 11,
+      "width": 800,
+      "height": 2366,
+      "pixelSha256": "d69753ae02bd9cd93abe47df56352b1841dd4fabf0a72199c45586e02fa824ef",
+      "elapsedMs": 459,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 12,
+      "width": 800,
+      "height": 3277,
+      "pixelSha256": "37ee1ce664f776988d5c3bc6dfbcc9344445016872ec1d172c357c6ae36061e8",
+      "elapsedMs": 1041,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 13,
+      "width": 800,
+      "height": 2381,
+      "pixelSha256": "4f80e69d49086883fb8eb63dcf9247053bda95dad4c77c652a2329ecb1367860",
+      "elapsedMs": 525,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 14,
+      "width": 800,
+      "height": 3261,
+      "pixelSha256": "268418d74f63154cb72a15b925bd99573881c69c1e309961256e4b03857fc5b2",
+      "elapsedMs": 1112,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 15,
+      "width": 800,
+      "height": 2861,
+      "pixelSha256": "25ab24e2eb7103eb3f69f4f12ea117426fb2859fa3e3cdca5be1e21d95fcf605",
+      "elapsedMs": 655,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 16,
+      "width": 800,
+      "height": 4955,
+      "pixelSha256": "2bbc63240b8946e56c92e833e3671a0e7fcdbada7e4406d76478311d232f71d0",
+      "elapsedMs": 1073,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 17,
+      "width": 800,
+      "height": 3309,
+      "pixelSha256": "ab86048f1cb0c08a577c129718d564fe87c402220ecfe88d87549e2a1c87db97",
+      "elapsedMs": 600,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 18,
+      "width": 800,
+      "height": 4234,
+      "pixelSha256": "9d7ca93475551fafba32d55671138853858df997fe541b7ef55f914275cd14c6",
+      "elapsedMs": 804,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 19,
+      "width": 800,
+      "height": 4471,
+      "pixelSha256": "01bb816c23e2a58b744732c6edcf693467350d45b907a208855a1517e8bc25a1",
+      "elapsedMs": 869,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 20,
+      "width": 800,
+      "height": 4546,
+      "pixelSha256": "2db24ae13842851c5fb0aa22b1d79799b2d07c125d11f4c53e0bede2ee85c78e",
+      "elapsedMs": 861,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 21,
+      "width": 800,
+      "height": 3559,
+      "pixelSha256": "d012529edc9561956dd54341699608f5c044e2b4879ea93159e53a50ac8cee4f",
+      "elapsedMs": 633,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 22,
+      "width": 800,
+      "height": 3849,
+      "pixelSha256": "90fb5ede6aebef463c5ee2e3c24e7460c815b29ac0ca842d9414bf4341c4dfd3",
+      "elapsedMs": 733,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 23,
+      "width": 800,
+      "height": 4719,
+      "pixelSha256": "47a8a7bb76725154a36a2f646353366529b5c7f773d168ccac0cf8a07b3790c2",
+      "elapsedMs": 899,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 24,
+      "width": 800,
+      "height": 4120,
+      "pixelSha256": "b88d4f33fdc3852f7a1efc5896a1cf64478cb2744bcfb478edcb5dfd077a2391",
+      "elapsedMs": 1105,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 25,
+      "width": 800,
+      "height": 3129,
+      "pixelSha256": "fea0ab819052a27e70a503cc84bd3ed2ec148495008174565b39b02227a90fa7",
+      "elapsedMs": 818,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 26,
+      "width": 800,
+      "height": 6835,
+      "pixelSha256": "3c212ded66391ce7b9bd2948a1211bd5aea3be64ba02c5b06193d0b9daae9308",
+      "elapsedMs": 1727,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 27,
+      "width": 800,
+      "height": 3406,
+      "pixelSha256": "37c36737af2657842ad65c9d8300ab377d4f7ffc2c4264d9f3927d8cedab65e1",
+      "elapsedMs": 550,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 28,
+      "width": 800,
+      "height": 2118,
+      "pixelSha256": "73e78ad1b643165b6ea1bcb11224ecadc48fbede721c3e6cda8fcebcfa1c8007",
+      "elapsedMs": 423,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 29,
+      "width": 800,
+      "height": 3116,
+      "pixelSha256": "78cf8fa9369f7e645324f2f7e422c776444c0f61c193bc466eb8b371fa85b37a",
+      "elapsedMs": 627,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 30,
+      "width": 800,
+      "height": 4674,
+      "pixelSha256": "c47aa93d8dce1bd8fcae3647dd7930824883fba7387eaf18a33a9e1928463773",
+      "elapsedMs": 750,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 31,
+      "width": 800,
+      "height": 7271,
+      "pixelSha256": "13a6ebfe7c74844a6cf3f8ec05f572eeb095823f344692eb8c59a1cbeca4dcd6",
+      "elapsedMs": 1157,
+      "matchesPublicReaderReference": true
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 32,
+      "width": 800,
+      "height": 5420,
+      "pixelSha256": "66a996adc74d627c2cc12a3f1b0023cf4028b324a05b2d206161b460d435d0cf",
+      "elapsedMs": 1022,
+      "matchesPublicReaderReference": true
+    }
+  ],
+  "hostVariant": "original-release",
+  "hostTargetSdk": 36,
+  "hostVersionName": "2.4.381-beta.29883385",
+  "hostDebuggable": false,
+  "inputMexWritableBeforeLoad": true,
+  "installerWritableMexLoaded": true,
+  "mexReadOnlyAfterLoader": false,
+  "status": "passed",
+  "evidence": {
+    "workflowRunId": 40396276343,
+    "revision": "9c458d86d1ca1844b4e0889b1a1da84e661fe6cb",
+    "workflowUrl": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40396276343"
+  }
+}
