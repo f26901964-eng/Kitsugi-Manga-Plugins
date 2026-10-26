@@ -1,0 +1,1069 @@
+{
+  "observedAt": "2026-10-26T18:23:52.350Z",
+  "status": "all_sample_images_decoded",
+  "androidVerified": false,
+  "checks": [
+    {
+      "name": "Catalogue and next page are real",
+      "passed": true,
+      "detail": "110 titles"
+    },
+    {
+      "name": "black-clover: search and details agree",
+      "passed": true,
+      "detail": "Black Clover"
+    },
+    {
+      "name": "black-clover: full chapters",
+      "passed": true,
+      "detail": "393 chapters"
+    },
+    {
+      "name": "black-clover: correct chapter, complete page numbering",
+      "passed": true,
+      "detail": "20 pages"
+    },
+    {
+      "name": "black-clover: page 1 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 2 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 3 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 4 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 5 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 6 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 7 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 8 decodes",
+      "passed": true,
+      "detail": "784x1145"
+    },
+    {
+      "name": "black-clover: page 9 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 10 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 11 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 12 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 13 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 14 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 15 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 16 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 17 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 18 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 19 decodes",
+      "passed": true,
+      "detail": "1486x2100"
+    },
+    {
+      "name": "black-clover: page 20 decodes",
+      "passed": true,
+      "detail": "2858x2100"
+    },
+    {
+      "name": "shadow-slave: search and details agree",
+      "passed": true,
+      "detail": "Shadow Slave"
+    },
+    {
+      "name": "shadow-slave: full chapters",
+      "passed": true,
+      "detail": "7 chapters"
+    },
+    {
+      "name": "shadow-slave: correct chapter, complete page numbering",
+      "passed": true,
+      "detail": "33 pages"
+    },
+    {
+      "name": "shadow-slave: page 1 decodes",
+      "passed": true,
+      "detail": "800x2951"
+    },
+    {
+      "name": "shadow-slave: page 2 decodes",
+      "passed": true,
+      "detail": "800x3055"
+    },
+    {
+      "name": "shadow-slave: page 3 decodes",
+      "passed": true,
+      "detail": "800x2751"
+    },
+    {
+      "name": "shadow-slave: page 4 decodes",
+      "passed": true,
+      "detail": "800x3255"
+    },
+    {
+      "name": "shadow-slave: page 5 decodes",
+      "passed": true,
+      "detail": "800x4436"
+    },
+    {
+      "name": "shadow-slave: page 6 decodes",
+      "passed": true,
+      "detail": "800x3237"
+    },
+    {
+      "name": "shadow-slave: page 7 decodes",
+      "passed": true,
+      "detail": "800x2838"
+    },
+    {
+      "name": "shadow-slave: page 8 decodes",
+      "passed": true,
+      "detail": "800x4076"
+    },
+    {
+      "name": "shadow-slave: page 9 decodes",
+      "passed": true,
+      "detail": "800x3060"
+    },
+    {
+      "name": "shadow-slave: page 10 decodes",
+      "passed": true,
+      "detail": "800x4618"
+    },
+    {
+      "name": "shadow-slave: page 11 decodes",
+      "passed": true,
+      "detail": "800x2628"
+    },
+    {
+      "name": "shadow-slave: page 12 decodes",
+      "passed": true,
+      "detail": "800x2366"
+    },
+    {
+      "name": "shadow-slave: page 13 decodes",
+      "passed": true,
+      "detail": "800x3277"
+    },
+    {
+      "name": "shadow-slave: page 14 decodes",
+      "passed": true,
+      "detail": "800x2381"
+    },
+    {
+      "name": "shadow-slave: page 15 decodes",
+      "passed": true,
+      "detail": "800x3261"
+    },
+    {
+      "name": "shadow-slave: page 16 decodes",
+      "passed": true,
+      "detail": "800x2861"
+    },
+    {
+      "name": "shadow-slave: page 17 decodes",
+      "passed": true,
+      "detail": "800x4955"
+    },
+    {
+      "name": "shadow-slave: page 18 decodes",
+      "passed": true,
+      "detail": "800x3309"
+    },
+    {
+      "name": "shadow-slave: page 19 decodes",
+      "passed": true,
+      "detail": "800x4234"
+    },
+    {
+      "name": "shadow-slave: page 20 decodes",
+      "passed": true,
+      "detail": "800x4471"
+    },
+    {
+      "name": "shadow-slave: page 21 decodes",
+      "passed": true,
+      "detail": "800x4546"
+    },
+    {
+      "name": "shadow-slave: page 22 decodes",
+      "passed": true,
+      "detail": "800x3559"
+    },
+    {
+      "name": "shadow-slave: page 23 decodes",
+      "passed": true,
+      "detail": "800x3849"
+    },
+    {
+      "name": "shadow-slave: page 24 decodes",
+      "passed": true,
+      "detail": "800x4719"
+    },
+    {
+      "name": "shadow-slave: page 25 decodes",
+      "passed": true,
+      "detail": "800x4120"
+    },
+    {
+      "name": "shadow-slave: page 26 decodes",
+      "passed": true,
+      "detail": "800x3129"
+    },
+    {
+      "name": "shadow-slave: page 27 decodes",
+      "passed": true,
+      "detail": "800x6835"
+    },
+    {
+      "name": "shadow-slave: page 28 decodes",
+      "passed": true,
+      "detail": "800x3406"
+    },
+    {
+      "name": "shadow-slave: page 29 decodes",
+      "passed": true,
+      "detail": "800x2118"
+    },
+    {
+      "name": "shadow-slave: page 30 decodes",
+      "passed": true,
+      "detail": "800x3116"
+    },
+    {
+      "name": "shadow-slave: page 31 decodes",
+      "passed": true,
+      "detail": "800x4674"
+    },
+    {
+      "name": "shadow-slave: page 32 decodes",
+      "passed": true,
+      "detail": "800x7271"
+    },
+    {
+      "name": "shadow-slave: page 33 decodes",
+      "passed": true,
+      "detail": "800x5420"
+    },
+    {
+      "name": "black-clover: public reader is not an authentication/challenge page",
+      "passed": true,
+      "detail": "Black Clover - Bölüm 392 | MangaDenizi"
+    },
+    {
+      "name": "black-clover: restored pixels match official public canvas",
+      "passed": true,
+      "detail": "{\"width\":1486,\"height\":2100,\"meanAbsoluteError\":0,\"maxError\":0}"
+    },
+    {
+      "name": "shadow-slave: public reader is not an authentication/challenge page",
+      "passed": true,
+      "detail": "Shadow Slave - Bölüm 7 | MangaDenizi"
+    },
+    {
+      "name": "shadow-slave: restored pixels match official public canvas",
+      "passed": true,
+      "detail": "{\"width\":800,\"height\":2951,\"meanAbsoluteError\":0,\"maxError\":0}"
+    }
+  ],
+  "series": [
+    {
+      "slug": "black-clover",
+      "title": "Black Clover",
+      "chapter": "392",
+      "chapterCount": 393,
+      "pageCount": 20,
+      "decoded": 20,
+      "cover": {
+        "width": 320,
+        "height": 460,
+        "sha256": "ff062925911e2fd75b27a4769e3edeefb75434e56bbd161ecff23eb655c90f0c"
+      }
+    },
+    {
+      "slug": "shadow-slave",
+      "title": "Shadow Slave",
+      "chapter": "07",
+      "chapterCount": 7,
+      "pageCount": 33,
+      "decoded": 33,
+      "cover": {
+        "width": 480,
+        "height": 640,
+        "sha256": "b5e8e0e7b522d1cdd0ff16f514807302d6acc0d9c3072923c66894f90b1debb8"
+      }
+    }
+  ],
+  "images": [
+    {
+      "slug": "black-clover",
+      "index": 0,
+      "pageNumber": 1,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1149874,
+      "restoredSha256": "abef2cb763c72706963dab02d2939fb0b41d354fc55c5f882bd92fb503c7c8f9",
+      "pixelSha256": "1068751e45c5bb600581b593797ed080bb0811fc2b2fe50eda2a38c2101d9daf"
+    },
+    {
+      "slug": "black-clover",
+      "index": 1,
+      "pageNumber": 2,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1135928,
+      "restoredSha256": "c42ca16d2bba8a3a315698535aba0d841f50d4382d85f14111b00722af1ae97f",
+      "pixelSha256": "a20dceb60ccd52d6fc5f779357be0b80531aa7506996f0de41e28c36489574c0"
+    },
+    {
+      "slug": "black-clover",
+      "index": 2,
+      "pageNumber": 3,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 765448,
+      "restoredSha256": "4525d9611a41a57d699578de14d9b387d78ec979d452c6f81ad4d1ca830e6305",
+      "pixelSha256": "d26301bef12db1ce5cfc6d4d4d606ee564838ed9f5ff0a6c00273c8a5fca7b8d"
+    },
+    {
+      "slug": "black-clover",
+      "index": 3,
+      "pageNumber": 4,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1131026,
+      "restoredSha256": "a144f07a625739888c5a20d11b6c2e920bb8c5ec3e0ac87397631be4d2c15ff6",
+      "pixelSha256": "d5514469ddd113cffb4457329584d5b1b34b39203bf235abc00f7d181c4c3f1a"
+    },
+    {
+      "slug": "black-clover",
+      "index": 4,
+      "pageNumber": 5,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 839444,
+      "restoredSha256": "9296b2def4ca2f2a34bd4b828b79a0443ebb2944d570cf98fea79724989b9a70",
+      "pixelSha256": "00947e31fb87f3020b6e93142a30f07a0db4f8a8669252a4c0aa41c526af6aef"
+    },
+    {
+      "slug": "black-clover",
+      "index": 5,
+      "pageNumber": 6,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 880194,
+      "restoredSha256": "786ddecf69d05080cd26b9a29f41f825a4071e62726ea404dbdf9a73ae91ed4e",
+      "pixelSha256": "ecbefabd9a7d8a7405a4c85320d0ebc76a2535b5b461f8aded0b63edc8369836"
+    },
+    {
+      "slug": "black-clover",
+      "index": 6,
+      "pageNumber": 7,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1055342,
+      "restoredSha256": "e661dde29a4960f6cf25104de21fe001b2c4c5fd65b9ea630fc3eb999974941b",
+      "pixelSha256": "ffb14dcb40cf28af5479144f3ffec0f75e02271a293e81afa45cb195cf172cd1"
+    },
+    {
+      "slug": "black-clover",
+      "index": 7,
+      "pageNumber": 8,
+      "width": 784,
+      "height": 1145,
+      "layout": "tiled-v1",
+      "downloadedBytes": 339412,
+      "restoredSha256": "099fafbf7a40261d19d0ed8f5fa455710d6ec82bfca1359986bca155776dac8b",
+      "pixelSha256": "6d90814bc7eac10270714ea4c6dc1d93faf249d3a4d62b24d34b1610f926266b"
+    },
+    {
+      "slug": "black-clover",
+      "index": 8,
+      "pageNumber": 9,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1113620,
+      "restoredSha256": "147ff633b1d9284aa29798045ded1bc95ccfdc7645f78c734367bd740645ea89",
+      "pixelSha256": "82e56800c0dfdecd2f268b36a8d55171808835980c2ed488a73c62a4251a3761"
+    },
+    {
+      "slug": "black-clover",
+      "index": 9,
+      "pageNumber": 10,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 766000,
+      "restoredSha256": "04941be91841d1c983ce7093f56391b526bd51e7e90ff7e22088e925d93f654a",
+      "pixelSha256": "8568af2639e6849965c325ee48839ed17782e5e171f5e3095e7c4ee5839495a2"
+    },
+    {
+      "slug": "black-clover",
+      "index": 10,
+      "pageNumber": 11,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 918506,
+      "restoredSha256": "a27ade87d4f8b780dba2ae9bed62cdba392b9c9aa3acf05955ff7c7db0e0d0cc",
+      "pixelSha256": "7c9f1c1eb0a17c99feb6361f1b3ad107f84c51248fe4fef65b979ad35324675d"
+    },
+    {
+      "slug": "black-clover",
+      "index": 11,
+      "pageNumber": 12,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 895348,
+      "restoredSha256": "455095ffe35431a1f7b05abed4a4c8388d82a933da33272aa6436c9b06996fdb",
+      "pixelSha256": "c0935b69c4badfd9b86b8ca8690381427cb5a70a1d381d23c083e912c55983b6"
+    },
+    {
+      "slug": "black-clover",
+      "index": 12,
+      "pageNumber": 13,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 751978,
+      "restoredSha256": "f83f3ea0df75d26129e54e0c21bc751ad848b0b2f849d1b170c5f99d0e920051",
+      "pixelSha256": "e6bc56f9ae6c31531a389f044844792234e44800f54b4fb2375d76f51d425cc4"
+    },
+    {
+      "slug": "black-clover",
+      "index": 13,
+      "pageNumber": 14,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 958022,
+      "restoredSha256": "e3f3a6a9c9b730f553ca395a1a923c85fd191d569fe9090cb29d4e6a3fa9a857",
+      "pixelSha256": "94b77e74c9feeb344e6b7564f068c1468ac00c3c9c8a3d918d27c635429db1dd"
+    },
+    {
+      "slug": "black-clover",
+      "index": 14,
+      "pageNumber": 15,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1188196,
+      "restoredSha256": "8211338594eed4a35eea2d758b42d041c632f3bba7ecc0f69f64235b75ccc5b5",
+      "pixelSha256": "d1ba4f7948059f8469d1960e2dce432f8a7697bbf1eb161cadef4ad29eec48c4"
+    },
+    {
+      "slug": "black-clover",
+      "index": 15,
+      "pageNumber": 16,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1148822,
+      "restoredSha256": "7d9717ad8c68de30e8a4894bd631bd4c6f4135e38d09fd5b46f6d1101e0ac323",
+      "pixelSha256": "0de491874ac94f8091a8daa670b7d762cb08f139005aa899b8ac25cab24cbb9c"
+    },
+    {
+      "slug": "black-clover",
+      "index": 16,
+      "pageNumber": 17,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1377628,
+      "restoredSha256": "9ad2f602e14e1b3dcca694138659b6d705fc44f71a817ac6b9dcebb6d1fe2cc8",
+      "pixelSha256": "2bcc49dda4f1540c7c599dca476bb3b67db9675c3f460ff45c2e990fb2842ff8"
+    },
+    {
+      "slug": "black-clover",
+      "index": 17,
+      "pageNumber": 18,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1216522,
+      "restoredSha256": "8eb3d03e08d6237a4e45e7783d891865c0697ba0d2c08812044dcb52ad98908c",
+      "pixelSha256": "8703982ec61e84d44e31e6430113775cdb327db0e7c8d4f17c329e942eef6b77"
+    },
+    {
+      "slug": "black-clover",
+      "index": 18,
+      "pageNumber": 19,
+      "width": 1486,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 888312,
+      "restoredSha256": "c03b85ca686df43191956f2830aca3ebd75359875c3eaa53523ad61634372685",
+      "pixelSha256": "c658d60e46aca85a11ce57a9a445bcd8bf54cd583d39044737f4d358318fc604"
+    },
+    {
+      "slug": "black-clover",
+      "index": 19,
+      "pageNumber": 20,
+      "width": 2858,
+      "height": 2100,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1521760,
+      "restoredSha256": "c3de686d1dda7b5ae746842402a153c850ac7e33c80445284931360c34fd818e",
+      "pixelSha256": "7a5d6320436f52cb5263d3ad2cecaf16f15343491608c8cf7d015453a86c00d5"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 0,
+      "pageNumber": 1,
+      "width": 800,
+      "height": 2951,
+      "layout": "tiled-v1",
+      "downloadedBytes": 734752,
+      "restoredSha256": "cd6ac75d2344d327ba43c38f25ed307a75d67b309720aba8a286531b4f4f3601",
+      "pixelSha256": "04a6e700877983ffb1ab98a62c47b66389fbe660754241f214e7900fbc84f57c"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 1,
+      "pageNumber": 2,
+      "width": 800,
+      "height": 3055,
+      "layout": "tiled-v1",
+      "downloadedBytes": 918690,
+      "restoredSha256": "b8789d6ee1db67528028aab077c756268f77b6c5f5c2111c98f7553118f1abeb",
+      "pixelSha256": "48b8412dc6f5550bdcfc0528eef2006a708d76731926e18d1eb4d67d924690ef"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 2,
+      "pageNumber": 3,
+      "width": 800,
+      "height": 2751,
+      "layout": "tiled-v1",
+      "downloadedBytes": 537512,
+      "restoredSha256": "7f44ed109e09334cd1b38ffb5e868a48d478d2f516a82882ec1396928a82a07e",
+      "pixelSha256": "486c8eeaf2ada975c282c22955779c7ed5a73b332d212de2ce630b054249fb9d"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 3,
+      "pageNumber": 4,
+      "width": 800,
+      "height": 3255,
+      "layout": "tiled-v1",
+      "downloadedBytes": 562360,
+      "restoredSha256": "7e5b4fb1883253ecea4b2f309edb73468345f45290a8d935d863cea86f7b3ca4",
+      "pixelSha256": "1167be341c3d432478baac8638caed0d2b4c79792d31a4f18bbb16fff5792f9c"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 4,
+      "pageNumber": 5,
+      "width": 800,
+      "height": 4436,
+      "layout": "tiled-v1",
+      "downloadedBytes": 846360,
+      "restoredSha256": "3bd58ddd689aa8a3b4f6a28a8c4cdce88a02626dec1c76d45eca34a0f07b243b",
+      "pixelSha256": "fc66198dbf38142530666838b6fafa1ac5a6f12de60183b9fbfecdb26ff27003"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 5,
+      "pageNumber": 6,
+      "width": 800,
+      "height": 3237,
+      "layout": "tiled-v1",
+      "downloadedBytes": 896756,
+      "restoredSha256": "b2b6db621050d42273068bbe22bdcd11a2c09c5279400e26e0087171d6dfa3a0",
+      "pixelSha256": "b5894f9f23b31b4d29a096a876c7ad1dc16969fc30cc98a2eaa1c412e604f99d"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 6,
+      "pageNumber": 7,
+      "width": 800,
+      "height": 2838,
+      "layout": "tiled-v1",
+      "downloadedBytes": 682090,
+      "restoredSha256": "c52b150b1d6a7564db72872ce7a3497ce9f32407f3d2be179f827b905bd9056f",
+      "pixelSha256": "79ebe9651e619c02b922f081038d4baa5bcfef593214d0a35df6e37ed823b98e"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 7,
+      "pageNumber": 8,
+      "width": 800,
+      "height": 4076,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1581054,
+      "restoredSha256": "4b8282c972736dbbba5f044fac3c764aae98e545266caa1732aff63243261f4d",
+      "pixelSha256": "dda8edb1f7d456546eaf71c58539abbac4aa21a178159906659606e5cbae85bb"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 8,
+      "pageNumber": 9,
+      "width": 800,
+      "height": 3060,
+      "layout": "tiled-v1",
+      "downloadedBytes": 890632,
+      "restoredSha256": "ac93f3823286191681869b68a6f78ff225898e0842c3fb1c649aae687b791f84",
+      "pixelSha256": "afec5f4ce3397f368d9030af3f512f2673a39e269c552e80445fc804633cd31d"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 9,
+      "pageNumber": 10,
+      "width": 800,
+      "height": 4618,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1065798,
+      "restoredSha256": "718327dd04e1d9befcaa35e8e30339b1ee094294fa08441b50a647c8244eafea",
+      "pixelSha256": "b2f04b0f6b2cbb0ffa91f963bf220b5935001a41b0b80fee5d9e2921f88512bf"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 10,
+      "pageNumber": 11,
+      "width": 800,
+      "height": 2628,
+      "layout": "tiled-v1",
+      "downloadedBytes": 510056,
+      "restoredSha256": "6f0219ba875e7e2d43de37d08bea22ff2c37c4b8bb7e9b0b347b2262b8eb1751",
+      "pixelSha256": "cc8a5272a3161acea4af6417721ede99207996bb10531ddf8440e6275a108ae1"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 11,
+      "pageNumber": 12,
+      "width": 800,
+      "height": 2366,
+      "layout": "tiled-v1",
+      "downloadedBytes": 310746,
+      "restoredSha256": "be17a16cc077f12ecf4e9a92cc0d1b27c1a2a156c864e0c682b6a08dade1a793",
+      "pixelSha256": "d69753ae02bd9cd93abe47df56352b1841dd4fabf0a72199c45586e02fa824ef"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 12,
+      "pageNumber": 13,
+      "width": 800,
+      "height": 3277,
+      "layout": "tiled-v1",
+      "downloadedBytes": 976658,
+      "restoredSha256": "ba1f64197cb150d1064dcea40a556afa68f5a3a86d7dd6c589d818bee6ad9ee3",
+      "pixelSha256": "37ee1ce664f776988d5c3bc6dfbcc9344445016872ec1d172c357c6ae36061e8"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 13,
+      "pageNumber": 14,
+      "width": 800,
+      "height": 2381,
+      "layout": "tiled-v1",
+      "downloadedBytes": 446728,
+      "restoredSha256": "d7db0a85b6f5842b9956f52c310a1fa31d5db5b4b66e985e3b764f5ee7cdf543",
+      "pixelSha256": "4f80e69d49086883fb8eb63dcf9247053bda95dad4c77c652a2329ecb1367860"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 14,
+      "pageNumber": 15,
+      "width": 800,
+      "height": 3261,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1104570,
+      "restoredSha256": "7c7c6500382e23d24a8c9d6dac10510c497252cb7e284a6673f478fb395ae623",
+      "pixelSha256": "268418d74f63154cb72a15b925bd99573881c69c1e309961256e4b03857fc5b2"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 15,
+      "pageNumber": 16,
+      "width": 800,
+      "height": 2861,
+      "layout": "tiled-v1",
+      "downloadedBytes": 774948,
+      "restoredSha256": "5ac2bbf2a1df5bc72579fc1217ab17bcc5268049b2a02cdbf23e1bd886c9a804",
+      "pixelSha256": "25ab24e2eb7103eb3f69f4f12ea117426fb2859fa3e3cdca5be1e21d95fcf605"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 16,
+      "pageNumber": 17,
+      "width": 800,
+      "height": 4955,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1692034,
+      "restoredSha256": "8810e0be7749232df95daab6539a4036d0fb49ed192b9a8250ca95789c30e49c",
+      "pixelSha256": "2bbc63240b8946e56c92e833e3671a0e7fcdbada7e4406d76478311d232f71d0"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 17,
+      "pageNumber": 18,
+      "width": 800,
+      "height": 3309,
+      "layout": "tiled-v1",
+      "downloadedBytes": 792676,
+      "restoredSha256": "be50d3f4509f643c05fcc71f55a9cf6a3907372fc093e8135adef2bbb21002b4",
+      "pixelSha256": "ab86048f1cb0c08a577c129718d564fe87c402220ecfe88d87549e2a1c87db97"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 18,
+      "pageNumber": 19,
+      "width": 800,
+      "height": 4234,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1172318,
+      "restoredSha256": "24372e5067ac59ff14ae5f02b043bf6f8d96cab2a75f00c393ec175cf6a0193e",
+      "pixelSha256": "9d7ca93475551fafba32d55671138853858df997fe541b7ef55f914275cd14c6"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 19,
+      "pageNumber": 20,
+      "width": 800,
+      "height": 4471,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1272814,
+      "restoredSha256": "f4bdd0a9cb97bc7a08839627c09c6c55ee83c1f0c8ec7e774ff1fdf7317e0e8e",
+      "pixelSha256": "01bb816c23e2a58b744732c6edcf693467350d45b907a208855a1517e8bc25a1"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 20,
+      "pageNumber": 21,
+      "width": 800,
+      "height": 4546,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1214184,
+      "restoredSha256": "1548979790c13d53a1db31c09f0c3b7141196e151daac751cbe97975e97fc976",
+      "pixelSha256": "2db24ae13842851c5fb0aa22b1d79799b2d07c125d11f4c53e0bede2ee85c78e"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 21,
+      "pageNumber": 22,
+      "width": 800,
+      "height": 3559,
+      "layout": "tiled-v1",
+      "downloadedBytes": 920968,
+      "restoredSha256": "2f82d6e29942d088df7e2a16c541d9f1eda9ebf65e6445a99be217d2755a3075",
+      "pixelSha256": "d012529edc9561956dd54341699608f5c044e2b4879ea93159e53a50ac8cee4f"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 22,
+      "pageNumber": 23,
+      "width": 800,
+      "height": 3849,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1213348,
+      "restoredSha256": "729f09972359b0cfa0d8849992d00a0457dc7f56087ccbea029bb8b8bb402f10",
+      "pixelSha256": "90fb5ede6aebef463c5ee2e3c24e7460c815b29ac0ca842d9414bf4341c4dfd3"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 23,
+      "pageNumber": 24,
+      "width": 800,
+      "height": 4719,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1202650,
+      "restoredSha256": "a64f07ce28c43b703137600a259b65a088e788a0034b28a2bfbd82fb48f17e89",
+      "pixelSha256": "47a8a7bb76725154a36a2f646353366529b5c7f773d168ccac0cf8a07b3790c2"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 24,
+      "pageNumber": 25,
+      "width": 800,
+      "height": 4120,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1660494,
+      "restoredSha256": "5f9f70e24c3f1efcf5ca1c09cb0b0266ff70833ede782dd9fe29e8769ec35fdf",
+      "pixelSha256": "b88d4f33fdc3852f7a1efc5896a1cf64478cb2744bcfb478edcb5dfd077a2391"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 25,
+      "pageNumber": 26,
+      "width": 800,
+      "height": 3129,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1225228,
+      "restoredSha256": "811c01aff13ddb15bdcc458e2551f512c3e33cef9a51b728915cbffe2e8eea90",
+      "pixelSha256": "fea0ab819052a27e70a503cc84bd3ed2ec148495008174565b39b02227a90fa7"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 26,
+      "pageNumber": 27,
+      "width": 800,
+      "height": 6835,
+      "layout": "tiled-v1",
+      "downloadedBytes": 2667396,
+      "restoredSha256": "d7d56fcec0d01d217deeea89fa5c264e60bef06bde0ea560855463d160bfd598",
+      "pixelSha256": "3c212ded66391ce7b9bd2948a1211bd5aea3be64ba02c5b06193d0b9daae9308"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 27,
+      "pageNumber": 28,
+      "width": 800,
+      "height": 3406,
+      "layout": "tiled-v1",
+      "downloadedBytes": 843806,
+      "restoredSha256": "ba08134ef312ccff760cbac89df42bb3d5851164d70a9ea4aba6ffc70cca272a",
+      "pixelSha256": "37c36737af2657842ad65c9d8300ab377d4f7ffc2c4264d9f3927d8cedab65e1"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 28,
+      "pageNumber": 29,
+      "width": 800,
+      "height": 2118,
+      "layout": "tiled-v1",
+      "downloadedBytes": 606998,
+      "restoredSha256": "a6de58f2266f5a85b0066223e4e912e3368a780c52e741fb11cffceb8f8be049",
+      "pixelSha256": "73e78ad1b643165b6ea1bcb11224ecadc48fbede721c3e6cda8fcebcfa1c8007"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 29,
+      "pageNumber": 30,
+      "width": 800,
+      "height": 3116,
+      "layout": "tiled-v1",
+      "downloadedBytes": 913296,
+      "restoredSha256": "644d2f992e4b130726b80a152efbd756b9155dd87356af96375fddafd8b0b641",
+      "pixelSha256": "78cf8fa9369f7e645324f2f7e422c776444c0f61c193bc466eb8b371fa85b37a"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 30,
+      "pageNumber": 31,
+      "width": 800,
+      "height": 4674,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1060732,
+      "restoredSha256": "3518bbb39b6e7fb4fc1ac99988bd4b8e2a7f2c8312400412f47038e0c6f327dd",
+      "pixelSha256": "c47aa93d8dce1bd8fcae3647dd7930824883fba7387eaf18a33a9e1928463773"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 31,
+      "pageNumber": 32,
+      "width": 800,
+      "height": 7271,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1520292,
+      "restoredSha256": "6f41700239c4c99778484245d7496d0c6744232118624933cadf40efe4cfb65d",
+      "pixelSha256": "13a6ebfe7c74844a6cf3f8ec05f572eeb095823f344692eb8c59a1cbeca4dcd6"
+    },
+    {
+      "slug": "shadow-slave",
+      "index": 32,
+      "pageNumber": 33,
+      "width": 800,
+      "height": 5420,
+      "layout": "tiled-v1",
+      "downloadedBytes": 1349728,
+      "restoredSha256": "d07a4334daca4d42e445ad21f2ba1737c73a2b4c4c32b5a520596e1a05ceec6f",
+      "pixelSha256": "66a996adc74d627c2cc12a3f1b0023cf4028b324a05b2d206161b460d435d0cf"
+    }
+  ],
+  "browser": [
+    {
+      "slug": "black-clover",
+      "canvasCount": 5,
+      "imageCount": 4,
+      "title": "Black Clover - Bölüm 392 | MangaDenizi",
+      "modules": [
+        "https://mangadenizi.net/_nuxt/DqNpEQgb.js",
+        "https://mangadenizi.net/_nuxt/hePW80VL.js",
+        "https://mangadenizi.net/_nuxt/4FR2zC82.js",
+        "https://mangadenizi.net/_nuxt/CQpLCrPR.js",
+        "https://mangadenizi.net/_nuxt/B8mB02Sz.js",
+        "https://mangadenizi.net/_nuxt/YWIWln_g.js",
+        "https://mangadenizi.net/_nuxt/CQR-cmx9.js",
+        "https://mangadenizi.net/_nuxt/UDhc-Wlf.js",
+        "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+        "https://mangadenizi.net/_nuxt/CI-cgqtd.js",
+        "https://mangadenizi.net/_nuxt/BQnS8Yvg.js",
+        "https://mangadenizi.net/_nuxt/hgOhkOPe.js",
+        "https://mangadenizi.net/_nuxt/DpzlQtIn.js",
+        "https://mangadenizi.net/_nuxt/CaTBZZuw.js",
+        "https://mangadenizi.net/_nuxt/CJdF3otO.js",
+        "https://mangadenizi.net/_nuxt/ByCZsSei.js",
+        "https://mangadenizi.net/_nuxt/CarpY9bl.js",
+        "https://mangadenizi.net/_nuxt/BDNMzG2s.js",
+        "https://mangadenizi.net/_nuxt/CNNsNGId.js",
+        "https://mangadenizi.net/_nuxt/CheQ5zDc.js",
+        "https://mangadenizi.net/_nuxt/Bojyqfrf.js",
+        "https://mangadenizi.net/_nuxt/B5xpaqFr.js",
+        "https://mangadenizi.net/_nuxt/_Z1jo_gH.js",
+        "https://mangadenizi.net/_nuxt/BqJGfFo1.js",
+        "https://mangadenizi.net/_nuxt/4TJT26ok.js",
+        "https://mangadenizi.net/_nuxt/DPULsRLw.js",
+        "https://mangadenizi.net/_nuxt/BAMHT4qx.js",
+        "https://mangadenizi.net/_nuxt/vg2cx08M.js",
+        "https://mangadenizi.net/_nuxt/Glf6qfjL.js",
+        "https://mangadenizi.net/_nuxt/Cz3Jbc41.js",
+        "https://mangadenizi.net/_nuxt/DDP9__Wq.js",
+        "https://mangadenizi.net/_nuxt/DTX4TgO9.js",
+        "https://mangadenizi.net/_nuxt/BGrOns4W.js",
+        "https://mangadenizi.net/_nuxt/6ilRSIup.js",
+        "https://mangadenizi.net/_nuxt/80_vIweB.js",
+        "https://mangadenizi.net/_nuxt/dsrW6C9x.js"
+      ],
+      "firstPagePixelComparison": {
+        "width": 1486,
+        "height": 2100,
+        "meanAbsoluteError": 0,
+        "maxError": 0
+      },
+      "rendererMarkers": [
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "tiled-v1"
+        },
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "2654435769"
+        },
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "2246822507"
+        }
+      ]
+    },
+    {
+      "slug": "shadow-slave",
+      "canvasCount": 5,
+      "imageCount": 4,
+      "title": "Shadow Slave - Bölüm 7 | MangaDenizi",
+      "modules": [
+        "https://mangadenizi.net/_nuxt/DqNpEQgb.js",
+        "https://mangadenizi.net/_nuxt/hePW80VL.js",
+        "https://mangadenizi.net/_nuxt/CQpLCrPR.js",
+        "https://mangadenizi.net/_nuxt/4FR2zC82.js",
+        "https://mangadenizi.net/_nuxt/B8mB02Sz.js",
+        "https://mangadenizi.net/_nuxt/YWIWln_g.js",
+        "https://mangadenizi.net/_nuxt/CQR-cmx9.js",
+        "https://mangadenizi.net/_nuxt/UDhc-Wlf.js",
+        "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+        "https://mangadenizi.net/_nuxt/BQnS8Yvg.js",
+        "https://mangadenizi.net/_nuxt/CI-cgqtd.js",
+        "https://mangadenizi.net/_nuxt/hgOhkOPe.js",
+        "https://mangadenizi.net/_nuxt/DpzlQtIn.js",
+        "https://mangadenizi.net/_nuxt/CaTBZZuw.js",
+        "https://mangadenizi.net/_nuxt/CJdF3otO.js",
+        "https://mangadenizi.net/_nuxt/ByCZsSei.js",
+        "https://mangadenizi.net/_nuxt/CarpY9bl.js",
+        "https://mangadenizi.net/_nuxt/BDNMzG2s.js",
+        "https://mangadenizi.net/_nuxt/CheQ5zDc.js",
+        "https://mangadenizi.net/_nuxt/CNNsNGId.js",
+        "https://mangadenizi.net/_nuxt/Bojyqfrf.js",
+        "https://mangadenizi.net/_nuxt/B5xpaqFr.js",
+        "https://mangadenizi.net/_nuxt/_Z1jo_gH.js",
+        "https://mangadenizi.net/_nuxt/BqJGfFo1.js",
+        "https://mangadenizi.net/_nuxt/4TJT26ok.js",
+        "https://mangadenizi.net/_nuxt/DPULsRLw.js",
+        "https://mangadenizi.net/_nuxt/BAMHT4qx.js"
+      ],
+      "firstPagePixelComparison": {
+        "width": 800,
+        "height": 2951,
+        "meanAbsoluteError": 0,
+        "maxError": 0
+      },
+      "rendererMarkers": [
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "tiled-v1"
+        },
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "2654435769"
+        },
+        {
+          "module": "https://mangadenizi.net/_nuxt/Bm2R7Azb.js",
+          "marker": "2246822507"
+        }
+      ]
+    }
+  ],
+  "catalogueTotal": 110,
+  "evidence": {
+    "workflowRunId": 40377288201,
+    "checkRunId": 121763699041,
+    "revision": "61d999c",
+    "workflowUrl": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40377288201",
+    "note": "All 53 image responses were fully decoded and restored. The first page of BOTH sampled chapters matched the official website canvas byte for byte (zero pixel error). Android integration is recorded separately; this browser result alone does not prove Android installation."
+  }
+}

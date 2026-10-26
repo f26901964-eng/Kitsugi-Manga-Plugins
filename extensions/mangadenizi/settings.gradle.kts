@@ -2,7 +2,7 @@ pluginManagement {
     repositories { mavenCentral(); gradlePluginPortal() }
 }
 dependencyResolutionManagement {
-    repositories { mavenCentral() }
+    repositories { google(); mavenCentral() }
 }
 rootProject.name = "kitsugi-mangadenizi-mex"
 include(":host-contract", ":extension")

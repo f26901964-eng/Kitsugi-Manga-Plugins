@@ -28,7 +28,7 @@ jobs:
       - name: Compile all source and Android image code; execute native API regressions
         run: |
           echo "ANDROID_JAR=$ANDROID_HOME/platforms/android-35/android.jar" >> "$GITHUB_ENV"
-          ANDROID_JAR="$ANDROID_HOME/platforms/android-35/android.jar" bash kotatsu-parsers-tr/gradlew -p extensions/mangadenizi :extension:test :extension:exportClasspath --no-daemon --console=plain
+          ANDROID_JAR="$ANDROID_HOME/platforms/android-35/android.jar" python3 extensions/mangadenizi/run-gradle.py bash kotatsu-parsers-tr/gradlew -p extensions/mangadenizi :extension:test :extension:exportClasspath --no-daemon --console=plain
           python3 - <<'PY'
           from pathlib import Path
           import xml.etree.ElementTree as ET
@@ -50,4 +50,53 @@ jobs:
         with:
           name: mangadenizi-junit
           path: extensions/mangadenizi/extension/build/test-results/test/
+          if-no-files-found: warn
+
+  actual-host-android:
+    needs: build-mex
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [30, 35]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: actions/download-artifact@v4
+        with:
+          name: mangadenizi-native-mex
+          path: .audit/android
+      - name: Download unchanged official Kitsugi APK (not rebuilt host test stubs)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v2.4.381 --repo f26901964-eng/Kitsugi-Beta --pattern Kitsugi-Beta-v2.4.381-foss.apk --dir .audit/android
+          sha256sum .audit/android/*.apk
+          python3 extensions/mangadenizi/run-gradle.py bash extensions/mangadenizi/android-smoke/build.sh
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Run native MEX through actual host loader, models and all 53 Android-decoded images
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api }}
+          arch: x86_64
+          target: google_apis
+          disable-animations: true
+          emulator-options: -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -no-snapshot
+          script: bash extensions/mangadenizi/android-smoke/run.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mangadenizi-android-${{ matrix.api }}-evidence
+          path: |
+            .audit/android/report.json
+            .audit/android/instrumentation.txt
+            .audit/android/logcat.txt
           if-no-files-found: warn
