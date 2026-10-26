@@ -228,6 +228,7 @@ internal open class ProtobufSinkEncoder(
         }
         return when (descriptor.kind) {
             StructureKind.LIST -> beginCollection(descriptor, 0)
+
             StructureKind.CLASS, StructureKind.OBJECT -> if (pendingRoot) {
                 pendingRoot = false
                 this
@@ -235,6 +236,7 @@ internal open class ProtobufSinkEncoder(
                 writer.beginMessage()
                 NestedMessageEncoder(writer, currentFieldNumber, descriptor, encodeDefaults)
             }
+
             else -> throw IOException("Unsupported structure kind ${descriptor.kind} in ${descriptor.serialName}")
         }
     }

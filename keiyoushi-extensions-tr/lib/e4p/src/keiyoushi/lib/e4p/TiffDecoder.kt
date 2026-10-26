@@ -269,6 +269,7 @@ object TiffDecoder {
                     firstByte = c
                     stack[sp++] = c.toByte()
                 }
+
                 code == nextCode && prevCode >= 0 -> {
                     // KwKwK: string == previous string + its own first byte
                     stack[sp++] = firstByte.toByte()
@@ -280,6 +281,7 @@ object TiffDecoder {
                     firstByte = c
                     stack[sp++] = c.toByte()
                 }
+
                 else -> throw Exception("LZW invalid code $code (next $nextCode, prev $prevCode)")
             }
 

@@ -73,10 +73,12 @@ object XebpDecoder {
                     vp8Start = off
                     vp8Len = size
                 }
+
                 "ZSTR" -> {
                     zstrStart = payloadStart
                     zstrLen = size
                 }
+
                 "tfix" -> {
                     tfixStart = payloadStart
                     tfixLen = size

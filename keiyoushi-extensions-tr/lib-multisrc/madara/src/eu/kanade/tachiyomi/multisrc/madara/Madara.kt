@@ -92,18 +92,22 @@ abstract class Madara : MadaraBase() {
                     add("vars[tax_query][$taxonomyQueryIndex][terms]", filter.state)
                     taxonomyQueryIndex++
                 }
+
                 is StatusFilter -> filter.state.filter { it.state }.map { it.slug }.takeIf(List<String>::isNotEmpty)?.let { states ->
                     add("vars[meta_query][$metaQueryIndex][key]", "_wp_manga_status")
                     add("vars[meta_query][$metaQueryIndex][compare]", "IN")
                     states.forEachIndexed { i, state -> add("vars[meta_query][$metaQueryIndex][value][$i]", state) }
                     metaQueryIndex++
                 }
+
                 is SortFilter -> when (filter.key()) {
                     "latest" -> sort("_latest_update")
+
                     "alphabet" -> {
                         add("vars[orderby]", "post_title")
                         add("vars[order]", "ASC")
                     }
+
                     "rating" -> {
                         add("vars[meta_query][query_average_reviews][key]", "_manga_avarage_reviews")
                         add("vars[meta_query][query_average_reviews][compare]", "EXISTS")
@@ -112,24 +116,31 @@ abstract class Madara : MadaraBase() {
                         add("vars[orderby][query_average_reviews]", "DESC")
                         add("vars[orderby][query_total_reviews]", "DESC")
                     }
+
                     "trending" -> sort("_wp_manga_week_views_value")
+
                     "views" -> sort("_wp_manga_views")
+
                     "new-manga" -> {
                         add("vars[orderby]", "date")
                         add("vars[order]", "DESC")
                     }
                 }
+
                 is AdultFilter -> if (filter.state != 0) {
                     add("vars[meta_query][$metaQueryIndex][key]", "manga_adult_content")
                     add("vars[meta_query][$metaQueryIndex][compare]", if (filter.state == 1) "not exists" else "exists")
                     metaQueryIndex++
                 }
+
                 is GenreConditionFilter -> if (filter.state == 1 && genres.isNotEmpty()) add("vars[tax_query][$taxonomyQueryIndex][operation]", "AND")
+
                 is GenreList -> if (genres.isNotEmpty()) {
                     add("vars[tax_query][$taxonomyQueryIndex][taxonomy]", "wp-manga-genre")
                     add("vars[tax_query][$taxonomyQueryIndex][field]", "slug")
                     genres.forEachIndexed { i, slug -> add("vars[tax_query][$taxonomyQueryIndex][terms][$i]", slug) }
                 }
+
                 else -> Unit
             }
         }

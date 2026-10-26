@@ -125,19 +125,23 @@ internal class ProtobufSourceReader(
     fun skipValue() {
         when (currentWireType) {
             WIRE_VARINT -> readVarint()
+
             WIRE_I64 -> {
                 source.skip(8)
                 consume(8)
             }
+
             WIRE_SIZE_DELIMITED -> {
                 val length = readLength()
                 source.skip(length)
                 consume(length)
             }
+
             WIRE_I32 -> {
                 source.skip(4)
                 consume(4)
             }
+
             else -> throw IOException("Unsupported start group or end group wire type: $currentWireType for field $currentFieldNumber")
         }
     }
@@ -394,11 +398,13 @@ internal open class ProtobufSourceDecoder(
             expect(WIRE_VARINT)
             reader.readVarint().toInt()
         }
+
         ProtoIntegerType.SIGNED -> {
             expect(WIRE_VARINT)
             val raw = reader.readVarint().toInt()
             (raw ushr 1) xor -(raw and 1)
         }
+
         ProtoIntegerType.FIXED -> {
             expect(WIRE_I32)
             reader.readFixed32()
@@ -410,11 +416,13 @@ internal open class ProtobufSourceDecoder(
             expect(WIRE_VARINT)
             reader.readVarint()
         }
+
         ProtoIntegerType.SIGNED -> {
             expect(WIRE_VARINT)
             val raw = reader.readVarint()
             (raw ushr 1) xor -(raw and 1L)
         }
+
         ProtoIntegerType.FIXED -> {
             expect(WIRE_I64)
             reader.readFixed64()
@@ -460,10 +468,12 @@ internal open class ProtobufSourceDecoder(
             val bytes = reader.readLengthDelimitedBytes()
             (if (previousValue == null) bytes else (previousValue as ByteArray) + bytes) as T
         }
+
         // a repeated field may appear more than once in a message, split around other
         // fields, so later occurrences extend the list built so far instead of replacing it
         deserializer is AbstractCollectionSerializer<*, *, *> ->
             (deserializer as AbstractCollectionSerializer<*, T, *>).merge(this, previousValue)
+
         else -> super.decodeSerializableValue(deserializer, previousValue)
     }
 
@@ -495,6 +505,7 @@ internal open class ProtobufSourceDecoder(
                 reader.acquireRepeatedDecoder(descriptor, listInfo, currentFieldNumber, currentIntegerType)
             }
         }
+
         StructureKind.CLASS, StructureKind.OBJECT -> if (pendingRoot) {
             pendingRoot = false
             this
@@ -504,6 +515,7 @@ internal open class ProtobufSourceDecoder(
             reader.pushLimit()
             reader.acquireMessageDecoder(descriptor, nestedInfo)
         }
+
         else -> throw IOException("Unsupported structure kind ${descriptor.kind} in ${descriptor.serialName}")
     }
 

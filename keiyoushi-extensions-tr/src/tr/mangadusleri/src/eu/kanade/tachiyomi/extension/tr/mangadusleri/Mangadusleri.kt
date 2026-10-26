@@ -152,10 +152,8 @@ abstract class Mangadusleri : KeiSource() {
     private fun parseStatus(element: Element?): Int = when {
         element?.hasClass("status-ongoing") == true -> SManga.ONGOING
         element?.hasClass("status-completed") == true -> SManga.COMPLETED
-
         element?.text()?.contains("Devam Ediyor", ignoreCase = true) == true -> SManga.ONGOING
         element?.text()?.contains("Tamamlandı", ignoreCase = true) == true -> SManga.COMPLETED
-
         else -> SManga.UNKNOWN
     }
 

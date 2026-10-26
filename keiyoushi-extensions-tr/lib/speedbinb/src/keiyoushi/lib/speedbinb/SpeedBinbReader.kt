@@ -197,6 +197,7 @@ private fun HttpUrl.Builder.buildImageUrl(
             addPathSegment(filename)
             contentItem.contentDate?.let { setQueryParameter("dmytime", it) }
         }
+
         ServerType.REST -> {
             addPathSegment("img")
             addPathSegments(src)
@@ -207,6 +208,7 @@ private fun HttpUrl.Builder.buildImageUrl(
             contentItem.contentDate?.let { setQueryParameter("dmytime", it) }
             copyKeyParametersFrom(contentInfoUrl)
         }
+
         ServerType.SBC -> {
             setQueryParameter("src", src)
             contentItem.requestToken?.let { setQueryParameter("p", it) }
@@ -220,6 +222,7 @@ private fun HttpUrl.Builder.buildImageUrl(
             contentItem.contentDate?.let { setQueryParameter("dmytime", it) }
             copyKeyParametersFrom(contentInfoUrl)
         }
+
         else -> throw UnsupportedOperationException("Unsupported ServerType value ${contentItem.serverType}")
     }
 }

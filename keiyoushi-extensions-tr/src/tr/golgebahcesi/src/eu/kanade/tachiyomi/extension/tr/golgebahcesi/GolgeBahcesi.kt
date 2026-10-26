@@ -161,7 +161,9 @@ abstract class GolgeBahcesi : KeiSource() {
                             challengeSeen.set(true)
                             null
                         }
+
                         host == null || host == siteHost || host.endsWith(".$siteHost") -> null
+
                         else -> WebResourceResponse("text/plain", null, 403, "Blocked", null, ByteArrayInputStream(ByteArray(0)))
                     }
                 }
@@ -169,12 +171,14 @@ abstract class GolgeBahcesi : KeiSource() {
                     val data = message.substringAfter(':')
                     when (message.substringBefore(':')) {
                         "count" -> count.set(data.toInt())
+
                         "page" -> {
                             val index = data.substringBefore(',').toInt()
                             require(index in 0 until count.get())
                             pages[index] = data.substringAfter("base64,")
                             if (pages.size == count.get()) resolve(List(pages.size) { pages.getValue(it) })
                         }
+
                         "error" -> reject(Exception(data))
                     }
                 }

@@ -61,21 +61,25 @@ abstract class MangaDenizi : KeiSource() {
                             addQueryParameter("sort", filter.toUriPart())
                         }
                     }
+
                     is StatusFilter -> {
                         if (filter.toUriPart().isNotEmpty()) {
                             addQueryParameter("status[]", filter.toUriPart())
                         }
                     }
+
                     is CategoryFilter -> {
                         if (filter.toUriPart().isNotEmpty()) {
                             addQueryParameter("categories[]", filter.toUriPart())
                         }
                     }
+
                     is DemographicFilter -> {
                         if (filter.toUriPart().isNotEmpty()) {
                             addQueryParameter("demographics[]", filter.toUriPart())
                         }
                     }
+
                     else -> {}
                 }
             }

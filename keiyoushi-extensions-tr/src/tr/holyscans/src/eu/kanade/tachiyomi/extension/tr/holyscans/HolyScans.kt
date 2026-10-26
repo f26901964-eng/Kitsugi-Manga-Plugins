@@ -215,23 +215,29 @@ abstract class HolyScans :
         return when {
             lowerDate.contains("yeni") || lowerDate.contains("bugün") ||
                 lowerDate.contains("saat") || lowerDate.contains("dakika") -> Calendar.getInstance().timeInMillis
+
             lowerDate.contains("dün") -> now.apply { add(Calendar.DAY_OF_YEAR, -1) }.timeInMillis
+
             lowerDate.contains("gün") -> {
                 val days = lowerDate.substringBefore(" ").toIntOrNull() ?: 0
                 now.apply { add(Calendar.DAY_OF_YEAR, -days) }.timeInMillis
             }
+
             lowerDate.contains("hafta") -> {
                 val weeks = lowerDate.substringBefore(" ").toIntOrNull() ?: 0
                 now.apply { add(Calendar.DAY_OF_YEAR, -(weeks * 7)) }.timeInMillis
             }
+
             lowerDate.contains("ay") -> {
                 val months = lowerDate.substringBefore(" ").toIntOrNull() ?: 0
                 now.apply { add(Calendar.MONTH, -months) }.timeInMillis
             }
+
             lowerDate.contains("yıl") -> {
                 val years = lowerDate.substringBefore(" ").toIntOrNull() ?: 0
                 now.apply { add(Calendar.YEAR, -years) }.timeInMillis
             }
+
             else -> 0L
         }
     }

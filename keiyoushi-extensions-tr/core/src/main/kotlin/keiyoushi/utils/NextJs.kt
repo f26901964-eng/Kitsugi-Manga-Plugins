@@ -70,23 +70,38 @@ private fun resolveNextJsRefs(
     resolving: Set<String> = emptySet(),
 ): JsonElement = when (element) {
     is JsonObject -> JsonObject(element.mapValues { resolveNextJsRefs(it.value, chunkCache, modelCache, resolving) })
+
     is JsonArray -> JsonArray(element.map { resolveNextJsRefs(it, chunkCache, modelCache, resolving) })
+
     is JsonPrimitive -> {
         if (element.isString && element.content.startsWith("$") && element.content.length >= 2) {
             val str = element.content
             when {
-                str == "\$undefined" -> JsonNull // JS undefined -> null
+                str == "\$undefined" -> JsonNull
+
+                // JS undefined -> null
                 // Non-finite / negative-zero -> strip '$', keep token as string for ReactFlightNumber.
                 // JSON has no Infinity/NaN, so they can't live in the JsonElement tree as numbers.
                 str == "\$Infinity" || str == "\$-Infinity" || str == "\$NaN" || str == "\$-0" ->
                     JsonPrimitive(str.substring(1))
-                str[1] == '$' -> JsonPrimitive(str.substring(1)) // Escaped '$' -> keep one
-                str[1] == 'D' -> JsonPrimitive(str.substring(2)) // Date -> strip '$D' to expose ISO-8601 string
-                str[1] == 'n' -> JsonPrimitive(str.substring(2)) // BigInt -> strip '$n' for ReactFlightBigInt
+
+                str[1] == '$' -> JsonPrimitive(str.substring(1))
+
+                // Escaped '$' -> keep one
+                str[1] == 'D' -> JsonPrimitive(str.substring(2))
+
+                // Date -> strip '$D' to expose ISO-8601 string
+                str[1] == 'n' -> JsonPrimitive(str.substring(2))
+
+                // BigInt -> strip '$n' for ReactFlightBigInt
                 str[1] == 'Q' -> resolveMapRef(str.substring(2), chunkCache, modelCache, resolving) ?: element
+
                 str[1] == 'W' -> resolveSetRef(str.substring(2), chunkCache, modelCache, resolving) ?: element
+
                 str[1] == 'L' -> resolveModelRef(str.substring(2), chunkCache, modelCache, resolving) ?: element
+
                 str[1] == '@' -> resolveModelRef(str.substring(2), chunkCache, modelCache, resolving) ?: element
+
                 // RSC reference (`$<id>` or `$<id>:<path>`) -> resolve via chunk/model cache.
                 else -> resolveModelRef(str.substring(1), chunkCache, modelCache, resolving) ?: element
             }
@@ -139,6 +154,7 @@ private fun resolveModelRef(
 /** Indexes [value] by a single path [segment], honouring the React element tuple shape. */
 private fun walkRefSegment(value: JsonElement, segment: String): JsonElement? = when (value) {
     is JsonObject -> value[segment]
+
     is JsonArray ->
         // React element tuple ["$", type, key, props] -> map named props to their indices.
         if (value.size >= 4 && (value[0] as? JsonPrimitive)?.takeIf { it.isString }?.content == "$") {
@@ -151,6 +167,7 @@ private fun walkRefSegment(value: JsonElement, segment: String): JsonElement? = 
         } else {
             segment.toIntOrNull()?.let { value.getOrNull(it) }
         }
+
     else -> null
 }
 
@@ -252,7 +269,9 @@ private fun extractRscPayloads(
                 // e.g. emoji) occupy 4 UTF-8 bytes; we consume both surrogate chars in one step.
                 when {
                     body[pos].code < 0x80 -> bytes += 1
+
                     body[pos].code < 0x800 -> bytes += 2
+
                     Character.isHighSurrogate(body[pos]) -> {
                         bytes += 4
                         pos++ // consume the high surrogate; the loop increment handles the low
@@ -314,6 +333,7 @@ private fun parseJsonAt(body: String, start: Int): Pair<JsonElement?, Int> {
         if (inString) continue
         when (c) {
             '{', '[' -> depth++
+
             '}', ']' -> if (--depth == 0) {
                 return try {
                     Pair(jsonInstance.parseToJsonElement(body.substring(start, i)), i)

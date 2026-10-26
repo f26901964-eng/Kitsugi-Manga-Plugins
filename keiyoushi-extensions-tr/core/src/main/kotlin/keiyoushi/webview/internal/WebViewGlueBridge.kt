@@ -178,6 +178,7 @@ internal object WebViewGlueBridge {
         val handler = InvocationHandler { proxy, method, args ->
             when (method.name) {
                 "getSupportedFeatures" -> arrayOf("WEB_MESSAGE_LISTENER", "WEB_MESSAGE_ARRAY_BUFFER")
+
                 "onPostMessage" -> {
                     // args: view, message, sourceOrigin, isMainFrame, replyProxy
                     val (_, messageHandler, sourceOrigin, isMainFrame, replyHandler) = args!!
@@ -196,9 +197,13 @@ internal object WebViewGlueBridge {
                     listener(message, replyProxy)
                     null
                 }
+
                 "equals" -> proxy === args?.getOrNull(0)
+
                 "hashCode" -> System.identityHashCode(proxy)
+
                 "toString" -> "WebMessageListener($jsObjectName)"
+
                 else -> null
             }
         }
@@ -264,6 +269,7 @@ internal object WebViewGlueBridge {
                             }
                             null
                         }
+
                         "onFailure" -> {
                             try {
                                 callback?.invoke(null)
@@ -272,6 +278,7 @@ internal object WebViewGlueBridge {
                             }
                             null
                         }
+
                         else -> null
                     }
                 }
@@ -318,19 +325,23 @@ internal object WebViewGlueBridge {
                 platform = "Android"
                 platformVersion = androidVersion
             }
+
             userAgent.contains("iPhone") || userAgent.contains("iPad") -> {
                 platform = "iOS"
             }
+
             userAgent.contains("Windows") -> {
                 platform = "Windows"
                 platformVersion = "19.0.0"
                 architecture = "x86"
             }
+
             userAgent.contains("Macintosh") || userAgent.contains("Mac OS X") -> {
                 val macVersion = MAC_OS_X_REGEX.find(userAgent)?.groupValues?.get(1)?.replace("_", ".")
                 platform = "macOS"
                 platformVersion = macVersion ?: ""
             }
+
             userAgent.contains("Linux") -> {
                 val arch = LINUX_ARCH_REGEX.find(userAgent)?.groupValues?.get(1)
                 platform = "Linux"

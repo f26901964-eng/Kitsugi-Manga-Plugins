@@ -72,8 +72,10 @@ abstract class WebtoonOku : KeiSource() {
         val segments = url.pathSegments.filter { it.isNotEmpty() }
         val slug = when {
             segments.size == 2 && segments[0] == "manhwa" -> segments[1]
+
             // chapter pages live at the site root as <slug>-chapter-<n>
             segments.size == 1 && "-chapter-" in segments[0] -> segments[0].substringBeforeLast("-chapter-")
+
             else -> return null
         }
         val document = client.get("$baseUrl/manhwa/$slug/").asJsoup()

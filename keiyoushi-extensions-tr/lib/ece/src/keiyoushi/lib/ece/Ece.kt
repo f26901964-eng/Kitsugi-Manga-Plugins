@@ -136,7 +136,10 @@ private fun BigInteger.toFixedBytes(length: Int): ByteArray {
     val raw = toByteArray()
     return when {
         raw.size == length -> raw
-        raw.size > length -> raw.copyOfRange(raw.size - length, raw.size) // drop sign byte
+
+        raw.size > length -> raw.copyOfRange(raw.size - length, raw.size)
+
+        // drop sign byte
         else -> ByteArray(length - raw.size) + raw
     }
 }

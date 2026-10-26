@@ -70,16 +70,20 @@ suspend fun getTurnstileToken(
                         d.dismiss()
                         resolve(message.removePrefix("token:"))
                     }
+
                     message.startsWith("error:") -> {
                         val code = message.removePrefix("error:")
                         d.dismiss()
                         reject(Exception("Captcha Failed! ${turnstileErrorMessage(code)} (code: $code)"))
                     }
+
                     message == "cancel" -> {
                         d.dismiss()
                         reject(Exception("Captcha cancelled"))
                     }
+
                     message == "show" -> d.show()
+
                     message == "hide" -> d.dismiss()
                 }
             }

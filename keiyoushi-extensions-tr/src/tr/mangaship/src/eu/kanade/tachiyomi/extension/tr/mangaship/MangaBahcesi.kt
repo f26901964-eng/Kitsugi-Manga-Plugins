@@ -178,6 +178,7 @@ abstract class MangaBahcesi : KeiSource() {
 
             when {
                 label.contains("Yazar", true) -> author = value
+
                 label.contains("Durum", true) -> status = when {
                     value.contains("Devam Ediyor", true) -> SManga.ONGOING
                     value.contains("Tamamlandı", true) -> SManga.COMPLETED

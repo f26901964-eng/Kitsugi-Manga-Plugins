@@ -43,8 +43,11 @@ class SpeedBinbInterceptor : Interceptor {
                 val (s, u) = fragment.removePrefix("ptbinb,").split(",", limit = 2)
                 val descrambler = when {
                     s.isEmpty() && u.isEmpty() -> return response
+
                     s[0] == '=' && u[0] == '=' -> PtBinbDescramblerF(s, u)
+
                     s[0] in '0'..'9' && u[0] in '0'..'9' -> PtBinbDescramblerA(s, u)
+
                     else -> {
                         response.close()
                         throw IOException("Cannot select descrambler for key pair s=$s, u=$u")
