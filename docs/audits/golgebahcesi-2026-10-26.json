@@ -1,0 +1,343 @@
+{
+  "observedAt": "2026-10-26T17:38:56.054Z",
+  "status": "blocked_by_challenge",
+  "androidVerified": false,
+  "checks": [
+    {
+      "name": "Popular page 1 has real data and pagination",
+      "passed": true,
+      "detail": "24 results"
+    },
+    {
+      "name": "Popular page 2 is distinct",
+      "passed": true,
+      "detail": "24 results"
+    },
+    {
+      "name": "mairimashita-iruma-kun: exact series found by real title search",
+      "passed": true,
+      "detail": "Mairimashita! Iruma-kun"
+    },
+    {
+      "name": "mairimashita-iruma-kun: nonempty chapters belong to this series",
+      "passed": true,
+      "detail": "465 chapters"
+    },
+    {
+      "name": "mairimashita-iruma-kun: chapter identity and readable page metadata",
+      "passed": true,
+      "detail": "18 pages, secure, imageEnc=true"
+    },
+    {
+      "name": "mairimashita-iruma-kun: page indices are complete and ordered",
+      "passed": true,
+      "detail": "indices 0..17"
+    },
+    {
+      "name": "mairimashita-iruma-kun: HTML references selected series and chapter",
+      "passed": true,
+      "detail": "chapter-462"
+    },
+    {
+      "name": "mairimashita-iruma-kun: HTML uses the same cover as API",
+      "passed": true,
+      "detail": "Same selected-series cover URL"
+    },
+    {
+      "name": "golge-kole: exact series found by real title search",
+      "passed": true,
+      "detail": "Gölge Köle"
+    },
+    {
+      "name": "golge-kole: nonempty chapters belong to this series",
+      "passed": true,
+      "detail": "14 chapters"
+    },
+    {
+      "name": "golge-kole: chapter identity and readable page metadata",
+      "passed": true,
+      "detail": "181 pages, secure, imageEnc=true"
+    },
+    {
+      "name": "golge-kole: page indices are complete and ordered",
+      "passed": true,
+      "detail": "indices 0..180"
+    },
+    {
+      "name": "golge-kole: HTML references selected series and chapter",
+      "passed": true,
+      "detail": "chapter-14"
+    },
+    {
+      "name": "golge-kole: HTML uses the same cover as API",
+      "passed": true,
+      "detail": "Same selected-series cover URL"
+    },
+    {
+      "name": "Next.js script references exist in actual HTML",
+      "passed": true,
+      "detail": "25 first-party scripts"
+    },
+    {
+      "name": "mairimashita-iruma-kun: real cover decodes",
+      "passed": true,
+      "detail": "460x710 webp"
+    },
+    {
+      "name": "golge-kole: real cover decodes",
+      "passed": true,
+      "detail": "1038x1515 webp"
+    }
+  ],
+  "assets": [
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/2nsn2slz5emql.js",
+      "file": "js/00-2nsn2slz5emql.js",
+      "bytes": 30628,
+      "sha256": "7688a88e40b7572e7fb2a8ed969669220139597770cf6a9502a4ab5df85375fd",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/0rqvshlk9e35x.js",
+      "file": "js/01-0rqvshlk9e35x.js",
+      "bytes": 228768,
+      "sha256": "3ca01a2dfa58c6a58812f837341e550495955afd8952f13a5e9abf79272cd3d3",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/1fkaya2t7r343.js",
+      "file": "js/02-1fkaya2t7r343.js",
+      "bytes": 158971,
+      "sha256": "d5232bd1fb8d9df648d66072f9c815a1b96c04f0c7408553591be1273dd7cb31",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+      "file": "js/03-turbopack-2c3mg3r-05n1w.js",
+      "bytes": 11255,
+      "sha256": "b5f9b5199b99ab6c141f4540f0b7d0fe803c4ecf6956849ecb6e59d3d439272e",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3t4jc5f8xyoi1.js",
+      "file": "js/04-3t4jc5f8xyoi1.js",
+      "bytes": 14483,
+      "sha256": "1b33768878602351abe568ed63eae26465434bd9eb3c07be0fb03fef3750ea2d",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/1-x4y2qg9riw_.js",
+      "file": "js/05-1-x4y2qg9riw_.js",
+      "bytes": 539,
+      "sha256": "2fe9d68257c821835c8f7deeaff9cd4f0861191ba225fba6aa14c8abb743db58",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/1d7idd-m6bi-x.js",
+      "file": "js/06-1d7idd-m6bi-x.js",
+      "bytes": 28934,
+      "sha256": "05d5c51efe8d7a18bad1ba202486d6f9f5c9fe7849db7815d967e61faf545a25",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/34fhbqf1fo-bo.js",
+      "file": "js/07-34fhbqf1fo-bo.js",
+      "bytes": 36005,
+      "sha256": "e98f46bc5e700841794a26d21ae702f319f8bb816337666d1f0c19da4cf97c2f",
+      "markers": [
+        "turnstile"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/011xd0039-t4m.js",
+      "file": "js/08-011xd0039-t4m.js",
+      "bytes": 126878,
+      "sha256": "c0f0478706f95e07d39a8afe7bd600c75caf9788f19b77b0aa1702c4c9c3cd6f",
+      "markers": [
+        "turnstile",
+        "/chapters/",
+        "/series/"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/1-3fb7vbqty3y.js",
+      "file": "js/09-1-3fb7vbqty3y.js",
+      "bytes": 49385,
+      "sha256": "1ee482d31dd4c71b082af656d0ebf5e9138f121d72f6627e11d2068e994efdca",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3imfx3j2zhoz_.js",
+      "file": "js/10-3imfx3j2zhoz_.js",
+      "bytes": 91761,
+      "sha256": "69f64de9176e93cf7ea6466dfafadabb3535bc154c36ad5024d988cf2e0037cd",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/2qclgmqyovbyw.js",
+      "file": "js/11-2qclgmqyovbyw.js",
+      "bytes": 9734,
+      "sha256": "062bb8aee328ebcbc3e28a865091263488940063cfac9fe78880ad340c993f27",
+      "markers": [
+        "/series/"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3-0h11h0lantj.js",
+      "file": "js/12-3-0h11h0lantj.js",
+      "bytes": 149076,
+      "sha256": "e188651f1ad8bee31f4ff8c816be0f9e8751a99b61837fd06a3c252d01fd49b6",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3j81koeia7974.js",
+      "file": "js/13-3j81koeia7974.js",
+      "bytes": 54119,
+      "sha256": "b71297b84a819ebad9c224a5ca1c50a9484fe9717b2da979035b4345c71e44cc",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "file": "js/14-0cz1d0mv5g_q7.js",
+      "bytes": 112594,
+      "sha256": "0973c1d64c88adc8e3c950410cb58b288f72118d5965b78049438deb8f2f9683",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/2jjnafy-v_mvn.js",
+      "file": "js/15-2jjnafy-v_mvn.js",
+      "bytes": 14487,
+      "sha256": "aff337908407ba058134d028028c245d8886ee67f6f49b69538884a11fc17026",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/0dcjeq4zctu5t.js",
+      "file": "js/16-0dcjeq4zctu5t.js",
+      "bytes": 19180,
+      "sha256": "0f32e9ebe2840c8944e05753be50d72531e0d2d8a2eda99fae5d1189e08c55a7",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/05zy6nweku3t3.js",
+      "file": "js/17-05zy6nweku3t3.js",
+      "bytes": 250,
+      "sha256": "b7a3bd870e62ef22adb71a4790276afafb9a67b4b215e6b22445cf0ef00235b6",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3544e66l4q_03.js",
+      "file": "js/18-3544e66l4q_03.js",
+      "bytes": 51892,
+      "sha256": "14a5006fcbb1f95ab4035dceaa9c5418c215fdfbdca4b8e4fa3947efcda70f8c",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/2r3t4qslzdo2e.js",
+      "file": "js/19-2r3t4qslzdo2e.js",
+      "bytes": 33945,
+      "sha256": "71cf5cf48348945a9aaf4d6e656debf291a3b594916813b03dae67e48875aa4d",
+      "markers": [
+        "/series/"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/2-w6xlh-b31ql.js",
+      "file": "js/20-2-w6xlh-b31ql.js",
+      "bytes": 660,
+      "sha256": "5b46fb446f581cd8c77073d004cde3965e22c1f5ac6e18293170e59201e9cbbd",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/1sk7vsnwrdhle.js",
+      "file": "js/21-1sk7vsnwrdhle.js",
+      "bytes": 35598,
+      "sha256": "8c0d7732c45a5217daa78df645b851c305e683abfb7ed6f903c6cb1473d5e5ba",
+      "markers": []
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/30wy5w9qj-cy1.js",
+      "file": "js/22-30wy5w9qj-cy1.js",
+      "bytes": 34466,
+      "sha256": "e97ec0f8aaa1bd3bb412ace83bc45aec5132b3a33330e65e6d8f6954399d9f1d",
+      "markers": [
+        "data-reader-page",
+        "turnstile",
+        "/chapters/"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/34sivhj99y04b.js",
+      "file": "js/23-34sivhj99y04b.js",
+      "bytes": 179790,
+      "sha256": "4a14e7e58153bc91ba4002638ff0e9da47b32f5c6f42e6140cf6aab4e3e7dac5",
+      "markers": [
+        "createImageBitmap"
+      ]
+    },
+    {
+      "url": "https://golgebahcesi.com/_next/static/chunks/3ss_6f5l95mr1.js",
+      "file": "js/24-3ss_6f5l95mr1.js",
+      "bytes": 47661,
+      "sha256": "5dd26f7145cf224a6ce87c0f4dc1ad1f5dddf1f2d40ae623a4ad97cb206ebfb0",
+      "markers": [
+        "rdr_diag_ovr",
+        "data-reader-page",
+        "createImageBitmap",
+        "turnstile"
+      ]
+    }
+  ],
+  "series": [
+    {
+      "slug": "mairimashita-iruma-kun",
+      "title": "Mairimashita! Iruma-kun",
+      "type": "MANGA",
+      "chapterCount": 465,
+      "selectedChapterId": "6ad522327d73db9753612074",
+      "selectedChapterNumber": 462,
+      "pageCount": 18,
+      "deliverySystem": "secure",
+      "imageEnc": true,
+      "cover": {
+        "width": 460,
+        "height": 710,
+        "format": "webp",
+        "sha256": "06c6a892c846b177eca0dd487531b4108971abc4d95cdaf061b34ef92fba4890"
+      }
+    },
+    {
+      "slug": "golge-kole",
+      "title": "Gölge Köle",
+      "type": "MANHWA",
+      "chapterCount": 14,
+      "selectedChapterId": "6adbfb66754ddd5445d518ce",
+      "selectedChapterNumber": 14,
+      "pageCount": 181,
+      "deliverySystem": "secure",
+      "imageEnc": true,
+      "cover": {
+        "width": 1038,
+        "height": 1515,
+        "format": "webp",
+        "sha256": "e58e3252385063ffc31919576a12ac2a5a9c018ef47f7a1a4cdf94ff92623efa"
+      }
+    }
+  ],
+  "note": "Anonymous network/Chromium audit, not an Android APK/device test. No challenge or access lock is bypassed.",
+  "reader": {
+    "chapterId": "6ad522327d73db9753612074",
+    "expectedCount": 18,
+    "bridgeCount": 0,
+    "decodedCount": 0,
+    "challengeVisible": true,
+    "errors": [
+      "site_verification_required"
+    ],
+    "pageErrors": [],
+    "images": [],
+    "passed": false
+  },
+  "error": "Official reader requires interactive site verification",
+  "workflowUrl": "https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40370515174",
+  "testedRevision": "aca2a48e0d3bdc860ebf7cc8072fa020ab35b6bb"
+}

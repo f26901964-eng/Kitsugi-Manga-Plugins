@@ -9,7 +9,7 @@ Bu dizin **uygulamaya eklenecek kaynak kodudur**, kurulabilir APK/MEX değildir.
 - Yama: [`single-source.patch`](single-source.patch)
 - Referans dosya SHA-256 özetleri: [`upstream.json`](upstream.json)
 
-Çevrimdışı testler geçmiştir. Gradle dağıtım indirmesi ve kaynak siteye erişim bu ortamda engellendiği için **Kotlin/JVM testlerinin çalışması, Android derlemesi ve gerçek WebView okuması henüz doğrulanmamıştır**. Özellikle güvenli okuyucu betiklerinin sitenin bugünkü sürümüyle uyumu cihaz testi gerektirir.
+**Canlı site incelendi:** API, ham HTML, 25 JavaScript dosyası ve gerçek Chromium okuyucusu denendi. Katalog/bölüm metaverisi/kapak için 17 kontrol geçti; güvenli bölüm **site doğrulamasında kaldı ve 0/18 görsel alındı**. Kotlin API istemcisinin 29 JVM testi CI'da geçti. Android derlemesi ve gerçek WebView okuması doğrulanmadı. [Kanıtlar ve güncel engeller](../../docs/golgebahcesi-live-audit-2026-10-26.md).
 
 ## Neden native adaptör?
 
@@ -19,7 +19,7 @@ Bu adaptör doğrudan uygulamanın `MangaSource`, `MangaDetails`, `MangaChapter`
 
 ### Kullanılan API sözleşmesi
 
-Bu yollar depodaki upstream Gölge Bahçesi kodundan alınmıştır; canlı site analizi yapılmış gibi sunulmaz:
+Bu yollar 26 Ekim 2026 canlı API ve HTML denetiminde doğrulandı. Güvenli okuyucu yolunun açılması, bölüm piksellerinin alınabildiği anlamına gelmez:
 
 | İşlem | İstek |
 |---|---|
@@ -87,12 +87,12 @@ Sayfalar gerçek `index` sırasına dizilir, uygulama için sıfırdan indekslen
 - Ana sayfadan önce okuyucu/worker gözlem betiklerini yükler.
 - Sadece `https://golgebahcesi.com` ana çerçevesinden gelen köprü mesajlarını kabul eder; wildcard origin veya güvensiz JS-interface yedeği yoktur.
 - HTTPS/sertifika kontrollerini kapatmaz; dosya/içerik erişimi ve karışık içerik kapalıdır.
-- Site okuyucusunun çözdüğü görselleri alır. Ücretli/kilitli bölümün API kilidi önce kontrol edilir; kilit açılmaz.
+- Site okuyucusunun çözdüğü görselleri almaya çalışır; 26 Ekim canlı testinde bu aşama geçmedi. Ücretli/kilitli bölümün API kilidi önce kontrol edilir; kilit açılmaz.
 - Dosyaları bellekte dev bir liste/URL fragment’i yerine uygulama cache dizinine yazar. Bitmap sınırları doğrulanmadan tamamlanmış cache yayınlanmaz.
-- Geçerli görsel yakalaması bitmeden başarı döndürmez. Belirsiz eşit boyut eşleşmesinde panelleri tahminle değiştirmez; açık hata/zaman aşımı verir.
+- API'deki beklenen sayfa sayısı ile cache/yakalama sayısını karşılaştırır; eksik yakalama bitmiş bölüm sayılmaz. Belirsiz eşit boyut eşleşmesinde panelleri tahminle değiştirmez; açık hata/zaman aşımı verir.
 - İş iptalinde ve render süreci hatasında dosya yazıcı işleri kapatılır; WebView ana iş parçacığında yok edilir.
 
-Güncel **Android System WebView** gerekir (`DOCUMENT_START_SCRIPT`, `WEB_MESSAGE_LISTENER`). 120 saniyelik yerel okuyucu zaman aşımı açık hata olur; üst işin coroutine iptali normal iptal olarak korunur. Cloudflare doğrulaması gerekirse uygulamadaki tarayıcı doğrulama akışını kullanın; güvenli okuyucu doğrulama atlatma aracı değildir.
+Güncel **Android System WebView** gerekir (`DOCUMENT_START_SCRIPT`, `WEB_MESSAGE_LISTENER`). 120 saniyelik yerel okuyucu zaman aşımı açık hata olur; üst işin coroutine iptali normal iptal olarak korunur. Görünür doğrulama 15 saniye sonra hâlâ duruyorsa ayrı doğrulama hatası verilir; sitenin ortamı reddetmesiyle karıştırılmaz. Arka plan WebView'i kullanıcıya etkileşimli doğrulama ekranı sunmaz. Başka tarayıcıda yalnız ana sayfayı açmanın bu bölümün aynı oturumdaki doğrulamasını çözeceği doğrulanmış değildir. Güvenli okuyucu doğrulama atlatma aracı değildir.
 
 Geçici cache sınırları: en fazla 2000 sayfa, tek base64 mesajı 32 MiB, bölüm toplamı 256 MiB; son üç bölüm tutulur. Bu cache, Kitsugi’nin ana görsel cache’inden ayrıdır. Android geçici dosyayı silerse yeniden yakalama internet gerektirir. Tam çevrimdışı okuma desteği bu değişikliğin doğrulanmış bir sonucu değildir.
 

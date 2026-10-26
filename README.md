@@ -4,7 +4,15 @@
 
 Diğer Türkçe kaynakların kodları korunur; varsayılan derleme/entegrasyon profilinde etkin değildir. Bu seçim manga/manhwa/manhua akışını tek bir kaynak üzerinde toparlamak içindir. Kaynağın Türkiye’de “1 numara” olduğu veya en büyük arşive sahip olduğu bu depoda ölçülmüş bir veriyle doğrulanmış değildir.
 
-> **Durum:** Kod ve uygulanabilir Kitsugi entegrasyonu hazırlandı; canlı site + Android cihaz doğrulaması tamamlanmadı. Bu depo tek başına telefondaki uygulamayı değiştirmez ve derlenmiş APK içermez. “%100 çalışıyor” iddiası yoktur.
+> **Durum:** Canlı katalog, detay, bölüm metaverisi ve kapak kontrolleri geçti. **Gerçek tarayıcıda okuma testi site doğrulamasında kaldı: 0/18 görsel.** Android doğrulaması ve kurulabilir APK/MEX yoktur. Bu depo tek başına telefondaki uygulamayı değiştirmez.
+
+## 26 Ekim 2026 — canlı inceleme sonucu
+
+Ham Next.js HTML'i ve 25 JavaScript dosyası alındı; okuyucu/işçi kodu incelendi. Mairimashita! Iruma-kun için **465 bölüm / 462. bölümde 18 şifreli sayfa**, Gölge Köle için **14 bölüm / 14. bölümde 181 şifreli sayfa** doğrulandı. Her iki kapağın gerçek pikselleri çözüldü ve kapak URL'leri site HTML'iyle eşleştirildi.
+
+Bunlar görüntü okumasının geçtiği anlamına gelmez. Resmî okuyucu Chromium testinde görünür doğrulama istedi; hiçbir bölüm görseli alınamadı. Test başarısız olarak bırakıldı. **Çalışan eklenti/index URL'si yayımlanmış değildir.**
+
+**[İnceleme, düzeltmeler ve kalan engeller](docs/golgebahcesi-live-audit-2026-10-26.md)** · [Gerçek tarayıcı çalıştırması](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40370515174)
 
 ## Neler değişti?
 
@@ -61,9 +69,9 @@ Android SDK gerektirmez; JDK 17 + Gradle/Maven erişimi gerekir:
 bash kotatsu-parsers-tr/gradlew -p integration/kitsugi-api-tests test --no-daemon
 ```
 
-23 sentetik sözleşme testi; Türkçe sorgu kodlaması, HTTP başlıkları, sayfalama, detaylar, eski/yeni bölüm bağlantıları, bölüm/sayfa sıralaması, kilitli/güvenli bölümler, hatalar, görsel istemcisi ve coroutine iptalini kapsar. Fixture’lar canlı siteden alınmış gibi sunulmaz.
+29 sözleşme/regresyon testi; Türkçe sorgu kodlaması, HTTP başlıkları, sayfalama, detaylar, eski/yeni bölüm bağlantıları, bölüm/sayfa sıralaması, kilitli/güvenli bölümler, hatalar, görsel istemcisi ve coroutine iptalini kapsar. `fixtures.json` sentetiktir. `live-2026-10-26.json` ise iki gerçek API yanıtının alan projeksiyonudur; tarayıcı/görsel doğrulaması gibi sunulmaz.
 
-[`verify.yml`](.github/workflows/verify.yml) çevrimdışı testler ve JVM testleri için CI tanımlar; bu oturumda CI çalıştırılmış değildir.
+[`verify.yml`](.github/workflows/verify.yml) çevrimdışı testleri ve gerçek Kotlin API istemcisini CI'da çalıştırır. [26 Ekim doğrulama çalıştırması](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/40370990412) geçti: **29 JUnit testi; hata/atlanan test yok**. Bu derleme yalnız API istemcisini kapsar; Android okuyucusunu ve tüm uygulamayı derlemez.
 
 ### Canlı ağ sözleşmesini kontrol etme
 
@@ -77,16 +85,29 @@ python3 scripts/smoke_golgebahcesi.py --series SERI_SLUG --query 'SERİ ADI'
 - `1`: ağ/veri/görsel hatası.
 - `2`: güvenli veya kilitli bölüm; cihaz/WebView testi gerekiyor. **Başarı sayılmaz.**
 
+### Ham HTML/JavaScript + gerçek tarayıcı denetimi
+
+Node.js 22, Playwright Chromium ve Sharp gerektirir:
+
+```sh
+npm ci --prefix scripts/live-audit
+cd scripts/live-audit && npx playwright install chromium && cd ../..
+node scripts/live-audit/audit.mjs
+```
+
+HTML/JS ve rapor `.audit/golgebahcesi/` içine yazılır; Git'e eklenmez. [CI iş akışı](.github/workflows/audit-golgebahcesi.yml) bunları hata halinde de kısa süreli artifact olarak saklar. `browser_chain_passed` dışında çıkış kodu `2` olur; doğrulama veya eksik sayfalar başarı sayılmaz. Hiçbir CAPTCHA/oturum/ücretli bölüm kısıtı aşılmaz.
+
 ## Bu ortamda doğrulananlar / kalanlar
 
 | Kontrol | Sonuç |
 |---|---|
-| Python çevrimdışı testleri | **22 geçti** |
-| Gerçek okuyucu varlıklarının Node testleri | **18 geçti** |
+| Python çevrimdışı testleri | **26 geçti** |
+| Gerçek okuyucu varlıklarının Node testleri | **21 geçti** |
 | Yeni/değişen Kotlin dosyalarında sözdizimi kontrolü | Geçti; derleme/typecheck değildir |
 | Yamanın temel uygulama dosyalarına uygulanabilirliği | Yerel referans kopyasında kontrol edildi |
-| Kotlin JVM testlerini Gradle ile çalıştırma | Gradle dağıtımı indirilirken ağ/TLS kısıtı nedeniyle başlayamadı |
-| Canlı `api.golgebahcesi.com` smoke testi | Ortamın ağ/TLS kısıtı nedeniyle erişilemedi |
+| Kotlin API istemcisi derlemesi ve JUnit testleri | CI'da **29 geçti**; Android typecheck değildir |
+| Canlı API/HTML/sayfa metaverisi/kapak kontrolleri | Gerçek tarayıcı denetiminde **17 geçti** |
+| Güvenli bölümün bütün görselleri | **Geçmedi: görünür site doğrulaması, 0/18** |
 | Android APK derlemesi, WebView ve gerçek cihazda okuma | **Bekliyor** |
 
-Site erişimi, Cloudflare, güvenli okuyucunun güncel uygulaması ve cihazın görsel biçimi desteği gerçek cihazda ayrıca doğrulanmalıdır. Kilitli/ücretli bölümler açılmaz; site erişim kısıtları aşılmaz.
+Yerel curl/Python TLS hatası önceki ortamın kısıtıydı; site erişimi başka araçlar ve CI ile sağlandı. Kalan sorun “site hiç incelenmedi” değil, korumalı okuma zincirinin geçmemesi ve Android doğrulamasının bulunmamasıdır. Kilitli/ücretli bölümler açılmaz; site erişim kısıtları aşılmaz.

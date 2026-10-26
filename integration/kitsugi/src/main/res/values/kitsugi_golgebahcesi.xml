@@ -3,8 +3,8 @@
     <string name="manga_recovery_title">Single manga source</string>
     <string name="manga_recovery_note">Only Gölge Bahçesi is enabled. Other sources are paused; your library and reading progress have not been deleted.</string>
     <string name="manga_recovery_loading">Starting source…</string>
-    <string name="manga_recovery_webview_note">Secure chapters require an up-to-date Android System WebView. Locked chapters require access on the source website.</string>
+    <string name="manga_recovery_webview_note">An up-to-date Android System WebView is required. Passing a source check does not prove protected chapter images work; the site may require interactive verification. Locked chapters require access on the source website.</string>
     <string name="manga_recovery_check">Test source</string>
-    <string name="manga_recovery_verify">Verify in browser</string>
+    <string name="manga_recovery_verify">Open source website</string>
     <string name="manga_recovery_report">Source health report</string>
 </resources>
