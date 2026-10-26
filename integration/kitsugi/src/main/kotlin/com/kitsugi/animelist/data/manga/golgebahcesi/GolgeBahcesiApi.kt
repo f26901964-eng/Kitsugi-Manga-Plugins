@@ -133,6 +133,7 @@ internal class GolgeBahcesiApi(
             throw IOException("Bu bölüm kilitli; sitede erişim izni gerekiyor")
         }
         val pages = root.optJSONArray("pages")
+        if (pages != null) validatePageIndices(pages)
         // Live API returns relative .enc URLs. The delivery label alone is not sufficient:
         // imageEnc and encrypted paths must NEVER enter the ordinary image downloader.
         val encrypted = root.optBoolean("imageEnc", false) ||
@@ -204,6 +205,20 @@ internal class GolgeBahcesiApi(
             url.port != site.port || url.username.isNotEmpty() || url.password.isNotEmpty()
         ) throw IOException("Bağlantı Gölge Bahçesi'ne ait değil")
         return url
+    }
+
+    private fun validatePageIndices(pages: JSONArray) {
+        if (pages.length() > 2000) throw IOException("Bölüm sayfa sınırını aşıyor")
+        val indices = (0 until pages.length()).map { position ->
+            val raw = pages.getJSONObject(position).opt("index") as? Number
+                ?: throw IOException("Geçersiz sayfa numarası")
+            val value = raw.toDouble()
+            if (!value.isFinite() || value != value.toInt().toDouble()) throw IOException("Geçersiz sayfa numarası")
+            value.toInt()
+        }.sorted()
+        if (indices.withIndex().any { (position, index) -> position != index }) {
+            throw IOException("Eksik veya tekrarlanan sayfa numarası")
+        }
     }
 
     private fun imageUrl(value: String): String {

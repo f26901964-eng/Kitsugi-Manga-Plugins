@@ -208,6 +208,20 @@ class GolgeBahcesiApiTest {
         assertEquals("https://golgebahcesi.com/manga/mairimashita-iruma-kun/bolum/chapter-462", api.readerUrl(result.ref))
     }
 
+    @Test fun missingPlainPageCannotBeSilentlyRenumbered() = runBlocking {
+        val root = fixtures.getJSONObject("plain")
+        root.getJSONArray("pages").getJSONObject(0).put("index", 3)
+        responseText = root.toString()
+        expectIOException { api.content(ref) }
+    }
+
+    @Test fun fractionalIndexCannotBeTruncatedIntoAValidPage() = runBlocking {
+        val root = fixtures.getJSONObject("plain")
+        root.put("pages", JSONArray().put(root.getJSONArray("pages").getJSONObject(1).put("index", 0.5)))
+        responseText = root.toString()
+        expectIOException { api.content(ref) }
+    }
+
     @Test fun changedOrEmptyPageDataIsAnError() = runBlocking {
         for (pages in listOf(JSONArray(), JSONArray("[{\"index\":0,\"url\":\"/0.webp\"},{\"index\":0,\"url\":\"/1.webp\"}]"),
             JSONArray("[{\"index\":0,\"url\":\"http://insecure.test/0.webp\"}]"))) {

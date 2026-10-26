@@ -96,6 +96,18 @@ class SmokeTests(unittest.TestCase):
             self.check()
         self.assertEqual([], self.images)
 
+    def test_missing_page_is_not_silently_renumbered(self):
+        self.content["pages"][0]["index"] = 3
+        with self.assertRaisesRegex(ValueError, "Missing"):
+            self.check()
+        self.assertEqual([], self.images)
+
+    def test_fractional_page_index_is_not_accepted(self):
+        self.content["pages"][0]["index"] = 2.5
+        with self.assertRaisesRegex(ValueError, "Invalid"):
+            self.check()
+        self.assertEqual([], self.images)
+
     def test_unsafe_image_scheme_is_rejected(self):
         self.content["pages"][1]["url"] = "file:///etc/passwd"
         with self.assertRaisesRegex(ValueError, "Unsafe"):

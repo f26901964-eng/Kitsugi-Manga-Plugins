@@ -105,9 +105,13 @@ def check(
     pages = content.get("pages")
     if not isinstance(pages, list) or not pages:
         raise ValueError("Chapter returned no readable pages")
+    if any(type(page.get("index")) is not int for page in pages):
+        raise ValueError("Invalid page index")
     pages = sorted(pages, key=lambda item: item["index"])
     if len({page["index"] for page in pages}) != len(pages):
         raise ValueError("Duplicate page index")
+    if [page["index"] for page in pages] != list(range(len(pages))):
+        raise ValueError("Missing or invalid page index")
     reader = f"{SITE}/manga/{encoded}/bolum/{quote(selected['slug'], safe='')}"
     samples = []
     for index in sorted({0, len(pages) // 2, len(pages) - 1}):

@@ -134,6 +134,12 @@ abstract class GolgeBahcesi : KeiSource() {
             throw IOException("Kaynak yanlış bölümü döndürdü")
         }
         if (dto.isLocked) throw IOException("Bu bölüm kilitli; sitede erişim izni gerekiyor")
+        dto.pages?.let { pages ->
+            val indices = pages.map { it.index }.sorted()
+            require(pages.size <= 2000 && indices.withIndex().all { (position, index) -> position == index }) {
+                "Eksik veya tekrarlanan sayfa numarası"
+            }
+        }
         val encrypted = dto.imageEnc || dto.deliverySystem.equals("secure", ignoreCase = true) ||
             dto.pages.orEmpty().any { it.url.substringBefore('?').endsWith(".enc", ignoreCase = true) }
         if (!encrypted) {
