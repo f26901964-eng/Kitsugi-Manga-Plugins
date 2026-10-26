@@ -38,13 +38,15 @@ def validate():
     print(f'Validated workflow {run["id"]}, native source {run["head_sha"]}')
     return run
 
-def publish():
-    run = validate()
+def read_evidence(run):
     evidence = {}
     for path in (ROOT / '.audit/publish/evidence').rglob('report.json'):
         report = json.loads(path.read_text())
         assert report['status'] == 'passed' and report['inputMexWritableBeforeLoad'] and report['installerWritableMexLoaded'], report
         assert len(report['images']) == 53 and all(image['matchesPublicReaderReference'] for image in report['images']), 'Incomplete/incorrect native pixels'
+        for slug, count in [('black-clover', 20), ('shadow-slave', 33)]:
+            indices = [image['index'] for image in report['images'] if image['slug'] == slug]
+            assert sorted(indices) == list(range(count)), 'Missing/duplicate/native page order coverage'
         assert report['hostTargetSdk'] == report['testAppTargetSdk'] == 36
         report['evidence'] = {'workflowRunId': run['id'], 'revision': run['head_sha'], 'workflowUrl': run['html_url']}
         evidence[report['androidApi']] = report
@@ -52,6 +54,11 @@ def publish():
     assert evidence[29]['hostVariant'] == 'original-release'
     assert evidence[34]['hostVariant'] == 'release-with-readonly-loader-test-fixture'
     assert evidence[34]['singleTurkishSourceProfileVerified'] and evidence[34]['mexReadOnlyAfterLoader']
+    return evidence
+
+def publish():
+    run = validate()
+    evidence = read_evidence(run)
     binary = ROOT / '.audit/publish/package/mangadenizi.mex'
     with zipfile.ZipFile(binary) as archive:
         assert set(archive.namelist()) == {'classes.dex', 'manifest.json', 'LICENSE', 'NOTICE'}
