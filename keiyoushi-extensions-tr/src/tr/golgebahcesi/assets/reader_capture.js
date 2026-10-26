@@ -1,8 +1,22 @@
 (bridge, channelName, workerHook) => {
     if (window !== window.top) return;
 
-    // Turn off the reader's prefetch so each decoded image follows its fetch
-    localStorage.setItem("rdr_diag_ovr", JSON.stringify({ prefetch: false }));
+    const failEarly = (message) => bridge.postMessage("error:" + message);
+    if (typeof BroadcastChannel !== "function" || typeof IntersectionObserver !== "function") {
+        failEarly("Android System WebView must be updated to read this chapter");
+        return;
+    }
+
+    // Keep prefetch disabled until the WHOLE capture finishes, not just the first page.
+    const overrideKey = "rdr_diag_ovr";
+    let previousOverride = null;
+    try {
+        previousOverride = localStorage.getItem(overrideKey);
+        localStorage.setItem(overrideKey, JSON.stringify({ prefetch: false }));
+    } catch (_) {
+        failEarly("Reader storage is unavailable");
+        return;
+    }
 
     window.Blob = new Proxy(window.Blob, {
         construct(target, args) {
@@ -14,7 +28,6 @@
         },
     });
 
-    // Report pages visible so the reader decodes them
     const observed = [];
     window.IntersectionObserver = new Proxy(window.IntersectionObserver, {
         construct(target, args) {
@@ -30,62 +43,106 @@
         },
     });
     const setVisible = (page, isIntersecting) => {
+        if (!page) return;
         for (const { element, callback, observer } of observed) {
-            if (!page.contains(element)) continue;
-            callback([{ target: element, isIntersecting }], observer);
+            if (page.contains(element)) callback([{ target: element, isIntersecting }], observer);
         }
     };
 
+    const channel = new BroadcastChannel(channelName);
     const captured = new Set();
+    const pending = new Set();
     let count = 0;
+    let stopped = false;
+    let timer;
+    let first = -1;
+    let since = 0;
+    let visible = -1;
+    let lastVisibleAt = 0;
 
-    new BroadcastChannel(channelName).onmessage = ({ data }) => {
-        if (data.count) {
-            count = data.count;
-            bridge.postMessage("count:" + count);
+    const cleanup = () => {
+        stopped = true;
+        clearInterval(timer);
+        channel.close();
+        try {
+            if (previousOverride === null) localStorage.removeItem(overrideKey);
+            else localStorage.setItem(overrideKey, previousOverride);
+        } catch (_) { /* The WebView is about to be destroyed. */ }
+    };
+    const fail = (message) => {
+        if (stopped) return;
+        cleanup();
+        bridge.postMessage("error:" + message);
+    };
+
+    channel.onmessage = ({ data }) => {
+        if (stopped || !data || typeof data !== "object") return;
+        if (data.error) {
+            fail(String(data.error));
             return;
         }
-        if (captured.has(data.index)) return;
-        captured.add(data.index);
-        localStorage.removeItem("rdr_diag_ovr");
+        if (Object.prototype.hasOwnProperty.call(data, "count")) {
+            if (!Number.isInteger(data.count) || data.count < 1 || data.count > 2000) {
+                fail("Invalid or empty reader page count");
+                return;
+            }
+            if (count && count !== data.count) {
+                fail("Reader page count changed during capture");
+                return;
+            }
+            if (!count) bridge.postMessage("count:" + data.count);
+            count = data.count;
+            return;
+        }
+        if (!Number.isInteger(data.index) || data.index < 0 || data.index >= count || !(data.image instanceof Blob)) {
+            fail("Invalid reader page");
+            return;
+        }
+        if (captured.has(data.index) || pending.has(data.index)) return;
+        pending.add(data.index);
         const reader = new FileReader();
-        reader.onload = () => bridge.postMessage("page:" + data.index + "," + reader.result);
+        reader.onerror = () => fail("Could not read page " + (data.index + 1));
+        reader.onload = () => {
+            if (stopped) return;
+            const result = reader.result;
+            if (typeof result !== "string" || !/^data:[^,]*;base64,/.test(result)) {
+                fail("Invalid image data for page " + (data.index + 1));
+                return;
+            }
+            pending.delete(data.index);
+            captured.add(data.index);
+            bridge.postMessage("page:" + data.index + "," + result);
+            if (captured.size === count) cleanup();
+        };
         reader.readAsDataURL(data.image);
     };
 
-    // Page index to when it was last marked visible
-    const visible = new Map();
-    let first = -1;
-    let since = 0;
-    setInterval(() => {
-        if (!count) return;
-        const pages = document.querySelectorAll("[data-reader-page]");
-        const wanted = [];
-        for (let i = 0; i < count && wanted.length < 4; i++) {
-            if (!captured.has(i)) wanted.push(i);
-        }
-        if (wanted.length === 0) return;
-        for (const i of [...visible.keys()]) {
-            if (!wanted.includes(i)) {
-                setVisible(pages[i], false);
-                visible.delete(i);
-            }
-        }
+    timer = setInterval(() => {
+        if (stopped || !count) return;
+        let wanted = 0;
+        while (wanted < count && captured.has(wanted)) wanted++;
+        if (wanted === count) return;
         const now = Date.now();
-        for (const i of wanted) {
-            if (now - (visible.get(i) || 0) < 10000) continue;
-            if (!pages[i]) {
-                bridge.postMessage("error:Page " + (i + 1) + " is missing from the reader");
-                return;
-            }
-            setVisible(pages[i], true);
-            visible.set(i, now);
-        }
-        if (wanted[0] !== first) {
-            first = wanted[0];
+        if (wanted !== first) {
+            first = wanted;
             since = now;
-        } else if (now - since > 30000) {
-            bridge.postMessage("error:Page " + (first + 1) + " did not load");
         }
+        if (now - since > 30000) {
+            fail("Page " + (first + 1) + " did not load");
+            return;
+        }
+
+        const pages = document.querySelectorAll("[data-reader-page]");
+        // Count can arrive before React has mounted the reader. Wait instead of failing immediately.
+        if (!pages[wanted]) return;
+        if (visible !== wanted) {
+            setVisible(pages[visible], false);
+            visible = wanted;
+        } else if (now - lastVisibleAt < 10000) {
+            return;
+        }
+        // Decode one page at a time: equal-sized encrypted images must not swap panels.
+        setVisible(pages[wanted], true);
+        lastVisibleAt = now;
     }, 250);
 }

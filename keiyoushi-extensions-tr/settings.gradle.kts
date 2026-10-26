@@ -30,43 +30,22 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = "Keiyoushi"
 
-/**
- * Add or remove modules to load as needed for local development here.
- */
-loadAllIndividualExtensions()
-// loadIndividualExtension("all", "mangadex")
+// Fail closed: archived Turkish extensions must not reappear in a bulk build.
+val sourceProfile = java.util.Properties().apply {
+    file("../sources.properties").inputStream().use { load(it) }
+}
+val enabledExtensions = sourceProfile.getProperty("keiyoushi.enabled", "")
+    .split(',').map(String::trim).filter(String::isNotEmpty)
+check(enabledExtensions == listOf("tr:golgebahcesi")) {
+    "The recovery profile must contain only tr:golgebahcesi"
+}
+enabledExtensions.forEach { module ->
+    check(file("src/${module.replace(':', '/')}/build.gradle.kts").isFile) {
+        "Unknown enabled extension: $module"
+    }
+    include(":src:$module")
+}
 
-/**
- * ===================================== COMMON CONFIGURATION ======================================
- */
 include(":core")
 include(":compiler")
-
-// Load all modules under /lib
-File(rootDir, "lib").eachDir { include("lib:${it.name}") }
-
-// Load all modules under /lib-multisrc
-File(rootDir, "lib-multisrc").eachDir { include("lib-multisrc:${it.name}") }
-
-/**
- * ======================================== HELPER FUNCTION ========================================
- */
-fun loadAllIndividualExtensions() {
-    File(rootDir, "src").eachDir { dir ->
-        dir.eachDir { subdir ->
-            include("src:${dir.name}:${subdir.name}")
-        }
-    }
-}
-fun loadIndividualExtension(lang: String, name: String) {
-    include("src:$lang:$name")
-}
-
-fun File.eachDir(block: (File) -> Unit) {
-    val files = listFiles() ?: return
-    for (file in files) {
-        if (file.isDirectory && file.name != ".gradle" && file.name != "build") {
-            block(file)
-        }
-    }
-}
+// Golge Bahcesi is API-based; no archived multisrc/library module is needed.

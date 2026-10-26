@@ -44,6 +44,7 @@ public class LinkResolver internal constructor(
 		val localeHints = localeHints()
 		val matches = ArrayList<Candidate>()
 		for (s in MangaParserSource.entries) {
+            if (!s.isEnabled) continue
 			val presets = context.newParserInstance(s).configKeyDomain.presetValues
 			var score = when {
 				presets.any { it.removePrefix("www.") == host } -> 4

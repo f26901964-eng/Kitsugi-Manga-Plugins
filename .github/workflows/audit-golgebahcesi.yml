@@ -1,0 +1,39 @@
+name: Audit live Golge Bahcesi HTML and reader
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - arena/35425e65-kitsugi-manga-plugins
+    paths:
+      - scripts/live-audit/**
+      - .github/workflows/audit-golgebahcesi.yml
+
+permissions:
+  contents: read
+
+jobs:
+  live-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: scripts/live-audit/package-lock.json
+      - run: npm ci --no-audit --no-fund
+        working-directory: scripts/live-audit
+      - run: npx playwright install --with-deps chromium
+        working-directory: scripts/live-audit
+      - name: Fetch raw public HTML/JS, verify identities, and decode official-reader images
+        run: node scripts/live-audit/audit.mjs
+      - name: Retain audit evidence even when a challenge or reader failure blocks verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: golgebahcesi-live-audit
+          path: .audit/golgebahcesi
+          retention-days: 3
+          if-no-files-found: warn

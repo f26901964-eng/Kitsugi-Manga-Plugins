@@ -1,0 +1,2 @@
+# A unified patch has significant single-space prefixes on empty context lines.
+*.patch -whitespace

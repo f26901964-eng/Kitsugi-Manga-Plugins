@@ -18,6 +18,8 @@ class ParserProcessor(
 ) : SymbolProcessor {
     private val availableLocales = Locale.getAvailableLocales().toSet()
     private val sourceNamePattern = Regex("[A-Z_][A-Z0-9_]{3,}")
+    private val enabledSources = options["enabledSources"].orEmpty()
+        .split(',').map(String::trim).filter(String::isNotEmpty).toSet()
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver.getSymbolsWithAnnotation("org.koitharu.kotatsu.parsers.MangaSourceParser")
@@ -72,7 +74,9 @@ class ParserProcessor(
 			import org.koitharu.kotatsu.parsers.model.MangaParserSource
 			import org.koitharu.kotatsu.parsers.core.MangaParserWrapper
 
-			internal fun MangaParserSource.newParser(context: MangaLoaderContext): MangaParser = when (this) {
+			internal fun MangaParserSource.newParser(context: MangaLoaderContext): MangaParser {
+                require(isEnabled) { "Source ${'$'}name is disabled by the Kitsugi recovery profile" }
+                return when (this) {
 
 			""".trimIndent(),
         )
@@ -85,6 +89,7 @@ class ParserProcessor(
 				public val locale: String,
 				public val contentType: ContentType,
 				public val isBroken: Boolean,
+                public val isEnabled: Boolean,
 			): MangaSource {
 
 			""".trimIndent(),
@@ -96,6 +101,11 @@ class ParserProcessor(
             .onEach { it.accept(visitor, Unit) }
             .count()
 
+        val unknownSources = enabledSources - visitor.sourceNames
+        if (unknownSources.isNotEmpty()) {
+            logger.error("Unknown enabled sources: ${unknownSources.joinToString()}")
+        }
+
         factoryWriter?.write(
             """
 			}.let {
@@ -104,6 +114,7 @@ class ParserProcessor(
 				}
 				MangaParserWrapper(it)
 			}
+            }
 			""".trimIndent(),
         )
         sourcesWriter?.write(
@@ -117,7 +128,8 @@ class ParserProcessor(
 
     private fun writeSummary(totalCount: Int) {
         val file = File(options["summaryOutputDir"] ?: return, "summary.yaml")
-        file.writeText("total: $totalCount")
+        file.parentFile.mkdirs()
+        file.writeText("total: $totalCount\nenabled: ${enabledSources.size}\n")
     }
 
     private inner class ParserVisitor(
@@ -125,6 +137,7 @@ class ParserProcessor(
         private val factoryWriter: Writer?,
     ) : KSVisitorVoid() {
         private val titles = HashMap<String, String>()
+        val sourceNames = HashSet<String>()
 
         override fun visitClassDeclaration(
             classDeclaration: KSClassDeclaration,
@@ -137,6 +150,7 @@ class ParserProcessor(
             val deprecation = classDeclaration.annotations.singleOrNull { it.shortName.asString() == "Deprecated" }
             val isBroken = classDeclaration.annotations.any { it.shortName.asString() == "Broken" }
             val name = annotation.arguments.single { it.name?.asString() == "name" }.value as String
+            sourceNames.add(name)
             val title = annotation.arguments.single { it.name?.asString() == "title" }.value as String
             val locale = annotation.arguments.single { it.name?.asString() == "locale" }.value as String
             val type = annotation.arguments.single { it.name?.asString() == "type" }.value
@@ -179,7 +193,7 @@ class ParserProcessor(
                 }
             val localeComment = localeTitle?.toTitleCase(localeObj)?.let { " /* $it */" }.orEmpty()
             sourcesWriter?.write(
-                "\t$deprecationString$name(\"$title\", $localeString$localeComment, $type, $isBroken),\n",
+                "\t$deprecationString$name(\"$title\", $localeString$localeComment, $type, $isBroken, ${name in enabledSources}),\n",
             )
         }
     }

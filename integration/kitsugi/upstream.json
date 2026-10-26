@@ -1,0 +1,13 @@
+{
+  "repository": "f26901964-eng/Kitsugi-Beta",
+  "revision": "c2a254e22270d485053689854bf5ae41dd03d675",
+  "files": {
+    "app/build.gradle.kts": "9a62fc3004a68952e871f0de66b7a43717a80bf89624d9a3dcb52ca6ef078397",
+    "app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt": "e6cb2fb540665e7911be92d819cc763efd8a3b0c1c776ce050bee055252e8ac5",
+    "app/src/main/java/com/kitsugi/animelist/data/manga/KotatsuExtensionAdapter.kt": "9b286a9ac444d711ffddccb4003c1744bca5a77b2532c884f2a38a072c4b59e0",
+    "app/src/main/java/com/kitsugi/animelist/data/manga/MangaCatalogManager.kt": "2606daacb66a57f081c29677861d5d75f38bc502ef23d8dda1f021cd695be9b5",
+    "app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionAutoUpdater.kt": "aac9036b556df84a7986bc70b48db0aa2ff19cf3f6429607a9c23c1dc53c705a",
+    "app/src/main/java/com/kitsugi/animelist/ui/components/addons/MangaExtensionTab.kt": "f52ebf258f30daa846dd6f6891242a81f2c29fa2e96056714a9b4c953a5674ac",
+    "app/src/main/java/com/kitsugi/animelist/ui/tv/manga/TvMangaExtensionScreen.kt": "057253b5c1879704a19caf34ffa8774d9dc46f63e289d2ff640b6e6baf6d9411"
+  }
+}

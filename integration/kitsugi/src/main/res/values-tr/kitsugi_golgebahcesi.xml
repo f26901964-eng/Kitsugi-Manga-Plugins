@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="manga_recovery_title">Tek manga kaynağı</string>
+    <string name="manga_recovery_note">Yalnızca Gölge Bahçesi etkin. Diğer kaynaklar duraklatıldı; kütüphaneniz ve okuma ilerlemeniz silinmedi.</string>
+    <string name="manga_recovery_loading">Kaynak başlatılıyor…</string>
+    <string name="manga_recovery_webview_note">Güvenli bölümler için güncel Android System WebView gerekir. Kilitli bölümler için kaynak sitede erişim izni gerekiyor.</string>
+    <string name="manga_recovery_check">Kaynağı test et</string>
+    <string name="manga_recovery_verify">Tarayıcıda doğrula</string>
+    <string name="manga_recovery_report">Kaynak sağlık raporu</string>
+</resources>

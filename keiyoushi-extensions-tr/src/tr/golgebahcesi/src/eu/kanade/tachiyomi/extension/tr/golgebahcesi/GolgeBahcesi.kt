@@ -44,7 +44,8 @@ abstract class GolgeBahcesi : KeiSource() {
     override suspend fun getLatestUpdates(page: Int) = getSearchMangaList(page, "", SortFilter.LATEST)
 
     override suspend fun getMangaByUrl(url: HttpUrl): SManga? {
-        val slug = url.pathSegments.getOrNull(1) ?: return null
+        if (url.host != baseUrl.toHttpUrl().host || url.pathSegments.firstOrNull() != "manga") return null
+        val slug = url.pathSegments.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return null
         return fetchMangaUpdate(
             SManga.create().apply { this.url = slug },
             emptyList(),
@@ -54,6 +55,7 @@ abstract class GolgeBahcesi : KeiSource() {
     }
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
+        require(page >= 1) { "Page must start at 1" }
         val url = "$apiBaseUrl/series".toHttpUrl().newBuilder().apply {
             addQueryParameter("page", page.toString())
             addQueryParameter("limit", "24")
@@ -73,7 +75,7 @@ abstract class GolgeBahcesi : KeiSource() {
 
         val result = client.get(url).parseAs<SeriesListResponse>()
         val mangas = result.data.map { it.toSManga() }
-        val hasNextPage = result.pagination?.let { it.currentPage < it.totalPages } ?: false
+        val hasNextPage = result.pagination?.let { it.currentPage < it.totalPages } ?: (mangas.size == 24)
         return MangasPage(mangas, hasNextPage)
     }
 
@@ -100,14 +102,17 @@ abstract class GolgeBahcesi : KeiSource() {
         }
         val updatedChapters = async {
             if (fetchChapters) {
-                client.get("$apiBaseUrl/series/${manga.url}/chapters").parseAs<List<ChapterDto>>().map { chapter ->
-                    SChapter.create().apply {
-                        url = "/${chapter.id}/${chapter.seriesSlug}/${chapter.slug}"
-                        name = chapter.title
-                        chapter_number = chapter.number
-                        date_upload = Instant.tryParse(chapter.releaseDate ?: chapter.createdAt)
+                client.get("$apiBaseUrl/series/${manga.url}/chapters").parseAs<List<ChapterDto>>()
+                    .distinctBy { it.id }
+                    .sortedByDescending { it.number }
+                    .map { chapter ->
+                        SChapter.create().apply {
+                            url = "/${chapter.id}/${chapter.seriesSlug}/${chapter.slug}"
+                            name = chapter.title
+                            chapter_number = chapter.number
+                            date_upload = Instant.tryParse(chapter.releaseDate ?: chapter.createdAt)
+                        }
                     }
-                }
             } else {
                 chapters
             }
@@ -124,9 +129,18 @@ abstract class GolgeBahcesi : KeiSource() {
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val chapterId = "$baseUrl${chapter.url}".toHttpUrl().pathSegments[0]
         val dto = client.get("$apiBaseUrl/chapters/$chapterId").parseAs<ChapterDto>()
-        if (dto.isLocked) return emptyList()
-        if (dto.deliverySystem != "secure") {
-            return dto.pages.orEmpty().map { Page(it.index, imageUrl = it.url) }
+        if (dto.isLocked) throw IOException("Bu bölüm kilitli; sitede erişim izni gerekiyor")
+        val encrypted = dto.imageEnc || dto.deliverySystem.equals("secure", ignoreCase = true) ||
+            dto.pages.orEmpty().any { it.url.substringBefore('?').endsWith(".enc", ignoreCase = true) }
+        if (!encrypted) {
+            val pages = dto.pages.orEmpty().sortedBy { it.index }
+            if (pages.isEmpty()) throw IOException("Bölümde okunabilir sayfa bulunamadı")
+            require(pages.map { it.index }.distinct().size == pages.size) { "Duplicate reader page index" }
+            return pages.mapIndexed { index, page ->
+                val imageUrl = baseUrl.toHttpUrl().resolve(page.url)
+                    ?.takeIf { it.isHttps } ?: throw IOException("Geçersiz sayfa adresi")
+                Page(index, url = getChapterUrl(chapter), imageUrl = imageUrl.toString())
+            }
         }
         return captureSecurePages(getChapterUrl(chapter)).mapIndexed { index, data ->
             val imageUrl = HttpUrl.Builder().scheme("https").host(PAGE_HOST)
@@ -168,10 +182,17 @@ abstract class GolgeBahcesi : KeiSource() {
                 webMessageBridge(bridge, setOf(baseUrl)) { message ->
                     val data = message.substringAfter(':')
                     when (message.substringBefore(':')) {
-                        "count" -> count.set(data.toInt())
+                        "count" -> {
+                            val value = data.toInt()
+                            require(value in 1..2000 && (count.get() == 0 || count.get() == value)) {
+                                "Invalid reader page count"
+                            }
+                            count.set(value)
+                        }
                         "page" -> {
                             val index = data.substringBefore(',').toInt()
                             require(index in 0 until count.get())
+                            require(";base64," in data) { "Invalid reader image data" }
                             pages[index] = data.substringAfter("base64,")
                             if (pages.size == count.get()) resolve(List(pages.size) { pages.getValue(it) })
                         }

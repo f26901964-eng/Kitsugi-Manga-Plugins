@@ -1,0 +1,26 @@
+{
+  "_note": "Synthetic contract fixtures based on the API fields in the vendored upstream source. Not a live-site capture.",
+  "list": {
+    "data": [
+      {"slug": "test-serisi", "title": "Test Serisi", "coverImage": "/covers/test.webp", "type": "MANHWA", "genres": ["Aksiyon"], "status": "ONGOING"}
+    ],
+    "pagination": {"currentPage": 1, "totalPages": 3}
+  },
+  "details": {
+    "slug": "test-serisi", "title": "Test Serisi", "description": "<p>Sentetik açıklama</p>",
+    "coverImage": null, "cover": "https://cdn.golgebahcesi.com/test.webp", "author": "Yazar", "artist": "Çizer",
+    "status": "HIATUS", "type": "MANHWA", "genres": ["Aksiyon", {"name": "Fantastik", "slug": "fantastik"}]
+  },
+  "chapters": [
+    {"id": "chapter-1", "seriesSlug": "test-serisi", "number": 1, "title": "Bölüm 1", "slug": "bolum-1", "createdAt": "2026-10-01T10:00:00Z"},
+    {"id": "chapter-3", "seriesSlug": "test-serisi", "number": 3, "title": "Bölüm 3", "slug": "bolum-3", "releaseDate": "bad-date", "createdAt": "2026-10-03T10:00:00Z", "isLocked": true},
+    {"id": "chapter-2", "number": 2.5, "title": "Bölüm 2.5", "slug": "bolum-2-5", "releaseDate": "2026-10-02T10:00:00+03:00"},
+    {"id": "chapter-1", "seriesSlug": "test-serisi", "number": 1, "title": "Bölüm 1", "slug": "bolum-1"}
+  ],
+  "plain": {
+    "id": "chapter-1", "seriesSlug": "test-serisi", "slug": "bolum-1", "isLocked": false, "deliverySystem": "plain",
+    "pages": [{"index": 2, "url": "https://cdn.golgebahcesi.com/2.webp"}, {"index": 0, "url": "/pages/0.webp"}, {"index": 1, "url": "https://cdn.golgebahcesi.com/1.webp"}]
+  },
+  "secure": {"id": "chapter-1", "seriesSlug": "test-serisi", "slug": "bolum-1", "isLocked": false, "deliverySystem": "secure"},
+  "locked": {"id": "chapter-1", "seriesSlug": "test-serisi", "slug": "bolum-1", "isLocked": true, "deliverySystem": "secure"}
+}

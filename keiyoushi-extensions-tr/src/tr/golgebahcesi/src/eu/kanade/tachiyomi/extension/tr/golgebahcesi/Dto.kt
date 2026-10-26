@@ -66,8 +66,10 @@ class ChapterDto(
     val title: String,
     val slug: String,
     val pages: List<PageDto>? = null,
-    val deliverySystem: String,
-    val isLocked: Boolean,
+    // List responses may omit reader-only fields; they are not required to list chapters.
+    val deliverySystem: String? = null,
+    val imageEnc: Boolean = false,
+    val isLocked: Boolean = false,
     val releaseDate: String? = null,
     val createdAt: String? = null,
 )

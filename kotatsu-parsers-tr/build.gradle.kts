@@ -14,8 +14,18 @@ tasks.test {
     useJUnitPlatform()
 }
 
+val sourceProfile = java.util.Properties().apply {
+    file("../sources.properties").inputStream().use { load(it) }
+}
+
 ksp {
-    arg("summaryOutputDir", "${projectDir}/.github")
+    arg("summaryOutputDir", layout.buildDirectory.dir("source-summary").get().asFile.path)
+    // An empty allowlist deliberately disables every legacy parser, not enables all.
+    arg("enabledSources", sourceProfile.getProperty("kotatsu.enabled", ""))
+}
+
+tasks.matching { it.name.startsWith("ksp") }.configureEach {
+    inputs.file(file("../sources.properties"))
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {

@@ -1,0 +1,146 @@
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -340,6 +340,7 @@
+         exclude(group = "com.fasterxml.jackson.module")
+     }
+     implementation("org.jsoup:jsoup:1.17.2")
++    implementation("androidx.webkit:webkit:1.12.1") // Origin-scoped document-start reader bridge
+     // Jackson 2.18.3: first version with full Kotlin 2.0.x support.
+     // Previous 2.13.1 compiled against Kotlin 1.6 â†’ AssertionError: Built-in class kotlin.Any is not found
+     implementation("com.fasterxml.jackson.core:jackson-core:2.18.3")
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
+@@ -56,6 +56,7 @@
+      * Kaynak listesi, tüm sisteme tek noktadan erişim sağlar.
+      */
+     fun getLoadedSources(): List<MangaSource> {
++        if (KitsugiMangaSources.singleSourceMode) return KitsugiMangaSources.getLoadedSources()
+         val apkMexSources = loadedSources.values.flatten()
+         // Sadece aktif dillerdeki Kotatsu kaynakları — Futon mantığıyla aynı
+         val kotatsuSources = KotatsuExtensionAdapter.getActiveSources()
+@@ -64,6 +65,10 @@
+     }
+ 
+     fun getSource(extensionId: String, context: Context): MangaSource? {
++        if (KitsugiMangaSources.singleSourceMode) {
++            KitsugiMangaSources.initialize(context)
++            return KitsugiMangaSources.getSource(extensionId)
++        }
+         val apkFile = apkFile(context, extensionId)
+         val mexFile = mexFile(context, extensionId)
+         return loadedSources[apkFile.absolutePath]?.firstOrNull()
+@@ -86,6 +91,10 @@
+         extensionId: String,
+         urlString: String
+     ): Boolean {
++        if (KitsugiMangaSources.singleSourceMode) {
++            Log.i(TAG, "Single-source recovery: external manga APK downloads are paused")
++            return false
++        }
+         val dir = extensionDir(context).also { if (!it.exists()) it.mkdirs() }
+         val isApk = urlString.substringBefore("?").endsWith(".apk", ignoreCase = true)
+             || urlString.contains(".apk", ignoreCase = true)
+@@ -180,6 +189,10 @@
+      * Önce .apk uzantılı Mihon formatını dener, bulamazsa .mex formatını dener.
+      */
+     fun loadExtension(context: Context, extensionId: String): MangaSource? {
++        if (KitsugiMangaSources.singleSourceMode) {
++            KitsugiMangaSources.initialize(context)
++            return KitsugiMangaSources.getSource(extensionId)
++        }
+         val apk = apkFile(context, extensionId)
+         val mex = mexFile(context, extensionId)
+ 
+@@ -363,7 +376,9 @@
+     }
+ 
+     /** Yüklü source sayısını döndürür (debug amaçlı) */
+-    fun getLoadedSourceCount(): Int = loadedSources.values.sumOf { it.size }
++    fun getLoadedSourceCount(): Int = if (KitsugiMangaSources.singleSourceMode) {
++        KitsugiMangaSources.getLoadedSources().size
++    } else loadedSources.values.sumOf { it.size }
+ 
+     /**
+      * Tüm .apk ve .mex eklentilerini tarayarak yükler.
+@@ -372,6 +387,10 @@
+      */
+     @Synchronized
+     fun loadAllExtensions(context: Context) {
++        if (KitsugiMangaSources.singleSourceMode) {
++            KitsugiMangaSources.initialize(context)
++            return // Retain installed APK/MEX files; do not load their classes.
++        }
+         val dir = extensionDir(context)
+         if (!dir.exists()) { dir.mkdirs(); return }
+ 
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/manga/KotatsuExtensionAdapter.kt b/app/src/main/java/com/kitsugi/animelist/data/manga/KotatsuExtensionAdapter.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/KotatsuExtensionAdapter.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/KotatsuExtensionAdapter.kt
+@@ -98,6 +98,11 @@
+     }
+ 
+     fun initializeLazy(context: Context) {
++        if (KitsugiMangaSources.singleSourceMode) {
++            synchronized(allSources) { allSources.clear() }
++            isInitialized = true
++            return // Includes the obsolete MangaReader-based GOLGEBAHCESI parser.
++        }
+         if (isInitialized || isInitializing) return
+         isInitializing = true
+         // T4-11: Use bounded adapterScope instead of GlobalScope
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaCatalogManager.kt b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaCatalogManager.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaCatalogManager.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaCatalogManager.kt
+@@ -115,6 +115,7 @@
+         context: Context,
+         forceCheck: Boolean = false
+     ): Int = withContext(Dispatchers.IO) {
++        if (KitsugiMangaSources.singleSourceMode) return@withContext 0
+         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+         val lastCheckMs = prefs.getLong(KEY_LAST_KOTATSU_CHECK_MS, 0L)
+         val now = System.currentTimeMillis()
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionAutoUpdater.kt b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionAutoUpdater.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionAutoUpdater.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionAutoUpdater.kt
+@@ -48,6 +48,9 @@
+         context: Context,
+         forceCheck: Boolean = false
+     ): UpdateResult = withContext(Dispatchers.IO) {
++        if (KitsugiMangaSources.singleSourceMode) {
++            return@withContext UpdateResult.Skipped(minutesUntilNextCheck = 24 * 60)
++        }
+         val prefs = prefs(context)
+         val lastCheck = prefs.getLong(KEY_LAST_CHECK_MS, 0L)
+         val now = System.currentTimeMillis()
+diff --git a/app/src/main/java/com/kitsugi/animelist/ui/components/addons/MangaExtensionTab.kt b/app/src/main/java/com/kitsugi/animelist/ui/components/addons/MangaExtensionTab.kt
+--- a/app/src/main/java/com/kitsugi/animelist/ui/components/addons/MangaExtensionTab.kt
++++ b/app/src/main/java/com/kitsugi/animelist/ui/components/addons/MangaExtensionTab.kt
+@@ -97,6 +97,10 @@
+     onVerifySource: ((String, String) -> Unit)? = null,
+     listState: LazyListState = rememberLazyListState()
+ ) {
++    if (com.kitsugi.animelist.data.manga.KitsugiMangaSources.singleSourceMode) {
++        SingleMangaSourcePanel(sources, onQuickCheckSource, onOpenSourceHealthScreen, onVerifySource)
++        return
++    }
+     val filePickerLauncher = rememberLauncherForActivityResult(
+         contract = ActivityResultContracts.GetContent()
+     ) { uri: Uri? -> uri?.let { onInstallExtension(it) } }
+diff --git a/app/src/main/java/com/kitsugi/animelist/ui/tv/manga/TvMangaExtensionScreen.kt b/app/src/main/java/com/kitsugi/animelist/ui/tv/manga/TvMangaExtensionScreen.kt
+--- a/app/src/main/java/com/kitsugi/animelist/ui/tv/manga/TvMangaExtensionScreen.kt
++++ b/app/src/main/java/com/kitsugi/animelist/ui/tv/manga/TvMangaExtensionScreen.kt
+@@ -112,6 +112,12 @@
+     onBack: () -> Unit = {}
+ ) {
+     BackHandler(enabled = true) { onBack() }
++    if (com.kitsugi.animelist.data.manga.KitsugiMangaSources.singleSourceMode) {
++        com.kitsugi.animelist.ui.components.addons.SingleMangaSourcePanel(
++            sources, onQuickCheckSource, onNavigateToHealth, isTv = true,
++        )
++        return
++    }
+ 
+     var activeTab by remember { mutableStateOf(TvExtTab.REPOS) }
+     val tabFocusRequesters = remember { List(2) { FocusRequester() } }
