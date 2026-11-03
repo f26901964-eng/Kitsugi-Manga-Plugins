@@ -1,4 +1,4 @@
 # Etkin manga eklentileri: her satıra kaynak dizinini yazın (dil/eklenti).
 # Listede olmayan eklentiler yayın kataloğunda görünmez ve derlenmez.
-# Değişiklikten sonra: python3 tools/sync_enabled_plugins.py
+# main dalındaki değişiklikler GitHub Actions ile builds kataloğuna yayınlanır.
 tr/mangatr

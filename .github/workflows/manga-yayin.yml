@@ -1,0 +1,62 @@
+name: Manga eklenti kataloğunu yayınla
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manga-katalog-yayin
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      # Always use the latest main, not a possibly stale queued event's SHA.
+      - name: Kaynak dalını al
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: source
+          fetch-depth: 1
+      - name: Yayın dalını al
+        uses: actions/checkout@v4
+        with:
+          ref: builds
+          path: published
+          fetch-depth: 1
+      - name: Kataloğu oluştur ve test et
+        working-directory: source
+        run: |
+          set -euo pipefail
+          python3 tools/sync_enabled_plugins.py
+          python3 -m unittest discover -s tests -v
+      - name: Yayın dosyalarını güncelle
+        run: |
+          set -euo pipefail
+          # Only the generated publication files are touched in the destination.
+          python3 source/tools/stage_publication.py source published
+      - name: Değişiklikleri yayınla
+        working-directory: published
+        run: |
+          set -euo pipefail
+          # Don't publish an out-of-date selection if main changed mid-run.
+          source_sha=$(git -C ../source rev-parse HEAD)
+          current_main=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$source_sha" != "$current_main" ]; then
+            echo "main bu işlem sırasında değişti; yeni çalıştırma güncel listeyi yayınlayacak." >&2
+            exit 1
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            echo 'Yayın zaten güncel.'
+            exit 0
+          fi
+          git commit -m 'Yayın kataloğunu etkin eklentilerle eşitle'
+          git push origin HEAD:builds
