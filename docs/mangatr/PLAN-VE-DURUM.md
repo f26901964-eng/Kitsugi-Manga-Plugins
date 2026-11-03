@@ -6,6 +6,7 @@
 - HTML örneklerini ve katalogları kontrol eden Python testleri yazıldı. Eklentinin Android çalışma zamanını test etmezler.
 
 ## Öncelikli açık işler
+- [ ] Bölüm listesi: okuyucu içi seçicinin AJAX endpointi tespit edildi, ancak doğrudan erişim reddedildi ve grup bütünlüğü doğrulanmadı; bu endpoint seri detay listesinin yerine varsayılmadı. Detay sayfasının gerçek XHR istek/yanıtı gerekiyor.
 - [ ] Bölüm listesi: verilen Lady Liar ve Chainsaw Man detay HTML'lerinde mevcut kodun beklediği `listKey` bulunmuyor. Ham ağ cevabı, sayfanın dış JavaScript'i ve bölüm listesini yükleyen HTTP istek/yanıtları incelenip gerçek sözleşme uygulanmalı. Her iki grup ayrı URL ve `scanlator` ile korunmalı.
 - [ ] Keşif ve arama için eklentinin gerçekten çağırdığı `manga-list-sayfala.html` ve `arama.html` sonuç HTML'lerini ve sayfalamasını kontrol et. Ana sayfa örneği bunların yerine geçmez.
 - [ ] Gate isteğini ve yanıtını gerçek oturumla doğrula; resimleri indir, sayfa sırasını ve karıştırılmış resim şeritlerini test et. Giriş/bot koruması, kapak, önbellek ve hata durumlarını kontrol et.

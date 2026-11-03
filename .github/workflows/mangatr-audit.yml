@@ -1,0 +1,28 @@
+name: Manga-TR live diagnostics and build
+on:
+  push:
+    branches: [arena/d5f3c621-kitsugi-manga-plugins]
+    paths: ['tools/mangatr_live_audit.py', '.github/workflows/mangatr-audit.yml', 'keiyoushi-extensions-tr/src/tr/mangatr/**']
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 -m pip install requests beautifulsoup4
+      - run: python3 tools/mangatr_live_audit.py
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - uses: android-actions/setup-android@v3
+      - name: Build Manga-TR (not published)
+        working-directory: keiyoushi-extensions-tr
+        run: bash gradlew :src:tr:mangatr:assembleDebug --no-daemon --stacktrace
