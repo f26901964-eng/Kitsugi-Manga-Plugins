@@ -1,59 +1,16 @@
-# 📚 Kitsugi Manga Plugins & Sources (TR)
+# Kitsugi Manga Plugins (TR)
 
-Kitsugi Android uygulaması için tüm Türkçe manga, manhwa ve webtoon eklentilerinin / kaynak ayrıştırıcılarının (parser) merkezi kaynak deposudur.
+Depo kataloglarında yalnızca **Manga-TR** (`eu.kanade.tachiyomi.extension.tr.mangatr`, 1.6.24) listelenir. Manga-TR, incelenen liste sayfasında 10.637 seri gösterdiği için geniş bir Türkçe arşiv adayı olarak seçildi; bu sayı manga dışı içerikleri de kapsayabilir ve zamanla değişir. Başka bir kaynağın daha büyük veya daha güvenilir olmadığı doğrulanmış değildir.
 
-Bu depo, Türkiye'deki manga ve webtoon okuyucularının kullandığı **tüm Türkçe kaynakları** iki ana açık kaynak ekosisteminden (Kotatsu ve Keiyoushi / Mihon) eksiksiz olarak bir araya getirir.
+## Kapsam ve sınırlamalar
 
----
+- `index.json`, `plugins.json`, `builds/index.json`, `builds/plugins.json` ve `builds/index.v2.json` yalnızca bu eklentiyi duyurur. Diğer eklentilerin APK ve ikon dosyaları bu çalışma dalındaki `apk/` ve `builds/apk/` dizinlerinden kaldırıldı; kaynak kodları arşiv olarak korunuyor ve Keiyoushi Gradle yapılandırması yalnızca Manga-TR modülünü yüklüyor. Bu değişiklik, kullanıcı cihazlarında önceden kurulmuş eklentileri kaldırmaz veya Kitsugi uygulamasının kendi yerleşik kaynaklarını devre dışı bırakmaz.
+- Katalog mevcut 1.6.24 APK'sını gösterir; bu değişiklik yeni bir APK derlemez. APK ve ikon bağlantıları mevcut `builds` Git dalına işaret eder. Bu dosyaların bulunduğu dalda katalogların da yayımlanması gerekir; bu çalışma dalındaki değişiklikler başka bir dalı otomatik güncellemez.
+- Manga-TR'nin arama, bölüm ve görsel uç noktaları; bot koruması, giriş gereksinimi, erişim engelleri ve site değişikliklerinden etkilenebilir. Her serinin mevcut olması veya her cihazda sorunsuz çalışması garanti edilemez. Kitsugi uygulamasının kaynak kodu bu depoda bulunmaz; GitHub üzerindeki Kitsugi-Beta ana dalındaki ilgili sarmalayıcı incelendi, ancak uygulama içi uyumluluk cihazda doğrulanmış değildir.
+- Kaynak kodu `keiyoushi-extensions-tr/src/tr/mangatr` dizinindedir. Kod değişirse APK yeniden derlenip uygun sürüm ve katalog bağlantılarıyla yayımlanmalıdır; yalnızca Kotlin dosyasını değiştirmek kurulan APK'yı güncellemez.
 
-## 📂 Dizin Yapısı
+## Katalog doğrulaması
 
-```
-Kitsugi-Manga-Plugins/
-├── kotatsu-parsers-tr/          # 🤖 Kotatsu-Redo tabanlı 121 Türkçe Parser
-│   ├── MangaParser.kt           # Temel Kotatsu ayrıştırıcı arayüzü
-│   └── site/
-│       ├── madara/tr/           # WordPress + WP-Manga tabanlı 70 TR kaynak
-│       ├── mangareader/tr/      # MangaReader temalı 38 TR kaynak
-│       ├── tr/                  # Özel kodlanmış 7 TR kaynak (ElderManga, SadScans vb.)
-│       ├── zeistmanga/tr/       # Blogspot/Blogger tabanlı 4 TR kaynak
-│       ├── mmrcms/tr/           # MMRCMS tabanlı 1 TR kaynak (MangaDenizi)
-│       └── all/MangaBall.kt     # Çok dilli MangaBall TR ayrıştırıcısı
-│
-└── keiyoushi-extensions-tr/     # ⚡ Keiyoushi / Mihon tabanlı 76 Türkçe Eklenti
-    ├── lib-multisrc/            # Ortak motor kütüphaneleri (UzayManga, Madara, Themesia)
-    └── src/tr/                  # 76 bağımsız eklenti paketi (.apk derlenebilir)
-        ├── afroditscans/        # AfroditScans (SvelteKit / UzayManga motoru)
-        ├── golgebahcesi/        # Gölge Bahçesi
-        ├── mangatr/             # Manga-TR
-        ├── tortugaceviri/       # Tortuga Çeviri
-        ├── hayalistic/          # Hayalistic
-        ├── mangaruhu/           # MangaRuhu
-        ├── sadscans/            # SadScans
-        └── ... (76 eklenti)
-```
+Python 3 ile `python3 -m unittest discover -s tests` komutunu çalıştırın. Test, katalogların seçili paket ve sürüm bakımından tutarlı olduğunu ve APK kopyalarının eşleştiğini kontrol eder. Canlı siteyi veya Android uygulamasını test etmez.
 
----
-
-## 🏆 En Sağlam ve En Çok Kullanılan TR Manga Kaynakları Analizi
-
-| Kaynak Adı | Alan Adı | Motor / Altyapı | Durum | Açıklama |
-|---|---|---|---|---|
-| **Gölge Bahçesi** | `golgebahcesi.com` | Özel (Next.js / React) | 🟢 Aktif | Türkiye'nin en geniş manhwa/aksiyon arşivi. Eski MangaReader kodundan Next.js altyapısına geçti. |
-| **Manga-TR** | `manga-tr.com` | Özel API / HTML | 🟢 Aktif | En köklü ve en zengin klasik manga kütüphanesi. |
-| **Tortuga Çeviri** | `tortugaceviri.com` | WordPress (Madara) | 🟢 Aktif | One Piece ve Shonen odaklı, en istikrarlı ve kesintisiz kaynak. |
-| **AfroditScans** | `afroditscans.com` | SvelteKit (`__data.json`) | 🟢 Aktif | Çok hızlı bölüm güncellemeleri; Kitsugi'nin yerel `SvelteMangaEngine` motoruyla tam uyumlu. |
-| **MangaRuhu** | `mangaruhu.com` | WordPress (Madara) | 🟢 Aktif | Popüler romantik, dram ve fantastik manhwa arşivi. |
-| **SadScans** | `sadscans.com` | Özel HTML | 🟢 Aktif | Kaliteli çevirileriyle tanınan bağımsız ekip. |
-
----
-
-## ⚙️ Teknik Hata Notları ve Çözümler (Neden Bazı Kaynaklar Bozulur?)
-
-1. **Kotatsu MangaReader 404 (`KTS-SRC-9004`):**
-   - Siteler (örneğin Gölge Bahçesi veya AfroditScans) WordPress MangaReader temasından SvelteKit veya Next.js'e taşındığında eski AJAX adresleri 404 verir.
-   - **Çözüm:** Bu siteler için Keiyoushi UzayManga/SvelteKit scraper'ı veya Kitsugi içindeki `SvelteMangaEngine` kullanılmalıdır.
-
-2. **Cloudflare & SSL Handshake (`KTS-SRC-9008` / HTTP 525):**
-   - AlucardScans ve ZenithScans gibi sitelerin sunucu taraflı SSL sertifikaları veya alan adı yönlendirmeleri periyodik olarak çöker.
-   - **Çözüm:** Domain aynalama (mirror) ve Cloudflare WebView Cookie desteği devreye alınır.
+İnceleme ve kalan işler: `docs/mangatr/PLAN-VE-DURUM.md`.
