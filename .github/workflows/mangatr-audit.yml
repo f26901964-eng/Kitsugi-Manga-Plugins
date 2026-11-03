@@ -5,6 +5,7 @@ on:
     paths: ['tools/mangatr_live_audit.py', '.github/workflows/mangatr-audit.yml', 'keiyoushi-extensions-tr/src/tr/mangatr/**']
 permissions:
   contents: read
+  checks: write
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -12,7 +13,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: python3 -m pip install requests beautifulsoup4
-      - run: python3 tools/mangatr_live_audit.py
+      - name: Audit
+        run: set -o pipefail; python3 tools/mangatr_live_audit.py 2>&1 | tee /tmp/mangatr-audit.txt
+      - name: Publish sanitized check summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 tools/publish_audit_check.py 'Manga-TR audit results' /tmp/mangatr-audit.txt
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -22,7 +31,13 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
       - name: Build Manga-TR (not published)
         working-directory: keiyoushi-extensions-tr
-        run: bash gradlew :src:tr:mangatr:assembleDebug --no-daemon --stacktrace
+        run: set -o pipefail; bash gradlew :src:tr:mangatr:assembleDebug --no-daemon 2>&1 | tee /tmp/mangatr-build.txt
+      - name: Publish build check summary
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.sha }}
+          GH_REPO: ${{ github.repository }}
+        run: python3 tools/publish_audit_check.py 'Manga-TR build results' /tmp/mangatr-build.txt
