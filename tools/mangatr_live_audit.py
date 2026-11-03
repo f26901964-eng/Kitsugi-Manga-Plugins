@@ -14,6 +14,16 @@ def get(path):
     return r
 
 try:
+    first = get('index.html')
+    if first.status_code == 403 and 'check.ddos-guard.net/check.js' in first.text:
+        check = s.get('https://check.ddos-guard.net/check.js', timeout=30)
+        match = re.search(r"'([^']+)'", check.text)
+        path = match.group(1) if match else ''
+        print('ddos check status', check.status_code, 'check path looks relative', bool(path.startswith('/') and not path.startswith('//')), flush=True)
+        if path.startswith('/') and not path.startswith('//'):
+            gate = s.get(urljoin(BASE, path), timeout=30)
+            print('ddos gate status', gate.status_code, 'cookie names', sorted(c.name for c in s.cookies), flush=True)
+            get('index.html')
     for name, path in [('home', 'index.html'), ('search', 'arama.html?icerik=Chainsaw+Man&page=1'), ('popular', 'manga-list-sayfala.html?sort=views&sort_type=DESC&page=1&listType=pagination'), ('detail', 'manga-chainsaw-man.html')]:
         r = get(path)
         soup = BeautifulSoup(r.text, 'html.parser')
