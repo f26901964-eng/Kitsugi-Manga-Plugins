@@ -1,6 +1,7 @@
 """Public, read-only live checks. Never print cookies, tokens or response bodies."""
 from urllib.parse import urljoin
 import re
+import base64
 import requests
 from bs4 import BeautifulSoup
 
@@ -36,8 +37,25 @@ try:
     try:
         obj = r.json()
         print('reader selector keys', sorted(obj) if isinstance(obj,dict) else 'not an object', 'rows', len(obj.get('rows',[])) if isinstance(obj,dict) and isinstance(obj.get('rows'),list) else 'unknown', 'row keys', sorted(obj['rows'][0]) if isinstance(obj,dict) and isinstance(obj.get('rows'),list) and obj['rows'] and isinstance(obj['rows'][0],dict) else [], flush=True)
+        if isinstance(obj, dict) and isinstance(obj.get('rows'), list):
+            print('reader first/last rows', obj['rows'][:2], obj['rows'][-2:], 'offset', obj.get('offset'), flush=True)
     except ValueError:
         print('reader selector did not return JSON', flush=True)
+    js = s.get(urljoin(BASE, 'app/manga/themes/default/assets/js/manga-tr.min.js?v=2910-5'), timeout=30).text
+    print('site js length', len(js), flush=True)
+    candidates = [js]
+    for encoded in re.findall(r'[A-Za-z0-9+/]{300,}={0,2}', js):
+        try:
+            candidates.append(base64.b64decode(encoded).decode('utf-8'))
+        except (ValueError, UnicodeError):
+            pass
+    for term in ['fetch_pages_manga', 'chapter_list_key', 'listKey', 'bento-ep', 'chapter-results-shell', 'bolumara']:
+        print('JS term', term, 'candidate matches', sum(term in c for c in candidates), flush=True)
+        for c in candidates:
+            if term in c:
+                idx = c.index(term)
+                print('context', c[max(0,idx-350):idx+500], flush=True)
+                break
 except requests.RequestException as e:
     print('network failure:', type(e).__name__, str(e).split(' (Caused by ')[0], flush=True)
     raise SystemExit(1)
