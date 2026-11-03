@@ -33,8 +33,9 @@ rootProject.name = "Keiyoushi"
 /**
  * Add or remove modules to load as needed for local development here.
  */
-loadAllIndividualExtensions()
-// loadIndividualExtension("all", "mangadex")
+// Only Manga-TR is built/exposed for this repository. Other sources remain as
+// inactive source code and can be re-enabled deliberately if needed.
+loadIndividualExtension("tr", "mangatr")
 
 /**
  * ===================================== COMMON CONFIGURATION ======================================
