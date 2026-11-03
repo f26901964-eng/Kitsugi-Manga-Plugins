@@ -12,9 +12,9 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - run: python3 -m pip install requests beautifulsoup4
+      - run: python3 -m pip install requests beautifulsoup4 playwright
       - name: Audit
-        run: set -o pipefail; python3 tools/mangatr_live_audit.py 2>&1 | tee /tmp/mangatr-audit.txt
+        run: set -o pipefail; (python3 tools/mangatr_live_audit.py && python3 tools/mangatr_browser_audit.py) 2>&1 | tee /tmp/mangatr-audit.txt
       - name: Publish sanitized check summary
         if: always()
         env:
