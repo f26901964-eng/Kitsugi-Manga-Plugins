@@ -25,11 +25,14 @@ try:
             gate = s.get(urljoin(BASE, path), timeout=30)
             print('ddos gate status', gate.status_code, 'cookie names', sorted(c.name for c in s.cookies), flush=True)
             get('index.html')
+    detail_soup = None
     for name, path in [('home', 'index.html'), ('search', 'arama.html?icerik=Chainsaw+Man&page=1'), ('popular', 'manga-list-sayfala.html?sort=views&sort_type=DESC&page=1&listType=pagination'), ('detail', 'manga-chainsaw-man.html')]:
         r = get(path)
         soup = BeautifulSoup(r.text, 'html.parser')
         print(name, 'title', bool(soup.select_one('h1.bento-hero-title')), 'search cards', len(soup.select('div.arama-card')), 'media cards', len(soup.select('.media-card')), 'episode cards', len(soup.select('article.bento-ep-card')), 'chapter_key', bool(re.search(r"listKey:\s*'([^']+)'", r.text)), 'challenge markers', [x for x in ('check.ddos-guard.net/check.js', 'cf-turnstile', '__waf_challenge') if x in r.text], flush=True)
         if name == 'detail':
+            detail_soup = soup
+            print('all script paths:', [x.get('src','').split('?')[0] for x in soup.select('script[src]')], flush=True)
             print('detail script file paths:', [x.get('src','').split('?')[0] for x in soup.select('script[src]') if 'manga' in x.get('src','') or 'chapter' in x.get('src','')], flush=True)
             print('detail results manga field present:', bool(soup.select_one('#results[data-manga]')), flush=True)
     r = s.get(urljoin(BASE, 'cek/ajax_chapters_endpoint.php'), params={'ajax': 'chapters', 'manga': 'chainsaw-man', 'offset': '0'}, headers={'X-Requested-With':'XMLHttpRequest', 'Referer':urljoin(BASE,'manga-chainsaw-man.html')}, timeout=30)
@@ -59,3 +62,17 @@ try:
 except requests.RequestException as e:
     print('network failure:', type(e).__name__, str(e).split(' (Caused by ')[0], flush=True)
     raise SystemExit(1)
+
+if detail_soup:
+    for node in detail_soup.select('script[src]'):
+        src = node.get('src', '')
+        if not src or not urljoin(BASE, src).startswith(BASE):
+            continue
+        try:
+            txt = s.get(urljoin(BASE, src), timeout=15).text
+        except requests.RequestException:
+            continue
+        for term in ('fetch_pages_manga', 'chapter_list_key', 'listKey', 'bento-ep', 'bolumara', 'chapter-results-shell'):
+            if term in txt:
+                i = txt.index(term)
+                print('MATCH', src.split('?')[0], term, txt[max(0,i-500):i+700], flush=True)
