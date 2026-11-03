@@ -117,7 +117,7 @@ abstract class MangaTR : KeiSource() {
     private suspend fun getMangaList(page: Int, url: HttpUrl): MangasPage {
         val document = client.get(url).asJsoup()
 
-        val mangas = document.select("div.media-card")
+        val mangas = document.select(".media-card")
             .filterNot { it.selectFirst(".media-card__badge")?.text()?.lowercase(Locale.ROOT)?.isExcludedType() == true }
             .map {
                 SManga.create().apply {
@@ -214,6 +214,7 @@ abstract class MangaTR : KeiSource() {
 
         val chapters = mutableListOf<SChapter>()
         var offset: Int? = null
+        val seenBatches = mutableSetOf<List<String>>()
 
         while (true) {
             val form = FormBody.Builder()
@@ -227,7 +228,12 @@ abstract class MangaTR : KeiSource() {
                 .select("article.bento-ep-card")
             if (elements.isEmpty()) break
 
-            elements.mapTo(chapters, ::chapterFromElement)
+            val batch = elements.map(::chapterFromElement)
+            // Do not loop forever or silently present duplicate pages if pagination breaks.
+            if (!seenBatches.add(batch.map { it.url })) {
+                throw IOException("Bölüm listesi yineleniyor; lütfen daha sonra tekrar deneyin.")
+            }
+            chapters.addAll(batch)
 
             // The site loads 20 entries initially, then 100 per "load more" request
             offset = (offset ?: 0) + if (offset == null) 20 else 100
@@ -242,7 +248,8 @@ abstract class MangaTR : KeiSource() {
 
         val number = link.selectFirst(".bento-ep-chapter-num")?.text()?.removeSuffix(".")
         val subtitle = element.selectFirst(".bento-ep-subtitle")?.textOrNull()
-        name = listOfNotNull("Bölüm $number", subtitle).joinToString(" - ")
+        name = listOfNotNull(number?.let { "Bölüm $it" } ?: link.textOrNull(), subtitle)
+            .joinToString(" - ").ifBlank { "Bölüm" }
         chapter_number = number?.toFloatOrNull() ?: -1f
         date_upload = parseRelativeDate(element.selectFirst(".bento-ep-meta-time")?.text())
     }
@@ -269,7 +276,12 @@ abstract class MangaTR : KeiSource() {
             ?: throw Exception("Sayfa verisi bulunamadı")
 
         // The gate token is single-use and its response key unlocks the config for this page load only
-        val gateKey = client.post("$baseUrl/$gatePath", "{}".toRequestBody(JSON_MEDIA_TYPE))
+        // _fpx in the site HTML begins with '/', so concatenating another slash
+        // produces //cek/... and may target a different route on the server.
+        val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
+            ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host && it.port == baseUrl.toHttpUrl().port }
+            ?: throw IOException("Geçersiz okuyucu doğrulama adresi")
+        val gateKey = client.post(gateUrl.toString(), "{}".toRequestBody(JSON_MEDIA_TYPE))
             .parseAs<ReaderGateDto>().k
         val config = configScript.data()
             .decrypt("gate|$gateKey|reader")
@@ -308,6 +320,7 @@ abstract class MangaTR : KeiSource() {
     private fun scrambledImageInterceptor(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
+        if (!response.isSuccessful) return response
         val order = request.url.fragment
             ?.takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
             ?.split(',')
@@ -318,6 +331,12 @@ abstract class MangaTR : KeiSource() {
             BitmapFactory.decodeStream(it.body.byteStream())
         } ?: throw IOException("Resim çözülemedi")
 
+        if (order.size > source.height || order.any { it / 100 !in 0..3 || it % 100 !in order.indices } ||
+            order.map { it % 100 }.distinct().size != order.size
+        ) {
+            source.recycle()
+            throw IOException("Resim parça sırası geçersiz")
+        }
         val stripHeight = source.height / order.size
         val output = Bitmap.createBitmap(source.width, stripHeight * order.size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
