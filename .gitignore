@@ -15,3 +15,6 @@ Thumbs.db
 
 __pycache__/
 *.py[cod]
+
+# Etkinleştirilebilen eklentilerin arşivlenmiş APK dosyaları
+!prebuilt/apk/*.apk

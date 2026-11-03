@@ -33,9 +33,19 @@ rootProject.name = "Keiyoushi"
 /**
  * Add or remove modules to load as needed for local development here.
  */
-// Only Manga-TR is built/exposed for this repository. Other sources remain as
-// inactive source code and can be re-enabled deliberately if needed.
-loadIndividualExtension("tr", "mangatr")
+// The repository-wide allowlist also controls the generated public catalogs.
+val enabledFile = File(rootDir.parentFile, "enabled_plugins.txt")
+require(enabledFile.isFile) { "enabled_plugins.txt bulunamadı" }
+enabledFile.readLines()
+    .map { it.trim() }
+    .filter { it.isNotEmpty() && !it.startsWith("#") }
+    .distinct()
+    .forEach { module ->
+        require(Regex("[a-z0-9_-]+/[a-z0-9_-]+").matches(module)) { "Geçersiz eklenti: $module" }
+        val (lang, name) = module.split("/")
+        require(File(rootDir, "src/$lang/$name/build.gradle.kts").isFile) { "Eklenti bulunamadı: $module" }
+        loadIndividualExtension(lang, name)
+    }
 
 /**
  * ===================================== COMMON CONFIGURATION ======================================
