@@ -37,16 +37,24 @@ def save(name, content, subdir="live"):
     print(f"  -> {p} {len(content)}b")
     return p
 
-def ddos_bypass(resp):
+def _current_referer():
+    # Use last detail URL as referer if available, else BASE
+    try:
+        # Try to get last fetched detail URL from session history? fallback to BASE
+        # We store globally
+        return globals().get("_last_detail_url", BASE+"/")
+    except: return BASE+"/"
+def ddos_bypass(resp, referer=None):
     """Manga-TR DDoS-Guard 403 -> Kotlin DDoSGuardInterceptor ile aynı: random __ddg2 + check.js + well-known"""
     try:
         is_ddos = resp.status_code == 403 or (resp.status_code == 200 and "check.ddos-guard.net/check.js" in resp.text)
-        # Extra check: Server ddos-guard + small body
-        if not is_ddos and resp.headers.get("Server","") == "ddos-guard" and len(resp.text) < 5000 and "ddos-guard" in resp.text.lower():
+        # Extra check: Server ddos-guard + small body (but POST 0-byte also Server ddos-guard)
+        if not is_ddos and resp.headers.get("Server","") == "ddos-guard" and len(resp.text) < 2000:
             is_ddos = True
         if not is_ddos:
             return False
-        print(f"  [DDOS-GUARD] 403 tespit, bypass deneniyor...")
+        ref = referer or _current_referer()
+        print(f"  [DDOS-GUARD] 403 tespit, bypass deneniyor... referer={ref[:60]}")
         # 1) random __ddg2 cookie (gallery-dl kanıtlı)
         import random, string, time as _t
         try:
@@ -55,12 +63,12 @@ def ddos_bypass(resp):
                 # domain .manga-tr.com
                 sess.cookies.set("__ddg2", rnd, domain=".manga-tr.com", path="/")
                 sess.cookies.set("__ddg2", rnd, domain="manga-tr.com", path="/")
+                sess.cookies.set("__ddg2", rnd, domain="www.manga-tr.com", path="/")
                 print(f"    injected random __ddg2={rnd[:8]}...")
         except Exception as ce:
             print(f"    random cookie fail {ce}")
         # 2) official 2-request flow: check.js -> /.well-known/ddos-guard/...
-        # Referer must be original URL (BASE)
-        headers_wk = {"Referer": BASE+"/", "Origin": BASE}
+        headers_wk = {"Referer": ref, "Origin": BASE}
         wk = sess.get("https://check.ddos-guard.net/check.js", headers=headers_wk, timeout=10)
         m = re.search(r"'([^']+)'", wk.text)
         if not m:
@@ -79,7 +87,7 @@ def ddos_bypass(resp):
         if not path.startswith("/"): path="/"+path
         # Extract well-known via regex as Kotlin does
         check_url = f"{BASE}{path}"
-        headers_ck = {"Referer": BASE+"/", "Origin": BASE}
+        headers_ck = {"Referer": ref, "Origin": BASE}
         try:
             cr = sess.get(check_url, headers=headers_ck, timeout=10)
             print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:8]} url={check_url[:80]}")
@@ -102,15 +110,20 @@ def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None,
     headers = {}
     if headers_extra: headers.update(headers_extra)
     verb = "POST" if method=="POST" else "GET"
+    # Track last detail URL for referer
+    if url==BASE+"/" or "/manga-" in url:
+        globals()["_last_detail_url"]=url
     print(f"[{verb}] {name} <- {url} data={data if method=='POST' else ''}")
     try:
         if method=="POST":
             r = sess.post(url, data=data, headers=headers, timeout=20)
         else:
             r = sess.get(url, headers=headers, timeout=20)
-        # DDoS-Guard ise bir kez bypass dene ve tekrar iste
-        if retry_ddos and (r.status_code==403 or "check.ddos-guard.net" in r.text):
-            if ddos_bypass(r):
+        # DDoS-Guard ise bir kez bypass dene ve tekrar iste (also for 403 with 0-byte)
+        should_retry = (r.status_code==403 or "check.ddos-guard.net" in r.text or (len(r.text)==0 and r.headers.get("Server","").lower()=="ddos-guard"))
+        if retry_ddos and should_retry:
+            referer_for_bypass = headers.get("Referer") or headers.get("referer") or _current_referer()
+            if ddos_bypass(r, referer=referer_for_bypass):
                 time.sleep(0.8)
                 if method=="POST":
                     r = sess.post(url, data=data, headers=headers, timeout=20)
