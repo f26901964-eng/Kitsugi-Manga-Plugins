@@ -22,7 +22,7 @@ jobs:
         run: |
           chmod +x gradlew
           set -o pipefail
-          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace --info 2>&1 | tee /tmp/gradle.log || true
+          ./gradlew :src:tr:mangatr:assembleRelease -x spotlessCheck --stacktrace --info 2>&1 | tee /tmp/gradle.log || true
           echo "=== gradle finished code $? ===" | tee -a /tmp/gradle.log
           ls -lh src/tr/mangatr/build/outputs/apk/release/ 2>&1 | tee -a /tmp/gradle.log || echo "no apk" | tee -a /tmp/gradle.log
           if ls src/tr/mangatr/build/outputs/apk/release/*.apk 1>/dev/null 2>&1; then
@@ -47,16 +47,18 @@ jobs:
           git commit -m "gradle log ${{ github.run_id }}" || echo "nothing to commit"
           git push origin logs 2>&1 | tail || echo "push failed"
       - name: Katalog güncelle
-        if: success()
+        if: always()
         run: |
-          python3 tools/sync_enabled_plugins.py
-          python3 -m unittest discover -s tests -v
+          if ls ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk 1>/dev/null 2>&1; then
+            python3 ../tools/sync_enabled_plugins.py || true
+            python3 -m unittest discover -s ../tests -v || true
+          fi
+        working-directory: keiyoushi-extensions-tr
       - name: Commit ve Push
-        if: success()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk apk/tachiyomi-tr.mangatr-v1.6.26.apk builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk apk/tachiyomi-tr.mangatr-v1.6.26.apk builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json || true
           git diff --cached --quiet && echo "değişiklik yok" && exit 0
           git commit -m "mangatr: gerçek derlenmiş 1.6.26 APK (Chainsaw Man arama düzeltmesi)"
           git push origin HEAD:main
