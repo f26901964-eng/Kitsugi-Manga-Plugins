@@ -70,20 +70,22 @@ def ddos_bypass(resp, referer=None):
         # 2) official 2-request flow: check.js -> /.well-known/ddos-guard/...
         headers_wk = {"Referer": ref, "Origin": BASE}
         wk = sess.get("https://check.ddos-guard.net/check.js", headers=headers_wk, timeout=10)
-        m = re.search(r"'([^']+)'", wk.text)
-        if not m:
-            m2 = re.search(r'"([^"]+)"', wk.text)
+        # Kotlin: Regex("""['\"](/.well-known/ddos-guard/[^'\"]+)['\"]""")
+        m = re.search(r"[\"'](\/.well-known\/ddos-guard\/[^\"']+)[\"']", wk.text)
+        if m:
+            path = m.group(1)
+        else:
+            # Fallback: any single/double quoted path
+            m2 = re.search(r"'([^']+)'", wk.text)
             if not m2:
-                print(f"    well-known parse fail: {wk.text[:400]}")
-                # Still consider injected cookie success
+                m2 = re.search(r'"([^"]+)"', wk.text)
+            if not m2:
+                print(f"    well-known parse fail: {wk.text[:600]}")
                 return True
             path = m2.group(1)
-        else:
-            path = m.group(1)
-        # Find well-known path inside
-        wk2 = re.search(r"(\/.well-known\/ddos-guard\/[^\s'\"\"]+)", wk.text)
-        if wk2:
-            path = wk2.group(1)
+            wk2 = re.search(r"(\/.well-known\/ddos-guard\/[^\s'\"\"]+)", wk.text)
+            if wk2:
+                path = wk2.group(1)
         if not path.startswith("/"): path="/"+path
         # Extract well-known via regex as Kotlin does
         check_url = f"{BASE}{path}"
