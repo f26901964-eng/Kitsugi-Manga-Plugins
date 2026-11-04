@@ -16,5 +16,14 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
+# Canlı ham HTML / dump oturum anahtarı içerebilir - depoya itme (artifact'te saklanır)
+mangatr/raw/
+mangatr/dumps/*.json
+mangatr/live/*.html
+mangatr/live/*.headers
+mangatr/live/*.js
+google_drive/
+*.har
+
 # Etkinleştirilebilen eklentilerin arşivlenmiş APK dosyaları
 !prebuilt/apk/*.apk
