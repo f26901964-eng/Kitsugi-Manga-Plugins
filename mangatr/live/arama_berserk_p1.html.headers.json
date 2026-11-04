@@ -1,0 +1,19 @@
+{
+  "Server": "ddos-guard",
+  "Connection": "keep-alive",
+  "Keep-Alive": "timeout=60",
+  "Set-Cookie": "__ddg8_=4KOrEywtPYI3Dklb; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:18:02 GMT, __ddg10_=1793822282; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:18:02 GMT, __ddg9_=20.115.228.118; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:18:02 GMT",
+  "Content-Security-Policy": "upgrade-insecure-requests;",
+  "expires": "Thu, 19 Nov 1981 08:52:00 GMT",
+  "cache-control": "no-store, no-cache, must-revalidate",
+  "pragma": "no-cache",
+  "content-type": "text/html; charset=UTF-8",
+  "content-encoding": "gzip",
+  "vary": "Accept-Encoding",
+  "content-length": "14777",
+  "date": "Wed, 04 Nov 2026 19:58:02 GMT",
+  "x-content-type-options": "nosniff",
+  "x-xss-protection": "1; mode=block",
+  "expect-ct": "enforce, max-age=21600",
+  "alt-svc": "h3=\":443\"; ma=2592000, h3-29=\":443\"; ma=2592000"
+}
