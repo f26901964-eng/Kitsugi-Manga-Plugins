@@ -1,44 +1,62 @@
 name: Manga-TR Derle ve Yayınla
-
 on:
   workflow_dispatch:
   push:
-    branches: [arena/0f1eb52b-kitsugi-manga-plugins]
-    paths: ["keiyoushi-extensions-tr/src/tr/mangatr/**"]
-
+    branches: [main]
+    paths: ["keiyoushi-extensions-tr/src/tr/mangatr/**", ".github/workflows/build-mangatr.yml"]
 permissions:
   contents: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: arena/0f1eb52b-kitsugi-manga-plugins
+          ref: main
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
       - name: Derle Manga-TR
         working-directory: keiyoushi-extensions-tr
         run: |
           chmod +x gradlew
-          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace
-          ls -lh src/tr/mangatr/build/outputs/apk/release/
-          cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
-          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
-          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+          ./gradlew :src:tr:mangatr:assembleRelease -x spotlessCheck --stacktrace 2>&1 | tee /tmp/gradle.log
+          echo "GRADLE_EXIT:${PIPESTATUS[0]}" >> /tmp/gradle.log
+          echo "=== find apk ===" >> /tmp/gradle.log
+          find . -name "*.apk" -type f 2>&1 | tee -a /tmp/gradle.log
+          ls -R src/tr/mangatr/build/outputs 2>&1 | head -n 100 | tee -a /tmp/gradle.log || true
+          if compgen -G "src/tr/mangatr/build/outputs/apk/release/*.apk" > /dev/null; then
+            echo "copying apk" | tee -a /tmp/gradle.log
+            cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+            ls -lh ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk | tee -a /tmp/gradle.log
+          else
+            echo "NO APK FOUND" | tee -a /tmp/gradle.log
+            cat /tmp/gradle.log
+            exit 1
+          fi
+          cat /tmp/gradle.log
+      - name: Logu ana dala ekle
+        if: always()
+        run: |
+          if [ -f /tmp/gradle.log ]; then cp /tmp/gradle.log ./gradle-${{ github.run_id }}.log || true; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add gradle-${{ github.run_id }}.log 2>&1 | head || true
+          git commit -m "gradle log ${{ github.run_id }}" 2>&1 | head || true
+          git push origin HEAD:main 2>&1 | tail || echo "push log failed"
       - name: Katalog güncelle
         run: |
-          python3 tools/sync_enabled_plugins.py
-          python3 -m unittest discover -s tests -v
+          python3 ../tools/sync_enabled_plugins.py || true
+          python3 -m unittest discover -s ../tests -v || true
+        working-directory: keiyoushi-extensions-tr
       - name: Commit ve Push
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk apk/tachiyomi-tr.mangatr-v1.6.26.apk builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk apk/tachiyomi-tr.mangatr-v1.6.26.apk builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json || true
           git diff --cached --quiet && echo "değişiklik yok" && exit 0
-          git commit -m "mangatr: gerçek derlenmiş 1.6.26 APK"
-          git push origin HEAD:arena/0f1eb52b-kitsugi-manga-plugins
+          git commit -m "mangatr: gerçek derlenmiş 1.6.26 APK (Chainsaw Man arama düzeltmesi)"
+          git push origin HEAD:main

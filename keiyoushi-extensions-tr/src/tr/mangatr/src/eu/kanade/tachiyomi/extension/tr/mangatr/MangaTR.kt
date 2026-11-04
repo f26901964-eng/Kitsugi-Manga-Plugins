@@ -980,7 +980,7 @@ abstract class MangaTR : KeiSource() {
         throw IOException("Sayfa resimleri bulunamadı. Bölüm görüntüleri yüklenemedi.")
     }
 
-    private fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
+    private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
         // Detect modal title
         val hasModal = document.selectFirst("*:contains(Çeviri Grubu Seçimi)") != null ||
             document.text().contains("farklı çeviri grubu tarafından", ignoreCase = true) ||
