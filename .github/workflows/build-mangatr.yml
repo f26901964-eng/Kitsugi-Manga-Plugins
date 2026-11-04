@@ -17,7 +17,14 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
+      - name: Android SDK kontrol
+        run: |
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
+          ls -lh $ANDROID_HOME/platform-tools 2>&1 | head
+          ls -lh $ANDROID_HOME/cmdline-tools 2>&1 | head
+          sdkmanager --version 2>&1 | head
+          yes | sdkmanager --licenses 2>&1 | tail -n 20 || true
       - name: Derle Manga-TR
         working-directory: keiyoushi-extensions-tr
         run: |
