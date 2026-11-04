@@ -1,0 +1,63 @@
+name: mangatr-canlı-topla
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/0f1eb52b-kitsugi-manga-plugins]
+    paths: ["mangatr/**", "tools/mangatr-exhaustive.py", ".github/workflows/mangatr-topla.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  topla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Sistem hazırla
+        run: pip install requests beautifulsoup4 lxml -q
+
+      - name: Eksiksiz topla — eklentinin ihtiyaç duyduğu HER ŞEY
+        run: |
+          set -e
+          python3 tools/mangatr-exhaustive.py
+          ls -R mangatr
+          echo "---- summary ----"
+          cat mangatr/live/summary.json || true
+          echo "---- list_keys ----"
+          cat mangatr/live/list_keys.json || true
+          echo "---- discovered ----"
+          cat mangatr/live/discovered_manga.json || true
+
+      - name: Artifact yükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-live-dump
+          path: |
+            mangatr/live/**
+            mangatr/raw/**
+          if-no-files-found: warn
+
+      - name: Sonuçları repoya it (sandbox erişsin — artifact blob storage sandbox'ta kapalı)
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # özetler her zaman
+          git add mangatr/live/summary.json mangatr/live/list_keys.json mangatr/live/discovered_manga.json 2>&1 || true
+          git add mangatr/live/*.headers.json mangatr/live/*.meta.json 2>&1 || true
+          # ham html'ler de lazım (gitignore artık izin veriyor)
+          git add mangatr/live/*.html mangatr/raw/*.html mangatr/raw/*.js 2>&1 || true
+          git diff --cached --quiet && echo "commit yok, özet değişmemiş" && exit 0
+          git commit -m "ci(mangatr): canlı özet+ham ${{ github.run_id }} [skip ci]"
+          git push origin HEAD:${{ github.ref_name }} || echo "push fail, devam"
+
+      - name: Özeti job summary'e yaz
+        if: always()
+        run: |
+          echo "### mangatr/live özet" >> $GITHUB_STEP_SUMMARY
+          cat mangatr/live/summary.json >> $GITHUB_STEP_SUMMARY || true
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Tüm ham dosyalar artifact'te: mangatr-live-dump" >> $GITHUB_STEP_SUMMARY

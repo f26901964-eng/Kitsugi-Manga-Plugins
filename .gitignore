@@ -16,5 +16,11 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
+# Ham HTML dump - live/raw sadece CI özet için, büyük body'ler yine artifact'te
+# Not: canlı özet için live/*.html'e izin veriyoruz ki sandbox görebilsin
+mangatr/dumps/*.json
+google_drive/
+*.har
+
 # Etkinleştirilebilen eklentilerin arşivlenmiş APK dosyaları
 !prebuilt/apk/*.apk

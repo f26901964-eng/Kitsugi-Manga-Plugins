@@ -41,6 +41,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
 import org.jsoup.nodes.Document
+import kotlinx.coroutines.delay
 import org.jsoup.nodes.Element
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -51,13 +52,26 @@ import java.util.Locale
 @Source
 abstract class MangaTR : KeiSource() {
 
-    override fun Headers.Builder.configureHeaders() = add("Accept-Language", "en-US,en;q=0.5")
+    override fun Headers.Builder.configureHeaders() {
+        add("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
+        add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+        add("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
+        add("Accept-Encoding", "gzip, deflate, br")
+        add("Sec-Ch-Ua", "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"")
+        add("Sec-Ch-Ua-Mobile", "?1")
+        add("Sec-Ch-Ua-Platform", "\"Android\"")
+        add("Sec-Fetch-Dest", "document")
+        add("Sec-Fetch-Mode", "navigate")
+        add("Sec-Fetch-Site", "same-origin")
+        add("Sec-Fetch-User", "?1")
+        add("Upgrade-Insecure-Requests", "1")
+    }
 
     override fun OkHttpClient.Builder.configureClient() = apply {
+        rateLimit(2)
+        addInterceptor(DDoSGuardInterceptor(network.client))
         addInterceptor(::verifyChallengeInterceptor)
         addInterceptor(::scrambledImageInterceptor)
-        addInterceptor(DDoSGuardInterceptor(network.client))
-        rateLimit(2)
     }
 
     private val ajaxHeaders get() = headersBuilder()
@@ -426,35 +440,37 @@ abstract class MangaTR : KeiSource() {
     // ============================= Chapters ==============================
 
     private suspend fun getChapterList(document: Document, manga: SManga? = null): List<SChapter> {
-        val html = document.html()
+        // --- Yeni site (2025+): data-manga slug + _sig ile cek/fetch_pages_manga.php ---
+        // Kaynak: manga-tr.min.js içinden çözülen __mtrChaptersListInit -> offset 0,20,120...
+        // Önce yeni yöntemi dene, başarısız olursa eski fallback'lara düş
+        val mangaSlugFromAttr = document.selectFirst("#results")?.attr("data-manga")?.trim()?.takeIf { it.isNotEmpty() }
+            ?: document.selectFirst("[data-manga]")?.attr("data-manga")?.trim()?.takeIf { it.isNotEmpty() }
+        val mangaSlugFromUrl = manga?.url?.substringAfter("manga-")?.substringBefore(".")
+            ?: document.location().substringAfter("manga-").substringBefore(".").substringBefore("?")
+                ?.takeIf { it.isNotEmpty() && !it.contains("/") }
+        val mangaSlug = mangaSlugFromAttr ?: mangaSlugFromUrl
 
-        // Strategy 1: Bento listKey doğrudan HTML içinde
+        if (mangaSlug != null) {
+            val tur = document.selectFirst("#results")?.attr("data-tur") ?: ""
+            val newChapters = fetchMangaChaptersNew(mangaSlug, tur)
+            if (newChapters.isNotEmpty()) return newChapters
+        }
+
+        // --- Eski: Bento listKey doğrudan HTML içinde (geriye dönük uyumluluk) ---
+        val html = document.html()
         val key = extractChapterKey(html, document)
         if (key != null) {
             val chapters = fetchBentoChapters(key)
             if (chapters.isNotEmpty()) return chapters
         }
-
-        // Strategy 1b: Harici JS (manga-tr.min.js) içinde listKey arayın — yeni sitede anahtar dış dosyada
         val extKey = extractChapterKeyFromExternalJs(document)
         if (extKey != null) {
             val chapters = fetchBentoChapters(extKey)
             if (chapters.isNotEmpty()) return chapters
         }
 
-        // Strategy 2: FMReader manga_cek via data-manga attribute or URL id (slug)
-        // Yeni bento detail'de data-manga="chainsaw-man" gibi slug tutulur
-        val mangaIdFromAttr = document.selectFirst("#results")?.attr("data-manga")?.trim()
-            ?.takeIf { it.isNotEmpty() }
-            ?: document.selectFirst("[data-manga]")?.attr("data-manga")?.trim()
-                ?.takeIf { it.isNotEmpty() }
-
-        val mangaIdFromUrl = manga?.url?.substringAfter("manga-")?.substringBefore(".")
-            ?: document.location().substringAfter("manga-").substringBefore(".").substringBefore("?")
-                ?.takeIf { it.isNotEmpty() && !it.contains("/") }
-
-        val mangaId = mangaIdFromAttr ?: mangaIdFromUrl
-
+        // --- FMReader manga_cek (eski) ---
+        val mangaId = mangaSlug
         if (mangaId != null) {
             val fmChapters = fetchFmChapters(mangaId)
             if (fmChapters.isNotEmpty()) return fmChapters
@@ -465,6 +481,196 @@ abstract class MangaTR : KeiSource() {
         if (direct.isNotEmpty()) return direct
 
         throw IOException("Bölüm listesi yüklenemedi. Site yapısı değişmiş olabilir; lütfen uygulamayı güncelleyin.")
+    }
+
+    // ============================= Yeni Bölüm API (2025+) =============================
+    // Site: cek/fetch_pages_manga.php POST { manga, tur, offset, _t, _sig }
+    // _sig = SHA256(mangaSlug_seed_timestamp)  seed = --mdx-white + --mdx-black (CSS)
+    // offset: 0 -> 20 -> 120 -> 220 ... (ilk 20, sonra 100'er)
+    private suspend fun fetchMangaChaptersNew(mangaSlug: String, tur: String = ""): List<SChapter> {
+        val chapters = mutableListOf<SChapter>()
+        val seenUrls = mutableSetOf<String>()
+        var offset = 0
+        var isFirst = true
+        var attempts = 0
+        val maxAttempts = 40
+
+        // Seed'i bir kere hesapla (CSS'den), hata olursa 0 fallback
+        val seed = try { getMangaSeed() } catch (_: Exception) { 0 }
+
+        while (attempts < maxAttempts) {
+            attempts++
+            val timestamp = System.currentTimeMillis() / 1000
+            val sig = generateSig(mangaSlug, seed, timestamp)
+
+            val form = FormBody.Builder()
+                .add("manga", mangaSlug)
+                .add("tur", tur)
+                .add("offset", offset.toString())
+                .add("_t", timestamp.toString())
+                .add("_sig", sig)
+                .build()
+
+            val headers = headersBuilder()
+                .add("X-Requested-With", "XMLHttpRequest")
+                .add("Accept", "*/*")
+                .add("Referer", "$baseUrl/manga-$mangaSlug.html")
+                .add("Origin", baseUrl)
+                .build()
+
+            val response = try {
+                client.post("$baseUrl/cek/fetch_pages_manga.php", headers, form)
+            } catch (e: Exception) {
+                break
+            }
+
+            // 403 ise seed yanlış olabilir -> 0 ile retry
+            if (response.code == 403 && attempts == 1 && seed != 0) {
+                response.close()
+                val retrySig = generateSig(mangaSlug, 0, timestamp)
+                val retryForm = FormBody.Builder()
+                    .add("manga", mangaSlug).add("tur", tur).add("offset", offset.toString())
+                    .add("_t", timestamp.toString()).add("_sig", retrySig).build()
+                val retryResp = try { client.post("$baseUrl/cek/fetch_pages_manga.php", headers, retryForm) } catch (_: Exception) { null }
+                if (retryResp != null) {
+                    val retryChapters = parseChapterHtmlResponse(retryResp, seenUrls)
+                    retryResp.close()
+                    if (retryChapters.isNotEmpty()) {
+                        chapters.addAll(retryChapters)
+                        offset = if (isFirst) 20 else offset + 100
+                        isFirst = false
+                        continue
+                    } else if (retryChapters.isEmpty() && offset == 0) {
+                        retryResp.close()
+                        break
+                    }
+                    retryResp.close()
+                }
+                continue
+            }
+
+            if (response.code == 403) {
+                response.close()
+                if (attempts < 3) {
+                    delay(350)
+                    continue
+                }
+                break
+            }
+
+            val batch = parseChapterHtmlResponse(response, seenUrls)
+            response.close()
+
+            if (batch.isEmpty()) {
+                // İlk sayfada boşsa bitir
+                if (offset == 0) break
+                // Sonraki sayfalarda 2 boş üst üste gelirse bitir
+                break
+            }
+
+            chapters.addAll(batch)
+
+            // has-more kontrolü: response html içinde #has-more-chapters value=0 ise son
+            // Biz batch size'a bak: <20 veya <100 ise muhtemelen son, ama yine de bir daha dene
+            val hasMoreIndicator = batch.size >= 20
+            if (!hasMoreIndicator) break
+
+            // Pagination: ilk offset 0, sonra 20, sonra +100
+            offset = if (isFirst) 20 else offset + 100
+            isFirst = false
+
+            if (chapters.size > 5000) break
+        }
+
+        return chapters.distinctBy { it.url }
+    }
+
+    private fun parseChapterHtmlResponse(response: Response, seenUrls: MutableSet<String>): List<SChapter> {
+        val bodyStr = try { response.peekBody(Long.MAX_VALUE).string() } catch (_: Exception) { "" }
+        // Bazen JSON wrapper: {"html":"..."} gelebilir
+        var doc: Document? = null
+        try {
+            val trimmed = bodyStr.trim()
+            if (trimmed.startsWith("{")) {
+                val json = Json.parseToJsonElement(trimmed) as? JsonObject
+                val htmlField = json?.get("html")?.jsonPrimitive?.content ?: json?.get("data")?.jsonPrimitive?.content
+                if (htmlField != null) {
+                    doc = org.jsoup.Jsoup.parse(htmlField, baseUrl)
+                }
+            }
+        } catch (_: Exception) {}
+        if (doc == null) {
+            try {
+                doc = response.asJsoup().also { it.setBaseUri(baseUrl) }
+            } catch (_: Exception) { return emptyList() }
+        }
+
+        // Has-more hidden input check
+        val hasMoreVal = doc.selectFirst("#has-more-chapters")?.attr("value")
+        // Eğer hasMore 0 ise ve batch küçükse son sayfa
+
+        val elements = doc.select("article.bento-ep-card, div.bento-ep-card, div.chapter-item, article.chapter-item, div.chapter-box, li.chapter-item")
+        if (elements.isEmpty()) {
+            // Fallback: direkt linkleri dene
+            val links = doc.select("a[href*='/id-'], a[href*='-read-'], a[href*='/bolum'], a.bento-ep-title-link")
+            if (links.isNotEmpty()) {
+                return links.flatMap { el ->
+                    try { extractChaptersFromCard(el.parent() ?: el) } catch (_: Exception) {
+                        try { listOf(chapterFromElement(el)) } catch (_: Exception) { emptyList() }
+                    }
+                }.filter { seenUrls.add(it.url) }
+            }
+            return emptyList()
+        }
+
+        val batch = mutableListOf<SChapter>()
+        for (el in elements) {
+            try {
+                val list = extractChaptersFromCard(el)
+                for (ch in list) if (seenUrls.add(ch.url)) batch.add(ch)
+            } catch (_: Exception) {}
+        }
+        // hasMore 0 ise bir daha istek atma sinyali - ama batch'i döndür
+        return batch
+    }
+
+    private suspend fun getMangaSeed(): Int {
+        // CSS'den --mdx-white ve --mdx-black parse et, yoksa 0
+        // mtr.min.css içinde :root { --mdx-white: 255; --mdx-black: 0; } gibi
+        return try {
+            val cssUrls = listOf(
+                "$baseUrl/app/manga/themes/default/assets/css/mtr.min.css",
+                "$baseUrl/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6"
+            )
+            var cssText: String? = null
+            for (u in cssUrls) {
+                try {
+                    cssText = client.get(u).body.string()
+                    if (cssText.contains("--mdx-white") || cssText.contains("--mdx-black")) break
+                } catch (_: Exception) {}
+            }
+            if (cssText == null) return 0
+            val white = Regex("""--mdx-white\s*:\s*(\d+)""").find(cssText)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+            val black = Regex("""--mdx-black\s*:\s*(\d+)""").find(cssText)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+            white + black
+        } catch (_: Exception) { 0 }
+    }
+
+    private fun generateSig(mangaSlug: String, seed: Int, timestamp: Long): String {
+        val raw = "${mangaSlug}_${seed}_${timestamp}"
+        return try {
+            val digest = java.security.MessageDigest.getInstance("SHA-256")
+            val hash = digest.digest(raw.toByteArray(Charsets.UTF_8))
+            hash.joinToString("") { "%02x".format(it) }
+        } catch (_: Exception) {
+            // Fallback FNV-1a (JS'deki ikinci yol)
+            var h = 0x811c9dc5L
+            for (c in raw) {
+                h = h xor c.code.toLong()
+                h = (h * 0x01000193L) and 0xffffffffL
+            }
+            h.toString(16)
+        }
     }
 
     private fun extractChapterKey(html: String, document: Document): String? {
@@ -980,7 +1186,7 @@ abstract class MangaTR : KeiSource() {
         throw IOException("Sayfa resimleri bulunamadı. Bölüm görüntüleri yüklenemedi.")
     }
 
-    private fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
+    private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
         // Detect modal title
         val hasModal = document.selectFirst("*:contains(Çeviri Grubu Seçimi)") != null ||
             document.text().contains("farklı çeviri grubu tarafından", ignoreCase = true) ||
