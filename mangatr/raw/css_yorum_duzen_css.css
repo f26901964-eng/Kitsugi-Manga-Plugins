@@ -1,0 +1,277 @@
+/* ââ SÄ±ralama ButonlarÄ± (Sort Tabs) ââ */
+        .comment-sort-container {
+            display: flex !important;
+            justify-content: space-between !important;
+            align-items: center !important;
+            margin: 16px 0 16px 0 !important;
+            padding: 10px 16px !important;
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 12px !important;
+            flex-wrap: wrap !important;
+            gap: 10px !important;
+        }
+        .comment-sort-title {
+            font-weight: 600 !important;
+            color: #e2e8f0 !important;
+            font-size: 13.5px !important;
+            letter-spacing: 0.3px !important;
+            margin: 0 !important;
+        }
+        .comment-sort-options {
+            display: flex !important;
+            gap: 8px !important;
+            align-items: center !important;
+            margin: 0 !important;
+        }
+        .comment-sort-btn,
+        a.comment-sort-btn {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            padding: 6px 14px !important;
+            border-radius: 20px !important;
+            font-size: 12.5px !important;
+            font-weight: 500 !important;
+            color: #94a3b8 !important;
+            background: rgba(255, 255, 255, 0.06) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            text-decoration: none !important;
+            transition: all 0.2s ease !important;
+            cursor: pointer !important;
+            line-height: 1.4 !important;
+            outline: none !important;
+        }
+        .comment-sort-btn:hover,
+        a.comment-sort-btn:hover {
+            color: #ffffff !important;
+            background: rgba(255, 255, 255, 0.14) !important;
+            text-decoration: none !important;
+        }
+        .comment-sort-btn:focus,
+        a.comment-sort-btn:focus,
+        .comment-sort-btn:active,
+        a.comment-sort-btn:active,
+        .comment-sort-btn:visited,
+        a.comment-sort-btn:visited {
+            text-decoration: none !important;
+            outline: none !important;
+        }
+        .comment-sort-btn.active,
+        a.comment-sort-btn.active {
+            color: #ffffff !important;
+            background: #ff8800 !important;
+            border-color: #ff8800 !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 8px rgba(255, 136, 0, 0.35) !important;
+            text-decoration: none !important;
+        }
+        .comment-sort-btn.active:hover,
+        a.comment-sort-btn.active:hover {
+            color: #ffffff !important;
+            background: #e67a00 !important;
+            border-color: #e67a00 !important;
+            text-decoration: none !important;
+        }
+
+        /* ââ Yorum Listesi ve AyÄ±rÄ±cÄ± Ãizgiler ââ */
+        #message-list {
+            list-style: none !important;
+            list-style-type: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        #message-list > li {
+            list-style: none !important;
+            list-style-type: none !important;
+            padding-left: 0 !important;
+            margin-left: 0 !important;
+            margin-bottom: 24px !important;
+            padding-bottom: 24px !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        #message-list > li:last-child {
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+            border-bottom: none !important;
+        }
+        #message-list::marker,
+        #message-list > li::marker {
+            display: none !important;
+            content: "" !important;
+        }
+        #message-list ol,
+        .msg-body ol,
+        .comment-list-ol {
+            list-style: decimal inside !important;
+            list-style-type: decimal !important;
+            list-style-position: inside !important;
+            padding-left: 20px !important;
+            margin: 8px 0 !important;
+        }
+        #message-list ul,
+        .msg-body ul,
+        .comment-list-ul {
+            list-style: disc inside !important;
+            list-style-type: disc !important;
+            list-style-position: inside !important;
+            padding-left: 20px !important;
+            margin: 8px 0 !important;
+        }
+        #message-list ol > li,
+        #message-list ol li,
+        .comment-list-ol li,
+        .msg-body ol li {
+            list-style: decimal inside !important;
+            list-style-type: decimal !important;
+            list-style-position: inside !important;
+            display: list-item !important;
+        }
+        #message-list ul > li,
+        #message-list ul li,
+        .comment-list-ul li,
+        .msg-body ul li {
+            list-style: disc inside !important;
+            list-style-type: disc !important;
+            list-style-position: inside !important;
+            display: list-item !important;
+        }
+        #message-list ol li::marker,
+        #message-list ul li::marker,
+        .comment-list-ol li::marker,
+        .comment-list-ul li::marker,
+        .msg-body ol li::marker,
+        .msg-body ul li::marker {
+            content: normal !important;
+            display: inline-block !important;
+        }
+
+        /* Yorum alaninda kalin, italik ve bicimlendirme etiketlerinin rengi ebeveyninden (renk BBCode'undan) devralinsin */
+        #message-list strong,
+        #message-list b,
+        #message-list em,
+        #message-list i,
+        #message-list u,
+        #message-list s,
+        #message-list del,
+        .msg-body strong,
+        .msg-body b,
+        .msg-body em,
+        .msg-body i,
+        .msg-body u,
+        .msg-body s,
+        .msg-body del,
+        .comment_ui strong,
+        .comment_ui b,
+        .comment_ui_sub strong,
+        .comment_ui_sub b,
+        .comment_ui_delete strong,
+        .comment_ui_delete b {
+            color: inherit !important;
+        }
+        
+
+        .comment-section {
+            margin-top: 14px !important;
+        }
+        .comment-tree {
+            margin-top: 10px !important;
+        }
+
+        /* ââ Spoiler Sadece TÄ±klamayla AÃ§Ä±lsÄ±n (Hover Engelleme) ââ */
+        .spoiler {
+            cursor: pointer !important;
+            user-select: none !important;
+        }
+        .spoiler:hover:not(.is-revealed) .spoiler-content {
+            visibility: hidden !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+        .spoiler:hover:not(.is-revealed)::before {
+            content: "Spoiler â tÄ±kla" !important;
+            color: var(--text-dim, #94a3b8) !important;
+            margin-right: 0 !important;
+        }
+        .spoiler:hover:not(.is-revealed) {
+            background: rgba(229, 9, 20, 0.1) !important;
+            border-color: rgba(229, 9, 20, 0.3) !important;
+            border-left-color: var(--primary, #ff8800) !important;
+        }
+        .spoiler.is-revealed .spoiler-content {
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        .spoiler.is-revealed {
+            border-color: rgba(86, 211, 100, 0.2) !important;
+            border-left-color: var(--success, #22c55e) !important;
+            background: rgba(86, 211, 100, 0.06) !important;
+        }
+        .spoiler.is-revealed::before {
+            content: "Spoiler: " !important;
+            color: var(--success, #22c55e) !important;
+            margin-right: 6px !important;
+        }
+        #yorumlar-section-wrapper blockquote.comment-quote {
+            margin: 18px 0 14px !important;
+        }
+        #yorumlar-section-wrapper .spoiler,
+        #yorumlar-section-wrapper .spoiler.is-revealed {
+            position: relative;
+            display: block;
+            font-size: 15px !important;
+            font-weight: 400 !important;
+            line-height: inherit !important;
+            overflow: visible !important;
+            margin: 18px 0 12px !important;
+            padding: 10px 12px !important;
+            border: 1px solid rgba(239, 68, 68, .5) !important;
+            border-left: 3px solid #ef4444 !important;
+            border-radius: 5px !important;
+            background: rgba(239, 68, 68, .08) !important;
+            user-select: text !important;
+        }
+        #yorumlar-section-wrapper :is([style*="font-size"], font[size]) .spoiler {
+            font-size: inherit !important;
+        }
+        #yorumlar-section-wrapper :is(strong, b, [style*="font-weight"]) .spoiler {
+            font-weight: inherit !important;
+        }
+        #yorumlar-section-wrapper .spoiler::before,
+        #yorumlar-section-wrapper .spoiler:hover:not(.is-revealed)::before,
+        #yorumlar-section-wrapper .spoiler.is-revealed::before {
+            content: "Spoiler" !important;
+            position: absolute;
+            top: -9px;
+            left: 9px;
+            margin: 0 !important;
+            padding: 0 5px;
+            background: #171b24;
+            color: #f87171 !important;
+            font: 600 11px/16px sans-serif;
+            letter-spacing: normal;
+            pointer-events: none;
+        }
+        #yorumlar-section-wrapper .spoiler:not(.is-revealed)::after {
+            content: "Ä°Ã§eriÄi gÃ¶rmek iÃ§in tÄ±klayÄ±nÄ±z!";
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+        #yorumlar-section-wrapper .spoiler:not(.is-revealed) > .spoiler-content,
+        #yorumlar-section-wrapper .spoiler:not(.is-revealed) > .spoiler-title {
+            display: none !important;
+        }
+        #yorumlar-section-wrapper .spoiler.is-revealed > .spoiler-content {
+            display: block !important;
+            font-size: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+        }
+        #yorumlar-section-wrapper .spoiler:focus-visible {
+            outline: 2px solid #f87171;
+            outline-offset: 2px;
+        }

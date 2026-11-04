@@ -1,0 +1,1126 @@
+.comment-sort-container {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    margin: 20px 0 15px 0;
+
+    padding: 10px 16px;
+
+    background: rgba(255, 255, 255, 0.03);
+
+    border: 1px solid var(--mdx-border, rgba(255, 255, 255, 0.08));
+
+    border-radius: 12px;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+}
+
+.comment-sort-title {
+
+    font-weight: 600;
+
+    color: var(--mdx-text, #e1e1e1);
+
+    font-size: 14px;
+
+}
+
+.comment-sort-options {
+
+    display: flex;
+
+    gap: 8px;
+
+}
+
+.comment-sort-btn {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 6px 14px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    font-weight: 500;
+
+    color: #a0a0a0;
+
+    background: rgba(255, 255, 255, 0.06);
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    text-decoration: none !important;
+
+    transition: all 0.2s ease;
+
+    cursor: pointer;
+
+}
+
+.comment-sort-btn:hover {
+
+    color: #fff;
+
+    background: rgba(255, 255, 255, 0.12);
+
+}
+
+.comment-sort-btn.active {
+
+    color: #fff;
+
+    background: #ff8800;
+
+    border-color: #ff8800;
+
+    font-weight: 600;
+
+    box-shadow: 0 2px 8px rgba(255, 136, 0, 0.3);
+
+}
+
+.comment-divider {
+
+    border: 0;
+
+    height: 1px;
+
+    background: var(--mdx-border, rgba(255, 255, 255, 0.12));
+
+    margin: 25px 0;
+
+}
+
+#message-list {
+
+    list-style: none !important;
+
+    padding: 0 !important;
+
+    margin: 0 !important;
+
+}
+
+#message-list > li {
+
+    list-style: none !important;
+
+    margin-bottom: 24px !important;
+
+    padding-bottom: 24px !important;
+
+    border-bottom: 1px solid var(--mdx-border, rgba(255, 255, 255, 0.08));
+
+}
+
+#message-list > li:last-child {
+
+    margin-bottom: 0 !important;
+
+    padding-bottom: 0 !important;
+
+    border-bottom: none !important;
+
+}
+
+.comment-section {
+
+    margin-top: 14px;
+
+}
+
+.comment-tree {
+
+    margin-top: 10px;
+
+}
+
+
+
+/* ââ AlÄ±ntÄ± (Quote) TasarÄ±mÄ± ââ */
+
+blockquote.comment-quote,
+
+.comment-quote {
+
+    position: relative !important;
+
+    margin: 12px 0 14px 0 !important;
+
+    padding: 12px 16px !important;
+
+    background: rgba(255, 136, 0, 0.06) !important;
+
+    border: 1px solid rgba(255, 136, 0, 0.28) !important;
+
+    border-left: 4px solid #ff8800 !important;
+
+    border-radius: 8px !important;
+
+    box-sizing: border-box !important;
+
+    quotes: none !important;
+
+}
+
+
+
+blockquote.comment-quote::before,
+
+blockquote.comment-quote::after,
+
+.comment-quote::before,
+
+.comment-quote::after {
+
+    content: none !important;
+
+    display: none !important;
+
+}
+
+
+
+.comment-quote__header {
+
+    display: flex !important;
+
+    align-items: center !important;
+
+    gap: 8px !important;
+
+    margin-bottom: 8px !important;
+
+    padding-bottom: 6px !important;
+
+    border-bottom: 1px dashed rgba(255, 136, 0, 0.22) !important;
+
+    font-size: 12.5px !important;
+
+    line-height: 1.3 !important;
+
+    color: #ff8800 !important;
+
+}
+
+
+
+.comment-quote__icon {
+
+    width: 13px !important;
+
+    height: 13px !important;
+
+    opacity: 0.95 !important;
+
+    flex-shrink: 0 !important;
+
+    fill: #ff8800 !important;
+
+    display: inline-block !important;
+
+    vertical-align: middle !important;
+
+}
+
+
+
+.comment-quote__author {
+
+    font-weight: 700 !important;
+
+    color: #ff8800 !important;
+
+}
+
+
+
+.comment-quote__action {
+
+    color: #94a3b8 !important;
+
+    font-weight: 400 !important;
+
+    font-size: 12px !important;
+
+    margin-left: 3px !important;
+
+}
+
+
+
+.comment-quote__content {
+
+    color: #e2e8f0 !important;
+
+    font-size: 13.5px !important;
+
+    line-height: 1.6 !important;
+
+    word-break: break-word !important;
+
+    font-style: normal !important;
+
+}
+
+
+
+.comment-quote__content > *:first-child {
+
+    margin-top: 0 !important;
+
+}
+
+
+
+.comment-quote__content > *:last-child {
+
+    margin-bottom: 0 !important;
+
+}
+
+
+
+/* Ä°Ã§ iÃ§e alÄ±ntÄ±lar (Nested Quotes) */
+
+blockquote.comment-quote blockquote.comment-quote,
+
+.comment-quote .comment-quote {
+
+    margin: 10px 0 !important;
+
+    background: rgba(70, 182, 255, 0.06) !important;
+
+    border: 1px solid rgba(70, 182, 255, 0.28) !important;
+
+    border-left: 4px solid #46b6ff !important;
+
+}
+
+
+
+blockquote.comment-quote blockquote.comment-quote .comment-quote__header,
+
+.comment-quote .comment-quote .comment-quote__header,
+
+blockquote.comment-quote blockquote.comment-quote .comment-quote__author,
+
+.comment-quote .comment-quote .comment-quote__author {
+
+    color: #46b6ff !important;
+
+    border-bottom-color: rgba(70, 182, 255, 0.22) !important;
+
+}
+
+
+
+blockquote.comment-quote blockquote.comment-quote .comment-quote__icon,
+
+.comment-quote .comment-quote .comment-quote__icon {
+
+    fill: #46b6ff !important;
+
+}
+
+
+
+/* AlÄ±ntÄ± Yap Butonu */
+
+.btn-yorum.quote_message,
+
+.btn-yorum.quote_comment {
+
+    transition: all 0.2s ease;
+
+}
+
+
+
+.btn-yorum.quote_message:hover,
+
+.btn-yorum.quote_comment:hover {
+
+    color: #ff8800 !important;
+
+    border-color: rgba(255, 136, 0, 0.45) !important;
+
+    background: rgba(255, 136, 0, 0.12) !important;
+
+}
+
+
+
+
+
+/* SCEditor Yorum Sistemi Entegrasyonu (Koyu Tema) */
+.sceditor-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: #0f141c !important;
+    margin: 8px 0 12px 0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+    position: relative !important;
+    height: auto !important;
+    resize: none !important;
+    overflow: visible !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.sceditor-container:focus-within {
+    border-color: rgba(70, 182, 255, 0.45) !important;
+    box-shadow: 0 0 0 2px rgba(70, 182, 255, 0.15), 0 4px 20px rgba(0, 0, 0, 0.45) !important;
+}
+
+.sceditor-container div.sceditor-toolbar {
+    background: #141b27 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    padding: 6px 8px !important;
+    line-height: normal !important;
+    user-select: none !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 3px !important;
+    border-top-left-radius: 9px !important;
+    border-top-right-radius: 9px !important;
+}
+
+.sceditor-container div.sceditor-group {
+    background: rgba(255, 255, 255, 0.04) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 6px !important;
+    margin: 1px 3px 1px 0 !important;
+    padding: 2px !important;
+    display: inline-flex !important;
+    flex-shrink: 0 !important;
+}
+
+.sceditor-container .sceditor-button {
+    padding: 4px 6px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    transition: background 0.15s ease !important;
+}
+
+.sceditor-container .sceditor-button:hover,
+.sceditor-container .sceditor-button.active {
+    background: rgba(255, 255, 255, 0.12) !important;
+    box-shadow: none !important;
+}
+
+.sceditor-container .sceditor-button.active {
+    background: rgba(70, 182, 255, 0.22) !important;
+}
+
+
+        /* ââ Modern VektÃ¶rel SVG Koyu Tema Ä°konlarÄ± ââ */
+        .sceditor-button div,
+        .sceditor-container .sceditor-button div {
+            width: 16px !important;
+            height: 16px !important;
+            background-color: #cbd5e1 !important;
+            background-image: none !important;
+            -webkit-mask-repeat: no-repeat !important;
+            mask-repeat: no-repeat !important;
+            -webkit-mask-position: center center !important;
+            mask-position: center center !important;
+            -webkit-mask-size: 16px 16px !important;
+            mask-size: 16px 16px !important;
+            filter: none !important;
+            transition: background-color 0.15s ease, transform 0.1s ease !important;
+        }
+
+        .sceditor-button:hover div,
+        .sceditor-container .sceditor-button:hover div {
+            background-color: #ffffff !important;
+            filter: none !important;
+            transform: scale(1.08) !important;
+        }
+
+        .sceditor-button.active div,
+        .sceditor-container .sceditor-button.active div {
+            background-color: #46b6ff !important;
+            filter: none !important;
+        }
+
+        .sceditor-button-bold div,
+        .sceditor-container .sceditor-button-bold div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%204h8a4%204%200%200%201%204%204%204%204%200%200%201-4%204H6z%27/%3E%3Cpath%20d%3D%27M6%2012h9a4%204%200%200%201%204%204%204%204%200%200%201-4%204H6z%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.6%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%204h8a4%204%200%200%201%204%204%204%204%200%200%201-4%204H6z%27/%3E%3Cpath%20d%3D%27M6%2012h9a4%204%200%200%201%204%204%204%204%200%200%201-4%204H6z%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-italic div,
+        .sceditor-container .sceditor-button-italic div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%2719%27%20y1%3D%274%27%20x2%3D%2710%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2714%27%20y1%3D%2720%27%20x2%3D%275%27%20y2%3D%2720%27/%3E%3Cline%20x1%3D%2715%27%20y1%3D%274%27%20x2%3D%279%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%2719%27%20y1%3D%274%27%20x2%3D%2710%27%20y2%3D%274%27/%3E%3Cline%20x1%3D%2714%27%20y1%3D%2720%27%20x2%3D%275%27%20y2%3D%2720%27/%3E%3Cline%20x1%3D%2715%27%20y1%3D%274%27%20x2%3D%279%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-underline div,
+        .sceditor-container .sceditor-button-underline div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%204v7a6%206%200%200%200%2012%200V4%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2720%27%20x2%3D%2720%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M6%204v7a6%206%200%200%200%2012%200V4%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2720%27%20x2%3D%2720%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-strike div,
+        .sceditor-container .sceditor-button-strike div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M16%204H9a3%203%200%200%200-3%203c0%202%201.5%203%204%203.5%27/%3E%3Cpath%20d%3D%27M17%2014c.7.7%201%201.7%201%202.5a3.5%203.5%200%200%201-7%200%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2712%27%20x2%3D%2720%27%20y2%3D%2712%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M16%204H9a3%203%200%200%200-3%203c0%202%201.5%203%204%203.5%27/%3E%3Cpath%20d%3D%27M17%2014c.7.7%201%201.7%201%202.5a3.5%203.5%200%200%201-7%200%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2712%27%20x2%3D%2720%27%20y2%3D%2712%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-left div,
+        .sceditor-container .sceditor-button-left div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2715%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2718%27%20x2%3D%2718%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2715%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2718%27%20x2%3D%2718%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-center div,
+        .sceditor-container .sceditor-button-center div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%276%27%20y1%3D%2712%27%20x2%3D%2718%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2718%27%20x2%3D%2720%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%276%27%20y1%3D%2712%27%20x2%3D%2718%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%274%27%20y1%3D%2718%27%20x2%3D%2720%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-right div,
+        .sceditor-container .sceditor-button-right div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%276%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%276%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-justify div,
+        .sceditor-container .sceditor-button-justify div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-bulletlist div,
+        .sceditor-container .sceditor-button-bulletlist div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%279%27%20y1%3D%276%27%20x2%3D%2720%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2712%27%20x2%3D%2720%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2718%27%20x2%3D%2720%27%20y2%3D%2718%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%276%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%2712%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%2718%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%279%27%20y1%3D%276%27%20x2%3D%2720%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2712%27%20x2%3D%2720%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%2718%27%20x2%3D%2720%27%20y2%3D%2718%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%276%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%2712%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%274%27%20cy%3D%2718%27%20r%3D%272%27%20fill%3D%27black%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-orderedlist div,
+        .sceditor-container .sceditor-button-orderedlist div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%2710%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%2710%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%2710%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3Cpath%20d%3D%27M4%206.5h1.2v4.5M3%2011h2.5%27/%3E%3Cpath%20d%3D%27M3%2015h2a1%201%200%200%201%201%201v.7a1%201%200%200%201-1%201H3.2l2.8%202.3H3%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.2%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%2710%27%20y1%3D%276%27%20x2%3D%2721%27%20y2%3D%276%27/%3E%3Cline%20x1%3D%2710%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3Cline%20x1%3D%2710%27%20y1%3D%2718%27%20x2%3D%2721%27%20y2%3D%2718%27/%3E%3Cpath%20d%3D%27M4%206.5h1.2v4.5M3%2011h2.5%27/%3E%3Cpath%20d%3D%27M3%2015h2a1%201%200%200%201%201%201v.7a1%201%200%200%201-1%201H3.2l2.8%202.3H3%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-font div,
+        .sceditor-container .sceditor-button-font div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%274%207%204%204%2020%204%2020%207%27/%3E%3Cline%20x1%3D%2712%27%20y1%3D%274%27%20x2%3D%2712%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%274%207%204%204%2020%204%2020%207%27/%3E%3Cline%20x1%3D%2712%27%20y1%3D%274%27%20x2%3D%2712%27%20y2%3D%2720%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-size div,
+        .sceditor-container .sceditor-button-size div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M3%207V5h10v2M8%205v14%27/%3E%3Cpath%20d%3D%27M15%2013v-1h6v1M18%2012v7%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M3%207V5h10v2M8%205v14%27/%3E%3Cpath%20d%3D%27M15%2013v-1h6v1M18%2012v7%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-color div,
+        .sceditor-container .sceditor-button-color div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%202a10%2010%200%200%200-10%2010c0%205.5%204.5%2010%2010%2010a2.5%202.5%200%200%200%202.5-2.5c0-.6-.2-1.2-.6-1.6-.4-.4-.6-1-.6-1.6%200-1.4%201.1-2.5%202.5-2.5H17a5%205%200%200%200%205-5c0-4.4-4.5-8.4-10-8.4z%27/%3E%3Ccircle%20cx%3D%278%27%20cy%3D%2710%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%277%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2710%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M12%202a10%2010%200%200%200-10%2010c0%205.5%204.5%2010%2010%2010a2.5%202.5%200%200%200%202.5-2.5c0-.6-.2-1.2-.6-1.6-.4-.4-.6-1-.6-1.6%200-1.4%201.1-2.5%202.5-2.5H17a5%205%200%200%200%205-5c0-4.4-4.5-8.4-10-8.4z%27/%3E%3Ccircle%20cx%3D%278%27%20cy%3D%2710%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%277%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Ccircle%20cx%3D%2716%27%20cy%3D%2710%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-removeformat div,
+        .sceditor-container .sceditor-button-removeformat div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M17.5%2019H9M4%204l16%2016%27/%3E%3Cpath%20d%3D%27M7%204h10l-3%207%27/%3E%3Cline%20x1%3D%2711%27%20y1%3D%2711%27%20x2%3D%2711%27%20y2%3D%2719%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M17.5%2019H9M4%204l16%2016%27/%3E%3Cpath%20d%3D%27M7%204h10l-3%207%27/%3E%3Cline%20x1%3D%2711%27%20y1%3D%2711%27%20x2%3D%2711%27%20y2%3D%2719%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-image div,
+        .sceditor-container .sceditor-button-image div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%273%27%20y%3D%273%27%20width%3D%2718%27%20height%3D%2718%27%20rx%3D%273%27/%3E%3Ccircle%20cx%3D%278.5%27%20cy%3D%278.5%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Cpolyline%20points%3D%2721%2015%2016%2010%205%2021%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%273%27%20y%3D%273%27%20width%3D%2718%27%20height%3D%2718%27%20rx%3D%273%27/%3E%3Ccircle%20cx%3D%278.5%27%20cy%3D%278.5%27%20r%3D%271.5%27%20fill%3D%27black%27/%3E%3Cpolyline%20points%3D%2721%2015%2016%2010%205%2021%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-link div,
+        .sceditor-container .sceditor-button-link div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10%2013a5%205%200%200%200%207.54.54l3-3a5%205%200%200%200-7.07-7.07l-1.72%201.71%27/%3E%3Cpath%20d%3D%27M14%2011a5%205%200%200%200-7.54-.54l-3%203a5%205%200%200%200%207.07%207.07l1.71-1.71%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M10%2013a5%205%200%200%200%207.54.54l3-3a5%205%200%200%200-7.07-7.07l-1.72%201.71%27/%3E%3Cpath%20d%3D%27M14%2011a5%205%200%200%200-7.54-.54l-3%203a5%205%200%200%200%207.07%207.07l1.71-1.71%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-unlink div,
+        .sceditor-container .sceditor-button-unlink div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M18.84%2012.25l1.7-1.71a5%205%200%200%200-7.07-7.07l-1.72%201.71%27/%3E%3Cpath%20d%3D%27M5.16%2011.75l-1.7%201.71a5%205%200%200%200%207.07%207.07l1.71-1.71%27/%3E%3Cline%20x1%3D%272%27%20y1%3D%272%27%20x2%3D%2722%27%20y2%3D%2722%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M18.84%2012.25l1.7-1.71a5%205%200%200%200-7.07-7.07l-1.72%201.71%27/%3E%3Cpath%20d%3D%27M5.16%2011.75l-1.7%201.71a5%205%200%200%200%207.07%207.07l1.71-1.71%27/%3E%3Cline%20x1%3D%272%27%20y1%3D%272%27%20x2%3D%2722%27%20y2%3D%2722%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-copy div,
+        .sceditor-container .sceditor-button-copy div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%279%27%20y%3D%279%27%20width%3D%2713%27%20height%3D%2713%27%20rx%3D%272%27/%3E%3Cpath%20d%3D%27M5%2015H4a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2h9a2%202%200%200%201%202%202v1%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%279%27%20y%3D%279%27%20width%3D%2713%27%20height%3D%2713%27%20rx%3D%272%27/%3E%3Cpath%20d%3D%27M5%2015H4a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2h9a2%202%200%200%201%202%202v1%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-paste div,
+        .sceditor-container .sceditor-button-paste div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M16%204h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2%27/%3E%3Crect%20x%3D%278%27%20y%3D%272%27%20width%3D%278%27%20height%3D%274%27%20rx%3D%271%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M16%204h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2%27/%3E%3Crect%20x%3D%278%27%20y%3D%272%27%20width%3D%278%27%20height%3D%274%27%20rx%3D%271%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-code div,
+        .sceditor-container .sceditor-button-code div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2716%2018%2022%2012%2016%206%27/%3E%3Cpolyline%20points%3D%278%206%202%2012%208%2018%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2716%2018%2022%2012%2016%206%27/%3E%3Cpolyline%20points%3D%278%206%202%2012%208%2018%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-quote div,
+        .sceditor-container .sceditor-button-quote div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M21%2015a2%202%200%200%201-2%202H7l-4%204V5a2%202%200%200%201%202-2h14a2%202%200%200%201%202%202z%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M21%2015a2%202%200%200%201-2%202H7l-4%204V5a2%202%200%200%201%202-2h14a2%202%200%200%201%202%202z%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-source div,
+        .sceditor-container .sceditor-button-source div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M14%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V8z%27/%3E%3Cpolyline%20points%3D%2714%202%2014%208%2020%208%27/%3E%3Cpolyline%20points%3D%2710%2013%208%2015%2010%2017%27/%3E%3Cpolyline%20points%3D%2714%2013%2016%2015%2014%2017%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpath%20d%3D%27M14%202H6a2%202%200%200%200-2%202v16a2%202%200%200%200%202%202h12a2%202%200%200%200%202-2V8z%27/%3E%3Cpolyline%20points%3D%2714%202%2014%208%2020%208%27/%3E%3Cpolyline%20points%3D%2710%2013%208%2015%2010%2017%27/%3E%3Cpolyline%20points%3D%2714%2013%2016%2015%2014%2017%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-maximize div,
+        .sceditor-container .sceditor-button-maximize div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2715%203%2021%203%2021%209%27/%3E%3Cpolyline%20points%3D%279%2021%203%2021%203%2015%27/%3E%3Cline%20x1%3D%2721%27%20y1%3D%273%27%20x2%3D%2714%27%20y2%3D%2710%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2721%27%20x2%3D%2710%27%20y2%3D%2714%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cpolyline%20points%3D%2715%203%2021%203%2021%209%27/%3E%3Cpolyline%20points%3D%279%2021%203%2021%203%2015%27/%3E%3Cline%20x1%3D%2721%27%20y1%3D%273%27%20x2%3D%2714%27%20y2%3D%2710%27/%3E%3Cline%20x1%3D%273%27%20y1%3D%2721%27%20x2%3D%2710%27%20y2%3D%2714%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-table div,
+        .sceditor-container .sceditor-button-table div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%273%27%20y%3D%273%27%20width%3D%2718%27%20height%3D%2718%27%20rx%3D%272%27/%3E%3Cpath%20d%3D%27M3%209h18M3%2015h18M9%203v18M15%203v18%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%273%27%20y%3D%273%27%20width%3D%2718%27%20height%3D%2718%27%20rx%3D%272%27/%3E%3Cpath%20d%3D%27M3%209h18M3%2015h18M9%203v18M15%203v18%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-emoticon div,
+        .sceditor-container .sceditor-button-emoticon div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%2710%27/%3E%3Cpath%20d%3D%27M8%2014s1.5%202%204%202%204-2%204-2%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%279%27%20x2%3D%279.01%27%20y2%3D%279%27/%3E%3Cline%20x1%3D%2715%27%20y1%3D%279%27%20x2%3D%2715.01%27%20y2%3D%279%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Ccircle%20cx%3D%2712%27%20cy%3D%2712%27%20r%3D%2710%27/%3E%3Cpath%20d%3D%27M8%2014s1.5%202%204%202%204-2%204-2%27/%3E%3Cline%20x1%3D%279%27%20y1%3D%279%27%20x2%3D%279.01%27%20y2%3D%279%27/%3E%3Cline%20x1%3D%2715%27%20y1%3D%279%27%20x2%3D%2715.01%27%20y2%3D%279%27/%3E%3C/svg%3E") !important;
+        }
+        .sceditor-button-horizontalrule div,
+        .sceditor-container .sceditor-button-horizontalrule div {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3C/svg%3E") !important;
+            mask-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2024%2024%27%20fill%3D%27none%27%20stroke%3D%27black%27%20stroke-width%3D%272.4%27%20stroke-linecap%3D%27round%27%20stroke-linejoin%3D%27round%27%3E%3Cline%20x1%3D%273%27%20y1%3D%2712%27%20x2%3D%2721%27%20y2%3D%2712%27/%3E%3C/svg%3E") !important;
+        }
+
+        /* YouTube ve GIF Orijinal Renkli VektÃ¶r Rozetleri */
+        .sceditor-button-youtube div,
+        .sceditor-container .sceditor-button-youtube div {
+            background-color: transparent !important;
+            -webkit-mask: none !important;
+            mask: none !important;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Crect x='2' y='5' width='20' height='14' rx='4' fill='%23ff0000'/%3E%3Cpolygon points='10 8 16 12 10 16' fill='%23ffffff'/%3E%3C/svg%3E") no-repeat center center !important;
+            filter: none !important;
+        }
+
+        .sceditor-button-gif div,
+        .sceditor-container .sceditor-button-gif div {
+            background-color: transparent !important;
+            -webkit-mask: none !important;
+            mask: none !important;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='16' height='16'%3E%3Crect x='1.5' y='3.5' width='21' height='17' rx='3.5' fill='%232563eb'/%3E%3Ctext x='12' y='15.5' font-family='Arial, Helvetica, sans-serif' font-size='9.5' font-weight='800' fill='%23ffffff' text-anchor='middle' letter-spacing='0.5'%3EGIF%3C/text%3E%3C/svg%3E") no-repeat center center !important;
+            filter: none !important;
+        }
+
+
+.sceditor-container iframe,
+.sceditor-container textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    color: #ffffff !important;
+    background: #0b0f19 !important;
+    border: 0 !important;
+    outline: none !important;
+    min-height: 200px !important;
+    cursor: text !important;
+    margin: 0 !important;
+    border-bottom-left-radius: 9px !important;
+    border-bottom-right-radius: 9px !important;
+    caret-color: #46b6ff !important;
+    resize: none !important;
+}
+
+/* WYSIWYG Modunda textarea kesinlikle gizli olmalÄ±dÄ±r */
+.sceditor-container:not(.sourceMode) textarea,
+.sceditor-container.wysiwygMode textarea,
+.sceditor-container.wysiwygmode textarea,
+#message_form .sceditor-container:not(.sourceMode) textarea,
+#message_form .sceditor-container.wysiwygMode textarea,
+#message_form .sceditor-container.wysiwygmode textarea,
+.reply-form .sceditor-container:not(.sourceMode) textarea,
+.reply-form .sceditor-container.wysiwygMode textarea,
+.reply-form .sceditor-container.wysiwygmode textarea,
+.reply-form-container .sceditor-container:not(.sourceMode) textarea,
+.reply-form-container .sceditor-container.wysiwygMode textarea,
+.reply-form-container .sceditor-container.wysiwygmode textarea,
+#editCommentModal .sceditor-container:not(.sourceMode) textarea,
+#editCommentModal .sceditor-container.wysiwygMode textarea,
+#editCommentModal .sceditor-container.wysiwygmode textarea,
+#editMessageModal .sceditor-container:not(.sourceMode) textarea,
+#editMessageModal .sceditor-container.wysiwygMode textarea,
+#editMessageModal .sceditor-container.wysiwygmode textarea {
+    display: none !important;
+}
+
+/* Source Modunda iframe gizli, textarea gÃ¶rÃ¼nÃ¼r olmalÄ±dÄ±r */
+.sceditor-container.sourceMode iframe,
+.sceditor-container.sourcemode iframe,
+#message_form .sceditor-container.sourceMode iframe,
+#message_form .sceditor-container.sourcemode iframe,
+.reply-form .sceditor-container.sourceMode iframe,
+.reply-form .sceditor-container.sourcemode iframe,
+.reply-form-container .sceditor-container.sourceMode iframe,
+.reply-form-container .sceditor-container.sourcemode iframe,
+#editCommentModal .sceditor-container.sourceMode iframe,
+#editCommentModal .sceditor-container.sourcemode iframe,
+#editMessageModal .sceditor-container.sourceMode iframe,
+#editMessageModal .sceditor-container.sourcemode iframe {
+    display: none !important;
+}
+
+.sceditor-container textarea,
+#message_form .sceditor-container textarea,
+.reply-form .sceditor-container textarea,
+.reply-form-container .sceditor-container textarea,
+#editCommentModal .sceditor-container textarea,
+#editMessageModal .sceditor-container textarea {
+    padding: 8px 10px !important;
+}
+
+.sceditor-container.sourceMode textarea,
+.sceditor-container.sourcemode textarea,
+#message_form .sceditor-container.sourceMode textarea,
+#message_form .sceditor-container.sourcemode textarea,
+.reply-form .sceditor-container.sourceMode textarea,
+.reply-form .sceditor-container.sourcemode textarea,
+.reply-form-container .sceditor-container.sourceMode textarea,
+.reply-form-container .sceditor-container.sourcemode textarea,
+#editCommentModal .sceditor-container.sourceMode textarea,
+#editCommentModal .sceditor-container.sourcemode textarea,
+#editMessageModal .sceditor-container.sourceMode textarea,
+#editMessageModal .sceditor-container.sourcemode textarea {
+    display: block !important;
+}
+
+.comment-sceditor,
+.comment-sceditor iframe,
+.comment-sceditor textarea {
+    min-height: 200px !important;
+}
+
+div.sceditor-grip {
+    width: 20px !important;
+    height: 20px !important;
+    cursor: se-resize !important;
+    position: absolute !important;
+    bottom: 2px !important;
+    right: 2px !important;
+    z-index: 100 !important;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2394a3b8'%3E%3Ccircle cx='13' cy='13' r='1.5'/%3E%3Ccircle cx='9' cy='13' r='1.5'/%3E%3Ccircle cx='13' cy='9' r='1.5'/%3E%3Ccircle cx='5' cy='13' r='1.5'/%3E%3Ccircle cx='9' cy='9' r='1.5'/%3E%3Ccircle cx='13' cy='5' r='1.5'/%3E%3C/svg%3E") no-repeat center center !important;
+    opacity: 0.55 !important;
+    transition: opacity 0.2s ease, transform 0.15s ease !important;
+}
+
+div.sceditor-grip:hover {
+    opacity: 1 !important;
+    transform: scale(1.15) !important;
+}
+
+div.sceditor-resize-cover {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 50 !important;
+    background: transparent !important;
+}
+
+/* SCEditor Dropdown MenÃ¼leri (Koyu Tema) */
+div.sceditor-dropdown {
+    position: absolute !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    background: #141b27 !important;
+    color: #f4f7fb !important;
+    z-index: 10000001 !important;
+    padding: 10px !important;
+    line-height: 1.4 !important;
+    border-radius: 8px !important;
+    background-clip: padding-box !important;
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65) !important;
+}
+
+div.sceditor-dropdown a,
+div.sceditor-dropdown a:link,
+div.sceditor-dropdown a:visited {
+    color: #e2e8f0 !important;
+    text-decoration: none !important;
+}
+
+div.sceditor-dropdown a:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border-radius: 4px !important;
+}
+
+.sceditor-font-option,
+.sceditor-fontsize-option,
+.sceditor-format a {
+    display: block !important;
+    padding: 7px 12px !important;
+    cursor: pointer !important;
+    color: #e2e8f0 !important;
+    border-radius: 4px !important;
+    text-decoration: none !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+}
+
+.sceditor-font-option:hover,
+.sceditor-fontsize-option:hover,
+.sceditor-format a:hover {
+    background: rgba(70, 182, 255, 0.15) !important;
+    color: #46b6ff !important;
+}
+
+div.sceditor-dropdown label {
+    display: block !important;
+    font-weight: 600 !important;
+    color: #94a3b8 !important;
+    padding: 4px 0 !important;
+    font-size: 12.5px !important;
+}
+
+div.sceditor-dropdown input,
+div.sceditor-dropdown textarea {
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    outline: 0 !important;
+    padding: 6px 8px !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    background: #0b0f19 !important;
+    color: #ffffff !important;
+    margin: 0 0 .75em !important;
+    border-radius: 6px !important;
+    box-sizing: border-box !important;
+}
+
+div.sceditor-dropdown input:focus,
+div.sceditor-dropdown textarea:focus {
+    border-color: #46b6ff !important;
+    box-shadow: 0 0 0 2px rgba(70, 182, 255, 0.2) !important;
+}
+
+div.sceditor-dropdown .button {
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    padding: 6px 14px !important;
+    background: #2563eb !important;
+    border: 1px solid #3b82f6 !important;
+    border-radius: 6px !important;
+    cursor: pointer !important;
+    margin: .3em 0 0 !important;
+    transition: background 0.15s ease !important;
+}
+
+div.sceditor-dropdown .button:hover {
+    background: #1d4ed8 !important;
+}
+
+.sceditor-color-option {
+    border: 1px solid rgba(0, 0, 0, 0.4) !important;
+}
+
+.sceditor-color-option:hover {
+    border: 1px solid #ffffff !important;
+    transform: scale(1.15) !important;
+    z-index: 2 !important;
+}
+
+/* Modallarda Koyu SCEditor */
+#editCommentModal .sceditor-container,
+#editMessageModal .sceditor-container {
+    width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    background: #0f141c !important;
+}
+
+
+/* Alttaki eski GIF SeÃ§ butonunu gizle (artÄ±k SCEditor menÃ¼sÃ¼ne entegre edildi) */
+
+.gif-select-button {
+
+    display: none !important;
+
+}
+
+
+
+/* Ãnizleme ve mÃ¼kerrer GIF alanlarÄ± kaldÄ±rÄ±ldÄ± */
+
+.onizleme-alan,
+
+.onizleme-alan2,
+
+.reply-preview-container,
+
+.btn-preview,
+
+.btn-yorum.onizle,
+
+#preview_button,
+
+#preview_edit_comment_button,
+
+#preview_edit_message_button {
+
+    display: none !important;
+
+}
+
+
+
+
+
+/* DÃ¼zenleme ModallarÄ±nda SCEditor TasarÄ±mÄ± */
+
+#editCommentModal .mtr-modal__dialog,
+
+#editMessageModal .mtr-modal__dialog {
+
+    max-width: 680px !important;
+
+    width: 95% !important;
+
+}
+
+
+
+#editCommentModal .mtr-modal__body,
+
+#editMessageModal .mtr-modal__body {
+
+    padding: 16px 20px !important;
+
+}
+
+
+
+#editCommentModal .sceditor-container,
+
+#editMessageModal .sceditor-container {
+
+    width: 100% !important;
+
+    box-sizing: border-box !important;
+
+    border-radius: 8px !important;
+
+    overflow: hidden !important;
+
+    border: 1px solid #334155 !important;
+
+}
+
+
+
+#editCommentModal .sceditor-container iframe,
+
+#editCommentModal .sceditor-container textarea,
+
+#editMessageModal .sceditor-container iframe,
+
+#editMessageModal .sceditor-container textarea {
+
+    min-height: 200px !important;
+
+    box-sizing: border-box !important;
+
+    width: 100% !important;
+
+}
+
+/* Yorum iÃ§eriklerindeki sÄ±ralÄ± ([ol]) ve sÄ±rasÄ±z ([ul]) listeler */
+
+.comment-list-ol,
+
+ol.comment-list-ol,
+
+.msg-body ol,
+
+.comment_ui ol,
+
+.comment_ui_sub ol,
+
+#message-list ol {
+
+    list-style: decimal inside !important;
+
+    list-style-type: decimal !important;
+
+    list-style-position: inside !important;
+
+    margin: 8px 0 !important;
+
+    padding-left: 10px !important;
+
+}
+
+
+
+.comment-list-ul,
+
+ul.comment-list-ul,
+
+.msg-body ul,
+
+.comment_ui ul,
+
+.comment_ui_sub ul,
+
+#message-list ul {
+
+    list-style: disc inside !important;
+
+    list-style-type: disc !important;
+
+    list-style-position: inside !important;
+
+    margin: 8px 0 !important;
+
+    padding-left: 10px !important;
+
+}
+
+
+
+.comment-list-ol > li,
+
+.comment-list-ol li,
+
+.msg-body ol > li,
+
+.msg-body ol li,
+
+.comment_ui ol > li,
+
+.comment_ui ol li,
+
+.comment_ui_sub ol > li,
+
+.comment_ui_sub ol li,
+
+#message-list ol > li,
+
+#message-list ol li {
+
+    list-style: decimal inside !important;
+
+    list-style-type: decimal !important;
+
+    list-style-position: inside !important;
+
+    display: list-item !important;
+
+    margin-bottom: 4px !important;
+
+    padding: 0 !important;
+
+    border: none !important;
+
+}
+
+
+
+.comment-list-ul > li,
+
+.comment-list-ul li,
+
+.msg-body ul > li,
+
+.msg-body ul li,
+
+.comment_ui ul > li,
+
+.comment_ui ul li,
+
+.comment_ui_sub ul > li,
+
+.comment_ui_sub ul li,
+
+#message-list ul > li,
+
+#message-list ul li {
+
+    list-style: disc inside !important;
+
+    list-style-type: disc !important;
+
+    list-style-position: inside !important;
+
+    display: list-item !important;
+
+    margin-bottom: 4px !important;
+
+    padding: 0 !important;
+
+    border: none !important;
+
+}
+
+
+
+/* Liste iÃ§indeki boÅluk yapan <br> etiketlerini kaldÄ±r */
+
+.comment-list-ol br,
+
+.comment-list-ul br,
+
+.msg-body ol br,
+
+.msg-body ul br,
+
+.comment_ui ol br,
+
+.comment_ui ul br,
+
+#message-list ol br,
+
+#message-list ul br {
+
+    display: none !important;
+
+}
+
+
+
+.comment-list-ol li::marker,
+.comment-list-ul li::marker,
+.msg-body ol li::marker,
+.msg-body ul li::marker,
+.comment_ui ol li::marker,
+.comment_ui ul li::marker,
+.comment_ui_sub ol li::marker,
+.comment_ui_sub ul li::marker,
+#message-list ol li::marker,
+#message-list ul li::marker {
+    content: normal !important;
+    display: inline-block !important;
+}
+
+
+/* Yorum alaninda kalin, italik ve bicimlendirme etiketlerinin rengi ebeveyninden (renk BBCode'undan) devralinsin */
+#message-list strong,
+#message-list b,
+#message-list em,
+#message-list i,
+#message-list u,
+#message-list s,
+#message-list del,
+.msg-body strong,
+.msg-body b,
+.msg-body em,
+.msg-body i,
+.msg-body u,
+.msg-body s,
+.msg-body del,
+.comment_ui strong,
+.comment_ui b,
+.comment_ui_sub strong,
+.comment_ui_sub b,
+.comment_ui_delete strong,
+.comment_ui_delete b {
+    color: inherit !important;
+}
+
