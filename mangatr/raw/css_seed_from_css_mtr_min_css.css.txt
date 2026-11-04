@@ -1,0 +1,1 @@
+w=111111 b=0 seed=111111 url=https://manga-tr.com/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6
