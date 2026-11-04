@@ -13,66 +13,20 @@ jobs:
         with:
           ref: ${{ github.ref_name }}
 
-      - name: Canlıdan eksiksiz çek (manga-tr.com)
+      - name: Sistem hazırla
+        run: pip install requests beautifulsoup4 lxml -q
+
+      - name: Eksiksiz topla — eklentinin ihtiyaç duyduğu HER ŞEY
         run: |
           set -e
-          mkdir -p mangatr/live mangatr/raw
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/124.0 Safari/537.36"
-
-          fetch() {
-            url="$1"; out="$2"
-            echo ">> $url -> $out"
-            curl -L -k -A "$UA" -H "Accept: text/html,application/xhtml+xml" -H "Accept-Language: tr-TR,tr;q=0.9,en;q=0.8" --compressed "$url" -o "$out" -D "$out.headers" -w "%{http_code} %{size_download}\n" || echo "fail $url"
-            ls -lh "$out" || true
-            head -c 2000 "$out" | sed -n 'l' | head || true
-            echo "---headers---"
-            cat "$out.headers" || true
-            echo
-          }
-
-          fetch "https://manga-tr.com/" "mangatr/live/home.html"
-          fetch "https://manga-tr.com/manga-list-sayfala.html?sort=views&sort_type=DESC&page=1&listType=pagination" "mangatr/live/popular_p1.html"
-          fetch "https://manga-tr.com/manga-list-sayfala.html?sort=views&sort_type=DESC&page=2&listType=pagination" "mangatr/live/popular_p2.html"
-          fetch "https://manga-tr.com/arama.html?view=sayfalama&icerik=Chainsaw%20Man&page=1" "mangatr/live/arama_chainsaw_p1.html"
-          fetch "https://manga-tr.com/arama.html?view=sayfalama&icerik=Chainsaw%20Man&page=2" "mangatr/live/arama_chainsaw_p2.html"
-          fetch "https://manga-tr.com/arama.html?view=sayfalama&icerik=Lady%20Liar&page=1" "mangatr/live/arama_ladyliar.html"
-          fetch "https://manga-tr.com/arama.html?view=sayfalama&icerik=xyzabc123notfound&page=1" "mangatr/live/arama_bos.html"
-          fetch "https://manga-tr.com/manga-chainsaw-man.html" "mangatr/live/detail_chainsaw.html"
-          fetch "https://manga-tr.com/manga-lady-liar.html" "mangatr/live/detail_ladyliar.html"
-
-          # Dış JS'i detail içinden bulup çek
-          JS_PATH=$(grep -oE 'src="[^"]*manga-tr[^"]*\.js"' mangatr/live/detail_chainsaw.html | head -1 | cut -d'"' -f2 || true)
-          if [ -n "$JS_PATH" ]; then
-            case "$JS_PATH" in http*) fetch "$JS_PATH" "mangatr/live/manga-tr.min.js" ;; /*) fetch "https://manga-tr.com$JS_PATH" "mangatr/live/manga-tr.min.js" ;; *) fetch "https://manga-tr.com/$JS_PATH" "mangatr/live/manga-tr.min.js" ;; esac
-          else
-            fetch "https://manga-tr.com/app/manga/themes/default/assets/js/manga-tr.min.js" "mangatr/live/manga-tr.min.js" || true
-          fi
-
-          # Özet JSON
-          python3 << 'PY'
-          import pathlib, json, re
-          base=pathlib.Path("mangatr/live")
-          out={}
-          for p in base.glob("*.html"):
-              t=p.read_text(encoding="utf-8", errors="ignore")
-              out[p.name]={
-                "len": len(t),
-                "has_rdm": "rdm-" in t,
-                "has_fpx": bool(re.search(r'_fpx\s*=\s*"[^"]+"', t)),
-                "fpx": (re.search(r'_fpx\s*=\s*"([^"]+)"', t).group(1) if re.search(r'_fpx\s*=\s*"([^"]+)"', t) else None),
-                "has_turnstile": "turnstile" in t.lower(),
-                "has_ddos": "check.ddos-guard.net" in t,
-                "has_listKey": bool(re.search(r"listKey:\s*'[^']+'", t)),
-                "has_arama_card": "arama-card" in t,
-                "has_media_card": "media-card" in t,
-                "manga_hits": t.count("/manga-"),
-                "api_hits": t.count("fetch_pages_manga"),
-              }
-          pathlib.Path("mangatr/live/summary.json").write_text(json.dumps(out, indent=2, ensure_ascii=False), encoding="utf-8")
-          print(json.dumps(out, indent=2, ensure_ascii=False))
-          PY
-          cat mangatr/live/summary.json
+          python3 tools/mangatr-exhaustive.py
           ls -R mangatr
+          echo "---- summary ----"
+          cat mangatr/live/summary.json || true
+          echo "---- list_keys ----"
+          cat mangatr/live/list_keys.json || true
+          echo "---- discovered ----"
+          cat mangatr/live/discovered_manga.json || true
 
       - name: Artifact yükle
         uses: actions/upload-artifact@v4

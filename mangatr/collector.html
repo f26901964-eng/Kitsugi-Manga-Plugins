@@ -20,21 +20,22 @@
 <p>Hiç tek tek tıklama yok. Bu sayfadan <b>tek buton</b> ile <code>manga-tr.com</code>'daki tüm girilir-çıkılır sekmeler toplanacak.</p>
 <div class="card">
   <button id="go">▶ MANGA-TR'Yİ TARA (tek tık)</button>
-  <p><small>Butona basınca manga-tr.com'a 12 istek atılacak. Tarayıcın orada açık olmalı ve çerezlerin açık olmalı. AdBlock'u kapat.</small></p>
+  <p><small>Butona basınca manga-tr.com'a <b>50+ istek</b> atılacak (tüm sekmeler). Tarayıcın orada açık olmalı ve çerezlerin açık olmalı. AdBlock'u kapat. 30-40 sn sürecek.</small></p>
   <p id="status">Hazır.</p>
   <pre id="log">log: beklemede...</pre>
 </div>
 <div class="card">
-  <h3>Ne toplanıyor?</h3>
+  <h3>Ne toplanıyor? (EKSİKSİZ)</h3>
   <ul>
-    <li>anasayfa + popüler liste p1/p2 (<code>manga-list-sayfala.html?sort=views</code>)</li>
-    <li>arama p1/p2 (<code>arama.html?view=sayfalama&icerik=Chainsaw Man / Lady Liar / boş</code>)</li>
-    <li>detay (<code>manga-chainsaw-man.html</code>, <code>manga-lady-liar.html</code>)</li>
-    <li>dış JS (<code>manga-tr.min.js</code>)</li>
-    <li>POST (<code>cek/fetch_pages_manga.php</code> offset 0/20/100 + manga_cek fallback)</li>
-    <li>örnek okuyucu (<code>rdm-</code>, <code>_fpx</code>, <code>img_part.php</code>)</li>
+    <li>anasayfa + popüler p1/p2/p5, son eklenen p1/p2, index-sayfa-1/2</li>
+    <li>filtrelerin hepsi: durum/tamam/devam, çeviri, yaş, tür Action/Romance, içerik, sıralama</li>
+    <li>arama: Chainsaw Man p1/p2, Naruto, One Piece, Berserk, Solo Leveling, Lady Liar, genel a, boş</li>
+    <li>detay: keşfedilen 20 mangadan ilk 12'si (chainsaw/lady + popülerden canlı keşif)</li>
+    <li>dış JS: <code>manga-tr.min.js</code> + içindeki listKey</li>
+    <li>POST: her manga için <code>cek/fetch_pages_manga.php</code> offset 0/20/100 + <code>manga_cek</code> fallback</li>
+    <li>okuyucu: her mangadan 2 bölüm, gate <code>_fpx</code>, <code>rdm-</code>, <code>img_part.php</code>, turnstile/slider kontrolü</li>
   </ul>
-  <p><small>Ham HTML oturum içerebilir, depoya commitlenmez. Sadece debug için.</small></p>
+  <p><small>Ham HTML oturum içerebilir, depoya commitlenmez. Artifact'te saklanır. Tıkandığımız tüm yerler tek seferde kapanacak.</small></p>
 </div>
 <p><a href="../tools/mangatr-collector.js" target="_blank">Alternatif: tools/mangatr-collector.js (Console yöntemi)</a> | <a href="https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions" target="_blank">Actions'tan otomatik topla</a></p>
 <script>
