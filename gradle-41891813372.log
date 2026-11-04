@@ -1,0 +1,171 @@
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
+..............10%..............20%...............30%..............40%...............50%..............60%...............70%..............80%...............90%..............100%
+
+Welcome to Gradle 9.8.2!
+
+Here are the highlights of this release:
+ - Java 27 support
+ - Maven mirror settings reuse
+ - Linked problem locations in build output
+
+For more details see https://docs.gradle.org/9.8.2/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+Calculating task graph as no cached configuration is available for tasks: :src:tr:mangatr:assembleRelease
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+> Task :src:tr:mangatr:preBuild UP-TO-DATE
+> Task :src:tr:mangatr:preReleaseBuild UP-TO-DATE
+> Task :core:preBuild UP-TO-DATE
+> Task :core:preReleaseBuild UP-TO-DATE
+> Task :src:tr:mangatr:generateSourceInfo
+> Task :core:generateReleaseResources
+> Task :core:processReleaseNavigationResources
+> Task :core:javaPreCompileRelease
+> Task :src:tr:mangatr:mergeReleaseJniLibFolders
+> Task :core:mergeReleaseJniLibFolders
+> Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:mangatr:checkReleaseDuplicateClasses
+> Task :core:copyReleaseJniLibsProjectOnly
+> Task :src:tr:mangatr:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:mangatr:generateReleaseBuildConfig
+> Task :src:tr:mangatr:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:mangatr:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:mangatr:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :src:tr:mangatr:processReleaseNavigationResources
+> Task :src:tr:mangatr:generateReleaseResources
+> Task :compiler:processResources
+> Task :core:prepareReleaseArtProfile
+> Task :core:packageReleaseResources
+> Task :src:tr:mangatr:packageReleaseResources
+> Task :src:tr:mangatr:mergeReleaseArtProfile
+> Task :core:mapReleaseSourceSetPaths
+> Task :core:compileReleaseLibraryResources
+> Task :core:writeReleaseAarMetadata
+> Task :src:tr:mangatr:checkReleaseAarMetadata
+> Task :src:tr:mangatr:mapReleaseSourceSetPaths
+> Task :src:tr:mangatr:compileReleaseNavigationResources
+> Task :src:tr:mangatr:mergeReleaseResources
+> Task :src:tr:mangatr:createReleaseCompatibleScreenManifests
+> Task :core:extractDeepLinksRelease
+> Task :core:processReleaseManifest
+> Task :src:tr:mangatr:extractDeepLinksRelease
+> Task :src:tr:mangatr:generateExtensionManifest
+> Task :src:tr:mangatr:processReleaseMainManifest
+> Task :src:tr:mangatr:processReleaseManifest
+> Task :src:tr:mangatr:processReleaseManifestForPackage
+> Task :src:tr:mangatr:extractProguardFiles
+> Task :src:tr:mangatr:mergeReleaseStartupProfile
+> Task :core:generateReleaseAssets UP-TO-DATE
+> Task :core:mergeReleaseAssets
+> Task :src:tr:mangatr:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:mangatr:mergeReleaseAssets
+> Task :src:tr:mangatr:compressReleaseAssets
+> Task :core:parseReleaseLocalResources
+> Task :src:tr:mangatr:parseReleaseLocalResources
+> Task :src:tr:mangatr:generateReleaseRFile
+> Task :src:tr:mangatr:writeReleaseAppMetadata
+> Task :core:generateReleaseRFile
+> Task :src:tr:mangatr:writeReleaseSigningConfigVersions
+> Task :src:tr:mangatr:processReleaseResources
+> Task :src:tr:mangatr:optimizeReleaseResources
+> Task :src:tr:mangatr:validateSigningRelease
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:mangatr:javaPreCompileRelease
+> Task :core:compileReleaseKotlin
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:processReleaseJavaRes
+> Task :core:bundleLibRuntimeToJarRelease
+> Task :core:bundleLibCompileToJarRelease
+> Task :src:tr:mangatr:kspReleaseKotlin
+
+> Task :src:tr:mangatr:compileReleaseKotlin
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:192:25 Elvis operator (?:) always returns the left operand of non-nullable type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:454:17 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:576:36 Condition is always 'true'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:829:46 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:831:44 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:880:27 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:901:54 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:1079:123 Unnecessary safe call on a non-null receiver of type 'String'.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangatr/src/eu/kanade/tachiyomi/extension/tr/mangatr/MangaTR.kt:1084:61 Unnecessary non-null assertion (!!) on a non-null receiver of type 'ReaderAttributesDto'.
+
+> Task :src:tr:mangatr:processReleaseJavaRes
+> Task :src:tr:mangatr:mergeReleaseJavaResource
+> Task :src:tr:mangatr:compileReleaseJavaWithJavac
+> Task :src:tr:mangatr:mergeReleaseGeneratedProguardFiles
+> Task :src:tr:mangatr:expandReleaseArtProfileWildcards
+> Task :src:tr:mangatr:minifyReleaseWithR8
+> Task :src:tr:mangatr:compileReleaseArtProfile
+> Task :src:tr:mangatr:packageRelease
+> Task :src:tr:mangatr:createReleaseApkListingFileRedirect
+
+> Task :src:tr:mangatr:createReleaseExtensionJar
+ProGuard, version 7.10.0
+
+> Task :src:tr:mangatr:signReleaseExtensionJar
+> Task :src:tr:mangatr:assembleRelease
+
+[Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 1m 55s
+71 actionable tasks: 71 executed
+Configuration cache entry stored.
+GRADLE_EXIT:0
+=== find apk ===
+./src/tr/mangatr/build/outputs/apk/release/tachiyomi-tr.mangatr-v1.6.26.apk
+src/tr/mangatr/build/outputs:
+apk
+jar
+logs
+mapping
+
+src/tr/mangatr/build/outputs/apk:
+release
+
+src/tr/mangatr/build/outputs/apk/release:
+output-metadata.json
+tachiyomi-tr.mangatr-v1.6.26.apk
+
+src/tr/mangatr/build/outputs/jar:
+release
+
+src/tr/mangatr/build/outputs/jar/release:
+tachiyomi-tr.mangatr-v1.6.26.jar
+
+src/tr/mangatr/build/outputs/logs:
+manifest-merger-release-report.txt
+
+src/tr/mangatr/build/outputs/mapping:
+release
+
+src/tr/mangatr/build/outputs/mapping/release:
+configanalyzer.html
+configanalyzer.pb
+configuration.txt
+mapping.prt
+mapping.txt
+seeds.txt
+usage.txt
+copying apk
+-rw-r--r-- 1 runner runner 89K Nov  4 18:57 ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
