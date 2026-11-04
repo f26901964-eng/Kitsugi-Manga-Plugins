@@ -1,0 +1,11 @@
+{
+  "Server": "ddos-guard",
+  "Date": "Wed, 04 Nov 2026 19:55:46 GMT",
+  "Connection": "keep-alive",
+  "Keep-Alive": "timeout=60",
+  "Set-Cookie": "__ddg8_=MrTtss5UeutTUrtP; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:15:46 GMT, __ddg10_=1793822146; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:15:46 GMT, __ddg9_=134.138.62.91; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 20:15:46 GMT",
+  "Content-Security-Policy": "upgrade-insecure-requests;",
+  "Cache-Control": "no-cache, no-store, must-revalidate",
+  "Content-Type": "text/html; charset=UTF-8",
+  "Content-Length": "902"
+}
