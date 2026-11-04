@@ -1,0 +1,41 @@
+name: Manga-TR Derle ve Yayınla
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ["keiyoushi-extensions-tr/src/tr/mangatr/**", ".github/workflows/build-mangatr.yml"]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: android-actions/setup-android@v3
+      - name: Derle Manga-TR
+        working-directory: keiyoushi-extensions-tr
+        run: |
+          chmod +x gradlew
+          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace
+          ls -lh src/tr/mangatr/build/outputs/apk/release/
+          cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
+          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+      - name: Katalog güncelle
+        run: |
+          python3 tools/sync_enabled_plugins.py
+          python3 -m unittest discover -s tests -v
+      - name: Commit ve Push
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk apk/tachiyomi-tr.mangatr-v1.6.26.apk builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          git diff --cached --quiet && echo "değişiklik yok" && exit 0
+          git commit -m "mangatr: gerçek derlenmiş 1.6.26 APK (Chainsaw Man arama düzeltmesi)"
+          git push origin HEAD:main
