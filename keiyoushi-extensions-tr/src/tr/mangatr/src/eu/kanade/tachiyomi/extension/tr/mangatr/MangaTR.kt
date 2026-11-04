@@ -52,7 +52,7 @@ import java.util.Locale
 @Source
 abstract class MangaTR : KeiSource() {
 
-    override fun Headers.Builder.configureHeaders() {
+    override fun Headers.Builder.configureHeaders() = apply {
         add("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
         add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
         add("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
