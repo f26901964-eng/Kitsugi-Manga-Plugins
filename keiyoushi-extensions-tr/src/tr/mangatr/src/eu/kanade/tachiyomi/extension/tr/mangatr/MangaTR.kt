@@ -477,7 +477,7 @@ abstract class MangaTR : KeiSource() {
                                 val innerDoc = org.jsoup.Jsoup.parse(htmlField, baseUrl)
                                 val innerEls = innerDoc.select("article.bento-ep-card, div.chapter-item")
                                 if (innerEls.isNotEmpty()) {
-                                    val batch = innerEls.map(::chapterFromElement)
+                                    val batch = innerEls.flatMap { try { extractChaptersFromCard(it) } catch (_: Exception) { emptyList() } }
                                     if (!seenBatches.add(batch.map { it.url })) break
                                     chapters.addAll(batch)
                                     offset = (offset ?: 0) + if (offset == null) 20 else 100
@@ -490,16 +490,19 @@ abstract class MangaTR : KeiSource() {
                 break
             }
 
-            val batch = elements.mapNotNull { el ->
-                try { chapterFromElement(el) } catch (_: Exception) { null }
-            }
+            val batch = elements.flatMap { el ->
+                try { extractChaptersFromCard(el) } catch (_: Exception) { emptyList() }
+            }.filterNot { it.url.isBlank() }
             if (batch.isEmpty()) break
 
-            if (!seenBatches.add(batch.map { it.url })) {
+            // Eğer kart çoklu çeviri ürettiyse aynı bölüm numarası birden fazla kez olacak; deduplicate sadece aynı url için
+            val dedupedBatch = batch.distinctBy { it.url }
+            if (dedupedBatch.isEmpty()) break
+            if (!seenBatches.add(dedupedBatch.map { it.url })) {
                 // Duplicate batch indicates pagination broken; break to avoid loop
                 break
             }
-            chapters.addAll(batch)
+            chapters.addAll(dedupedBatch)
 
             // Detect if more pages: site loads 20 first, then 100 per load
             // Check for "load more" indicator in response
@@ -537,10 +540,10 @@ abstract class MangaTR : KeiSource() {
 
         do {
             doc = response.asJsoup().also { it.setBaseUri(baseUrl) }
-            // Support multiple selectors
+            // Support multiple selectors - her kart çoklu çeviri içerebilir, flatMap ile hepsini aç
             val elements = doc.select("div.chapter-item, article.bento-ep-card, div.bento-ep-card, li.chapter-item, div.chapter-box")
-            val batch = elements.mapNotNull { el ->
-                try { chapterFromElement(el) } catch (_: Exception) { null }
+            val batch = elements.flatMap { el ->
+                try { extractChaptersFromCard(el) } catch (_: Exception) { emptyList() }
             }.filterNot { seenUrls.contains(it.url) }
 
             if (batch.isNotEmpty()) {
@@ -576,7 +579,8 @@ abstract class MangaTR : KeiSource() {
         if (chapters.isEmpty()) {
             val fallbackDoc = initialResponse.asJsoup()
             val els = fallbackDoc.select("div.chapter-item, article.bento-ep-card")
-            return els.mapNotNull { try { chapterFromElement(it) } catch (_: Exception) { null } }
+            return els.flatMap { try { extractChaptersFromCard(it) } catch (_: Exception) { emptyList() } }
+        }
         }
 
         return chapters
@@ -634,62 +638,180 @@ abstract class MangaTR : KeiSource() {
         return emptyList()
     }
 
-    private fun chapterFromElement(element: Element): SChapter = SChapter.create().apply {
-        // Support both Bento and FMReader structures
-        val link = element.selectFirst("a.bento-ep-title-link")
-            ?: element.selectFirst("div.chapter-title a")
-            ?: element.selectFirst("a[href*='read'], a[href*='/id-']")
-            ?: element.selectFirst("a[href*='/manga-']")
-            ?: element.selectFirst("a")
-            ?: throw IllegalArgumentException("chapter link not found")
+    /**
+     * Her bir bento-ep-card içinde birden fazla fansub çevirisi olabilir (ör: 1. Bölüm → 4 çeviri).
+     * Senin son attığın screenshot'taki gibi “Detay ▼” içinde her satır ayrı bir gruptur.
+     * Bu yüzden tek bir karta karşılık 1 değil, N tane SChapter üretiyoruz.
+     */
+    private fun extractChaptersFromCard(card: Element): List<SChapter> {
+        // Önce kart içindeki tüm olası grup linklerini topla
+        val groupLinkCandidates = mutableListOf<Element>()
 
-        setUrlWithoutDomain(link.absUrl("href"))
+        // 1) Haruneko'nun kullandığı ana başlık linki
+        card.select("a.bento-ep-title-link").forEach { groupLinkCandidates.add(it) }
+        // 2) Fansub özel seçiciler
+        card.select("a.fansub-group-item, a.bento-ep-group-link, a.group-link, div.bento-ep-groups a, div.chapter-groups a").forEach {
+            if (!groupLinkCandidates.contains(it)) groupLinkCandidates.add(it)
+        }
+        // 3) Genel fallback: kart içindeki tüm read/id linkleri (en az 2 ise çoklu çeviri demektir)
+        val allReadLinks = card.select("a[href*='/id-'], a[href*='/read-'], a[href*='-read-']")
+        // Eğer kart içinde birden fazla read linki varsa, bunları grup olarak kabul et
+        if (allReadLinks.size > 1) {
+            allReadLinks.forEach { if (!groupLinkCandidates.contains(it)) groupLinkCandidates.add(it) }
+        }
+        // Ayrıca Detay dropdown içindeki linkler bazen button[data-href] olabilir
+        card.select("[data-href*='/id-'], [data-href*='/read-']").forEach { el ->
+            val href = el.attr("data-href")
+            if (href.isNotBlank()) groupLinkCandidates.add(el)
+        }
 
-        // Scanlator extraction: try multiple selectors
-        val scanlator = element.selectFirst(".bento-ep-scanlator")?.text()?.trim()
-            ?: element.selectFirst(".scanlator")?.text()?.trim()
-            ?: element.selectFirst("a.fansub-group-item")?.text()?.trim()
-            ?: element.selectFirst(".bento-ep-source, .chapter-source, .scanlator-badge")?.text()?.trim()
-            ?: element.selectFirst(".bento-ep-meta span:last-child")?.text()?.trim()?.takeIf { it.contains("Fansub") || it.contains("Çeviri") }
-            ?: element.selectFirst(".chapter-meta span")?.text()?.trim()
-            ?: extractScanlatorFromText(element.text())
+        // Eğer hiç aday yoksa tekil fallback
+        if (groupLinkCandidates.isEmpty()) {
+            return try { listOf(chapterFromSingleLink(card, card.selectFirst("a") ?: return emptyList())) } catch (_: Exception) { emptyList() }
+        }
 
-        if (!scanlator.isNullOrBlank() && scanlator.length < 50 && !scanlator.contains("Bölüm", true)) {
+        // Kartın ortak bilgilerini bir kere çıkar (numara, alt başlık, tarih)
+        val commonNumber = card.selectFirst(".bento-ep-chapter-num")?.text()?.removeSuffix(".")?.trim()
+            ?: card.selectFirst("div.chapter-title a span:last-child")?.text()?.trim()?.takeIf { it.matches(Regex(""".*\d+.*""")) }
+            ?: card.selectFirst("a.bento-ep-title-link")?.text()?.let { extractNumber(it) }
+        val commonSubtitle = card.selectFirst(".bento-ep-subtitle, .chapter-sub, div.chapter-sub")?.textOrNull()?.trim()
+        val commonDateText = card.selectFirst(".bento-ep-meta-time")?.text()?.trim()
+            ?: card.selectFirst(".stats")?.ownText()?.trim()
+            ?: card.selectFirst(".bento-ep-meta")?.text()?.trim()
+            ?: card.selectFirst(".chapter-stats, .chapter-meta")?.text()?.trim()
+        val commonDate = parseRelativeDate(commonDateText)
+
+        val baseName = when {
+            !commonNumber.isNullOrBlank() && !commonSubtitle.isNullOrBlank() && !commonSubtitle.contains("Bölüm", true) ->
+                "Bölüm $commonNumber - $commonSubtitle"
+            !commonNumber.isNullOrBlank() && !commonSubtitle.isNullOrBlank() ->
+                commonSubtitle.takeIf { it.contains("Bölüm", true) } ?: "Bölüm $commonNumber - $commonSubtitle"
+            !commonNumber.isNullOrBlank() -> "Bölüm $commonNumber" + (commonSubtitle?.let { " - $it" } ?: "")
+            else -> card.selectFirst("a.bento-ep-title-link")?.text()?.trim() ?: "Bölüm"
+        }.trim()
+
+        val chapterNumber = commonNumber?.let { Regex("""(\d+(?:\.\d+)?)""").find(it)?.value?.toFloatOrNull() }
+            ?: Regex("""(\d+(?:\.\d+)?)""").find(baseName)?.value?.toFloatOrNull() ?: -1f
+
+        // Tek linkli kartta tek chapter, çok linkli kartta her link için ayrı chapter
+        // Eğer kartta tek bir başlık linki var ama yanında fansub listesi ayrı elementler olarak duruyorsa
+        // ana linki tek chapter olarak döndürüp scanlator'u birleştirilmiş olarak göster
+        // yerine her fansub için ayrı chapter üretmek daha doğru (Mihon scanlator rozeti için)
+        if (groupLinkCandidates.size == 1) {
+            // Tek çeviri → scanlator tekil
+            return try { listOf(chapterFromSingleLink(card, groupLinkCandidates[0], baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+        }
+
+        // Çoklu çeviri: her aday link için ayrı SChapter
+        // Ancak adaylardan bazıları aynı href'e sahipse deduplicate et
+        val deduped = groupLinkCandidates.distinctBy {
+            it.absUrl("href").ifBlank { it.attr("data-href") }.ifBlank { it.text() }
+        }
+
+        // Eğer dedup sonrası hala 1 ise tekil döndür
+        if (deduped.size == 1) {
+            return try { listOf(chapterFromSingleLink(card, deduped[0], baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+        }
+
+        val result = mutableListOf<SChapter>()
+        for (linkEl in deduped) {
+            try {
+                val href = linkEl.absUrl("href").ifBlank { linkEl.attr("data-href") }.ifBlank { continue }
+                // Manga detay linklerini ele (manga-*.html ama read içermeyenler)
+                if (href.contains("/manga-") && href.endsWith(".html") && !href.contains("read") && !href.contains("id-") && !href.contains("bolum")) continue
+
+                // Bu satıra özel scanlator'u bul: link'in parent'ındaki fansub ismi veya link'in kendi text'i
+                val row = linkEl.parent() ?: linkEl
+                var scanlator = linkEl.text()?.trim()?.takeIf { it.contains("Fansub", true) || it.contains("FANSUB") }
+                    ?: row.selectFirst(".fansub-name, .bento-ep-scanlator, .scanlator, .group-name")?.text()?.trim()
+                    ?: linkEl.attr("title")?.takeIf { it.contains("Fansub", true) }
+                    ?: linkEl.selectFirst("span")?.text()?.takeIf { it.contains("Fansub", true) }
+                    ?: extractScanlatorFromText(linkEl.text() + " " + row.text())
+
+                // Fallback: kartın ilgili satırındaki Detay dropdown'ının yanındaki isim
+                if (scanlator.isNullOrBlank()) {
+                    val nearestFansub = row.text().let { extractScanlatorFromText(it) }
+                    scanlator = nearestFansub
+                }
+
+                val ch = SChapter.create().apply {
+                    setUrlWithoutDomain(href)
+                    name = baseName
+                    this.scanlator = scanlator?.takeIf { it.isNotBlank() && it.length < 60 && !it.contains("Bölüm", true) }
+                    chapter_number = chapterNumber
+                    date_upload = commonDate
+                    // date_upload eğer satır bazlı farklıysa o satırın tarihini al
+                    val rowDate = row.selectFirst(".bento-ep-meta-time, .stats, .chapter-stats")?.text()?.trim()?.let { parseRelativeDate(it) }
+                    if (rowDate != null && rowDate != 0L) date_upload = rowDate
+                }
+                result.add(ch)
+            } catch (_: Exception) { continue }
+        }
+
+        // Eğer çoklu üretmede hiçbir şey çıkmadıysa, en azından ana linkten tek chapter dön
+        if (result.isEmpty()) {
+            return try { listOf(chapterFromSingleLink(card, deduped.firstOrNull() ?: card.selectFirst("a") ?: return emptyList(), baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+        }
+
+        return result
+    }
+
+    private fun chapterFromSingleLink(
+        card: Element,
+        link: Element,
+        baseName: String? = null,
+        chapterNumber: Float? = null,
+        commonDate: Long? = null,
+    ): SChapter = SChapter.create().apply {
+        val href = link.absUrl("href").ifBlank { link.attr("data-href") }
+        if (href.isBlank()) throw IllegalArgumentException("chapter link href blank")
+        setUrlWithoutDomain(href)
+
+        val scanlator = card.selectFirst(".bento-ep-scanlator")?.text()?.trim()
+            ?: link.parent()?.selectFirst(".scanlator, .bento-ep-scanlator")?.text()?.trim()
+            ?: link.selectFirst(".scanlator")?.text()?.trim()
+            ?: card.selectFirst("a.fansub-group-item")?.text()?.trim()
+            ?: card.selectFirst(".bento-ep-source, .chapter-source, .scanlator-badge")?.text()?.trim()
+            ?: card.selectFirst(".bento-ep-meta span:last-child")?.text()?.trim()?.takeIf { it.contains("Fansub") || it.contains("Çeviri") }
+            ?: link.text()?.takeIf { it.contains("Fansub", true) }
+            ?: extractScanlatorFromText(card.text())
+
+        if (!scanlator.isNullOrBlank() && scanlator.length < 60 && !scanlator.contains("Bölüm", true)) {
             this.scanlator = scanlator
         }
 
-        // Chapter number and subtitle: handle both layouts
-        val numberBento = link.selectFirst(".bento-ep-chapter-num")?.text()?.removeSuffix(".")?.trim()
-        val numberFm = link.selectFirst("span:last-child")?.text()?.trim()
-        val titleText = link.textOrNull()?.trim()
-        val subtitleBento = element.selectFirst(".bento-ep-subtitle")?.textOrNull()?.trim()
-        val subtitleFm = element.selectFirst(".chapter-sub, div.chapter-sub, .bento-ep-subtitle")?.textOrNull()?.trim()
+        name = baseName ?: run {
+            val numberBento = link.selectFirst(".bento-ep-chapter-num")?.text()?.removeSuffix(".")?.trim()
+            val titleText = link.textOrNull()?.trim()
+            val subtitle = card.selectFirst(".bento-ep-subtitle, .chapter-sub")?.textOrNull()?.trim()
+            val number = numberBento ?: extractNumber(titleText)
+            when {
+                !number.isNullOrBlank() && !subtitle.isNullOrBlank() && !subtitle.contains("Bölüm", true) -> "Bölüm $number - $subtitle"
+                !number.isNullOrBlank() && !subtitle.isNullOrBlank() -> subtitle.takeIf { it.contains("Bölüm", true) } ?: "Bölüm $number - $subtitle"
+                !number.isNullOrBlank() -> "Bölüm $number" + (subtitle?.let { " - $it" } ?: "")
+                !titleText.isNullOrBlank() -> titleText
+                else -> "Bölüm"
+            }.trim().ifBlank { "Bölüm" }
+        }
 
-        val number = numberBento ?: numberFm?.takeIf { it.matches(Regex(""".*\d+.*""")) } ?: extractNumber(titleText)
+        chapter_number = chapterNumber ?: link.text()?.let { Regex("""(\d+(?:\.\d+)?)""").find(it)?.value?.toFloatOrNull() }
+            ?: Regex("""(\d+(?:\.\d+)?)""").find(name)?.value?.toFloatOrNull() ?: -1f
 
-        val subtitle = subtitleBento ?: subtitleFm
+        date_upload = commonDate ?: parseRelativeDate(
+            card.selectFirst(".bento-ep-meta-time")?.text()?.trim()
+                ?: card.selectFirst(".stats")?.ownText()?.trim()
+                ?: card.selectFirst(".bento-ep-meta")?.text()?.trim()
+                ?: card.selectFirst(".chapter-stats")?.text()?.trim()
+        )
+    }
 
-        name = when {
-            !number.isNullOrBlank() && !subtitle.isNullOrBlank() && !subtitle.contains("Bölüm", true) ->
-                "Bölüm $number - $subtitle"
-            !number.isNullOrBlank() && !subtitle.isNullOrBlank() && subtitle.contains("Bölüm", true) ->
-                subtitle // subtitle already contains Bölüm
-            !number.isNullOrBlank() -> "Bölüm $number" + (subtitle?.let { " - $it" } ?: "")
-            !titleText.isNullOrBlank() -> titleText
-            else -> "Bölüm"
-        }.trim().ifBlank { "Bölüm" }
-
-        // Also include scanlator in name if distinct? Keep simple, scanlator field is separate
-        chapter_number = number?.let {
-            Regex("""(\d+(?:\.\d+)?)""").find(it)?.value?.toFloatOrNull()
-        } ?: Regex("""(\d+(?:\.\d+)?)""").find(name)?.value?.toFloatOrNull() ?: -1f
-
-        val dateText = element.selectFirst(".bento-ep-meta-time")?.text()?.trim()
-            ?: element.selectFirst(".stats")?.ownText()?.trim()
-            ?: element.selectFirst(".bento-ep-meta")?.text()?.trim()
-            ?: element.selectFirst(".chapter-stats, .chapter-meta")?.text()?.trim()
-
-        date_upload = parseRelativeDate(dateText)
+    private fun chapterFromElement(element: Element): SChapter {
+        // Eski tekil API'yi koru: eğer kart çoklu çeviri içeriyorsa ilkini döndür
+        // Asıl çoklu mantık extractChaptersFromCard'ta
+        val list = extractChaptersFromCard(element)
+        if (list.isNotEmpty()) return list.first()
+        // Fallback: tekil link
+        return chapterFromSingleLink(element, element.selectFirst("a") ?: throw IllegalArgumentException("chapter link not found"))
     }
 
     private fun extractScanlatorFromText(text: String): String? {
