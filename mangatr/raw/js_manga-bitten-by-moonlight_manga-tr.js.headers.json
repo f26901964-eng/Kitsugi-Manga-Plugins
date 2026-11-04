@@ -2,7 +2,7 @@
   "Server": "ddos-guard",
   "Connection": "keep-alive",
   "Keep-Alive": "timeout=60",
-  "Set-Cookie": "__ddg8_=V5eYElLogQeWtLYO; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:06:24 GMT, __ddg10_=1793825184; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:06:24 GMT, __ddg9_=135.119.39.218; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:06:24 GMT",
+  "Set-Cookie": "__ddg8_=d7bfHQVyMq6ZDuBl; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:11:09 GMT, __ddg10_=1793825469; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:11:09 GMT, __ddg9_=135.232.176.181; Domain=.manga-tr.com; Path=/; Expires=Wed, 04-Nov-2026 21:11:09 GMT",
   "Content-Security-Policy": "upgrade-insecure-requests;",
   "last-modified": "Wed, 04 Nov 2026 17:57:31 GMT",
   "content-type": "text/javascript",
@@ -16,6 +16,6 @@
   "expect-ct": "enforce, max-age=21600",
   "alt-svc": "h3=\":443\"; ma=2592000, h3-29=\":443\"; ma=2592000",
   "Etag": "\"2937a-6aeb720b-4d825fb;gz\"",
-  "Age": "364",
+  "Age": "649",
   "DDG-Cache-Status": "HIT"
 }
