@@ -1,5 +1,5 @@
 {
-  "collected_at": "2026-11-04T20:38:52Z",
+  "collected_at": "2026-11-04T20:44:36Z",
   "manga_slugs_total": 25,
   "manga_slugs": [
     "manga-ansatsu-kyoushitsu.html",
@@ -418,6 +418,14 @@
     "mangatr/raw/api_new_darling-why-do-you-regret-it_off20_seed0.html",
     "mangatr/raw/api_new_darling-why-do-you-regret-it_off20_seed0.html.headers.json",
     "mangatr/raw/api_new_darling-why-do-you-regret-it_off20_seed0.html.meta.json",
+    "mangatr/raw/css_default_min_css.css",
+    "mangatr/raw/css_mtr_min_css.css",
+    "mangatr/raw/css_sceditor_yorum_css.css",
+    "mangatr/raw/css_seed_from_css_mtr_min_css.css.txt",
+    "mangatr/raw/css_yorum_duzen_css.css",
+    "mangatr/raw/css_yorum_gif_modal_css.css",
+    "mangatr/raw/css_yorum_icerik_css.css",
+    "mangatr/raw/decoded_mtr_chapters.js",
     "mangatr/raw/detail_manga-ansatsu-kyoushitsu.html",
     "mangatr/raw/detail_manga-ansatsu-kyoushitsu.html.headers.json",
     "mangatr/raw/detail_manga-ansatsu-kyoushitsu.html.meta.json",
