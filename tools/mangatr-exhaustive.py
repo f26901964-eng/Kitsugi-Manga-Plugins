@@ -262,22 +262,70 @@ print(f"[INFO] toplanan CSS URL sayısı: {len(_all_css_urls)} -> {list(_all_css
 
 # ---- 5. BÖLÜM LİSTESİ API — yeni yöntem (manga slug + _sig) ---
 import hashlib as _hashlib
+def decode_mtr_js_blob():
+    """manga-tr.min.js içindeki şifreli blob'u çöz ve /tmp/decoded.js'e kaydet; seed mantığını doğrula"""
+    try:
+        # Use already fetched js file
+        for p in OUT_RAW.glob("js_*_manga-tr.js"):
+            txt = p.read_text(errors='ignore')
+            m = re.search(r'var\s+\w+\s*=\s*"([A-Za-z0-9+/=_-]{1000,})"', txt)
+            if not m: continue
+            blob = m.group(1)
+            Y=[234,13,239,92,33,38,227,1,24,94,238,9,38,45,231,24,234,30,235,16,30,13,15,57,236,18,28]
+            R="".join(chr(((y ^ 106) - 19) & 255) for y in Y)
+            import base64
+            G=base64.b64decode(blob)
+            k=len(G)
+            M=list(range(256))
+            I=0
+            for q in range(256):
+                I=(I+M[q]+ord(R[q % len(R)]))%256
+                M[q],M[I]=M[I],M[q]
+            q=I2=0
+            yb=bytearray(k)
+            for v in range(k):
+                q=(q+1)%256
+                I2=(I2+M[q])%256
+                M[q],M[I2]=M[I2],M[q]
+                yb[v]=G[v]^M[(M[q]+M[I2])%256]
+            decoded=yb.decode('utf-8', errors='ignore')
+            # Save for analysis
+            save(f"decoded_mtr_chapters.js", decoded, subdir="raw")
+            # Extract seed logic: should contain getComputedStyle and --mdx-white
+            if "--mdx-white" in decoded:
+                print(f"  [decode] mtr decoded ok len={len(decoded)} contains seed logic")
+            else:
+                print(f"  [decode] mtr decoded len={len(decoded)} no seed? preview {decoded[:500]}")
+            return decoded
+    except Exception as e:
+        print(f"  [decode] fail {e}")
+        import traceback; traceback.print_exc()
+    return None
+
 def get_seed():
+    # First try to decode mtr js to verify seed logic, but still fetch CSS
+    decode_mtr_js_blob()
     tried = []
+    css_contents = {}
     try:
         for css_url in list(_all_css_urls)[:12]:
             try:
                 r = sess.get(css_url, timeout=10)
                 tried.append(f"{css_url} -> {r.status_code}")
-                if r.status_code==200 and ("--mdx-white" in r.text or "--mdx-black" in r.text):
-                    wm = re.search(r'--mdx-white\s*:\s*(\d+)', r.text)
-                    bm = re.search(r'--mdx-black\s*:\s*(\d+)', r.text)
-                    w = int(wm.group(1)) if wm else 0
-                    b = int(bm.group(1)) if bm else 0
-                    print(f"  [seed] mdx-white={w} mdx-black={b} seed={w+b} from {css_url}")
-                    return w+b
-                # Also try alternative pattern: --mdx-white:#fff etc -> parse hex?
                 if r.status_code==200:
+                    # Save CSS for debug
+                    fname = "css_" + re.sub(r'[^a-zA-Z0-9]', '_', css_url.split('/')[-1].split('?')[0]) + ".css"
+                    save(fname, r.text, subdir="raw")
+                    css_contents[css_url]=r.text
+                    if "--mdx-white" in r.text or "--mdx-black" in r.text:
+                        wm = re.search(r'--mdx-white\s*:\s*(\d+)', r.text)
+                        bm = re.search(r'--mdx-black\s*:\s*(\d+)', r.text)
+                        w = int(wm.group(1)) if wm else 0
+                        b = int(bm.group(1)) if bm else 0
+                        print(f"  [seed] mdx-white={w} mdx-black={b} seed={w+b} from {css_url}")
+                        # Save snippet
+                        save(f"css_seed_from_{fname}.txt", f"w={w} b={b} seed={w+b} url={css_url}", subdir="raw")
+                        return w+b
                     # Log snippet for debug
                     snippet = r.text[:2000]
                     if "--mdx" in snippet:
@@ -285,6 +333,10 @@ def get_seed():
             except Exception as ce:
                 tried.append(f"{css_url} err {ce}")
         print(f"  [seed] tried {tried} -> fallback 0")
+        # Dump all --mdx occurrences
+        for url, txt in css_contents.items():
+            if "--mdx" in txt:
+                print(f"  [seed] --mdx found in {url}: {txt[txt.find('--mdx')-20:txt.find('--mdx')+100]}")
     except Exception as e:
         print(f"  [seed] fail {e}")
     return 0
