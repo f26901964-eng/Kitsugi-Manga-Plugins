@@ -24,6 +24,7 @@ import keiyoushi.utils.textOrNull
 import keiyoushi.utils.toJsonRequestBody
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonPrimitive
@@ -230,36 +231,73 @@ abstract class MangaTR : KeiSource() {
     private fun String.isExcludedType() = contains("novel") || contains("anime")
 
     private fun Document.hasNextPage(currentPage: Int): Boolean {
-        // Strategy 1: Look for explicit next page number links
+        // --- New site: index-sayfa-N.html#sayfa (homepage) ---
+        val indexPagePattern = Regex("""index-sayfa-(\d+)\.html""")
+        val indexPages = select("a[href*='index-sayfa-']").mapNotNull {
+            indexPagePattern.find(it.attr("href"))?.groupValues?.get(1)?.toIntOrNull()
+        }
+        if (indexPages.any { it > currentPage }) return true
+
+        // --- Bento pagination: nav.pagination-wrap a.pagination-link ---
+        val paginationLinks = select("nav.pagination-wrap a.pagination-link, .pagination a, ul.pagination a, div.pagination a")
+        if (paginationLinks.isNotEmpty()) {
+            val active = paginationLinks.firstOrNull { it.hasClass("is-active") || it.hasClass("active") }
+            if (active != null) {
+                val idx = paginationLinks.indexOf(active)
+                if (idx >= 0 && idx < paginationLinks.size - 1) {
+                    val nextHref = paginationLinks[idx + 1].attr("href")
+                    if (nextHref.isNotBlank()) return true
+                    // Even if href blank, active not last => more pages
+                    return true
+                }
+            } else {
+                // No active marker: check if any link points to next page number
+                if (paginationLinks.any { el ->
+                    val t = el.text().trim()
+                    t == (currentPage + 1).toString() ||
+                        el.attr("href").contains("sayfa-${currentPage + 1}") ||
+                        el.attr("href").contains("page=${currentPage + 1}")
+                }) return true
+            }
+            val maxNum = paginationLinks.mapNotNull { Regex("""\d+""").find(it.text().trim())?.value?.toIntOrNull() }.maxOrNull()
+            if (maxNum != null && maxNum > currentPage) return true
+        }
+
+        // --- Legacy: page= query param (manga-list-sayfala.html, arama.html) ---
         val numbered = select("a[href*=page=]").mapNotNull {
             it.absUrl("href").toHttpUrlOrNull()?.queryParameter("page")?.toIntOrNull()
         }.any { it > currentPage }
         if (numbered) return true
 
-        // Strategy 2: Look for arrows: » or › where href page > current
+        // Also check manga-list-sayfala pagination with page param in absUrl
+        val listSayaPage = select("a[href*='manga-list-sayfala']").mapNotNull {
+            it.absUrl("href").toHttpUrlOrNull()?.queryParameter("page")?.toIntOrNull()
+        }.any { it > currentPage }
+        if (listSayaPage) return true
+
+        // --- Arrows: » or › ---
         val arrowLinks = select("a, button").filter { it.text().trim() in setOf("›", "»", "Sonraki", "Next", "İleri") }
         for (a in arrowLinks) {
             val href = a.absUrl("href")
             if (href.isNotBlank()) {
                 val p = href.toHttpUrlOrNull()?.queryParameter("page")?.toIntOrNull()
                 if (p != null && p > currentPage) return true
-                // If href exists but no page param, assume next exists
                 if (p == null && href.contains("page")) return true
+                // index-sayfa pattern in arrow href
+                val ip = indexPagePattern.find(href)?.groupValues?.get(1)?.toIntOrNull()
+                if (ip != null && ip > currentPage) return true
             } else {
-                // Button without href but indicates pagination (FMReader)
                 if (a.text().trim() == "›" || a.text().trim() == "»") {
-                    // Check if not disabled
                     if (!a.hasClass("disabled") && !a.attr("disabled").equals("true", true)) return true
                 }
             }
         }
 
-        // Strategy 3: Check pagination container for current page indicator + next sibling
+        // --- Fallback: pagination container active check for old FMReader ---
         val bentoPagination = selectFirst("ul.pagination, div.pagination, div.btn-group")
         if (bentoPagination != null) {
             val active = bentoPagination.selectFirst(".active, .btn-info, [aria-current=page]")
             if (active != null) {
-                // If active is not the last pagination element, next exists
                 val allPages = bentoPagination.select("a, button").map { it.text().trim() }
                 val activeText = active.text().trim()
                 val idx = allPages.indexOf(activeText)
@@ -267,8 +305,6 @@ abstract class MangaTR : KeiSource() {
             }
         }
 
-        // Strategy 4: Count items: if page returned reasonable count, assume more pages may exist
-        // We already handled explicit links; otherwise default to false for safety
         return false
     }
 
@@ -316,6 +352,9 @@ abstract class MangaTR : KeiSource() {
         title = rawTitle.replace(TRAILING_YEAR_REGEX, "").trim()
 
         thumbnail_url = selectFirst(".poster-card__image")?.absUrl("src")
+            ?: selectFirst(".bento-hero-cover img")?.absUrl("src")
+            ?: selectFirst("img[src*='image.mngtr.site/kapak']")?.absUrl("src")
+            ?: selectFirst("img[src*='image.mngtr.site']")?.absUrl("src")
             ?: selectFirst("img[src*='image.mangatr.site']")?.absUrl("src")
             ?: selectFirst("img[title]")?.absUrl("src")
             ?: selectFirst(".manga-cover img, .poster img")?.absUrl("src")
@@ -387,22 +426,32 @@ abstract class MangaTR : KeiSource() {
     // ============================= Chapters ==============================
 
     private suspend fun getChapterList(document: Document, manga: SManga? = null): List<SChapter> {
-        // Strategy 1: Bento listKey (multiple possible variable names)
         val html = document.html()
+
+        // Strategy 1: Bento listKey doğrudan HTML içinde
         val key = extractChapterKey(html, document)
         if (key != null) {
             val chapters = fetchBentoChapters(key)
             if (chapters.isNotEmpty()) return chapters
         }
 
-        // Strategy 2: FMReader manga_cek via data-manga attribute or URL id
+        // Strategy 1b: Harici JS (manga-tr.min.js) içinde listKey arayın — yeni sitede anahtar dış dosyada
+        val extKey = extractChapterKeyFromExternalJs(document)
+        if (extKey != null) {
+            val chapters = fetchBentoChapters(extKey)
+            if (chapters.isNotEmpty()) return chapters
+        }
+
+        // Strategy 2: FMReader manga_cek via data-manga attribute or URL id (slug)
+        // Yeni bento detail'de data-manga="chainsaw-man" gibi slug tutulur
         val mangaIdFromAttr = document.selectFirst("#results")?.attr("data-manga")?.trim()
-            ?: document.selectFirst("[data-manga]")?.attr("data-manga")?.trim()
             ?.takeIf { it.isNotEmpty() }
+            ?: document.selectFirst("[data-manga]")?.attr("data-manga")?.trim()
+                ?.takeIf { it.isNotEmpty() }
 
         val mangaIdFromUrl = manga?.url?.substringAfter("manga-")?.substringBefore(".")
             ?: document.location().substringAfter("manga-").substringBefore(".").substringBefore("?")
-            ?.takeIf { it.isNotEmpty() && !it.contains("/") }
+                ?.takeIf { it.isNotEmpty() && !it.contains("/") }
 
         val mangaId = mangaIdFromAttr ?: mangaIdFromUrl
 
@@ -415,19 +464,19 @@ abstract class MangaTR : KeiSource() {
         val direct = parseDirectChapters(document)
         if (direct.isNotEmpty()) return direct
 
-        // If all fail, throw informative error
         throw IOException("Bölüm listesi yüklenemedi. Site yapısı değişmiş olabilir; lütfen uygulamayı güncelleyin.")
     }
 
     private fun extractChapterKey(html: String, document: Document): String? {
-        // Try multiple regex patterns for listKey
         val patterns = listOf(
             CHAPTER_KEY_REGEX,
             Regex("""initialChapterListKey\s*=\s*['"`]([^'"`]+)['"`]"""),
             Regex("""window\.mtrChapterKeys\.listKey\s*=\s*['"]([^'"]+)['"]"""),
             Regex("""mtrChapterKeys\s*:\s*\{[^}]*listKey\s*:\s*['"]([^'"]+)['"]"""),
             Regex("""listKey\s*:\s*['"]([^'"]+)['"]"""),
-            Regex("""chapter_list_key\s*[:=]\s*['"]([^'"]+)['"]""")
+            Regex("""chapter_list_key\s*[:=]\s*['"]([^'"]+)['"]"""),
+            Regex("""['"]chapter_list_key['"]\s*:\s*['"]([^'"]+)['"]"""),
+            Regex("""data-list-key\s*=\s*['"]([^'"]+)['"]"""),
         )
         for (regex in patterns) {
             val match = regex.find(html)
@@ -436,10 +485,22 @@ abstract class MangaTR : KeiSource() {
                 if (!value.isNullOrEmpty() && value.length > 10) return value
             }
         }
-        // Also try data attribute on #results
         document.selectFirst("#results")?.attr("data-list-key")?.takeIf { it.isNotEmpty() }?.let { return it }
         document.selectFirst("[data-list-key]")?.attr("data-list-key")?.takeIf { it.isNotEmpty() }?.let { return it }
+        // meta tag or hidden input fallback
+        document.selectFirst("input[name=chapter_list_key]")?.attr("value")?.takeIf { it.length > 10 }?.let { return it }
         return null
+    }
+
+    private suspend fun extractChapterKeyFromExternalJs(document: Document): String? {
+        // Yeni sitede listKey harici JS içinde: app/manga/themes/default/assets/js/manga-tr.min.js
+        val scriptSrc = document.selectFirst("script[src*='manga-tr.min.js']")?.absUrl("src")
+            ?: document.selectFirst("script[src*='manga-tr']")?.absUrl("src")
+            ?: return null
+        return try {
+            val jsBody = client.get(scriptSrc, ajaxHeaders).body.string()
+            extractChapterKey(jsBody, document)
+        } catch (_: Exception) { null }
     }
 
     private suspend fun fetchBentoChapters(key: String): List<SChapter> {
@@ -524,8 +585,18 @@ abstract class MangaTR : KeiSource() {
     private suspend fun fetchFmChapters(mangaId: String): List<SChapter> {
         val requestUrl = "$baseUrl/cek/fetch_pages_manga.php?manga_cek=$mangaId"
         return try {
+            // Try GET first (old FMReader), then fallback to POST with offset/page
             val initialResponse = client.get(requestUrl, ajaxHeaders)
-            chapterListParseFm(initialResponse)
+            val chapters = chapterListParseFm(initialResponse)
+            if (chapters.isNotEmpty()) return chapters
+
+            // Fallback: try POST with offset=0 (new Bento offset mode but using manga_cek slug)
+            val formOffset0 = FormBody.Builder().add("manga_cek", mangaId).add("offset", "0").build()
+            val postResp = client.post("$baseUrl/cek/fetch_pages_manga.php", ajaxHeaders, formOffset0)
+            val postChapters = chapterListParseFm(postResp)
+            if (postChapters.isNotEmpty()) return postChapters
+
+            emptyList()
         } catch (e: Exception) {
             emptyList()
         }
@@ -537,11 +608,28 @@ abstract class MangaTR : KeiSource() {
         var doc: Document? = null
         var response = initialResponse
         val seenUrls = mutableSetOf<String>()
+        var emptyStreak = 0
 
         do {
             doc = response.asJsoup().also { it.setBaseUri(baseUrl) }
-            // Support multiple selectors - her kart çoklu çeviri içerebilir, flatMap ile hepsini aç
-            val elements = doc.select("div.chapter-item, article.bento-ep-card, div.bento-ep-card, li.chapter-item, div.chapter-box")
+
+            // Handle JSON-wrapped HTML (new endpoint returns {"html":"..."} or {"data":"..."})
+            var elements = doc.select("div.chapter-item, article.bento-ep-card, div.bento-ep-card, li.chapter-item, div.chapter-box, article.chapter-card")
+            if (elements.isEmpty()) {
+                val bodyStr = try { response.peekBody(Long.MAX_VALUE).string() } catch (_: Exception) { "" }
+                if (bodyStr.trim().startsWith("{")) {
+                    try {
+                        val json = Json.parseToJsonElement(bodyStr) as? JsonObject
+                        val htmlField = json?.get("html")?.jsonPrimitive?.content
+                            ?: json?.get("data")?.jsonPrimitive?.content
+                        if (htmlField != null) {
+                            val innerDoc = org.jsoup.Jsoup.parse(htmlField, baseUrl)
+                            elements = innerDoc.select("div.chapter-item, article.bento-ep-card, div.bento-ep-card")
+                        }
+                    } catch (_: Exception) {}
+                }
+            }
+
             val batch = elements.flatMap { el ->
                 try { extractChaptersFromCard(el) } catch (_: Exception) { emptyList() }
             }.filterNot { seenUrls.contains(it.url) }
@@ -549,38 +637,54 @@ abstract class MangaTR : KeiSource() {
             if (batch.isNotEmpty()) {
                 batch.forEach { seenUrls.add(it.url) }
                 chapters.addAll(batch)
+                emptyStreak = 0
+            } else {
+                emptyStreak++
+                if (emptyStreak >= 2) break
             }
 
-            // Check for next page indicator: a[data-page=nextPage+1]
+            // Pagination: new Bento uses offset, old FMReader uses page
+            // Detect which to use based on initial request URL
+            val usesMangaCek = response.request.url.toString().contains("manga_cek")
             nextPage++
-            val nextPageLink = doc.selectFirst("a[data-page=\"$nextPage\"], button[data-page=\"$nextPage\"], a[href*='page=$nextPage']")
-            if (nextPageLink == null) {
-                // Also check for generic pagination
-                val hasMoreBySize = batch.size >= 20
-                if (!hasMoreBySize) break
-                // Try to fetch next via POST even without explicit link, as site may use offset
-                // But to avoid infinite loop, check if we already have many chapters and no link
-                // We'll try POST once more to see
+
+            // Look for explicit next page / load-more
+            val nextPageLink = doc.selectFirst("a[data-page=\"$nextPage\"], button[data-page=\"$nextPage\"], a[href*='page=$nextPage'], button[data-offset], a[data-offset]")
+            val btnLoadMore = doc.selectFirst("#btn-load-more, button.load-more, a.load-more")
+            val hasMoreByIndicator = nextPageLink != null || btnLoadMore != null
+            val hasMoreBySize = batch.size >= 20 || batch.size >= 10 // smaller batch may still have more
+
+            if (!hasMoreByIndicator && !hasMoreBySize) {
+                // Try one more offset fetch before giving up (Bento loads 20 then 100)
+                if (batch.isEmpty() && chapters.isEmpty()) break
+                if (batch.size < 10) break
             }
 
-            // Fetch next page via POST
+            // Choose pagination param: if Bento (no manga_cek key but slug), use offset= (prevOffset+increment)
+            // For now try both: page and offset
             response = try {
-                val body = FormBody.Builder().add("page", nextPage.toString()).build()
-                client.post(requestUrlFromResponse(initialResponse), ajaxHeaders, body)
+                val reqUrl = requestUrlFromResponse(initialResponse)
+                val body = if (reqUrl.contains("manga_cek") && chapters.size >= 20) {
+                    // manga_cek mode with offset (new site): offset = 20 then +100
+                    val offsetVal = if (chapters.size <= 20) 20 else chapters.size
+                    FormBody.Builder().add("offset", offsetVal.toString()).build()
+                } else {
+                    FormBody.Builder().add("page", nextPage.toString()).build()
+                }
+                client.post(reqUrl, ajaxHeaders, body)
             } catch (e: Exception) {
                 break
             }
-            // Loop continues until no next link and batch empty
-            // Prevent infinite: if same URLs again, break
-            if (chapters.size > 3000) break
+
+            if (chapters.size > 4000) break
         } while (true)
 
-        // If we only fetched first page due to loop logic, at least include it
         if (chapters.isEmpty()) {
-            val fallbackDoc = initialResponse.asJsoup()
-            val els = fallbackDoc.select("div.chapter-item, article.bento-ep-card")
+            // Ultimate fallback: parse initial doc directly (maybe cards already in HTML)
+            val fallbackDoc = try { initialResponse.asJsoup() } catch (_: Exception) { return emptyList() }
+            val els = fallbackDoc.select("div.chapter-item, article.bento-ep-card, article.bento-ep-card, div.chapter-item, a[href*='-read-']")
             return els.flatMap { try { extractChaptersFromCard(it) } catch (_: Exception) { emptyList() } }
-        }
+                .distinctBy { it.url }
         }
 
         return chapters
@@ -929,80 +1033,137 @@ abstract class MangaTR : KeiSource() {
 
     private suspend fun tryParseBentoPages(document: Document): List<Page>? {
         val configScript = document.selectFirst("script[type=application/json][id^=rdm-]")
+            ?: document.selectFirst("script[id^=rdm-]")
+            ?: document.selectFirst("[id^=rdm-]")
             ?: return null
 
         // Extract pageKey (32-char hex) from script attributes
         val pageKey = configScript.attributes().firstNotNullOfOrNull { attr ->
             attr.value.takeIf { HEX_KEY_REGEX.matches(it) }
         } ?: run {
-            // Try alternative: find hex in html near rdm-
             HEX_KEY_REGEX.find(document.html())?.value
         } ?: return null
 
-        // Extract gate path: try multiple variable names
+        // Extract gate path
         val gatePath = GATE_PATH_REGEX.find(document.html())?.groupValues?.get(1)
             ?: Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""").find(document.html())?.groupValues?.get(1)
-            ?: return null
 
-        val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
-            ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host }
-            ?: return null
+        var config: ReaderAttributesDto? = null
 
-        // Gate may require specific headers: try with JSON body
-        val gateKey = try {
-            client.post(gateUrl.toString(), "{}".toRequestBody(JSON_MEDIA_TYPE))
-                .parseAs<ReaderGateDto>().k
-        } catch (e: Exception) {
-            // Try alternative: GET gate
-            try {
-                client.get(gateUrl.toString()).parseAs<ReaderGateDto>().k
-            } catch (_: Exception) {
-                return null
+        if (gatePath != null) {
+            val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
+                ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host }
+            if (gateUrl != null) {
+                val gateKey = try {
+                    client.post(gateUrl.toString(), "{}".toRequestBody(JSON_MEDIA_TYPE))
+                        .parseAs<ReaderGateDto>().k
+                } catch (e: Exception) {
+                    try {
+                        client.get(gateUrl.toString()).parseAs<ReaderGateDto>().k
+                    } catch (_: Exception) { null }
+                }
+                if (gateKey != null) {
+                    config = try {
+                        configScript.data().ifBlank { configScript.html() }
+                            .decrypt("gate|$gateKey|reader")
+                            .decrypt("boot|$pageKey|reader")
+                            .parseAs<ReaderConfigDto>().data
+                    } catch (_: Exception) { null }
+                }
             }
         }
 
-        val config = try {
-            configScript.data()
-                .decrypt("gate|$gateKey|reader")
-                .decrypt("boot|$pageKey|reader")
-                .parseAs<ReaderConfigDto>().data
-        } catch (e: Exception) {
-            return null
-        }
+        if (config != null) {
+            val elements = try {
+                document.select("[${config.parts}]")
+                    .sortedBy { it.attr(config.pageIndex).toIntOrNull() ?: it.attr(config.pageIndex.removePrefix("data-"))?.toIntOrNull() ?: Int.MAX_VALUE }
+            } catch (_: Exception) { emptyList<Element>() }
 
-        // Select page elements and build Page list
-        val elements = try {
-            document.select("[${config.parts}]")
-                .sortedBy { it.attr(config.pageIndex).toIntOrNull() ?: Int.MAX_VALUE }
-        } catch (e: Exception) {
-            return null
-        }
-
-        if (elements.isEmpty()) return null
-
-        return elements.mapIndexed { index, element ->
-            val encryptedParts = element.attr(config.parts)
-            if (encryptedParts.isBlank()) return@mapIndexed null
-            val imageUrl = try {
-                encryptedParts.decrypt("attr|$pageKey|reader").parseAs<List<String>>().first()
-            } catch (e: Exception) {
-                return@mapIndexed null
+            if (elements.isNotEmpty()) {
+                val pages = elements.mapIndexed { index, element ->
+                    val encryptedParts = element.attr(config!!.parts).ifBlank { element.attr(config.parts.removePrefix("data-")) }
+                    if (encryptedParts.isBlank()) return@mapIndexed null
+                    val imageUrl = try {
+                        encryptedParts.decrypt("attr|$pageKey|reader").parseAs<List<String>>().first()
+                    } catch (_: Exception) { return@mapIndexed null }
+                    val orderRaw = element.attrOrNull(config.order) ?: element.attrOrNull(config.order.removePrefix("data-"))
+                    val order = try {
+                        orderRaw?.takeIf { it.isNotBlank() }
+                            ?.decrypt("order|$pageKey|reader")?.parseAs<List<Int>>()
+                    } catch (_: Exception) { null }
+                    val url = if (order.isNullOrEmpty()) imageUrl else try {
+                        imageUrl.toHttpUrl().newBuilder().fragment(order.joinToString(",")).toString()
+                    } catch (_: Exception) { imageUrl }
+                    Page(index, imageUrl = url)
+                }.filterNotNull()
+                if (pages.isNotEmpty()) return pages
             }
-            val order = try {
-                element.attrOrNull(config.order)?.takeIf { it.isNotBlank() }
-                    ?.decrypt("order|$pageKey|reader")?.parseAs<List<Int>>()
+        }
+
+        // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)
+        // Her div'de data-* içinde 80+ karakterli base64-şifreli dizi tutulur → attr|pageKey|reader ile çözünce img_part URL'i çıkar
+        return tryParseBentoPagesDirectFallback(document, pageKey)
+    }
+
+    private fun tryParseBentoPagesDirectFallback(document: Document, pageKey: String): List<Page>? {
+        val candidates = mutableListOf<Triple<Element, String, String?>>() // el, partsAttr, indexAttr
+        val allElements = document.select("*")
+        for (el in allElements) {
+            var partsAttr: String? = null
+            var decrypted: String? = null
+            // Her attribute'u dene
+            for (attr in el.attributes()) {
+                val v = attr.value
+                if (v.length < 80) continue
+                // Base64 benzeri mi?
+                if (!v.matches(Regex("[A-Za-z0-9+/=_\\-]{80,}"))) continue
+                val t = try { v.decrypt("attr|$pageKey|reader") } catch (_: Exception) { continue }
+                if (t.contains("img_part.php") || (t.contains("http") && t.contains("image.mngtr.site"))) {
+                    partsAttr = attr.key
+                    decrypted = t
+                    break
+                }
+            }
+            if (partsAttr != null) {
+                // Sayfa index attribute'unu bul: numeric 0..N
+                val idxAttr = el.attributes().firstOrNull { a ->
+                    a.key != partsAttr && a.value.matches(Regex("\\d+")) && a.value.toIntOrNull()?.let { it < 1000 } == true
+                }?.key
+                candidates.add(Triple(el, partsAttr, idxAttr))
+            }
+        }
+        if (candidates.isEmpty()) return null
+
+        val sorted = candidates.sortedBy { (el, _, idxAttr) ->
+            idxAttr?.let { el.attr(it).toIntOrNull() } ?: Int.MAX_VALUE
+        }
+
+        val pages = sorted.mapIndexed { idx, (el, partsAttr, _) ->
+            val enc = el.attr(partsAttr)
+            val url = try {
+                enc.decrypt("attr|$pageKey|reader").parseAs<List<String>>().firstOrNull()
+                    ?: enc.decrypt("attr|$pageKey|reader").let { Json.parseToJsonElement(it).jsonArray.firstOrNull()?.jsonPrimitive?.content }
             } catch (_: Exception) { null }
-
-            val url = if (order.isNullOrEmpty()) {
-                imageUrl
-            } else {
-                // Store order in fragment for interceptor
-                try {
-                    imageUrl.toHttpUrl().newBuilder().fragment(order.joinToString(",")).toString()
-                } catch (_: Exception) { imageUrl }
+            if (url.isNullOrBlank()) return@mapIndexed null
+            // Order varsa fragment'e ekle (scrambled)
+            // Order attribute'u bulmaya çalış
+            var orderFrag: List<Int>? = null
+            for (a in el.attributes()) {
+                if (a.key == partsAttr) continue
+                if (a.value.length < 10) continue
+                val ordDec = try { a.value.decrypt("order|$pageKey|reader") } catch (_: Exception) { continue }
+                if (ordDec.trim().startsWith("[") || ordDec.trim().startsWith("{")) {
+                    orderFrag = try { Json.parseToJsonElement(ordDec).jsonArray.map { it.jsonPrimitive.content.toInt() } } catch (_: Exception) { null }
+                    if (orderFrag != null) break
+                }
             }
-            Page(index, imageUrl = url)
+            val finalUrl = if (orderFrag.isNullOrEmpty()) url else try {
+                url.toHttpUrl().newBuilder().fragment(orderFrag.joinToString(",")).toString()
+            } catch (_: Exception) { url }
+            Page(idx, imageUrl = finalUrl)
         }.filterNotNull()
+
+        return pages.takeIf { it.isNotEmpty() }
     }
 
     private fun tryParseFmPages(document: Document): List<Page> {
