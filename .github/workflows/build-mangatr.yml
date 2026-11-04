@@ -28,10 +28,10 @@ jobs:
           ls -R src/tr/mangatr/build/outputs 2>&1 | head -n 100 | tee -a /tmp/gradle.log || true
           if compgen -G "src/tr/mangatr/build/outputs/apk/release/*.apk" > /dev/null; then
             echo "copying apk" | tee -a /tmp/gradle.log
-            cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk
-            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk ../apk/tachiyomi-tr.mangatr-v1.6.27.apk
-            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.27.apk
-            ls -lh ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk | tee -a /tmp/gradle.log
+            cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.28.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.28.apk ../apk/tachiyomi-tr.mangatr-v1.6.28.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.28.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.28.apk
+            ls -lh ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.28.apk | tee -a /tmp/gradle.log
           else
             echo "NO APK FOUND" | tee -a /tmp/gradle.log
             cat /tmp/gradle.log
@@ -56,7 +56,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk apk/tachiyomi-tr.mangatr-v1.6.27.apk builds/apk/tachiyomi-tr.mangatr-v1.6.27.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json || true
+          git add prebuilt/apk/tachiyomi-tr.mangatr-v1.6.27.apk prebuilt/apk/tachiyomi-tr.mangatr-v1.6.28.apk apk/tachiyomi-tr.mangatr-v1.6.27.apk apk/tachiyomi-tr.mangatr-v1.6.28.apk builds/apk/tachiyomi-tr.mangatr-v1.6.27.apk builds/apk/tachiyomi-tr.mangatr-v1.6.28.apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json || true
           git diff --cached --quiet && echo "değişiklik yok" && exit 0
-          git commit -m "mangatr: gerçek derlenmiş 1.6.27 APK (Chainsaw Man arama düzeltmesi)"
+          git commit -m "mangatr: gerçek derlenmiş 1.6.28 APK (DDoS-Guard + yeni bölüm API + decode)"
           git push origin HEAD:main

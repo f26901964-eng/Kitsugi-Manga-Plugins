@@ -1,0 +1,14 @@
+{
+  "seed": 111111,
+  "css_urls": [
+    "https://manga-tr.com/app/manga/themes/default/assets/css/yorum-duzen.css?v=0111-2",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/yorum-icerik.css?v=0111-14",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/mtr.min.css",
+    "https://manga-tr.com/app/manga/themes/default/assets/minified/themes/default.min.css?v=0111-09",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/yorum-alinti.css?v=0111-1",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/sceditor-yorum.css?v=0111-1",
+    "https://manga-tr.com/app/manga/themes/default/assets/css/yorum-gif-modal.css?v=0111-1"
+  ],
+  "detected": 111111
+}
