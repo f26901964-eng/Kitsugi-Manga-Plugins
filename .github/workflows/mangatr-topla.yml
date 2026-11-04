@@ -45,10 +45,13 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          # özetler her zaman
           git add mangatr/live/summary.json mangatr/live/list_keys.json mangatr/live/discovered_manga.json 2>&1 || true
           git add mangatr/live/*.headers.json mangatr/live/*.meta.json 2>&1 || true
+          # ham html'ler de lazım (gitignore artık izin veriyor)
+          git add mangatr/live/*.html mangatr/raw/*.html mangatr/raw/*.js 2>&1 || true
           git diff --cached --quiet && echo "commit yok, özet değişmemiş" && exit 0
-          git commit -m "ci(mangatr): canlı özet ${{ github.run_id }} [skip ci]"
+          git commit -m "ci(mangatr): canlı özet+ham ${{ github.run_id }} [skip ci]"
           git push origin HEAD:${{ github.ref_name }} || echo "push fail, devam"
 
       - name: Özeti job summary'e yaz
