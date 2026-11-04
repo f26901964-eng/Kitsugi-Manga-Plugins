@@ -1,6 +1,9 @@
 name: mangatr-canlı-topla
 on:
   workflow_dispatch:
+  push:
+    branches: [arena/0f1eb52b-kitsugi-manga-plugins]
+    paths: ["mangatr/**", "tools/mangatr-exhaustive.py", ".github/workflows/mangatr-topla.yml"]
 
 permissions:
   contents: write
