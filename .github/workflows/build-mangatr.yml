@@ -20,20 +20,29 @@ jobs:
       - name: Android SDK kontrol
         run: |
           echo "ANDROID_HOME=$ANDROID_HOME"
-          echo "ANDROID_SDK_ROOT=$ANDROID_SDK_ROOT"
-          ls -lh $ANDROID_HOME/platform-tools 2>&1 | head
-          ls -lh $ANDROID_HOME/cmdline-tools 2>&1 | head
-          sdkmanager --version 2>&1 | head
-          yes | sdkmanager --licenses 2>&1 | tail -n 20 || true
+          ls -lh $ANDROID_HOME/platform-tools 2>&1 | head -n 20
+          ls $ANDROID_HOME/cmdline-tools/ 2>&1 | head
+          ls $ANDROID_HOME/build-tools/ 2>&1 | head
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --version 2>&1 | head
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>&1 | tail -n 5 || true
+          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list_installed 2>&1 | head -n 40
       - name: Derle Manga-TR
         working-directory: keiyoushi-extensions-tr
         run: |
           chmod +x gradlew
-          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace
-          ls -lh src/tr/mangatr/build/outputs/apk/release/
+          set -o pipefail
+          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace --info 2>&1 | tee /tmp/gradle.log
+          echo "=== gradle finished ==="
+          ls -lh src/tr/mangatr/build/outputs/apk/release/ 2>&1 | tee -a /tmp/gradle.log
           cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
           cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
           cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+      - name: Upload gradle log on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-log
+          path: /tmp/gradle.log
       - name: Katalog güncelle
         run: |
           python3 tools/sync_enabled_plugins.py
