@@ -64,7 +64,8 @@ def ddos_bypass(resp):
 def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None, retry_ddos=True):
     headers = {}
     if headers_extra: headers.update(headers_extra)
-    print(f"[GET] {name} <- {url}")
+    verb = "POST" if method=="POST" else "GET"
+    print(f"[{verb}] {name} <- {url} data={data if method=='POST' else ''}")
     try:
         if method=="POST":
             r = sess.post(url, data=data, headers=headers, timeout=20)
@@ -79,14 +80,23 @@ def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None,
                 else:
                     r = sess.get(url, headers=headers, timeout=20)
                 print(f"  [retry] {r.status_code} {len(r.text)}b")
-        print(f"  {r.status_code} {len(r.text)}b ct={r.headers.get('content-type','')}")
+        # Log body preview if empty or 403
+        preview = r.text[:600].replace("\n"," ") if r.text else "<EMPTY>"
+        if r.status_code==403 or len(r.text)==0:
+            print(f"  !! {r.status_code} {len(r.text)}b ct={r.headers.get('content-type','')} preview={preview[:400]} headers={dict(r.headers)}")
+        else:
+            print(f"  {r.status_code} {len(r.text)}b ct={r.headers.get('content-type','')}")
         save(name, r.text, subdir)
         # save headers too
-        save(name+".headers.json", json.dumps(dict(r.headers), indent=2, ensure_ascii=False), subdir)
+        try:
+            save(name+".headers.json", json.dumps(dict(r.headers), indent=2, ensure_ascii=False), subdir)
+        except Exception as he:
+            print(f"  headers save fail {he}")
         save(name+".meta.json", json.dumps({"url": url, "status": r.status_code, "final_url": r.url}, indent=2, ensure_ascii=False), subdir)
         return r.text, r
     except Exception as e:
         print(f"  FAIL {e}")
+        import traceback; traceback.print_exc()
         save(name+".error.txt", str(e), subdir)
         return None, None
 
@@ -170,6 +180,8 @@ save("discovered_manga.json", json.dumps(manga_slugs, indent=2, ensure_ascii=Fal
 
 # ---- 4. DETAY — her manga için ham HTML + dış JS ----
 list_keys = {}
+# Collect all CSS URLs seen for seed calc
+_all_css_urls = set([BASE+"/app/manga/themes/default/assets/css/mtr.min.css", BASE+"/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6"])
 for slug in manga_slugs[:12]:  # ilk 12 detay yeterli, hepsi 25 değil
     html,_ = fetch(BASE+"/"+slug, f"detail_{slug}", subdir="raw")
     if not html: continue
@@ -184,14 +196,23 @@ for slug in manga_slugs[:12]:  # ilk 12 detay yeterli, hepsi 25 değil
         if el2: d_list = el2.get("data-list-key")
     # inline listKey
     inline_keys = re.findall(r"listKey:\s*'([^']+)'", html)
-    # script src
+    # script src — fetch ALL js (manga-tr ve cover-variants) to debug seed logic
     scripts = [s.get("src") for s in soup.select("script[src]") if s.get("src")]
-    manga_tr_js = next((s for s in scripts if "manga-tr" in s), None)
-    if manga_tr_js:
-        js_url = manga_tr_js if manga_tr_js.startswith("http") else BASE+ (manga_tr_js if manga_tr_js.startswith("/") else "/"+manga_tr_js)
-        js_text,_ = fetch(js_url, f"js_{slime if (slime:=slug.replace('.html','')) else 'x'}.js", subdir="raw")
-        if js_text:
-            inline_keys += re.findall(r"listKey:\s*'([^']+)'", js_text)
+    for js_src in scripts:
+        if any(x in js_src for x in ["manga-tr", "cover-variants", "yorum-icerik"]):
+            js_url = js_src if js_src.startswith("http") else BASE+ (js_src if js_src.startswith("/") else "/"+js_src)
+            slime = slug.replace('.html','')
+            # save with distinct name
+            tag = "manga-tr" if "manga-tr" in js_src else ("cover-variants" if "cover-variants" in js_src else "other")
+            js_text,_ = fetch(js_url, f"js_{slime}_{tag}.js", subdir="raw")
+            if js_text:
+                inline_keys += re.findall(r"listKey:\s*'([^']+)'", js_text)
+    # collect CSS hrefs for seed
+    for link in soup.select("link[href*='.css']"):
+        href = link.get("href","")
+        if href:
+            full = href if href.startswith("http") else BASE + (href if href.startswith("/") else "/" + href)
+            _all_css_urls.add(full)
     if inline_keys or d_list:
         # en uzun key genelde doğru
         best = sorted(set(inline_keys + ([d_list] if d_list else [])), key=len, reverse=True)[0]
@@ -200,19 +221,33 @@ for slug in manga_slugs[:12]:  # ilk 12 detay yeterli, hepsi 25 değil
     time.sleep(0.4)
 
 save("list_keys.json", json.dumps(list_keys, indent=2, ensure_ascii=False), subdir="live")
+print(f"[INFO] toplanan CSS URL sayısı: {len(_all_css_urls)} -> {list(_all_css_urls)[:5]}")
 
 # ---- 5. BÖLÜM LİSTESİ API — yeni yöntem (manga slug + _sig) ---
-# Önce seed'i CSS'den al
 import hashlib as _hashlib
 def get_seed():
+    tried = []
     try:
-        for css_url in [BASE+"/app/manga/themes/default/assets/css/mtr.min.css", BASE+"/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6"]:
-            r = sess.get(css_url, timeout=10)
-            if r.status_code==200 and ("--mdx-white" in r.text or "--mdx-black" in r.text):
-                w = int(re.search(r'--mdx-white\s*:\s*(\d+)', r.text).group(1)) if re.search(r'--mdx-white\s*:\s*(\d+)', r.text) else 0
-                b = int(re.search(r'--mdx-black\s*:\s*(\d+)', r.text).group(1)) if re.search(r'--mdx-black\s*:\s*(\d+)', r.text) else 0
-                print(f"  [seed] mdx-white={w} mdx-black={b} seed={w+b} from {css_url}")
-                return w+b
+        for css_url in list(_all_css_urls)[:12]:
+            try:
+                r = sess.get(css_url, timeout=10)
+                tried.append(f"{css_url} -> {r.status_code}")
+                if r.status_code==200 and ("--mdx-white" in r.text or "--mdx-black" in r.text):
+                    wm = re.search(r'--mdx-white\s*:\s*(\d+)', r.text)
+                    bm = re.search(r'--mdx-black\s*:\s*(\d+)', r.text)
+                    w = int(wm.group(1)) if wm else 0
+                    b = int(bm.group(1)) if bm else 0
+                    print(f"  [seed] mdx-white={w} mdx-black={b} seed={w+b} from {css_url}")
+                    return w+b
+                # Also try alternative pattern: --mdx-white:#fff etc -> parse hex?
+                if r.status_code==200:
+                    # Log snippet for debug
+                    snippet = r.text[:2000]
+                    if "--mdx" in snippet:
+                        print(f"  [seed] css snippet {css_url[:60]}: {snippet[:400]}")
+            except Exception as ce:
+                tried.append(f"{css_url} err {ce}")
+        print(f"  [seed] tried {tried} -> fallback 0")
     except Exception as e:
         print(f"  [seed] fail {e}")
     return 0
@@ -221,29 +256,62 @@ def gen_sig(manga_slug, seed, timestamp):
     raw = f"{manga_slug}_{seed}_{timestamp}"
     return _hashlib.sha256(raw.encode()).hexdigest()
 
+def gen_sig_fallback(manga_slug, seed, timestamp):
+    # FNV fallback matching Kotlin
+    raw = f"{manga_slug}_{seed}_{timestamp}"
+    try:
+        h = 0x811c9dc5
+        for c in raw:
+            h = (h ^ ord(c)) & 0xffffffff
+            h = (h * 0x01000193) & 0xffffffff
+        return format(h, 'x')
+    except: return "0"
+
 seed = get_seed()
-headers_ajax = {"X-Requested-With":"XMLHttpRequest", "Accept":"*/*", "Content-Type":"application/x-www-form-urlencoded", "Referer": BASE+"/", "Origin": BASE}
-# Yeni API: manga, tur, offset, _t, _sig
+# Save seed for later inspection
+save("seed_info.json", json.dumps({"seed": seed, "css_urls": list(_all_css_urls), "detected": seed}, indent=2, ensure_ascii=False), subdir="live")
+print(f"[INFO] seed={seed} — will try POST with Referer=detail URL and Origin")
+
+# Yeni API: manga, tur, offset, _t, _sig — correct Referer per manga
 for slug in manga_slugs[:12]:
     mslug = slug.replace("manga-","").replace(".html","")
     # data-tur'u detail'den al
     tur = ""
+    detail_url = BASE + "/" + slug
     try:
         detail_p = OUT_RAW / f"detail_{slug}"
         if detail_p.exists():
             dt = detail_p.read_text(errors='ignore')
             mt = re.search(r'id="results"[^>]*data-tur="([^"]*)"', dt)
             if mt: tur = mt.group(1)
+            # Also try data-tur attribute elsewhere
+            mt2 = re.search(r'data-tur="([^"]*)"', dt)
+            if mt2 and not tur: tur = mt2.group(1)
     except: pass
+    print(f"  [manga] {mslug} tur='{tur}' detail={detail_url}")
     for off in [0, 20, 120]:
         ts = int(time.time())
         sig = gen_sig(mslug, seed, ts)
+        sig_fnv = gen_sig_fallback(mslug, seed, ts)
+        print(f"    POST manga={mslug} offset={off} _t={ts} _sig={sig[:12]}... fnv={sig_fnv[:12]} seed={seed}")
+        headers_ajax = {"X-Requested-With":"XMLHttpRequest", "Accept":"*/*", "Content-Type":"application/x-www-form-urlencoded", "Referer": detail_url, "Origin": BASE}
         data = {"manga": mslug, "tur": tur, "offset": str(off), "_t": str(ts), "_sig": sig}
-        fetch(BASE+"/cek/fetch_pages_manga.php", f"api_new_{mslug}_off{off}.html", subdir="raw", method="POST", data=data, headers_extra=headers_ajax)
+        # Also try without tur if empty vs with
+        txt, resp = fetch(BASE+"/cek/fetch_pages_manga.php", f"api_new_{mslug}_off{off}.html", subdir="raw", method="POST", data=data, headers_extra=headers_ajax)
+        # If empty/403, retry with seed 0 immediately
+        if resp is not None and (resp.status_code==403 or len(resp.text)==0):
+            print(f"    !! empty/403 -> retry seed 0")
+            ts2 = int(time.time())
+            sig0 = gen_sig(mslug, 0, ts2)
+            data0 = {"manga": mslug, "tur": tur, "offset": str(off), "_t": str(ts2), "_sig": sig0}
+            headers_ajax2 = {"X-Requested-With":"XMLHttpRequest", "Accept":"*/*", "Content-Type":"application/x-www-form-urlencoded", "Referer": detail_url, "Origin": BASE}
+            fetch(BASE+"/cek/fetch_pages_manga.php", f"api_new_{mslug}_off{off}_seed0.html", subdir="raw", method="POST", data=data0, headers_extra=headers_ajax2)
+            time.sleep(0.6)
         time.sleep(0.5)
-    # bolum_cek de dene (arama)
+    # bolum_cek de dene (arama) — may not need seed
     ts = int(time.time()); sig = gen_sig(mslug, seed, ts)
-    fetch(BASE+"/cek/bolum_cek.php", f"api_bolum_cek_{mslug}.html", subdir="raw", method="POST", data={"manga": mslug, "chapter":"1", "_t": str(ts), "_sig": sig}, headers_extra=headers_ajax)
+    headers_ajax_ch = {"X-Requested-With":"XMLHttpRequest", "Accept":"*/*", "Content-Type":"application/x-www-form-urlencoded", "Referer": detail_url, "Origin": BASE}
+    fetch(BASE+"/cek/bolum_cek.php", f"api_bolum_cek_{mslug}.html", subdir="raw", method="POST", data={"manga": mslug, "chapter":"1", "_t": str(ts), "_sig": sig}, headers_extra=headers_ajax_ch)
     time.sleep(0.4)
 
 # Eski fallback'ler de kalsın (geriye dönük)
