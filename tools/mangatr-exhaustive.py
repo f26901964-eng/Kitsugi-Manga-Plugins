@@ -68,8 +68,12 @@ def ddos_bypass(resp, referer=None):
         except Exception as ce:
             print(f"    random cookie fail {ce}")
         # 2) official 2-request flow: check.js -> /.well-known/ddos-guard/...
-        headers_wk = {"Referer": ref, "Origin": BASE}
+        headers_wk = {"Referer": ref, "Origin": BASE, "Accept": "*/*", "User-Agent": UA}
         wk = sess.get("https://check.ddos-guard.net/check.js", headers=headers_wk, timeout=10)
+        # Save for debug
+        try: save(f"debug_check_js_{re.sub(r'[^a-z0-9]','_',ref[-20:])}.html", wk.text[:2000], subdir="raw")
+        except: pass
+        print(f"    check.js {wk.status_code} len={len(wk.text)} set-cookie={wk.headers.get('set-cookie','')[:200]}")
         # Kotlin: Regex("""['\"](/.well-known/ddos-guard/[^'\"]+)['\"]""")
         m = re.search(r"[\"'](\/.well-known\/ddos-guard\/[^\"']+)[\"']", wk.text)
         if m:
@@ -80,7 +84,7 @@ def ddos_bypass(resp, referer=None):
             if not m2:
                 m2 = re.search(r'"([^"]+)"', wk.text)
             if not m2:
-                print(f"    well-known parse fail: {wk.text[:600]}")
+                print(f"    well-known parse fail: {wk.text[:800]}")
                 return True
             path = m2.group(1)
             wk2 = re.search(r"(\/.well-known\/ddos-guard\/[^\s'\"\"]+)", wk.text)
@@ -91,14 +95,15 @@ def ddos_bypass(resp, referer=None):
         check_url = f"{BASE}{path}"
         headers_ck = {"Referer": ref, "Origin": BASE}
         try:
+            print(f"    fetching well-known: {check_url[:120]} with Referer={ref[:60]}")
             cr = sess.get(check_url, headers=headers_ck, timeout=10)
-            print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:8]} url={check_url[:80]}")
+            print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:8]} set-cookie={cr.headers.get('set-cookie','')[:200]} url={check_url[:80]}")
             if cr.status_code != 200:
                 # try www fallback
                 alt = check_url.replace("https://manga-tr.com", "https://www.manga-tr.com")
                 if alt != check_url:
                     cr2 = sess.get(alt, headers=headers_ck, timeout=10)
-                    print(f"    alt bypass {cr2.status_code} {alt[:80]}")
+                    print(f"    alt bypass {cr2.status_code} set-cookie={cr2.headers.get('set-cookie','')[:200]} {alt[:80]}")
         except Exception as ce:
             print(f"    check_url fail {ce}")
         time.sleep(0.4)
