@@ -37,7 +37,31 @@ def save(name, content, subdir="live"):
     print(f"  -> {p} {len(content)}b")
     return p
 
-def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None):
+def ddos_bypass(resp):
+    """Manga-TR DDoS-Guard 403 -> check.ddos-guard.net/check.js -> cookie al, tekrar dene"""
+    try:
+        is_ddos = resp.status_code == 403 or (resp.status_code == 200 and "check.ddos-guard.net/check.js" in resp.text)
+        if not is_ddos and resp.headers.get("Server","") != "ddos-guard":
+            return False
+        print(f"  [DDOS-GUARD] 403 tespit, bypass deneniyor...")
+        # 1) well-known
+        wk = sess.get("https://check.ddos-guard.net/check.js", timeout=10)
+        m = re.search(r"'([^']+)'", wk.text)
+        if not m:
+            print(f"    well-known parse fail: {wk.text[:200]}")
+            return False
+        path = m.group(1)
+        if not path.startswith("/"): path="/"+path
+        check_url = f"{BASE}{path}"
+        # 2) cookie set
+        cr = sess.get(check_url, timeout=10)
+        print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:5]}")
+        return True
+    except Exception as e:
+        print(f"    ddos bypass fail: {e}")
+        return False
+
+def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None, retry_ddos=True):
     headers = {}
     if headers_extra: headers.update(headers_extra)
     print(f"[GET] {name} <- {url}")
@@ -46,6 +70,15 @@ def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None)
             r = sess.post(url, data=data, headers=headers, timeout=20)
         else:
             r = sess.get(url, headers=headers, timeout=20)
+        # DDoS-Guard ise bir kez bypass dene ve tekrar iste
+        if retry_ddos and (r.status_code==403 or "check.ddos-guard.net" in r.text):
+            if ddos_bypass(r):
+                time.sleep(0.8)
+                if method=="POST":
+                    r = sess.post(url, data=data, headers=headers, timeout=20)
+                else:
+                    r = sess.get(url, headers=headers, timeout=20)
+                print(f"  [retry] {r.status_code} {len(r.text)}b")
         print(f"  {r.status_code} {len(r.text)}b ct={r.headers.get('content-type','')}")
         save(name, r.text, subdir)
         # save headers too

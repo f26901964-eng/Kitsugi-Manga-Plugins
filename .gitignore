@@ -16,12 +16,9 @@ Thumbs.db
 __pycache__/
 *.py[cod]
 
-# Canlı ham HTML / dump oturum anahtarı içerebilir - depoya itme (artifact'te saklanır)
-mangatr/raw/
+# Ham HTML dump - live/raw sadece CI özet için, büyük body'ler yine artifact'te
+# Not: canlı özet için live/*.html'e izin veriyoruz ki sandbox görebilsin
 mangatr/dumps/*.json
-mangatr/live/*.html
-mangatr/live/*.headers
-mangatr/live/*.js
 google_drive/
 *.har
 
