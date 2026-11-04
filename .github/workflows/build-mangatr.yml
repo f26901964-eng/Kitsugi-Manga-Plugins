@@ -21,13 +21,12 @@ jobs:
         working-directory: keiyoushi-extensions-tr
         run: |
           chmod +x gradlew
-          set -o pipefail
           ./gradlew :src:tr:mangatr:assembleRelease -x spotlessCheck --stacktrace 2>&1 | tee /tmp/gradle.log
-          echo "GRADLE_EXIT:$?" >> /tmp/gradle.log
+          echo "GRADLE_EXIT:${PIPESTATUS[0]}" >> /tmp/gradle.log
           echo "=== find apk ===" >> /tmp/gradle.log
           find . -name "*.apk" -type f 2>&1 | tee -a /tmp/gradle.log
-          ls -R src/tr/mangatr/build 2>&1 | head -n 200 | tee -a /tmp/gradle.log
-          if ls src/tr/mangatr/build/outputs/apk/release/*.apk 1>/dev/null 2>&1; then
+          ls -R src/tr/mangatr/build/outputs 2>&1 | head -n 100 | tee -a /tmp/gradle.log || true
+          if compgen -G "src/tr/mangatr/build/outputs/apk/release/*.apk" > /dev/null; then
             echo "copying apk" | tee -a /tmp/gradle.log
             cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
             cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
@@ -35,32 +34,25 @@ jobs:
             ls -lh ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk | tee -a /tmp/gradle.log
           else
             echo "NO APK FOUND" | tee -a /tmp/gradle.log
-            # don't fail yet, let us see log
-            cp /tmp/gradle.log ../gradle-${{ github.run_id }}.log
+            cat /tmp/gradle.log
+            exit 1
           fi
           cat /tmp/gradle.log
       - name: Logu ana dala ekle
         if: always()
         run: |
-          if [ -f keiyoushi-extensions-tr/../gradle-${{ github.run_id }}.log ]; then
-            echo "log already copied"
-          elif [ -f /tmp/gradle.log ]; then
-            cp /tmp/gradle.log ./gradle-${{ github.run_id }}.log
-          fi
-          ls -lh gradle-*.log 2>&1 | head
+          if [ -f /tmp/gradle.log ]; then cp /tmp/gradle.log ./gradle-${{ github.run_id }}.log || true; fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add gradle-${{ github.run_id }}.log 2>&1 | head
-          git commit -m "gradle log ${{ github.run_id }}" 2>&1 | head
+          git add gradle-${{ github.run_id }}.log 2>&1 | head || true
+          git commit -m "gradle log ${{ github.run_id }}" 2>&1 | head || true
           git push origin HEAD:main 2>&1 | tail || echo "push log failed"
       - name: Katalog güncelle
-        if: success()
         run: |
           python3 ../tools/sync_enabled_plugins.py || true
           python3 -m unittest discover -s ../tests -v || true
         working-directory: keiyoushi-extensions-tr
       - name: Commit ve Push
-        if: success()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
