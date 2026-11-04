@@ -17,37 +17,42 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Android SDK kontrol
-        run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -lh $ANDROID_HOME/platform-tools 2>&1 | head -n 20
-          ls $ANDROID_HOME/cmdline-tools/ 2>&1 | head
-          ls $ANDROID_HOME/build-tools/ 2>&1 | head
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --version 2>&1 | head
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses 2>&1 | tail -n 5 || true
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --list_installed 2>&1 | head -n 40
       - name: Derle Manga-TR
         working-directory: keiyoushi-extensions-tr
         run: |
           chmod +x gradlew
           set -o pipefail
-          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace --info 2>&1 | tee /tmp/gradle.log
-          echo "=== gradle finished ==="
-          ls -lh src/tr/mangatr/build/outputs/apk/release/ 2>&1 | tee -a /tmp/gradle.log
-          cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
-          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
-          cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
-      - name: Upload gradle log on failure
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: gradle-log
-          path: /tmp/gradle.log
+          ./gradlew :src:tr:mangatr:assembleRelease --stacktrace --info 2>&1 | tee /tmp/gradle.log || true
+          echo "=== gradle finished code $? ===" | tee -a /tmp/gradle.log
+          ls -lh src/tr/mangatr/build/outputs/apk/release/ 2>&1 | tee -a /tmp/gradle.log || echo "no apk" | tee -a /tmp/gradle.log
+          if ls src/tr/mangatr/build/outputs/apk/release/*.apk 1>/dev/null 2>&1; then
+            cp src/tr/mangatr/build/outputs/apk/release/*.apk ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../apk/tachiyomi-tr.mangatr-v1.6.26.apk
+            cp ../prebuilt/apk/tachiyomi-tr.mangatr-v1.6.26.apk ../builds/apk/tachiyomi-tr.mangatr-v1.6.26.apk
+          fi
+          cat /tmp/gradle.log
+      - name: Logu repoya kaydet (hata ayiklama)
+        if: always()
+        run: |
+          mkdir -p /tmp/logbranch
+          cp /tmp/gradle.log /tmp/logbranch/gradle-${{ github.run_id }}.log || echo "no log" > /tmp/logbranch/gradle-${{ github.run_id }}.log
+          cd /tmp/logbranch
+          git init
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git remote add origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git fetch origin logs 2>&1 | head || echo "no logs branch yet"
+          git checkout -B logs
+          git add gradle-${{ github.run_id }}.log
+          git commit -m "gradle log ${{ github.run_id }}" || echo "nothing to commit"
+          git push origin logs 2>&1 | tail || echo "push failed"
       - name: Katalog güncelle
+        if: success()
         run: |
           python3 tools/sync_enabled_plugins.py
           python3 -m unittest discover -s tests -v
       - name: Commit ve Push
+        if: success()
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
