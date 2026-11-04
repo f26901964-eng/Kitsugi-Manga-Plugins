@@ -38,27 +38,64 @@ def save(name, content, subdir="live"):
     return p
 
 def ddos_bypass(resp):
-    """Manga-TR DDoS-Guard 403 -> check.ddos-guard.net/check.js -> cookie al, tekrar dene"""
+    """Manga-TR DDoS-Guard 403 -> Kotlin DDoSGuardInterceptor ile aynı: random __ddg2 + check.js + well-known"""
     try:
         is_ddos = resp.status_code == 403 or (resp.status_code == 200 and "check.ddos-guard.net/check.js" in resp.text)
-        if not is_ddos and resp.headers.get("Server","") != "ddos-guard":
+        # Extra check: Server ddos-guard + small body
+        if not is_ddos and resp.headers.get("Server","") == "ddos-guard" and len(resp.text) < 5000 and "ddos-guard" in resp.text.lower():
+            is_ddos = True
+        if not is_ddos:
             return False
         print(f"  [DDOS-GUARD] 403 tespit, bypass deneniyor...")
-        # 1) well-known
-        wk = sess.get("https://check.ddos-guard.net/check.js", timeout=10)
+        # 1) random __ddg2 cookie (gallery-dl kanıtlı)
+        import random, string, time as _t
+        try:
+            if "__ddg2" not in sess.cookies.get_dict():
+                rnd = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+                # domain .manga-tr.com
+                sess.cookies.set("__ddg2", rnd, domain=".manga-tr.com", path="/")
+                sess.cookies.set("__ddg2", rnd, domain="manga-tr.com", path="/")
+                print(f"    injected random __ddg2={rnd[:8]}...")
+        except Exception as ce:
+            print(f"    random cookie fail {ce}")
+        # 2) official 2-request flow: check.js -> /.well-known/ddos-guard/...
+        # Referer must be original URL (BASE)
+        headers_wk = {"Referer": BASE+"/", "Origin": BASE}
+        wk = sess.get("https://check.ddos-guard.net/check.js", headers=headers_wk, timeout=10)
         m = re.search(r"'([^']+)'", wk.text)
         if not m:
-            print(f"    well-known parse fail: {wk.text[:200]}")
-            return False
-        path = m.group(1)
+            m2 = re.search(r'"([^"]+)"', wk.text)
+            if not m2:
+                print(f"    well-known parse fail: {wk.text[:400]}")
+                # Still consider injected cookie success
+                return True
+            path = m2.group(1)
+        else:
+            path = m.group(1)
+        # Find well-known path inside
+        wk2 = re.search(r"(\/.well-known\/ddos-guard\/[^\s'\"\"]+)", wk.text)
+        if wk2:
+            path = wk2.group(1)
         if not path.startswith("/"): path="/"+path
+        # Extract well-known via regex as Kotlin does
         check_url = f"{BASE}{path}"
-        # 2) cookie set
-        cr = sess.get(check_url, timeout=10)
-        print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:5]}")
+        headers_ck = {"Referer": BASE+"/", "Origin": BASE}
+        try:
+            cr = sess.get(check_url, headers=headers_ck, timeout=10)
+            print(f"    bypass ok: {cr.status_code} cookies={list(sess.cookies.get_dict().keys())[:8]} url={check_url[:80]}")
+            if cr.status_code != 200:
+                # try www fallback
+                alt = check_url.replace("https://manga-tr.com", "https://www.manga-tr.com")
+                if alt != check_url:
+                    cr2 = sess.get(alt, headers=headers_ck, timeout=10)
+                    print(f"    alt bypass {cr2.status_code} {alt[:80]}")
+        except Exception as ce:
+            print(f"    check_url fail {ce}")
+        time.sleep(0.4)
         return True
     except Exception as e:
         print(f"    ddos bypass fail: {e}")
+        import traceback; traceback.print_exc()
         return False
 
 def fetch(url, name, subdir="live", method="GET", data=None, headers_extra=None, retry_ddos=True):
