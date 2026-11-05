@@ -2,6 +2,11 @@ name: Manga-TR live end-to-end smoke test
 
 on:
   workflow_dispatch:
+  push:
+    branches: [arena/d305cc76-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/test/kotlin/**/MangaTRLiveTest.kt
+      - .github/workflows/mangatr-live-smoke.yml
 
 jobs:
   live-smoke:
