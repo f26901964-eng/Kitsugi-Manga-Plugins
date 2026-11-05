@@ -82,7 +82,8 @@ Kitsugi-Beta deposuna push 403 döndürdüğü için patch bu depoda saklandı; 
 - Patch `git diff --check` benzeri whitespace kontrolünden ve yerel commit kontrolünden geçti.
 - Kitsugi-Beta'ya doğrudan push ve Actions dispatch 403 döndürdüğü için bağımsız checkout/patch workflow'u kullanıldı.
 - İlk gerçek Gradle derlemesi, reader dışındaki ekranların eski Telephoto'dan gelen transitive Coil 2 bağımlılığına ihtiyaç duyduğunu gösterdi. Güncel patch bu mevcut ekranlar için Coil 2 Compose'u açıkça koruyor; reader yine Coil 3 Telephoto kullanıyor.
-- Gerçek cihazda görsel decode/çizim doğrulaması yapılmadı. Bu nedenle “uçtan uca düzeldi” denilemez.
+- [Actions 42024229320](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42024229320) güncel patch ile **başarılı**: Coil/Telephoto runtime graph kontrolü, üç `MangaBrightnessTest`, Foss Debug APK derlemesi ve DEX bytecode doğrulaması geçti. `kitsugi-reader-coil3-fix-debug-apk` test artifact'ı üretildi; bu bir release değildir.
+- Gerçek cihazda görsel decode/çizim doğrulaması yapılmadı. Derleme ve DEX başarısı görsel başarı değildir; bu nedenle “uçtan uca düzeldi” denilemez.
 - MangaTR canlı testindeki eski `first image OK` ölçütü yalnız HTTP 200 ve 100 bayttan büyük veri kontrol eder; gerçek Android decode kanıtı değildir.
 
 Patch'li APK'da zorunlu kontroller:
