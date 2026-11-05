@@ -16,7 +16,6 @@ import keiyoushi.network.get
 import keiyoushi.network.post
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
-import keiyoushi.utils.JSON_MEDIA_TYPE
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.textOrNull
@@ -37,7 +36,6 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
@@ -1264,12 +1262,13 @@ abstract class MangaTR : KeiSource() {
                     .mangaTrAjaxHeaders(readerUrl)
                     .set("Origin", baseUrl)
                     .build()
+                val nonce = gateUrl.queryParameter("n").orEmpty()
                 val gateKey = try {
                     client.newCall(
                         Request.Builder()
                             .url(gateUrl)
                             .headers(gateHeaders)
-                            .post("{}".toRequestBody(JSON_MEDIA_TYPE))
+                            .post(ReaderGateRequestDto(nonce).toJsonRequestBody())
                             .build(),
                     ).execute().parseAs<ReaderGateDto>().k
                 } catch (e: Exception) {
@@ -1281,10 +1280,14 @@ abstract class MangaTR : KeiSource() {
                     }
                 }
                 if (gateKey != null) {
+                    val html = document.html()
+                    val ease = READER_EASE_REGEX.find(html)?.groupValues?.get(1) ?: "mTr_v4"
+                    val flow = READER_FLOW_REGEX.find(html)?.groupValues?.get(1) ?: "20"
                     config = MangaTRReaderContract.decryptConfig(
                         configScript.data().ifBlank { configScript.html() },
                         gateKey,
                         pageKey,
+                        MangaTRReaderContract.pointerDelta(nonce, ease, flow),
                     )
                 }
             }
@@ -1629,6 +1632,8 @@ abstract class MangaTR : KeiSource() {
         private val CHALLENGE_REGEX = Regex("""challenge:\s*"([^"]+)"""")
         private val CHAPTER_KEY_REGEX = Regex("""listKey:\s*'([^']+)'""")
         private val GATE_PATH_REGEX = Regex("""_fpx\s*=\s*"([^"]+)"""")
+        private val READER_EASE_REGEX = Regex("""["']ease["']\s*:\s*["']([^"']*)["']""")
+        private val READER_FLOW_REGEX = Regex("""--ui-flow\s*:\s*([^;}\s]+)""")
         private val HEX_KEY_REGEX = Regex("""[0-9a-f]{32}""")
         private val READER_ID_REGEX = Regex("""(?:^|/)id-(\d+)-read-""")
         private val TRAILING_YEAR_REGEX = Regex("""\s*\((?:19|20)\d{2}\)\s*$""")

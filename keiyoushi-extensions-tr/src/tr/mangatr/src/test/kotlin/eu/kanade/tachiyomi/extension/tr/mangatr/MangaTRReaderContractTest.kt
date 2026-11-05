@@ -79,12 +79,30 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `array seeds use their numeric page positions`() {
+        val config = json.decodeFromString<ReaderConfigDto>(
+            """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":[305419896,2,123456789],"grid":2}""",
+        )
+        assertEquals(mapOf("0" to 305419896L, "1" to 2L, "2" to 123456789L), config.seeds)
+        assertEquals(2L, MangaTRReaderContract.seedForPage(config.seeds, "1"))
+        assertEquals(305419896L, MangaTRReaderContract.seedForPage(config.seeds, "99"))
+    }
+
+    @Test
     fun `cache version survives in the image fragment without changing the request target`() {
         val url = "https://image.mngtr.site/img_part.php?key=test&p=1".toHttpUrl().newBuilder()
             .fragment(MangaTRReaderContract.CACHE_VERSION_PREFIX + "100,101")
             .build()
         assertEquals("v2-100,101", url.fragment)
         assertEquals("key=test&p=1", url.query)
+    }
+
+    @Test
+    fun `pointer delta matches the public cap js checksum vectors`() {
+        assertEquals("82f9678b", MangaTRReaderContract.pointerDelta("0123456789abcdef"))
+        assertEquals("0cd07291", MangaTRReaderContract.pointerDelta("abcdef0123456789", "cubic", "ltr"))
+        assertEquals("48f7c986", MangaTRReaderContract.pointerDelta("0123456789abcdef0123456789abcdef", "ease-out", "smooth"))
+        assertEquals("", MangaTRReaderContract.pointerDelta(""))
     }
 
     @Test
@@ -99,6 +117,14 @@ class MangaTRReaderContractTest {
             assertEquals(2, config?.grid)
             assertEquals(mapOf("0" to 2L), config?.seeds)
         }
+
+        val pointer = MangaTRReaderContract.pointerDelta("0123456789abcdef")
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate|$pointer|reader",
+        )
+        val config = MangaTRReaderContract.decryptConfig(encrypted, "test-gate", PAGE_KEY, pointer)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
     }
 
     @Test

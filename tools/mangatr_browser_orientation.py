@@ -175,6 +175,11 @@ def main() -> None:
         (PUBLIC_OUT / "reader-pointer-input.json").write_text(
             json.dumps(pointer_inputs, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
+        snippets = []
+        for token in ("mTr_v4", "--ui-flow", "_mouseCurve"):
+            start = raw_html.find(token)
+            snippets.append(f"--- {token} ---\n" + (redact(raw_html[max(0, start - 250):start + 500]) if start >= 0 else "not in raw HTML"))
+        (PUBLIC_OUT / "reader-pointer-snippets.txt").write_text("\n".join(snippets) + "\n", encoding="utf-8")
         safe_gate_request = dict(post_data)
         for token_name in ("n", "c"):
             if token_name in safe_gate_request:
@@ -238,6 +243,7 @@ def main() -> None:
             extension_nonce,
         )
         report["extension_pointer_delta_length"] = len(str(extension_pointer))
+        report["extension_gate_request"] = "n-only"
         extension_gate = extension_page.evaluate(
             """async gateUrl => {
                 const attempt = async options => {
@@ -247,7 +253,7 @@ def main() -> None:
                 let result = await attempt({
                     method: 'POST',
                     headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-                    body: '{}',
+                    body: JSON.stringify({n: new URL(gateUrl).searchParams.get('n') || ''}),
                 });
                 if (result.status !== 200) result = await attempt({method: 'GET'});
                 return result;
@@ -276,6 +282,8 @@ def main() -> None:
             except (ValueError, UnicodeError, KeyError):
                 continue
         extension_page.close()
+        page.bring_to_front()
+        page.wait_for_timeout(1_000)
         report["extension_gate_format"] = extension_gate_format
         report["extension_gate_decrypts"] = extension_gate_format is not None
         save_report()

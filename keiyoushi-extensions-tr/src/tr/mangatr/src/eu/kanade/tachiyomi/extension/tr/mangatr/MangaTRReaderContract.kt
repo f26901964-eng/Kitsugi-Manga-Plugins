@@ -25,8 +25,23 @@ internal object MangaTRReaderContract {
         return String(xored, StandardCharsets.UTF_8)
     }
 
-    /** Current cap.js retains the empty pointer-delta segment; old readers omit it. */
-    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String): ReaderConfigDto? = listOf("gate|$gateKey||reader", "gate|$gateKey|reader").firstNotNullOfOrNull { key ->
+    /** FNV-1a pointer checksum calculated by the site's _calcPointerDelta function. */
+    fun pointerDelta(nonce: String, ease: String = "", flow: String = ""): String {
+        if (nonce.isEmpty()) return ""
+        var hash = 0x811c9dc5.toInt()
+        val input = "$nonce|$ease#${flow}k9!"
+        for (character in input) {
+            hash = (hash xor character.code) * 0x01000193
+        }
+        return hash.toUInt().toString(16).padStart(8, '0')
+    }
+
+    /** Current cap.js includes a pointer-delta segment; old readers omit it. */
+    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String, pointerDelta: String = ""): ReaderConfigDto? = listOf(
+        "gate|$gateKey|$pointerDelta|reader",
+        "gate|$gateKey||reader",
+        "gate|$gateKey|reader",
+    ).distinct().firstNotNullOfOrNull { key ->
         try {
             json.decodeFromString<ReaderConfigDto>(
                 decrypt(decrypt(encrypted, key), "boot|$pageKey|reader"),
