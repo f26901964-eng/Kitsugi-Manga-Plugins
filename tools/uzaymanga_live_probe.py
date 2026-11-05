@@ -471,8 +471,21 @@ def probe_mangitto() -> dict[str, Any]:
         "Origin": base_url,
     })
     stage = "popular"
+    browser_used = False
     try:
-        popular = mangitto_json(session, f"{api_url}/populer?skip=0&take=50")
+        try:
+            popular = mangitto_json(session, f"{api_url}/populer?skip=0&take=50")
+        except ProbeFailure as exc:
+            if "http=403" not in str(exc):
+                raise
+            stage = "browser-clearance"
+            browser_clearance(
+                session,
+                Candidate("mangitto", "Mangitto", base_url, "", "1.6.1"),
+            )
+            browser_used = True
+            stage = "popular-after-clearance"
+            popular = mangitto_json(session, f"{api_url}/populer?skip=0&take=50")
         popular_items = popular.get("mangas")
         total = popular.get("total")
         if not isinstance(popular_items, list) or not popular_items or not isinstance(total, int):
@@ -558,7 +571,7 @@ def probe_mangitto() -> dict[str, Any]:
             "name": "Mangitto",
             "archivedExtensionVersion": "1.6.1",
             "requestMode": "production-direct",
-            "browserClearanceUsed": False,
+            "browserClearanceUsed": browser_used,
             "ok": True,
             "latestPageSize": len(latest_items),
             "latestTitles": [item["title"] for item in latest_series[:10]],
@@ -575,7 +588,7 @@ def probe_mangitto() -> dict[str, Any]:
             "name": "Mangitto",
             "archivedExtensionVersion": "1.6.1",
             "requestMode": "production-direct",
-            "browserClearanceUsed": False,
+            "browserClearanceUsed": browser_used,
             "ok": False,
             "error": f"{stage}:{exc}" if isinstance(exc, ProbeFailure) else f"{stage}:unexpected={type(exc).__name__}",
         }
