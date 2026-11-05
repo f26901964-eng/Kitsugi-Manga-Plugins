@@ -84,12 +84,12 @@
       "status": 200,
       "type": "xhr",
       "method": "POST",
-      "bytes": 46,
+      "bytes": 78,
       "json_keys": [
         "k",
         "s"
       ],
-      "key_length": 32
+      "key_length": 64
     }
   ],
   "reader_errors": [],
@@ -104,21 +104,283 @@
       "host": "image.mngtr.site",
       "type": "image",
       "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
     }
   ],
   "reader_status": 200,
-  "manual_image_found": true,
+  "manual_image_found": false,
   "group_skip_visible": true,
   "reader_title": "2 - Chainsaw Man - Manga-TR.com Türkçe Çevrimiçi Oku",
   "reader_dom": {
     "imageCount": 0,
-    "readerConfigCount": 1,
+    "readerConfigCount": 0,
     "images": []
   },
-  "manual_image_state": {
-    "complete": true,
-    "naturalWidth": 0
-  },
+  "manual_image_state": null,
   "captured_offsets": [
     "0",
     "20",
