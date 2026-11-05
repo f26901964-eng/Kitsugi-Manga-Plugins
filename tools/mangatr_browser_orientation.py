@@ -348,7 +348,11 @@ def main() -> None:
         )
         extension_encrypted = extension_script.decode_contents().strip()
         extension_gate_url = BASE.rstrip("/") + extension_key_match.group(1)
-        extension_nonce = parse_qs(urlparse(extension_gate_url).query).get("n", [""])[0]
+        extension_query = parse_qs(urlparse(extension_gate_url).query)
+        extension_nonce = extension_query.get("n", [""])[0]
+        report["extension_gate_query_keys"] = sorted(extension_query)
+        report["extension_gate_nonce_length"] = len(extension_nonce)
+        report["extension_gate_canvas_length"] = len(extension_query.get("c", [""])[0])
         extension_pointer = extension_page.evaluate(
             "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
             extension_nonce,
@@ -408,6 +412,13 @@ def main() -> None:
             save_report()
             extension_page.close()
             raise RuntimeError("Extension n-cv request and current pointer did not decrypt the fresh config")
+        extension_seeds = candidate.get("seeds") or {}
+        extension_seed_values = extension_seeds.values() if isinstance(extension_seeds, dict) else extension_seeds
+        report["extension_config_types"] = {
+            "grid": type(candidate.get("grid")).__name__,
+            "seeds": type(extension_seeds).__name__,
+            "seed_values": sorted({type(value).__name__ for value in extension_seed_values}),
+        }
         extension_page.close()
         page.bring_to_front()
         page.wait_for_timeout(1_000)
