@@ -1508,7 +1508,7 @@ abstract class MangaTR : KeiSource() {
 
     // ============================= Utilities =============================
 
-    private fun scrambledImageInterceptor(chain: Interceptor.Chain): Response {
+    internal fun scrambledImageInterceptor(chain: Interceptor.Chain): Response {
         val request = chain.request()
         val response = chain.proceed(request)
         if (!response.isSuccessful) return response

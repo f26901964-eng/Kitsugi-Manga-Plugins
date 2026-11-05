@@ -19,6 +19,7 @@ dependencies {
     testImplementation(libs.bundles.common)
     testImplementation(libs.tachiyomi.lib.v16)
     testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
 }
 
 tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin") }.configureEach {
