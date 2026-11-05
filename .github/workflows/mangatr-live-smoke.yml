@@ -42,8 +42,32 @@ jobs:
         env:
           MANGATR_LIVE_TEST: '1'
         run: |
+          rm -f ../mangatr/live/browser/kotlin-live-failure.txt
           set -o pipefail
           ./gradlew :src:tr:mangatr:testDebugUnitTest --tests 'eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest' 2>&1 | tee /tmp/mangatr-kotlin-live.log
+      - name: Publish the real Kotlin failure without browser/CDN log noise
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          import xml.etree.ElementTree as ET
+          log_path = Path('/tmp/mangatr-kotlin-live.log')
+          if not log_path.exists():
+              raise SystemExit(0)
+          failures = []
+          for report in Path('keiyoushi-extensions-tr/src/tr/mangatr/build/test-results').rglob('TEST-*.xml'):
+              for case in ET.parse(report).getroot().iter('testcase'):
+                  for failure in list(case.findall('failure')) + list(case.findall('error')):
+                      failures.append(case.get('name', 'test') + '\n' + failure.get('message', '') + '\n' + (failure.text or '')[:12000])
+          text = '\n\n'.join(failures) if failures else log_path.read_text(errors='replace')[-16000:]
+          text = re.sub(r'[A-Za-z0-9_\-+/=]{32,}', '<redacted>', text)
+          output = Path('mangatr/live/browser/kotlin-live-failure.txt')
+          output.parent.mkdir(parents=True, exist_ok=True)
+          output.write_text(text + '\n')
+          escaped = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Production Kotlin live failure::' + escaped)
+          PY
       - name: Run OCR here only if this runner received real images
         run: |
           set -o pipefail
@@ -57,6 +81,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A mangatr/live/browser/kotlin-live-failure.txt
           git add mangatr/live/browser/reader-contract-report.json mangatr/live/browser/reader-gate-request.json mangatr/live/browser/reader-pointer-input.json mangatr/live/browser/reader-pointer-snippets.txt mangatr/live/browser/pointer-delta.js
           git diff --cached --quiet && exit 0
           git commit -m 'test(mangatr): capture sanitized live reader contract [skip ci]'
@@ -86,7 +111,10 @@ jobs:
           from pathlib import Path
           import re
           error_path = Path('keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-orientation/browser-contract-error.txt')
-          if error_path.exists():
+          kotlin_failure = Path('mangatr/live/browser/kotlin-live-failure.txt')
+          if kotlin_failure.exists():
+              text = kotlin_failure.read_text(errors='replace')
+          elif error_path.exists():
               text = error_path.read_text(errors='replace')
           else:
               paths = [Path('/tmp/mangatr-browser.log'), Path('/tmp/mangatr-orientation.log'), Path('/tmp/mangatr-kotlin-live.log')]
