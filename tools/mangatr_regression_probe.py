@@ -22,8 +22,8 @@ UA = (
 TIMEOUT = 35
 TARGETS = (
     ("weep", "One Piece Doujinshi - WEEP", "zootopia-i-will-survive"),
-    ("happy-birthday", "Happy Birthday Luffy", None),
-    ("which", "One Piece dj - WHICH!", None),
+    ("happy-birthday", "Happy Birthday Luffy", "greenteaneko"),
+    ("which", "One Piece dj - WHICH!", "one-piece-dj-which"),
     ("rick-morty", "Rick and Morty", "one-piece-dj-welcome-to-the-straw-hat-forest"),
     ("lord-mysteries", "Lord of the Mysteries", "lord-of-the-mysteries"),
 )
@@ -166,19 +166,25 @@ def reader_diagnostic(session: requests.Session, chapter: dict[str, str], detail
         or (heading is not None and heading.get_text(strip=True) == "404")
         or urlsplit(response.url).path == "/404.php"
     )
+    page_text = document.get_text(" ", strip=True)
+    login_required = (
+        "Bu İçeriği Okumak İçin Giriş Yapmalısınız".casefold() in page_text.casefold()
+        or "yalnızca kayıtlı Manga-TR üyeleri".casefold() in page_text.casefold()
+    )
     return {
         **chapter,
         "http": response.status_code,
         "finalPath": urlsplit(response.url).path,
         "title": safe_text(title, 160),
         "is404": is_404,
+        "loginRequired": login_required,
         "bodyBytes": len(response.content),
         "gate": bool(re.search(r"(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=", response.text)),
         "configScripts": len(document.select("script[id^=rdm-]")),
         "chapterPages": len(document.select("div.chapter-page")),
         "directPartImages": len(document.select("img[src*='img_part.php'], img[data-src*='img_part.php']")),
         "genericReaderImages": len(generic),
-        "textPreview": safe_text(document.get_text(" ", strip=True), 250) if response.status_code != 200 else "",
+        "textPreview": safe_text(page_text, 700),
     }
 
 
