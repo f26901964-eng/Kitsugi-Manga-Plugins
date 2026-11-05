@@ -140,11 +140,9 @@ class MangaTRImagePipelineTest {
         }
     }
 
-    private fun colorDistance(first: Int, second: Int): Int {
-        return listOf(Color::red, Color::green, Color::blue).sumOf { channel ->
-            val difference = channel(first) - channel(second)
-            difference * difference
-        }
+    private fun colorDistance(first: Int, second: Int): Int = listOf(Color::red, Color::green, Color::blue).sumOf { channel ->
+        val difference = channel(first) - channel(second)
+        difference * difference
     }
 
     private fun decodeTransformed(
