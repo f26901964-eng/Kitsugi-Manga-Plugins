@@ -52,6 +52,20 @@ jobs:
           print('::error title=Live test failure log::' + text)
           PY
           fi
+      - name: Surface runner-only image verification skips
+        if: always()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          for report in Path('keiyoushi-extensions-tr/src/tr/mangatr/build/test-results').rglob('TEST-*.xml'):
+              for case in ET.parse(report).getroot().iter('testcase'):
+                  for skipped in case.findall('skipped'):
+                      message = skipped.get('message') or (skipped.text or '')
+                      if 'Cloudflare' in message:
+                          message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+                          print('::warning title=Live image verification skipped::' + message)
+          PY
       - name: Upload live smoke test results
         if: always()
         uses: actions/upload-artifact@v4
