@@ -88,8 +88,13 @@ jobs:
           git add mangatr/live/browser/reader-contract-report.json mangatr/live/browser/reader-gate-request.json mangatr/live/browser/reader-pointer-input.json mangatr/live/browser/reader-pointer-snippets.txt mangatr/live/browser/pointer-delta.js
           git diff --cached --quiet && exit 0
           git commit -m 'test(mangatr): capture sanitized live reader contract [skip ci]'
-          git pull --rebase origin arena/720282f3-kitsugi-manga-plugins
-          git push origin HEAD:arena/720282f3-kitsugi-manga-plugins
+          for attempt in 1 2 3; do
+            if git push origin HEAD:arena/720282f3-kitsugi-manga-plugins; then
+              exit 0
+            fi
+            git -c rebase.autoStash=true pull --rebase origin arena/720282f3-kitsugi-manga-plugins
+          done
+          exit 1
       - name: Require the extension gate and live DOM contract
         run: |
           python3 - <<'PY'
