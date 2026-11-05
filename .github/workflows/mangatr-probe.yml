@@ -1,0 +1,39 @@
+name: Manga-TR public chapter probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/d305cc76-kitsugi-manga-plugins]
+    paths:
+      - tools/mangatr_browser_probe.py
+      - .github/workflows/mangatr-probe.yml
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install public-page probe dependencies
+        run: python3 -m pip install requests playwright
+      - name: Capture anonymous chapter responses
+        run: xvfb-run -a -s '-screen 0 1280x720x24' python3 tools/mangatr_browser_probe.py
+      - name: Upload sanitized probe report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-public-chapter-probe
+          path: mangatr/live/browser/
+          if-no-files-found: warn
+      - name: Save public HTML fixtures to this branch
+        if: success()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add mangatr/live/browser/*.html mangatr/live/browser/*.json mangatr/live/browser/*.js
+          git diff --cached --quiet && exit 0
+          git commit -m 'test(mangatr): capture public chapter and fansub fixtures [skip ci]'
+          git push origin HEAD:arena/d305cc76-kitsugi-manga-plugins

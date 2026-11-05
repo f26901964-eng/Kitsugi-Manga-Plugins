@@ -1,0 +1,341 @@
+"""Capture Manga-TR's public chapter responses with the site's own browser flow.
+
+No cookies, signatures, gate keys, or request bodies are written to disk. The saved
+chapter responses are the same public HTML fragments shown to anonymous readers.
+"""
+from __future__ import annotations
+
+import base64
+import json
+import re
+import shutil
+from pathlib import Path
+from urllib.parse import parse_qs, urlparse
+
+import requests
+from playwright.sync_api import sync_playwright
+
+BASE = "https://manga-tr.com/"
+DETAIL = BASE + "manga-chainsaw-man.html"
+READER = BASE + "id-123931-read-chainsaw-man-chapter-2.html"
+READER_SCRIPT = BASE + "app/manga/themes/default/assets/js/chapter-reader.js?v=2709-2"
+CAP_SCRIPT = BASE + "app/manga/themes/default/assets/js/cap.js?v=1410"
+OUT = Path("mangatr/live/browser")
+OUT.mkdir(parents=True, exist_ok=True)
+UA = (
+    "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+)
+
+
+def clear_ddos_guard() -> requests.Session:
+    session = requests.Session()
+    session.headers["User-Agent"] = UA
+    response = session.get(BASE, timeout=30)
+    if response.status_code == 403 and "check.ddos-guard.net/check.js" in response.text:
+        check = session.get("https://check.ddos-guard.net/check.js", timeout=30)
+        match = re.search(r"'([^']+)'", check.text)
+        if match and match.group(1).startswith("/") and not match.group(1).startswith("//"):
+            gate = session.get(BASE.rstrip("/") + match.group(1), timeout=30)
+            print("DDoS-Guard exchange:", gate.status_code)
+    return session
+
+
+def first_reader_image(document: str) -> str | None:
+    script_tag = re.search(r"<script\b[^>]*\bid=[\"']rdm-[^\"']+[\"'][^>]*>", document, re.I)
+    if not script_tag:
+        return None
+    key_match = re.search(r"\b[\w-]+=([\"'])([0-9a-f]{32})\1", script_tag.group(0))
+    if not key_match:
+        return None
+    key = f"attr|{key_match.group(2)}|reader".encode()
+    encrypted_values = re.findall(
+        r"\sdata-[\w-]+\s*=\s*([\"'])([A-Za-z0-9_+/=\-]{80,})\1",
+        document,
+    )
+    for _, value in encrypted_values:
+        try:
+            raw = base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+            decoded = bytes(byte ^ key[index % len(key)] for index, byte in enumerate(raw))
+            urls = json.loads(decoded)
+        except (ValueError, UnicodeError):
+            continue
+        if isinstance(urls, list) and urls and isinstance(urls[0], str) and "img_part.php" in urls[0]:
+            return urls[0]
+    return None
+
+
+def main() -> None:
+    session = clear_ddos_guard()
+    reader_script_response = session.get(READER_SCRIPT, timeout=30)
+    if reader_script_response.status_code == 200:
+        (OUT / "chapter-reader.js").write_text(reader_script_response.text, encoding="utf-8")
+    cap_script_response = session.get(CAP_SCRIPT, timeout=30)
+    if cap_script_response.status_code == 200:
+        (OUT / "cap.js").write_text(cap_script_response.text, encoding="utf-8")
+    chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
+    if not chrome:
+        raise RuntimeError("Chrome/Chromium is required for the public browser probe")
+
+    captured: dict[str, str] = {}
+    report: dict[str, object] = {
+        "chapter_requests": [],
+        "chapter_index": {},
+        "image_requests": [],
+        "reader_script": {"status": reader_script_response.status_code, "bytes": len(reader_script_response.content)},
+        "cap_script": {"status": cap_script_response.status_code, "bytes": len(cap_script_response.content)},
+        "reader_script_responses": [],
+        "reader_gate_responses": [],
+        "reader_errors": [],
+        "reader_console_errors": [],
+        "image_request_failures": [],
+    }
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(
+            executable_path=chrome,
+            headless=False,
+            args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+        )
+        context = browser.new_context(
+            user_agent=UA,
+            viewport={"width": 412, "height": 915},
+            device_scale_factor=2.625,
+            is_mobile=True,
+            has_touch=True,
+            locale="tr-TR",
+        )
+        context.add_cookies(
+            [
+                {"name": c.name, "value": c.value, "domain": c.domain, "path": c.path or "/"}
+                for c in session.cookies
+            ]
+        )
+        page = context.new_page()
+        page.on(
+            "pageerror",
+            lambda error: report["reader_errors"].append(
+                re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(error))[:500]
+            ),
+        )
+        page.on(
+            "console",
+            lambda message: report["reader_console_errors"].append(
+                re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", message.text)[:500]
+            ) if message.type == "error" else None,
+        )
+
+        def on_request_failed(request) -> None:
+            hostname = urlparse(request.url).hostname or ""
+            if "mngtr" not in hostname or len(report["image_request_failures"]) >= 12:
+                return
+            report["image_request_failures"].append(
+                {"host": hostname, "type": request.resource_type, "error": request.failure}
+            )
+
+        page.on("requestfailed", on_request_failed)
+
+        def on_response(response) -> None:
+            parsed = urlparse(response.url)
+            hostname = parsed.hostname or ""
+            if parsed.path.endswith(("/chapter-reader.js", "/cap.js")):
+                report["reader_script_responses"].append(
+                    {"script": parsed.path.rsplit("/", 1)[-1], "status": response.status, "type": response.request.resource_type}
+                )
+                return
+            if parsed.path.startswith("/cek/f/"):
+                gate_result = {
+                    "status": response.status,
+                    "type": response.request.resource_type,
+                    "method": response.request.method,
+                }
+                try:
+                    gate_body = response.text()
+                    gate_result["bytes"] = len(gate_body)
+                    gate_data = json.loads(gate_body)
+                    if isinstance(gate_data, dict):
+                        gate_result["json_keys"] = sorted(gate_data)
+                        gate_result["key_length"] = len(gate_data.get("k", ""))
+                except (ValueError, TypeError):
+                    pass
+                except Exception:
+                    gate_result["body_read"] = "failed"
+                report["reader_gate_responses"].append(gate_result)
+                return
+            if "mngtr" in hostname:
+                if len(report["image_requests"]) >= 12:
+                    return
+                headers = response.request.headers
+                safe_headers = {
+                    key: headers.get(key, "")
+                    for key in (
+                        "accept",
+                        "referer",
+                        "sec-fetch-dest",
+                        "sec-fetch-mode",
+                        "sec-fetch-site",
+                        "user-agent",
+                    )
+                }
+                response_headers = response.headers
+                report["image_requests"].append(
+                    {
+                        "host": hostname,
+                        "status": response.status,
+                        "type": response.request.resource_type,
+                        "headers": safe_headers,
+                        "response": {
+                            key: response_headers.get(key, "")
+                            for key in ("content-type", "server", "cf-mitigated", "cache-control")
+                        },
+                    }
+                )
+                print(f"Reader image host={hostname}: status={response.status}")
+                return
+            if parsed.path != "/cek/fetch_pages_manga.php" or response.request.method != "POST":
+                return
+            try:
+                body = response.text()
+            except Exception:
+                return
+            fields = parse_qs(response.request.post_data or "")
+            offset = fields.get("offset", ["0"])[0]
+            captured[offset] = body
+            headers = response.request.headers
+            safe_headers = {
+                key: headers.get(key, "")
+                for key in (
+                    "accept",
+                    "content-type",
+                    "origin",
+                    "referer",
+                    "sec-fetch-dest",
+                    "sec-fetch-mode",
+                    "sec-fetch-site",
+                    "x-requested-with",
+                )
+            }
+            report["chapter_requests"].append(
+                {
+                    "offset": offset,
+                    "status": response.status,
+                    "bytes": len(body),
+                    "episode_cards": body.count("bento-ep-card"),
+                    "headers": safe_headers,
+                }
+            )
+            print(
+                f"Chapter response offset={offset}: status={response.status}, "
+                f"bytes={len(body)}, cards={body.count('bento-ep-card')}"
+            )
+
+        page.on("response", on_response)
+        response = page.goto(DETAIL, wait_until="domcontentloaded", timeout=45_000)
+        print("Detail status:", response.status if response else None)
+        page.wait_for_selector("#results .bento-ep-card", timeout=30_000)
+        page.wait_for_timeout(1_000)
+
+        # The public chapter-navbar index is also a useful unauthenticated fallback.
+        index_result = page.evaluate(
+            """async () => {
+                const response = await fetch('/cek/ajax_chapters_endpoint.php?ajax=chapters&manga=chainsaw-man&offset=0', {
+                    headers: {'X-Requested-With': 'XMLHttpRequest'}
+                });
+                return {status: response.status, body: await response.text()};
+            }"""
+        )
+        report["chapter_index"] = {"status": index_result["status"]}
+        if index_result["status"] == 200:
+            index_body = index_result["body"]
+            (OUT / "chainsaw_chapter_index.json").write_text(index_body, encoding="utf-8")
+            try:
+                rows = json.loads(index_body).get("rows", [])
+                report["chapter_index"] = {"status": 200, "rows": len(rows)}
+            except (ValueError, TypeError):
+                report["chapter_index"] = {"status": 200, "rows": "invalid JSON"}
+
+        # Capture the first 20 + the next two batches of 100. This includes the
+        # early Chainsaw Man chapters that have several independent translations.
+        for expected_offset in ("20", "120"):
+            if page.locator("#btn-load-more").is_visible():
+                with page.expect_response(
+                    lambda response, offset=expected_offset: (
+                        urlparse(response.url).path == "/cek/fetch_pages_manga.php"
+                        and response.request.method == "POST"
+                        and parse_qs(response.request.post_data or "").get("offset", ["0"])[0] == offset
+                    ),
+                    timeout=30_000,
+                ):
+                    page.locator("#btn-load-more").click()
+                page.wait_for_timeout(1_000)
+            if expected_offset not in captured:
+                print("Warning: offset was not captured:", expected_offset)
+
+        reader_response = page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
+        report["reader_status"] = reader_response.status if reader_response else None
+        print("Reader status:", report["reader_status"])
+        page.wait_for_timeout(8_000)
+        if not report["image_requests"]:
+            probe_image_url = first_reader_image(page.content())
+            report["manual_image_found"] = probe_image_url is not None
+            if probe_image_url:
+                page.evaluate(
+                    """url => {
+                        const frame = document.createElement('iframe');
+                        frame.id = 'mangatr-probe-frame';
+                        frame.srcdoc = '<!doctype html><html><body></body></html>';
+                        frame.onload = () => {
+                            const image = frame.contentDocument.createElement('img');
+                            image.id = 'mangatr-probe-image';
+                            image.src = url;
+                            frame.contentDocument.body.appendChild(image);
+                        };
+                        document.body.appendChild(frame);
+                    }""",
+                    probe_image_url,
+                )
+                page.wait_for_timeout(8_000)
+        report["group_skip_visible"] = page.locator("#skipGroupBtn").is_visible()
+        if not report["image_requests"] and report["group_skip_visible"]:
+            page.locator("#skipGroupBtn").click()
+            page.wait_for_timeout(5_000)
+        if not report["image_requests"]:
+            page.mouse.wheel(0, 1_500)
+            page.wait_for_timeout(5_000)
+        report["reader_title"] = page.title()
+        report["reader_dom"] = page.evaluate(
+            """() => ({
+                imageCount: document.images.length,
+                readerConfigCount: document.querySelectorAll('script[id^="rdm-"]').length,
+                images: Array.from(document.images).slice(0, 30).map(image => ({
+                    host: new URL(image.currentSrc || image.src, location.href).hostname,
+                    complete: image.complete,
+                    naturalWidth: image.naturalWidth,
+                })),
+            })"""
+        )
+        report["manual_image_state"] = page.evaluate(
+            """() => {
+                const frame = document.getElementById('mangatr-probe-frame');
+                const image = frame?.contentDocument?.getElementById('mangatr-probe-image');
+                return image ? {complete: image.complete, naturalWidth: image.naturalWidth} : null;
+            }"""
+        )
+
+        browser.close()
+
+    for offset, body in captured.items():
+        (OUT / f"chainsaw_chapters_offset{offset}.html").write_text(body, encoding="utf-8")
+    report["captured_offsets"] = sorted(captured, key=int)
+    report["rendered_cards"] = sum(item["episode_cards"] for item in report["chapter_requests"])
+    (OUT / "report.json").write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+
+    if "0" not in captured or not captured["0"].strip() or "bento-ep-card" not in captured["0"]:
+        raise RuntimeError("The public chapter response was not captured")
+    if not any("fansub" in body.lower() for body in captured.values()):
+        raise RuntimeError("No fansub information was found in the public chapter responses")
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,175 @@
+{
+  "chapter_requests": [
+    {
+      "offset": "0",
+      "status": 200,
+      "bytes": 47733,
+      "episode_cards": 20,
+      "headers": {
+        "accept": "text/html, */*; q=0.01",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "origin": "",
+        "referer": "https://manga-tr.com/manga-chainsaw-man.html",
+        "sec-fetch-dest": "",
+        "sec-fetch-mode": "",
+        "sec-fetch-site": "",
+        "x-requested-with": "XMLHttpRequest"
+      }
+    },
+    {
+      "offset": "20",
+      "status": 200,
+      "bytes": 262051,
+      "episode_cards": 89,
+      "headers": {
+        "accept": "*/*",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "origin": "",
+        "referer": "https://manga-tr.com/manga-chainsaw-man.html",
+        "sec-fetch-dest": "",
+        "sec-fetch-mode": "",
+        "sec-fetch-site": "",
+        "x-requested-with": "XMLHttpRequest"
+      }
+    },
+    {
+      "offset": "120",
+      "status": 200,
+      "bytes": 0,
+      "episode_cards": 0,
+      "headers": {
+        "accept": "*/*",
+        "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "origin": "",
+        "referer": "https://manga-tr.com/manga-chainsaw-man.html",
+        "sec-fetch-dest": "",
+        "sec-fetch-mode": "",
+        "sec-fetch-site": "",
+        "x-requested-with": "XMLHttpRequest"
+      }
+    }
+  ],
+  "chapter_index": {
+    "status": 200,
+    "rows": 50
+  },
+  "image_requests": [],
+  "reader_script": {
+    "status": 200,
+    "bytes": 3094
+  },
+  "cap_script": {
+    "status": 200,
+    "bytes": 173747
+  },
+  "reader_script_responses": [
+    {
+      "script": "chapter-reader.js",
+      "status": 200,
+      "type": "script"
+    },
+    {
+      "script": "cap.js",
+      "status": 301,
+      "type": "script"
+    },
+    {
+      "script": "cap.js",
+      "status": 200,
+      "type": "script"
+    }
+  ],
+  "reader_gate_responses": [
+    {
+      "status": 200,
+      "type": "xhr",
+      "method": "POST",
+      "bytes": 78,
+      "json_keys": [
+        "k",
+        "s"
+      ],
+      "key_length": 64
+    }
+  ],
+  "reader_errors": [],
+  "reader_console_errors": [],
+  "image_request_failures": [
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    }
+  ],
+  "reader_status": 200,
+  "manual_image_found": false,
+  "group_skip_visible": true,
+  "reader_title": "2 - Chainsaw Man - Manga-TR.com Türkçe Çevrimiçi Oku",
+  "reader_dom": {
+    "imageCount": 0,
+    "readerConfigCount": 0,
+    "images": []
+  },
+  "manual_image_state": null,
+  "captured_offsets": [
+    "0",
+    "20",
+    "120"
+  ],
+  "rendered_cards": 109
+}

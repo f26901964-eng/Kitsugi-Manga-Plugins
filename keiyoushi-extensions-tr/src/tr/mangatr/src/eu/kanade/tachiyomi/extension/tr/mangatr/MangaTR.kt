@@ -22,6 +22,7 @@ import keiyoushi.utils.attrOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.textOrNull
 import keiyoushi.utils.toJsonRequestBody
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -36,12 +37,12 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
 import org.jsoup.nodes.Document
-import kotlinx.coroutines.delay
 import org.jsoup.nodes.Element
 import java.io.IOException
 import java.nio.charset.StandardCharsets
@@ -53,18 +54,18 @@ import java.util.Locale
 abstract class MangaTR : KeiSource() {
 
     override fun Headers.Builder.configureHeaders() = apply {
-        add("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
-        add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
-        add("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
-        add("Accept-Encoding", "gzip, deflate, br")
-        add("Sec-Ch-Ua", "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"")
-        add("Sec-Ch-Ua-Mobile", "?1")
-        add("Sec-Ch-Ua-Platform", "\"Android\"")
-        add("Sec-Fetch-Dest", "document")
-        add("Sec-Fetch-Mode", "navigate")
-        add("Sec-Fetch-Site", "same-origin")
-        add("Sec-Fetch-User", "?1")
-        add("Upgrade-Insecure-Requests", "1")
+        set("User-Agent", "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36")
+        set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8")
+        set("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
+        set("Accept-Encoding", "gzip, deflate, br")
+        set("Sec-Ch-Ua", "\"Chromium\";v=\"124\", \"Google Chrome\";v=\"124\", \"Not-A.Brand\";v=\"99\"")
+        set("Sec-Ch-Ua-Mobile", "?1")
+        set("Sec-Ch-Ua-Platform", "\"Android\"")
+        set("Sec-Fetch-Dest", "document")
+        set("Sec-Fetch-Mode", "navigate")
+        set("Sec-Fetch-Site", "same-origin")
+        set("Sec-Fetch-User", "?1")
+        set("Upgrade-Insecure-Requests", "1")
     }
 
     override fun OkHttpClient.Builder.configureClient() = apply {
@@ -75,21 +76,18 @@ abstract class MangaTR : KeiSource() {
     }
 
     private val ajaxHeaders get() = headersBuilder()
-        .add("X-Requested-With", "XMLHttpRequest")
-        .add("Accept-Encoding", "identity")
+        .mangaTrAjaxHeaders()
         .build()
 
     private var captchaUrl: String? = null
 
     // ============================== Popular ==============================
 
-    override suspend fun getPopularManga(page: Int): MangasPage =
-        getMangaList(page, "$baseUrl/manga-list-sayfala.html?sort=views&sort_type=DESC&page=$page&listType=pagination")
+    override suspend fun getPopularManga(page: Int): MangasPage = getMangaList(page, "$baseUrl/manga-list-sayfala.html?sort=views&sort_type=DESC&page=$page&listType=pagination")
 
     // ============================== Latest ===============================
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage =
-        getMangaList(page, "$baseUrl/manga-list-sayfala.html?sort=last_update&sort_type=DESC&page=$page&listType=pagination")
+    override suspend fun getLatestUpdates(page: Int): MangasPage = getMangaList(page, "$baseUrl/manga-list-sayfala.html?sort=last_update&sort_type=DESC&page=$page&listType=pagination")
 
     // ============================== Search ===============================
 
@@ -267,11 +265,14 @@ abstract class MangaTR : KeiSource() {
             } else {
                 // No active marker: check if any link points to next page number
                 if (paginationLinks.any { el ->
-                    val t = el.text().trim()
-                    t == (currentPage + 1).toString() ||
-                        el.attr("href").contains("sayfa-${currentPage + 1}") ||
-                        el.attr("href").contains("page=${currentPage + 1}")
-                }) return true
+                        val t = el.text().trim()
+                        t == (currentPage + 1).toString() ||
+                            el.attr("href").contains("sayfa-${currentPage + 1}") ||
+                            el.attr("href").contains("page=${currentPage + 1}")
+                    }
+                ) {
+                    return true
+                }
             }
             val maxNum = paginationLinks.mapNotNull { Regex("""\d+""").find(it.text().trim())?.value?.toIntOrNull() }.maxOrNull()
             if (maxNum != null && maxNum > currentPage) return true
@@ -433,9 +434,8 @@ abstract class MangaTR : KeiSource() {
         }
     }
 
-    private fun Document.infoRow(label: String): String? =
-        selectFirst(".bento-info-row:has(.bento-info-label:contains($label)) .bento-info-value")?.textOrNull()
-            ?: selectFirst("div:has(> .bento-info-label:contains($label)) .bento-info-value")?.textOrNull()
+    private fun Document.infoRow(label: String): String? = selectFirst(".bento-info-row:has(.bento-info-label:contains($label)) .bento-info-value")?.textOrNull()
+        ?: selectFirst("div:has(> .bento-info-label:contains($label)) .bento-info-value")?.textOrNull()
 
     // ============================= Chapters ==============================
 
@@ -492,146 +492,84 @@ abstract class MangaTR : KeiSource() {
         val seenUrls = mutableSetOf<String>()
         var offset = 0
         var isFirst = true
-        var attempts = 0
-        val maxAttempts = 40
+        var retries = 0
+        var requests = 0
+        val seed = getMangaSeed()
 
-        // Seed'i bir kere hesapla (CSS'den), hata olursa 0 fallback
-        val seed = try { getMangaSeed() } catch (_: Exception) { 0 }
-
-        while (attempts < maxAttempts) {
-            attempts++
+        while (requests < 40 && chapters.size <= 5000) {
+            requests++
             val timestamp = System.currentTimeMillis() / 1000
-            val sig = generateSig(mangaSlug, seed, timestamp)
-
             val form = FormBody.Builder()
                 .add("manga", mangaSlug)
                 .add("tur", tur)
                 .add("offset", offset.toString())
                 .add("_t", timestamp.toString())
-                .add("_sig", sig)
+                .add("_sig", generateSig(mangaSlug, seed, timestamp))
                 .build()
-
             val headers = headersBuilder()
-                .add("X-Requested-With", "XMLHttpRequest")
-                .add("Accept", "*/*")
-                .add("Referer", "$baseUrl/manga-$mangaSlug.html")
-                .add("Origin", baseUrl)
+                .mangaTrAjaxHeaders("$baseUrl/manga-$mangaSlug.html", acceptsHtml = true)
+                .set("Origin", baseUrl)
                 .build()
 
             val response = try {
-                client.post("$baseUrl/cek/fetch_pages_manga.php", headers, form)
-            } catch (e: Exception) {
-                break
-            }
-
-            // 403 ise seed yanlış olabilir -> 0 ile retry
-            if (response.code == 403 && attempts == 1 && seed != 0) {
-                response.close()
-                val retrySig = generateSig(mangaSlug, 0, timestamp)
-                val retryForm = FormBody.Builder()
-                    .add("manga", mangaSlug).add("tur", tur).add("offset", offset.toString())
-                    .add("_t", timestamp.toString()).add("_sig", retrySig).build()
-                val retryResp = try { client.post("$baseUrl/cek/fetch_pages_manga.php", headers, retryForm) } catch (_: Exception) { null }
-                if (retryResp != null) {
-                    val retryChapters = parseChapterHtmlResponse(retryResp, seenUrls)
-                    retryResp.close()
-                    if (retryChapters.isNotEmpty()) {
-                        chapters.addAll(retryChapters)
-                        offset = if (isFirst) 20 else offset + 100
-                        isFirst = false
-                        continue
-                    } else if (retryChapters.isEmpty() && offset == 0) {
-                        retryResp.close()
-                        break
-                    }
-                    retryResp.close()
-                }
-                continue
+                client.post("$baseUrl/cek/fetch_pages_manga.php", headers, form, ensureSuccess = false)
+            } catch (error: Exception) {
+                throw IOException("Bölüm listesi isteği gönderilemedi (offset=$offset).", error)
             }
 
             if (response.code == 403) {
                 response.close()
-                if (attempts < 3) {
+                if (retries < 3) {
+                    retries++
                     delay(350)
                     continue
                 }
-                break
+                throw IOException("Bölüm listesi isteği üç yeniden denemeden sonra reddedildi (HTTP 403, offset=$offset).")
+            }
+            if (!response.isSuccessful) {
+                val status = response.code
+                response.close()
+                throw IOException("Bölüm listesi isteği başarısız oldu (HTTP $status, offset=$offset).")
             }
 
-            val batch = parseChapterHtmlResponse(response, seenUrls)
-            response.close()
+            val batch = try {
+                parseChapterHtmlResponse(response)
+            } finally {
+                response.close()
+            }
+            val newChapters = batch.chapters.filter { seenUrls.add(it.url.substringBefore('?')) }
 
-            if (batch.isEmpty()) {
-                // İlk sayfada boşsa bitir
-                if (offset == 0) break
-                // Sonraki sayfalarda 2 boş üst üste gelirse bitir
+            if (batch.cardCount == 0 || batch.chapters.isEmpty()) {
+                if (offset == 0 && chapters.isEmpty()) {
+                    throw IOException("Bölüm API'si geçerli bölüm kartı döndürmedi.")
+                }
                 break
             }
+            if (newChapters.isEmpty()) break
 
-            chapters.addAll(batch)
+            chapters.addAll(newChapters)
+            retries = 0
 
-            // has-more kontrolü: response html içinde #has-more-chapters value=0 ise son
-            // Biz batch size'a bak: <20 veya <100 ise muhtemelen son, ama yine de bir daha dene
-            val hasMoreIndicator = batch.size >= 20
-            if (!hasMoreIndicator) break
-
-            // Pagination: ilk offset 0, sonra 20, sonra +100
+            // The first response contains 20 cards; later responses contain up to
+            // 100. An explicit marker, not the number of translation rows, controls pagination.
+            if (!batch.hasMore && !(isFirst && batch.cardCount >= 20)) break
             offset = if (isFirst) 20 else offset + 100
             isFirst = false
-
-            if (chapters.size > 5000) break
         }
 
-        return chapters.distinctBy { it.url }
+        return chapters
     }
 
-    private fun parseChapterHtmlResponse(response: Response, seenUrls: MutableSet<String>): List<SChapter> {
-        val bodyStr = try { response.peekBody(Long.MAX_VALUE).string() } catch (_: Exception) { "" }
-        // Bazen JSON wrapper: {"html":"..."} gelebilir
-        var doc: Document? = null
-        try {
-            val trimmed = bodyStr.trim()
-            if (trimmed.startsWith("{")) {
-                val json = Json.parseToJsonElement(trimmed) as? JsonObject
-                val htmlField = json?.get("html")?.jsonPrimitive?.content ?: json?.get("data")?.jsonPrimitive?.content
-                if (htmlField != null) {
-                    doc = org.jsoup.Jsoup.parse(htmlField, baseUrl)
-                }
-            }
-        } catch (_: Exception) {}
-        if (doc == null) {
-            try {
-                doc = response.asJsoup().also { it.setBaseUri(baseUrl) }
-            } catch (_: Exception) { return emptyList() }
-        }
-
-        // Has-more hidden input check
-        val hasMoreVal = doc.selectFirst("#has-more-chapters")?.attr("value")
-        // Eğer hasMore 0 ise ve batch küçükse son sayfa
-
-        val elements = doc.select("article.bento-ep-card, div.bento-ep-card, div.chapter-item, article.chapter-item, div.chapter-box, li.chapter-item")
-        if (elements.isEmpty()) {
-            // Fallback: direkt linkleri dene
-            val links = doc.select("a[href*='/id-'], a[href*='-read-'], a[href*='/bolum'], a.bento-ep-title-link")
-            if (links.isNotEmpty()) {
-                return links.flatMap { el ->
-                    try { extractChaptersFromCard(el.parent() ?: el) } catch (_: Exception) {
-                        try { listOf(chapterFromElement(el)) } catch (_: Exception) { emptyList() }
-                    }
-                }.filter { seenUrls.add(it.url) }
-            }
-            return emptyList()
-        }
-
-        val batch = mutableListOf<SChapter>()
-        for (el in elements) {
-            try {
-                val list = extractChaptersFromCard(el)
-                for (ch in list) if (seenUrls.add(ch.url)) batch.add(ch)
-            } catch (_: Exception) {}
-        }
-        // hasMore 0 ise bir daha istek atma sinyali - ama batch'i döndür
-        return batch
+    private fun parseChapterHtmlResponse(response: Response): MangaTRParser.ChapterBatch {
+        val body = response.body.string()
+        val html = runCatching {
+            if (!body.trim().startsWith("{")) return@runCatching null
+            val json = Json.parseToJsonElement(body) as? JsonObject
+            json?.get("html")?.jsonPrimitive?.content
+                ?: json?.get("data")?.jsonPrimitive?.content
+        }.getOrNull() ?: body
+        val document = org.jsoup.Jsoup.parse(html, baseUrl)
+        return MangaTRParser.parseChapterDocument(document)
     }
 
     private suspend fun getMangaSeed(): Int {
@@ -640,7 +578,7 @@ abstract class MangaTR : KeiSource() {
         return try {
             val cssUrls = listOf(
                 "$baseUrl/app/manga/themes/default/assets/css/mtr.min.css",
-                "$baseUrl/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6"
+                "$baseUrl/app/manga/themes/default/assets/css/mtr.min.css?v=0411-6",
             )
             var cssText: String? = null
             for (u in cssUrls) {
@@ -650,28 +588,13 @@ abstract class MangaTR : KeiSource() {
                 } catch (_: Exception) {}
             }
             if (cssText == null) return 0
-            val white = Regex("""--mdx-white\s*:\s*(\d+)""").find(cssText)?.groupValues?.get(1)?.toIntOrNull() ?: 0
-            val black = Regex("""--mdx-black\s*:\s*(\d+)""").find(cssText)?.groupValues?.get(1)?.toIntOrNull() ?: 0
-            white + black
-        } catch (_: Exception) { 0 }
-    }
-
-    private fun generateSig(mangaSlug: String, seed: Int, timestamp: Long): String {
-        val raw = "${mangaSlug}_${seed}_${timestamp}"
-        return try {
-            val digest = java.security.MessageDigest.getInstance("SHA-256")
-            val hash = digest.digest(raw.toByteArray(Charsets.UTF_8))
-            hash.joinToString("") { "%02x".format(it) }
+            MangaTRContract.seedFromCss(cssText) ?: 0
         } catch (_: Exception) {
-            // Fallback FNV-1a (JS'deki ikinci yol)
-            var h = 0x811c9dc5L
-            for (c in raw) {
-                h = h xor c.code.toLong()
-                h = (h * 0x01000193L) and 0xffffffffL
-            }
-            h.toString(16)
+            0
         }
     }
+
+    private fun generateSig(mangaSlug: String, seed: Int, timestamp: Long): String = MangaTRContract.signature(mangaSlug, seed, timestamp)
 
     private fun extractChapterKey(html: String, document: Document): String? {
         val patterns = listOf(
@@ -706,7 +629,9 @@ abstract class MangaTR : KeiSource() {
         return try {
             val jsBody = client.get(scriptSrc, ajaxHeaders).body.string()
             extractChapterKey(jsBody, document)
-        } catch (_: Exception) { null }
+        } catch (_: Exception) {
+            null
+        }
     }
 
     private suspend fun fetchBentoChapters(key: String): List<SChapter> {
@@ -744,7 +669,13 @@ abstract class MangaTR : KeiSource() {
                                 val innerDoc = org.jsoup.Jsoup.parse(htmlField, baseUrl)
                                 val innerEls = innerDoc.select("article.bento-ep-card, div.chapter-item")
                                 if (innerEls.isNotEmpty()) {
-                                    val batch = innerEls.flatMap { try { extractChaptersFromCard(it) } catch (_: Exception) { emptyList() } }
+                                    val batch = innerEls.flatMap {
+                                        try {
+                                            extractChaptersFromCard(it)
+                                        } catch (_: Exception) {
+                                            emptyList()
+                                        }
+                                    }
                                     if (!seenBatches.add(batch.map { it.url })) break
                                     chapters.addAll(batch)
                                     offset = (offset ?: 0) + if (offset == null) 20 else 100
@@ -758,7 +689,11 @@ abstract class MangaTR : KeiSource() {
             }
 
             val batch = elements.flatMap { el ->
-                try { extractChaptersFromCard(el) } catch (_: Exception) { emptyList() }
+                try {
+                    extractChaptersFromCard(el)
+                } catch (_: Exception) {
+                    emptyList()
+                }
             }.filterNot { it.url.isBlank() }
             if (batch.isEmpty()) break
 
@@ -822,7 +757,11 @@ abstract class MangaTR : KeiSource() {
             // Handle JSON-wrapped HTML (new endpoint returns {"html":"..."} or {"data":"..."})
             var elements = doc.select("div.chapter-item, article.bento-ep-card, div.bento-ep-card, li.chapter-item, div.chapter-box, article.chapter-card")
             if (elements.isEmpty()) {
-                val bodyStr = try { response.peekBody(Long.MAX_VALUE).string() } catch (_: Exception) { "" }
+                val bodyStr = try {
+                    response.peekBody(Long.MAX_VALUE).string()
+                } catch (_: Exception) {
+                    ""
+                }
                 if (bodyStr.trim().startsWith("{")) {
                     try {
                         val json = Json.parseToJsonElement(bodyStr) as? JsonObject
@@ -837,7 +776,11 @@ abstract class MangaTR : KeiSource() {
             }
 
             val batch = elements.flatMap { el ->
-                try { extractChaptersFromCard(el) } catch (_: Exception) { emptyList() }
+                try {
+                    extractChaptersFromCard(el)
+                } catch (_: Exception) {
+                    emptyList()
+                }
             }.filterNot { seenUrls.contains(it.url) }
 
             if (batch.isNotEmpty()) {
@@ -887,9 +830,19 @@ abstract class MangaTR : KeiSource() {
 
         if (chapters.isEmpty()) {
             // Ultimate fallback: parse initial doc directly (maybe cards already in HTML)
-            val fallbackDoc = try { initialResponse.asJsoup() } catch (_: Exception) { return emptyList() }
+            val fallbackDoc = try {
+                initialResponse.asJsoup()
+            } catch (_: Exception) {
+                return emptyList()
+            }
             val els = fallbackDoc.select("div.chapter-item, article.bento-ep-card, article.bento-ep-card, div.chapter-item, a[href*='-read-']")
-            return els.flatMap { try { extractChaptersFromCard(it) } catch (_: Exception) { emptyList() } }
+            return els.flatMap {
+                try {
+                    extractChaptersFromCard(it)
+                } catch (_: Exception) {
+                    emptyList()
+                }
+            }
                 .distinctBy { it.url }
         }
 
@@ -909,7 +862,7 @@ abstract class MangaTR : KeiSource() {
             "a.bento-ep-title-link",
             "div.chapter-title a",
             "a[href*='-read-']",
-            "a[href*='/id-']"
+            "a[href*='/id-']",
         )
         for (sel in selectors) {
             val elements = document.select(sel)
@@ -931,11 +884,13 @@ abstract class MangaTR : KeiSource() {
                         // Fallback: create minimal chapter
                         val text = linkEl.text().trim().ifEmpty { linkEl.attr("title") }
                         if (text.isNotBlank()) {
-                            chapters.add(SChapter.create().apply {
-                                setUrlWithoutDomain(href)
-                                name = text
-                                chapter_number = Regex("""(\d+(?:\.\d+)?)""").find(text)?.value?.toFloatOrNull() ?: -1f
-                            })
+                            chapters.add(
+                                SChapter.create().apply {
+                                    setUrlWithoutDomain(href)
+                                    name = text
+                                    chapter_number = Regex("""(\d+(?:\.\d+)?)""").find(text)?.value?.toFloatOrNull() ?: -1f
+                                },
+                            )
                         }
                     }
                 }
@@ -953,7 +908,9 @@ abstract class MangaTR : KeiSource() {
      * Senin son attığın screenshot'taki gibi “Detay ▼” içinde her satır ayrı bir gruptur.
      * Bu yüzden tek bir karta karşılık 1 değil, N tane SChapter üretiyoruz.
      */
-    private fun extractChaptersFromCard(card: Element): List<SChapter> {
+    private fun extractChaptersFromCard(card: Element): List<SChapter> = MangaTRParser.parseChapterCard(card)
+
+    private fun extractChaptersFromCardLegacy(card: Element): List<SChapter> {
         // Önce kart içindeki tüm olası grup linklerini topla
         val groupLinkCandidates = mutableListOf<Element>()
 
@@ -977,7 +934,11 @@ abstract class MangaTR : KeiSource() {
 
         // Eğer hiç aday yoksa tekil fallback
         if (groupLinkCandidates.isEmpty()) {
-            return try { listOf(chapterFromSingleLink(card, card.selectFirst("a") ?: return emptyList())) } catch (_: Exception) { emptyList() }
+            return try {
+                listOf(chapterFromSingleLink(card, card.selectFirst("a") ?: return emptyList()))
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
 
         // Kartın ortak bilgilerini bir kere çıkar (numara, alt başlık, tarih)
@@ -994,9 +955,12 @@ abstract class MangaTR : KeiSource() {
         val baseName = when {
             !commonNumber.isNullOrBlank() && !commonSubtitle.isNullOrBlank() && !commonSubtitle.contains("Bölüm", true) ->
                 "Bölüm $commonNumber - $commonSubtitle"
+
             !commonNumber.isNullOrBlank() && !commonSubtitle.isNullOrBlank() ->
                 commonSubtitle.takeIf { it.contains("Bölüm", true) } ?: "Bölüm $commonNumber - $commonSubtitle"
+
             !commonNumber.isNullOrBlank() -> "Bölüm $commonNumber" + (commonSubtitle?.let { " - $it" } ?: "")
+
             else -> card.selectFirst("a.bento-ep-title-link")?.text()?.trim() ?: "Bölüm"
         }.trim()
 
@@ -1009,7 +973,11 @@ abstract class MangaTR : KeiSource() {
         // yerine her fansub için ayrı chapter üretmek daha doğru (Mihon scanlator rozeti için)
         if (groupLinkCandidates.size == 1) {
             // Tek çeviri → scanlator tekil
-            return try { listOf(chapterFromSingleLink(card, groupLinkCandidates[0], baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+            return try {
+                listOf(chapterFromSingleLink(card, groupLinkCandidates[0], baseName, chapterNumber, commonDate))
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
 
         // Çoklu çeviri: her aday link için ayrı SChapter
@@ -1020,7 +988,11 @@ abstract class MangaTR : KeiSource() {
 
         // Eğer dedup sonrası hala 1 ise tekil döndür
         if (deduped.size == 1) {
-            return try { listOf(chapterFromSingleLink(card, deduped[0], baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+            return try {
+                listOf(chapterFromSingleLink(card, deduped[0], baseName, chapterNumber, commonDate))
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
 
         val result = mutableListOf<SChapter>()
@@ -1055,12 +1027,18 @@ abstract class MangaTR : KeiSource() {
                     if (rowDate != null && rowDate != 0L) date_upload = rowDate
                 }
                 result.add(ch)
-            } catch (_: Exception) { continue }
+            } catch (_: Exception) {
+                continue
+            }
         }
 
         // Eğer çoklu üretmede hiçbir şey çıkmadıysa, en azından ana linkten tek chapter dön
         if (result.isEmpty()) {
-            return try { listOf(chapterFromSingleLink(card, deduped.firstOrNull() ?: card.selectFirst("a") ?: return emptyList(), baseName, chapterNumber, commonDate)) } catch (_: Exception) { emptyList() }
+            return try {
+                listOf(chapterFromSingleLink(card, deduped.firstOrNull() ?: card.selectFirst("a") ?: return emptyList(), baseName, chapterNumber, commonDate))
+            } catch (_: Exception) {
+                emptyList()
+            }
         }
 
         return result
@@ -1111,7 +1089,7 @@ abstract class MangaTR : KeiSource() {
             card.selectFirst(".bento-ep-meta-time")?.text()?.trim()
                 ?: card.selectFirst(".stats")?.ownText()?.trim()
                 ?: card.selectFirst(".bento-ep-meta")?.text()?.trim()
-                ?: card.selectFirst(".chapter-stats")?.text()?.trim()
+                ?: card.selectFirst(".chapter-stats")?.text()?.trim(),
         )
     }
 
@@ -1141,50 +1119,71 @@ abstract class MangaTR : KeiSource() {
         var response = client.get(baseUrl + chapter.url)
         var document = response.asJsoup()
 
-        // Handle translation group selection modal / interstitial
-        // If page shows "Çeviri Grubu Seçimi" with multiple group links, auto-select one
-        val groupSelection = handleGroupSelectionIfNeeded(document, response)
-        if (groupSelection != null) {
-            response = groupSelection.first
-            document = groupSelection.second
+        suspend fun parsePages(doc: Document): List<Page> {
+            // Run the site's reader gate before using its encrypted image URLs.
+            // The direct attribute parser remains a fallback for older gate responses.
+            val bentoPages = tryParseBentoPages(doc, response.request.url.toString())
+            if (!bentoPages.isNullOrEmpty()) return bentoPages
+
+            val directBentoPages = MangaTRParser.parseReaderPages(doc)
+            if (directBentoPages.isNotEmpty()) return directBentoPages
+
+            val fmPages = tryParseFmPages(doc)
+            if (fmPages.isNotEmpty()) return fmPages
+
+            val directPages = tryParseDirectImages(doc)
+            if (directPages.isNotEmpty()) return directPages
+
+            return doc.select("div.reader img, div.chapter-images img, #reader img, .reader-area img")
+                .filterNot { img ->
+                    img.attr("width") == "0" || img.attr("height") == "0" || img.parents().any { it.tagName() == "noscript" }
+                }
+                .mapNotNull { img ->
+                    val src = img.absUrl("src").ifBlank { img.absUrl("data-src") }.ifBlank { return@mapNotNull null }
+                    if (src.contains("logo") || src.contains("avatar") || src.length < 10) return@mapNotNull null
+                    src
+                }
+                .distinct()
+                .mapIndexed { index, url -> Page(index, imageUrl = url) }
         }
 
-        if (document.selectFirst("div#uyari:contains(üye girişi), div.alert:contains(üye girişi)") != null ||
-            document.html().contains("üye girişi yapmanız gerekmektedir", ignoreCase = true)) {
-            throw IOException("Bu bölümü okuyabilmek için WebView üzerinden üye girişi yapmanız gerekmektedir.")
+        fun validateDocument() {
+            if (document.selectFirst("div#uyari:contains(üye girişi), div.alert:contains(üye girişi)") != null ||
+                document.html().contains("üye girişi yapmanız gerekmektedir", ignoreCase = true)
+            ) {
+                throw IOException("Bu bölümü okuyabilmek için WebView üzerinden üye girişi yapmanız gerekmektedir.")
+            }
+            if (document.selectFirst("canvas#sliderCanvas, div.box h2:contains(Güvenlik Doğrulaması), div.cf-turnstile, div#turnstile") != null) {
+                captchaUrl = response.request.url.toString()
+                throw IOException("Lütfen WebView'da Bot Korumasını geçin.")
+            }
         }
 
-        if (document.selectFirst("canvas#sliderCanvas, div.box h2:contains(Güvenlik Doğrulaması), div.cf-turnstile, div#turnstile") != null) {
-            captchaUrl = response.request.url.toString()
-            throw IOException("Lütfen WebView'da Bot Korumasını geçin.")
+        validateDocument()
+        var pages = parsePages(document)
+
+        // Only an actual interstitial without pages needs another request. Prefer
+        // the group already associated with this reader ID, never an arbitrary group.
+        if (pages.isEmpty()) {
+            val groupSelection = handleGroupSelectionIfNeeded(document, response)
+            if (groupSelection != null) {
+                response = groupSelection.first
+                document = groupSelection.second
+                validateDocument()
+                pages = parsePages(document)
+            }
         }
 
-        // Try Bento scrambled reader (rdm- + _fpx)
-        val bentoPages = tryParseBentoPages(document)
-        if (bentoPages != null && bentoPages.isNotEmpty()) return bentoPages
-
-        // Try FMReader chapter-page with data-parts / data-order
-        val fmPages = tryParseFmPages(document)
-        if (fmPages.isNotEmpty()) return fmPages
-
-        // Fallback: direct img_part.php images
-        val directPages = tryParseDirectImages(document)
-        if (directPages.isNotEmpty()) return directPages
-
-        // Last resort: generic img tags in reader area
-        val genericImgs = document.select("div.reader img, div.chapter-images img, #reader img, .reader-area img")
-            .mapNotNull { img ->
-                val src = img.absUrl("src").ifBlank { img.absUrl("data-src") }.ifBlank { return@mapNotNull null }
-                if (src.contains("logo") || src.contains("avatar") || src.length < 10) return@mapNotNull null
-                src
-            }.distinct()
-
-        if (genericImgs.isNotEmpty()) {
-            return genericImgs.mapIndexed { idx, url -> Page(idx, imageUrl = url) }
+        if (pages.isNotEmpty()) {
+            val readerUrl = response.request.url.toString()
+            return pages.map { page -> Page(page.index, url = readerUrl, imageUrl = page.imageUrl) }
         }
-
         throw IOException("Sayfa resimleri bulunamadı. Bölüm görüntüleri yüklenemedi.")
     }
+
+    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
+        .headers(headers.newBuilder().mangaTrImageHeaders("$baseUrl/").build())
+        .build()
 
     private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
         // Detect modal title
@@ -1216,16 +1215,18 @@ abstract class MangaTR : KeiSource() {
 
         if (distinctLinks.isEmpty()) return null
 
-        // Prefer the one marked active / okunan / bagimsiz
+        val currentReaderId = READER_ID_REGEX.find(response.request.url.toString())?.groupValues?.get(1)
         val preferred = distinctLinks.firstOrNull { el ->
             val txt = el.text().lowercase(Locale.ROOT)
-            txt.contains("aktif") || txt.contains("okunan") || el.hasClass("active") || el.hasClass("selected") ||
+            el.hasClass("is-current") || el.hasClass("active") || el.hasClass("selected") ||
+                txt.contains("aktif") || txt.contains("okunan") ||
                 el.parent()?.text()?.lowercase(Locale.ROOT)?.contains("aktif") == true
-        } ?: distinctLinks.firstOrNull { it.text().contains("Bağımsız", true) }
-            ?: distinctLinks.first()
+        } ?: distinctLinks.firstOrNull { el ->
+            currentReaderId != null && READER_ID_REGEX.find(el.absUrl("href"))?.groupValues?.get(1) == currentReaderId
+        } ?: distinctLinks.first()
 
         val href = preferred.absUrl("href")
-        if (href.isBlank() || href == response.request.url.toString()) return null
+        if (href.isBlank() || href.substringBefore('?') == response.request.url.toString().substringBefore('?')) return null
 
         // Fetch the selected group's page
         return try {
@@ -1237,7 +1238,7 @@ abstract class MangaTR : KeiSource() {
         }
     }
 
-    private suspend fun tryParseBentoPages(document: Document): List<Page>? {
+    private suspend fun tryParseBentoPages(document: Document, readerUrl: String): List<Page>? {
         val configScript = document.selectFirst("script[type=application/json][id^=rdm-]")
             ?: document.selectFirst("script[id^=rdm-]")
             ?: document.selectFirst("[id^=rdm-]")
@@ -1260,13 +1261,25 @@ abstract class MangaTR : KeiSource() {
             val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
                 ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host }
             if (gateUrl != null) {
+                val gateHeaders = headers.newBuilder()
+                    .mangaTrAjaxHeaders(readerUrl)
+                    .set("Origin", baseUrl)
+                    .build()
                 val gateKey = try {
-                    client.post(gateUrl.toString(), "{}".toRequestBody(JSON_MEDIA_TYPE))
-                        .parseAs<ReaderGateDto>().k
+                    client.newCall(
+                        Request.Builder()
+                            .url(gateUrl)
+                            .headers(gateHeaders)
+                            .post("{}".toRequestBody(JSON_MEDIA_TYPE))
+                            .build(),
+                    ).execute().parseAs<ReaderGateDto>().k
                 } catch (e: Exception) {
                     try {
-                        client.get(gateUrl.toString()).parseAs<ReaderGateDto>().k
-                    } catch (_: Exception) { null }
+                        client.newCall(Request.Builder().url(gateUrl).headers(gateHeaders).get().build())
+                            .execute().parseAs<ReaderGateDto>().k
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
                 if (gateKey != null) {
                     config = try {
@@ -1274,7 +1287,9 @@ abstract class MangaTR : KeiSource() {
                             .decrypt("gate|$gateKey|reader")
                             .decrypt("boot|$pageKey|reader")
                             .parseAs<ReaderConfigDto>().data
-                    } catch (_: Exception) { null }
+                    } catch (_: Exception) {
+                        null
+                    }
                 }
             }
         }
@@ -1283,7 +1298,9 @@ abstract class MangaTR : KeiSource() {
             val elements = try {
                 document.select("[${config.parts}]")
                     .sortedBy { it.attr(config.pageIndex).toIntOrNull() ?: it.attr(config.pageIndex.removePrefix("data-"))?.toIntOrNull() ?: Int.MAX_VALUE }
-            } catch (_: Exception) { emptyList<Element>() }
+            } catch (_: Exception) {
+                emptyList<Element>()
+            }
 
             if (elements.isNotEmpty()) {
                 val pages = elements.mapIndexed { index, element ->
@@ -1291,15 +1308,25 @@ abstract class MangaTR : KeiSource() {
                     if (encryptedParts.isBlank()) return@mapIndexed null
                     val imageUrl = try {
                         encryptedParts.decrypt("attr|$pageKey|reader").parseAs<List<String>>().first()
-                    } catch (_: Exception) { return@mapIndexed null }
+                    } catch (_: Exception) {
+                        return@mapIndexed null
+                    }
                     val orderRaw = element.attrOrNull(config.order) ?: element.attrOrNull(config.order.removePrefix("data-"))
                     val order = try {
                         orderRaw?.takeIf { it.isNotBlank() }
                             ?.decrypt("order|$pageKey|reader")?.parseAs<List<Int>>()
-                    } catch (_: Exception) { null }
-                    val url = if (order.isNullOrEmpty()) imageUrl else try {
-                        imageUrl.toHttpUrl().newBuilder().fragment(order.joinToString(",")).toString()
-                    } catch (_: Exception) { imageUrl }
+                    } catch (_: Exception) {
+                        null
+                    }
+                    val url = if (order.isNullOrEmpty()) {
+                        imageUrl
+                    } else {
+                        try {
+                            imageUrl.toHttpUrl().newBuilder().fragment(order.joinToString(",")).toString()
+                        } catch (_: Exception) {
+                            imageUrl
+                        }
+                    }
                     Page(index, imageUrl = url)
                 }.filterNotNull()
                 if (pages.isNotEmpty()) return pages
@@ -1323,7 +1350,11 @@ abstract class MangaTR : KeiSource() {
                 if (v.length < 80) continue
                 // Base64 benzeri mi?
                 if (!v.matches(Regex("[A-Za-z0-9+/=_\\-]{80,}"))) continue
-                val t = try { v.decrypt("attr|$pageKey|reader") } catch (_: Exception) { continue }
+                val t = try {
+                    v.decrypt("attr|$pageKey|reader")
+                } catch (_: Exception) {
+                    continue
+                }
                 if (t.contains("img_part.php") || (t.contains("http") && t.contains("image.mngtr.site"))) {
                     partsAttr = attr.key
                     decrypted = t
@@ -1349,7 +1380,9 @@ abstract class MangaTR : KeiSource() {
             val url = try {
                 enc.decrypt("attr|$pageKey|reader").parseAs<List<String>>().firstOrNull()
                     ?: enc.decrypt("attr|$pageKey|reader").let { Json.parseToJsonElement(it).jsonArray.firstOrNull()?.jsonPrimitive?.content }
-            } catch (_: Exception) { null }
+            } catch (_: Exception) {
+                null
+            }
             if (url.isNullOrBlank()) return@mapIndexed null
             // Order varsa fragment'e ekle (scrambled)
             // Order attribute'u bulmaya çalış
@@ -1357,15 +1390,29 @@ abstract class MangaTR : KeiSource() {
             for (a in el.attributes()) {
                 if (a.key == partsAttr) continue
                 if (a.value.length < 10) continue
-                val ordDec = try { a.value.decrypt("order|$pageKey|reader") } catch (_: Exception) { continue }
+                val ordDec = try {
+                    a.value.decrypt("order|$pageKey|reader")
+                } catch (_: Exception) {
+                    continue
+                }
                 if (ordDec.trim().startsWith("[") || ordDec.trim().startsWith("{")) {
-                    orderFrag = try { Json.parseToJsonElement(ordDec).jsonArray.map { it.jsonPrimitive.content.toInt() } } catch (_: Exception) { null }
+                    orderFrag = try {
+                        Json.parseToJsonElement(ordDec).jsonArray.map { it.jsonPrimitive.content.toInt() }
+                    } catch (_: Exception) {
+                        null
+                    }
                     if (orderFrag != null) break
                 }
             }
-            val finalUrl = if (orderFrag.isNullOrEmpty()) url else try {
-                url.toHttpUrl().newBuilder().fragment(orderFrag.joinToString(",")).toString()
-            } catch (_: Exception) { url }
+            val finalUrl = if (orderFrag.isNullOrEmpty()) {
+                url
+            } else {
+                try {
+                    url.toHttpUrl().newBuilder().fragment(orderFrag.joinToString(",")).toString()
+                } catch (_: Exception) {
+                    url
+                }
+            }
             Page(idx, imageUrl = finalUrl)
         }.filterNotNull()
 
@@ -1436,39 +1483,16 @@ abstract class MangaTR : KeiSource() {
         return pages
     }
 
-    private fun tryParseDirectImages(document: Document): List<Page> {
-        val directImages = document.select("img[src*='img_part.php'], img[data-src*='img_part.php']")
-        if (directImages.isNotEmpty()) {
-            return directImages.mapIndexed { index, img ->
-                val src = img.attr("src").ifEmpty { img.attr("data-src") }
-                Page(index, imageUrl = src)
-            }
+    private fun tryParseDirectImages(document: Document): List<Page> = document.select("img[src*='img_part.php'], img[data-src*='img_part.php']")
+        .filterNot { img ->
+            img.attr("width") == "0" || img.attr("height") == "0" ||
+                img.attr("style").contains("display:none", ignoreCase = true) ||
+                img.parents().any { it.tagName() == "noscript" }
         }
-
-        val html = document.html()
-        val imgUrlRegex = Regex("""https?://[^"'\\s]*img_part\.php[^"'\\s]*""")
-        val seenKeys = mutableSetOf<String>()
-        val imgUrls = imgUrlRegex.findAll(html)
-            .map { it.value.replace("&amp;", "&") }
-            .filterNot { it.contains("logo", ignoreCase = true) }
-            .filter { url ->
-                val keyMatch = Regex("""key=([^&]+)""").find(url)
-                val key = keyMatch?.groupValues?.get(1) ?: return@filter false
-                if (seenKeys.contains(key)) {
-                    false
-                } else {
-                    seenKeys.add(key)
-                    true
-                }
-            }
-            .toList()
-
-        if (imgUrls.isNotEmpty()) {
-            return imgUrls.mapIndexed { idx, url -> Page(idx, imageUrl = url) }
-        }
-
-        return emptyList()
-    }
+        .map { img -> img.absUrl("src").ifBlank { img.absUrl("data-src") } }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .mapIndexed { index, url -> Page(index, imageUrl = url) }
 
     private fun String.decrypt(key: String): String {
         // Handle url-safe base64
@@ -1497,6 +1521,7 @@ abstract class MangaTR : KeiSource() {
                         idx to pos
                     }
                 }
+
                 is JsonObject -> {
                     element.mapNotNull { (k, v) ->
                         val partIdx = k.toIntOrNull() ?: return@mapNotNull null
@@ -1504,6 +1529,7 @@ abstract class MangaTR : KeiSource() {
                         partIdx to pos
                     }
                 }
+
                 else -> null
             }
         } catch (e: Exception) {
@@ -1531,7 +1557,9 @@ abstract class MangaTR : KeiSource() {
 
         val source = try {
             response.use { BitmapFactory.decodeStream(it.body.byteStream()) }
-        } catch (e: Exception) { null }
+        } catch (e: Exception) {
+            null
+        }
             ?: return response
         // Workaround: if source is null, return original
         if (source.width <= 0 || source.height <= 0) {
@@ -1545,14 +1573,16 @@ abstract class MangaTR : KeiSource() {
             source.recycle()
             // Invalid order, return original image instead of throwing, to avoid breaking reading
             return response.newBuilder()
-                .body(source.let {
-                    // Re-encode original? But we consumed stream; need to re-fetch?
-                    // Since we already consumed, we need to return error image fallback
-                    // We'll just return original response body re-created from bitmap
-                    val buf = Buffer().apply { it.compress(Bitmap.CompressFormat.JPEG, 95, outputStream()) }
-                    it.recycle()
-                    buf.asResponseBody("image/jpeg".toMediaType())
-                })
+                .body(
+                    source.let {
+                        // Re-encode original? But we consumed stream; need to re-fetch?
+                        // Since we already consumed, we need to return error image fallback
+                        // We'll just return original response body re-created from bitmap
+                        val buf = Buffer().apply { it.compress(Bitmap.CompressFormat.JPEG, 95, outputStream()) }
+                        it.recycle()
+                        buf.asResponseBody("image/jpeg".toMediaType())
+                    },
+                )
                 .build()
         }
         val stripHeight = source.height / order.size
@@ -1593,7 +1623,11 @@ abstract class MangaTR : KeiSource() {
         val response = chain.proceed(request)
 
         if (response.code == 200 && response.header("Content-Type")?.contains("text/html") == true) {
-            val bodyString = try { response.peekBody(4096).string() } catch (_: Exception) { "" }
+            val bodyString = try {
+                response.peekBody(4096).string()
+            } catch (_: Exception) {
+                ""
+            }
 
             if (bodyString.contains("/cek/verify.php")) {
                 val challenge = CHALLENGE_REGEX.find(bodyString)?.groupValues?.get(1)
@@ -1607,7 +1641,9 @@ abstract class MangaTR : KeiSource() {
                         .header("X-Requested-With", "XMLHttpRequest")
                         .build()
 
-                    try { network.client.newCall(verifyRequest).execute().close() } catch (_: Exception) {}
+                    try {
+                        network.client.newCall(verifyRequest).execute().close()
+                    } catch (_: Exception) {}
                     response.close()
                     return chain.proceed(request)
                 }
@@ -1632,7 +1668,9 @@ abstract class MangaTR : KeiSource() {
         }
         return try {
             ZonedDateTime.now().minus(number, unit).toInstant().toEpochMilli()
-        } catch (e: Exception) { 0L }
+        } catch (e: Exception) {
+            0L
+        }
     }
 
     companion object {
@@ -1641,6 +1679,7 @@ abstract class MangaTR : KeiSource() {
         private val CHAPTER_KEY_REGEX = Regex("""listKey:\s*'([^']+)'""")
         private val GATE_PATH_REGEX = Regex("""_fpx\s*=\s*"([^"]+)"""")
         private val HEX_KEY_REGEX = Regex("""[0-9a-f]{32}""")
+        private val READER_ID_REGEX = Regex("""(?:^|/)id-(\d+)-read-""")
         private val TRAILING_YEAR_REGEX = Regex("""\s*\((?:19|20)\d{2}\)\s*$""")
     }
 }
