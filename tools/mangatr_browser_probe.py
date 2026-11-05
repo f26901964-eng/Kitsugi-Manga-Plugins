@@ -18,6 +18,7 @@ BASE = "https://manga-tr.com/"
 DETAIL = BASE + "manga-chainsaw-man.html"
 READER = BASE + "id-123931-read-chainsaw-man-chapter-2.html"
 READER_SCRIPT = BASE + "app/manga/themes/default/assets/js/chapter-reader.js?v=2709-2"
+CAP_SCRIPT = BASE + "app/manga/themes/default/assets/js/cap.js?v=1410"
 OUT = Path("mangatr/live/browser")
 OUT.mkdir(parents=True, exist_ok=True)
 UA = (
@@ -44,6 +45,9 @@ def main() -> None:
     reader_script_response = session.get(READER_SCRIPT, timeout=30)
     if reader_script_response.status_code == 200:
         (OUT / "chapter-reader.js").write_text(reader_script_response.text, encoding="utf-8")
+    cap_script_response = session.get(CAP_SCRIPT, timeout=30)
+    if cap_script_response.status_code == 200:
+        (OUT / "cap.js").write_text(cap_script_response.text, encoding="utf-8")
     chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
     if not chrome:
         raise RuntimeError("Chrome/Chromium is required for the public browser probe")
@@ -54,6 +58,7 @@ def main() -> None:
         "chapter_index": {},
         "image_requests": [],
         "reader_script": {"status": reader_script_response.status_code, "bytes": len(reader_script_response.content)},
+        "cap_script": {"status": cap_script_response.status_code, "bytes": len(cap_script_response.content)},
         "reader_script_responses": [],
         "reader_gate_responses": [],
         "reader_errors": [],
@@ -79,8 +84,10 @@ def main() -> None:
         def on_response(response) -> None:
             parsed = urlparse(response.url)
             hostname = parsed.hostname or ""
-            if parsed.path.endswith("/chapter-reader.js"):
-                report["reader_script_responses"].append({"status": response.status, "type": response.request.resource_type})
+            if parsed.path.endswith(("/chapter-reader.js", "/cap.js")):
+                report["reader_script_responses"].append(
+                    {"script": parsed.path.rsplit("/", 1)[-1], "status": response.status, "type": response.request.resource_type}
+                )
                 return
             if parsed.path.startswith("/cek/f/"):
                 report["reader_gate_responses"].append({"status": response.status, "type": response.request.resource_type})
@@ -197,6 +204,10 @@ def main() -> None:
         report["reader_status"] = reader_response.status if reader_response else None
         print("Reader status:", report["reader_status"])
         page.wait_for_timeout(8_000)
+        report["group_skip_visible"] = page.locator("#skipGroupBtn").is_visible()
+        if not report["image_requests"] and report["group_skip_visible"]:
+            page.locator("#skipGroupBtn").click()
+            page.wait_for_timeout(5_000)
         if not report["image_requests"]:
             page.mouse.wheel(0, 1_500)
             page.wait_for_timeout(5_000)
