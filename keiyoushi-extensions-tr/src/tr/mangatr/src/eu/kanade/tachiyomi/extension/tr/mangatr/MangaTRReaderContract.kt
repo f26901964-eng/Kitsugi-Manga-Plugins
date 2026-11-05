@@ -26,16 +26,15 @@ internal object MangaTRReaderContract {
     }
 
     /** Current cap.js retains the empty pointer-delta segment; old readers omit it. */
-    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String): ReaderConfigDto? =
-        listOf("gate|$gateKey||reader", "gate|$gateKey|reader").firstNotNullOfOrNull { key ->
-            try {
-                json.decodeFromString<ReaderConfigDto>(
-                    decrypt(decrypt(encrypted, key), "boot|$pageKey|reader"),
-                )
-            } catch (_: Exception) {
-                null
-            }
+    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String): ReaderConfigDto? = listOf("gate|$gateKey||reader", "gate|$gateKey|reader").firstNotNullOfOrNull { key ->
+        try {
+            json.decodeFromString<ReaderConfigDto>(
+                decrypt(decrypt(encrypted, key), "boot|$pageKey|reader"),
+            )
+        } catch (_: Exception) {
+            null
         }
+    }
 
     /** Builds pages through the same config/seed path used by the Android source. */
     fun parseConfiguredPages(document: Document, config: ReaderConfigDto, pageKey: String): List<Page>? {
@@ -140,6 +139,5 @@ internal object MangaTRReaderContract {
     fun flipVertically(code: Int): Boolean = code / 100 and 2 != 0
 
     /** This follows cap.js: page-specific seed, then seed 0, then numeric zero. */
-    fun seedForPage(seeds: Map<String, Long>, pageIndex: String): Long =
-        seeds[pageIndex] ?: seeds["0"] ?: 0L
+    fun seedForPage(seeds: Map<String, Long>, pageIndex: String): Long = seeds[pageIndex] ?: seeds["0"] ?: 0L
 }
