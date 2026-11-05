@@ -93,6 +93,19 @@
     }
   ],
   "reader_errors": [],
+  "reader_console_errors": [],
+  "image_request_failures": [
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    },
+    {
+      "host": "image.mngtr.site",
+      "type": "image",
+      "error": "net::ERR_BLOCKED_BY_ORB"
+    }
+  ],
   "reader_status": 200,
   "manual_image_found": true,
   "group_skip_visible": true,
@@ -101,6 +114,10 @@
     "imageCount": 0,
     "readerConfigCount": 1,
     "images": []
+  },
+  "manual_image_state": {
+    "complete": true,
+    "naturalWidth": 0
   },
   "captured_offsets": [
     "0",
