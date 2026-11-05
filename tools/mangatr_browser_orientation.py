@@ -184,6 +184,29 @@ def main() -> None:
                     route.fulfill(status=200, content_type=mime, body=body)
                     return
 
+            # Fetch signed images while they are fresh. The later five-sample
+            # fallback cannot prove orientation if a short-lived URL expired.
+            try:
+                proxied = context.request.get(
+                    "https://images.weserv.nl/?url=" + quote(url, safe=""),
+                    timeout=8_000,
+                )
+                proxy_body = proxied.body()
+                proxy_attempts.append({"stage": "route", "service": "weserv", "status": proxied.status})
+                if proxied.status == 200:
+                    with Image.open(io.BytesIO(proxy_body)) as probe:
+                        image_format = probe.format
+                        probe.verify()
+                    mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
+                    if mime is None:
+                        raise ValueError("proxy returned a non-image body")
+                    fetched_bodies[url] = proxy_body
+                    image_sources[url] = "live-weserv"
+                    route.fulfill(status=200, content_type=mime, body=proxy_body)
+                    return
+            except Exception as error:
+                proxy_attempts.append({"stage": "route", "service": "weserv", "error": redact(error)})
+
             body = synthetic_image(url)
             fetched_bodies[url] = body
             image_sources[url] = "synthetic"
