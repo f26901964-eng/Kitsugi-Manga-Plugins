@@ -183,24 +183,6 @@ def main() -> None:
                     route.fulfill(status=200, content_type=mime, body=body)
                     return
 
-            # Test-only fallback for GitHub-runner CDN blocks. This is never
-            # used by the extension; it retrieves the same public signed page.
-            try:
-                proxy_url = "https://images.weserv.nl/?url=" + quote(url, safe="")
-                proxied = context.request.get(proxy_url, timeout=45_000)
-                body = proxied.body()
-                if proxied.status == 200:
-                    with Image.open(io.BytesIO(body)) as probe:
-                        image_format = probe.format
-                    mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
-                    if mime:
-                        fetched_bodies[url] = body
-                        image_sources[url] = "live-proxy"
-                        route.fulfill(status=200, content_type=mime, body=body)
-                        return
-            except Exception:
-                pass
-
             body = synthetic_image(url)
             fetched_bodies[url] = body
             image_sources[url] = "synthetic"
@@ -486,6 +468,20 @@ def main() -> None:
                 if image_response.status != 200:
                     raise RuntimeError(f"Page {position + 1} image returned {image_response.status}")
                 body = image_response.body()
+            if image_sources.get(image_url) == "synthetic":
+                # Test-only fallback for GitHub-runner CDN blocks, limited to
+                # the five OCR samples. Runtime extension code never uses it.
+                try:
+                    proxy_url = "https://images.weserv.nl/?url=" + quote(image_url, safe="")
+                    proxied = context.request.get(proxy_url, timeout=20_000)
+                    proxy_body = proxied.body()
+                    if proxied.status == 200:
+                        with Image.open(io.BytesIO(proxy_body)) as probe:
+                            probe.verify()
+                        body = proxy_body
+                        image_sources[image_url] = "live-proxy"
+                except Exception:
+                    pass
             sample["image_source"] = image_sources.get(image_url, "live")
             save_report()
             with Image.open(io.BytesIO(body)) as raw:
