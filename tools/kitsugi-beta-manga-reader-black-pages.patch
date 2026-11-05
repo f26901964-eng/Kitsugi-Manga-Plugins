@@ -1,0 +1,225 @@
+From 1197a436cac30b033533cd98e62ee5eb60b1c89a Mon Sep 17 00:00:00 2001
+From: arena-agent <297053741+arena-agent@users.noreply.github.com>
+Date: Thu, 5 Nov 2026 11:31:38 +0000
+Subject: [PATCH] =?UTF-8?q?fix(manga):=20Coil=203=20reader=20uyumu=20ve=20?=
+ =?UTF-8?q?siyah=20sayfa=20tan=C4=B1s=C4=B1?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Telephoto'nun Coil 2 artefaktı, Coil 3 ImageRequest nesnesini request olarak tanımayıp null painter ile sessiz siyah sayfaya düşürüyordu. Coil 3 destekli 0.14.0 artefaktına ve coil3 paketine geçirildi. Decode/çizim hatası artık listener ile görünür ve sayfa yeniden açılabilir. Eski/bozuk sıfır parlaklık değerinin tam opak siyah katman üretmesi de DataStore sınırlarıyla engellendi.
+---
+ app/build.gradle.kts                          |  5 +-
+ .../animelist/data/settings/AppSettings.kt    |  8 +++
+ .../data/settings/SettingsDataStore.kt        |  6 +-
+ .../screens/manga/components/MangaPageItem.kt | 65 +++++++++++++++----
+ .../data/settings/MangaBrightnessTest.kt      | 26 ++++++++
+ 5 files changed, 95 insertions(+), 15 deletions(-)
+ create mode 100644 app/src/test/java/com/kitsugi/animelist/data/settings/MangaBrightnessTest.kt
+
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+index c0e8fd7f..1872d701 100644
+--- a/app/build.gradle.kts
++++ b/app/build.gradle.kts
+@@ -358,7 +358,10 @@ dependencies {
+     implementation("androidx.preference:preference-ktx:1.2.1")
+ 
+     // Subsampling and zoomable image support for manga pages
+-    implementation("me.saket.telephoto:zoomable-image-coil:0.8.0")
++    // MangaPageItem passes a coil3.request.ImageRequest. The Coil 2 artifact accepts it as
++    // Any, fails to recognize it as a request and silently renders a null painter (black page).
++    // 0.14.0 is the first Coil 3-compatible release and remains compatible with Kotlin 2.0.21.
++    implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
+ 
+     // Kotlinx Serialization is part of the runtime ABI for dynamically loaded CS3 plugins too:
+     // their DEX references KSerializer by its original FQCN through the host classloader.
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/settings/AppSettings.kt b/app/src/main/java/com/kitsugi/animelist/data/settings/AppSettings.kt
+index 533223be..4efb556b 100644
+--- a/app/src/main/java/com/kitsugi/animelist/data/settings/AppSettings.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/settings/AppSettings.kt
+@@ -2,6 +2,14 @@ package com.kitsugi.animelist.data.settings
+ 
+ import com.kitsugi.animelist.ui.screens.fullscreen.AudioChannels
+ 
++/**
++ * Reader's black dimming layer uses `alpha = 1 - brightness`. A persisted zero therefore hides
++ * pages, loading indicators and errors behind a fully opaque black layer. Keep both the DataStore
++ * read and write paths inside the same range exposed by the reader slider; reset malformed values.
++ */
++internal fun normalizeMangaBrightness(value: Float): Float =
++    if (value.isFinite()) value.coerceIn(0.1f, 1.0f) else 1.0f
++
+ /**
+  * Uygulama ayarları grup modelleri ve birleşik [AppSettings] cephesi.
+  *
+diff --git a/app/src/main/java/com/kitsugi/animelist/data/settings/SettingsDataStore.kt b/app/src/main/java/com/kitsugi/animelist/data/settings/SettingsDataStore.kt
+index a023eb54..9392a771 100644
+--- a/app/src/main/java/com/kitsugi/animelist/data/settings/SettingsDataStore.kt
++++ b/app/src/main/java/com/kitsugi/animelist/data/settings/SettingsDataStore.kt
+@@ -682,7 +682,9 @@ class SettingsDataStore(
+                     mangaReadingMode = preferences[Keys.MangaReadingMode] ?: "RightToLeft",
+                     mangaColorFilter = preferences[Keys.MangaColorFilter] ?: "Normal",
+                     mangaFitMode = preferences[Keys.MangaFitMode] ?: "FitScreen",
+-                    mangaBrightness = preferences[Keys.MangaBrightness] ?: 1.0f,
++                    mangaBrightness = normalizeMangaBrightness(
++                        preferences[Keys.MangaBrightness] ?: 1.0f,
++                    ),
+                     customImageDownloadUri = preferences[Keys.CustomImageDownloadUri] ?: "",
+                     videoDownloadUri = preferences[Keys.VideoDownloadUri] ?: "",
+                     downloaderPreference = preferences[Keys.DownloaderPreference] ?: "INTERNAL",
+@@ -1134,7 +1136,7 @@ class SettingsDataStore(
+ 
+     suspend fun setMangaBrightness(brightness: Float) {
+         context.settingsDataStore.edit { preferences ->
+-            preferences[Keys.MangaBrightness] = brightness
++            preferences[Keys.MangaBrightness] = normalizeMangaBrightness(brightness)
+         }
+     }
+ 
+diff --git a/app/src/main/java/com/kitsugi/animelist/ui/screens/manga/components/MangaPageItem.kt b/app/src/main/java/com/kitsugi/animelist/ui/screens/manga/components/MangaPageItem.kt
+index f672c487..81680fe2 100644
+--- a/app/src/main/java/com/kitsugi/animelist/ui/screens/manga/components/MangaPageItem.kt
++++ b/app/src/main/java/com/kitsugi/animelist/ui/screens/manga/components/MangaPageItem.kt
+@@ -19,6 +19,9 @@ import com.kitsugi.animelist.ui.theme.gradient.Text
+ import androidx.compose.material3.TextButton
+ import androidx.compose.runtime.Composable
+ import androidx.compose.runtime.LaunchedEffect
++import androidx.compose.runtime.key
++import androidx.compose.runtime.mutableIntStateOf
++import androidx.compose.runtime.mutableStateOf
+ import androidx.compose.ui.Alignment
+ import androidx.compose.ui.Modifier
+ import androidx.compose.ui.graphics.Color
+@@ -31,7 +34,7 @@ import com.kitsugi.animelist.data.manga.MangaPage
+ import com.kitsugi.animelist.data.manga.MangaPageStatus
+ import com.kitsugi.animelist.data.manga.ReadingMode
+ import com.kitsugi.animelist.data.manga.loader.MangaPageLoaderV2
+-import me.saket.telephoto.zoomable.coil.ZoomableAsyncImage
++import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
+ import me.saket.telephoto.zoomable.rememberZoomableImageState
+ import me.saket.telephoto.zoomable.rememberZoomableState
+ 
+@@ -45,6 +48,7 @@ import coil3.request.CachePolicy
+ import coil3.request.crossfade
+ import com.kitsugi.animelist.data.manga.ColorFilterType
+ import com.kitsugi.animelist.data.manga.MangaFitMode
++import com.kitsugi.animelist.data.manga.MangaLogger
+ import androidx.compose.ui.res.stringResource
+ import com.kitsugi.animelist.R
+ 
+@@ -115,17 +119,37 @@ fun MangaPageItem(
+                 val modelToLoad: Any = if (cacheFile.exists()) cacheFile else imageUrl
+ 
+                 val context = LocalContext.current
+-                val imageRequest = remember(modelToLoad) {
++                // Download success (Ready) does not prove that Coil can decode/draw the file.
++                // Telephoto has no onError parameter, but it preserves this request listener.
++                val displayError = remember(page.index, modelToLoad) {
++                    mutableStateOf<Throwable?>(null)
++                }
++                val displayRetry = remember(page.index, modelToLoad) { mutableIntStateOf(0) }
++                val imageRequest = remember(modelToLoad, displayRetry.intValue) {
+                     ImageRequest.Builder(context)
+                         .data(modelToLoad)
+                         .diskCachePolicy(CachePolicy.DISABLED)
+                         .memoryCachePolicy(CachePolicy.ENABLED)
+                         .crossfade(200)
++                        .listener(
++                            onError = { _, result -> displayError.value = result.throwable },
++                            onSuccess = { _, _ -> displayError.value = null },
++                        )
+                         .build()
+                 }
+ 
+-                val zoomableState = rememberZoomableState()
+-                val imageState    = rememberZoomableImageState(zoomableState)
++                // Do not write URLs, cache keys, response bodies or exception messages here:
++                // source URLs can contain temporary reader credentials. The exception class is
++                // enough to distinguish an unsupported/corrupt decode from a rendering failure.
++                LaunchedEffect(displayError.value) {
++                    displayError.value?.let { error ->
++                        MangaLogger.logWarn(
++                            context,
++                            "GÖRSEL_DECODE",
++                            "Sayfa=${page.index + 1} | Hata=${error.javaClass.name}",
++                        )
++                    }
++                }
+ 
+                 val contentScale = when (fitMode) {
+                     MangaFitMode.FitScreen -> ContentScale.Fit
+@@ -170,14 +194,31 @@ fun MangaPageItem(
+                     }
+                 }
+ 
+-                ZoomableAsyncImage(
+-                    model       = imageRequest,
+-                    contentDescription = stringResource(R.string.manga_sayfasi_x, page.index + 1),
+-                    state       = imageState,
+-                    contentScale = contentScale,
+-                    colorFilter = composeColorFilter,
+-                    modifier    = Modifier.fillMaxSize()
+-                )
++                if (displayError.value == null) {
++                    // ImageRequest equality intentionally ignores listeners. Recreate the whole
++                    // Telephoto composition for an explicit display retry so the same File is
++                    // decoded again instead of leaving the previous error on screen forever.
++                    key(displayRetry.intValue) {
++                        val zoomableState = rememberZoomableState()
++                        val imageState = rememberZoomableImageState(zoomableState)
++                        ZoomableAsyncImage(
++                            model       = imageRequest,
++                            contentDescription = stringResource(R.string.manga_sayfasi_x, page.index + 1),
++                            state       = imageState,
++                            contentScale = contentScale,
++                            colorFilter = composeColorFilter,
++                            modifier    = Modifier.fillMaxSize()
++                        )
++                    }
++                } else {
++                    ErrorPageContent(
++                        pageIndex = page.index,
++                        onRetry = {
++                            displayError.value = null
++                            displayRetry.intValue += 1
++                        },
++                    )
++                }
+             }
+ 
+             MangaPageStatus.Error -> {
+diff --git a/app/src/test/java/com/kitsugi/animelist/data/settings/MangaBrightnessTest.kt b/app/src/test/java/com/kitsugi/animelist/data/settings/MangaBrightnessTest.kt
+new file mode 100644
+index 00000000..48766c4d
+--- /dev/null
++++ b/app/src/test/java/com/kitsugi/animelist/data/settings/MangaBrightnessTest.kt
+@@ -0,0 +1,26 @@
++package com.kitsugi.animelist.data.settings
++
++import org.junit.Assert.assertEquals
++import org.junit.Test
++
++class MangaBrightnessTest {
++
++    @Test
++    fun `legacy zero cannot create a fully opaque reader overlay`() {
++        assertEquals(0.1f, normalizeMangaBrightness(0.0f), 0.0f)
++        assertEquals(0.1f, normalizeMangaBrightness(-1.0f), 0.0f)
++    }
++
++    @Test
++    fun `brightness never exceeds the reader slider range`() {
++        assertEquals(1.0f, normalizeMangaBrightness(2.0f), 0.0f)
++        assertEquals(0.6f, normalizeMangaBrightness(0.6f), 0.0f)
++    }
++
++    @Test
++    fun `malformed non finite values restore the visible default`() {
++        assertEquals(1.0f, normalizeMangaBrightness(Float.NaN), 0.0f)
++        assertEquals(1.0f, normalizeMangaBrightness(Float.POSITIVE_INFINITY), 0.0f)
++        assertEquals(1.0f, normalizeMangaBrightness(Float.NEGATIVE_INFINITY), 0.0f)
++    }
++}
+-- 
+2.39.5
+
