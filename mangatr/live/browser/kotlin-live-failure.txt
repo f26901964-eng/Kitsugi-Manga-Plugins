@@ -1,56 +1,125 @@
-chapter one and two readers decode current configs and real images
-java.lang.AssertionError: expected:<200> but was:<403>
-java.lang.AssertionError: expected:<200> but was:<403>
-	at org.junit.Assert.fail(Assert.java:89)
-	at org.junit.Assert.failNotEquals(Assert.java:835)
-	at org.junit.Assert.assertEquals(Assert.java:120)
-	at org.junit.Assert.assertEquals(Assert.java:146)
-	at eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.chapter one and two readers decode current configs and real images(MangaTRLiveTest.kt:51)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.runRequest(JUnitTestExecutor.java:174)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:84)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:47)
-	at org.gradle.api.internal.tasks.testing.junit.<redacted>.processTestDefinition(<redacted>.java:65)
-	at org.gradle.api.internal.tasks.testing.SuiteTestDefinitionProcessor.processTestDefinition(SuiteTestDefinitionProcessor.java:53)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.MethodInvocation.invokeOn(MethodInvocation.java:77)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:28)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:19)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:88)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestDefinition(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:178)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.<redacted>.call(<redacted>.java:122)
-	at org.gradle.process.internal.worker.child.<redacted>.call(<redacted>.java:72)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
+..............10%..............20%...............30%..............40%...............50%..............60%...............70%..............80%...............90%..............100%
+
+Welcome to Gradle 9.8.2!
+
+Here are the highlights of this release:
+ - Java 27 support
+ - Maven mirror settings reuse
+ - Linked problem locations in build output
+
+For more details see https://docs.gradle.org/9.8.2/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+Calculating task graph as no cached configuration is available for tasks: :src:tr:mangatr:testDebugUnitTest --tests eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:<redacted> SKIPPED
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+
+> Configure project :src:tr:mangatr
+w: file:<redacted>.gradle.kts:10:14: 'fun setSrcDirs(srcDirs: Iterable<*>): Any' is deprecated. Use `directories` mutable set instead.
+w: file:<redacted>.gradle.kts:11:16: 'fun setSrcDirs(srcDirs: Iterable<*>): Any' is deprecated. Use `directories` mutable set instead.
+
+> Task :core:spotlessXml
+> Task :core:spotlessJava
+> Task :core:spotlessJavaCheck
+> Task :core:spotlessXmlCheck
+> Task :core:spotlessGradle
+> Task :core:spotlessGradleCheck
+> Task :src:tr:mangatr:spotlessJava
+> Task :src:tr:mangatr:spotlessJavaCheck
+> Task :src:tr:mangatr:spotlessGradle FROM-CACHE
+> Task :src:tr:mangatr:spotlessXml
+> Task :src:tr:mangatr:spotlessXmlCheck
+> Task :src:tr:mangatr:spotlessGradleCheck UP-TO-DATE
+> Task :compiler:<redacted> SKIPPED
+> Task :compiler:processResources
+> Task :src:tr:mangatr:generateExtensionManifest
+> Task :src:tr:mangatr:spotlessKotlin
+> Task :src:tr:mangatr:spotlessKotlinCheck FAILED
+> Task :core:spotlessKotlin
+> Task :compiler:compileKotlin
+
+[Incubating] Problems report is available at: file:<redacted>.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':src:tr:mangatr:spotlessKotlinCheck' (registered by plugin 'kei.plugins.spotless').
+> The following files had format violations:
+      <redacted>.kt
+          @@ -150,58 +150,58 @@
+           
+           ············println("MangaTR·live·reader·$readerId:·gate/config·OK;·${pages.size}·separate·pages")
+           ············if·(verifyImages)·{
+          -············val·sampleIndexes·=·if·(chapter.chapter_number·==·1f)·{
+          -················setOf(0,·pages.size·/·2,·pages.lastIndex)
+          -············}·else·{
+          -················setOf(0)
+          -············}
+          -············pages.filter·{·it.index·in·sampleIndexes·}.forEach·{·page·->
+          -················val·imageRequest·=·Request.Builder()
+          -····················.url(requireNotNull(page.imageUrl))
+          -····················.headers(navigationHeaders.newBuilder().mangaTrImageHeaders("$BASE_URL/").build())
+          -····················.get()
+          -····················.build()
+          -················client.newCall(imageRequest).execute().use·{·image·->
+          -····················val·imageBytes·=·image.body.bytes()
+          -····················val·safeErrorBody·=·if·(image.code·==·200)·{
+          -························""
+          -····················}·else·{
+          -························imageBytes.toString(Charsets.UTF_8).take(500)
+          -····························.replace(Regex("[A-Za-z0-9_\\-+/=]{24,}"),·"<redacted>")
+          -····················}
+          -····················val·detail·=·"HTTP·${image.code},·type=${image.header("Content-Type")},·"·+
+          -························"server=${image.header("Server")},·bytes=${imageBytes.size}"
+          -····················when·{
+          -························image.code·==·200·&&·imageBytes.size·>·100·->·{
+          -····························val·source·=·ImageIO.read(ByteArrayInputStream(imageBytes))
+          -····························if·(source·==·null)·{
+          -································imageFailures·+=·"reader·$readerId·page·${page.index·+·1}:·unsupported·image·encoding"
+          -····························}·else·{
+          -································val·corrected·=·unscramble(requireNotNull(page.imageUrl),·source)
+          -································decodedImages++
+          -································if·(chapter.chapter_number·==·1f)·{
+          -····································val·output·=·File("build/mangatr-live/reader-$readerId/page-${page.index·+·1}.png")
+          -····································output.parentFile.mkdirs()
+          -····································ImageIO.write(corrected,·"png",·output)
+          +················val·sampleIndexes·=·if·(chapter.chapter_number·==·1f)·{
+          +····················setOf(0,·pages.size·/·2,·pages.lastIndex)
+          +················}·else·{
+          +····················setOf(0)
+          +················}
+          +················pages.filter·{·it.index·in·sampleIndexes·}.forEach·{·page·->
+          +····················val·imageRequest·=·Request.Builder()
+          +························.url(requireNotNull(page.imageUrl))
+          +························.headers(navigationHeaders.newBuilder().mangaTrImageHeaders("$BASE_URL/").build())
+          +························.get()
+          +························.build()
+          +····················client.newCall(imageRequest).execute().use·{·image·->
+      ... (55 more lines that didn't fit)
+  Run './gradlew spotlessApply' to fix all violations.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.<redacted>.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 22s
+22 actionable tasks: 20 executed, 1 from cache, 1 up-to-date
+Configuration cache entry stored.
 
