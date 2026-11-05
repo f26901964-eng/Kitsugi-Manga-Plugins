@@ -22,6 +22,7 @@ import keiyoushi.utils.attrOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.textOrNull
 import keiyoushi.utils.toJsonRequestBody
+import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -41,7 +42,6 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
 import org.jsoup.nodes.Document
-import kotlinx.coroutines.delay
 import org.jsoup.nodes.Element
 import java.io.IOException
 import java.nio.charset.StandardCharsets
