@@ -102,7 +102,10 @@ class MangaTRLiveTest {
             assertTrue(metadata.sourcePages > 0)
             if (metadata.chapter == 1) {
                 assertEquals(52, metadata.sourcePages)
-                assertEquals(104, metadata.expectedPages)
+                assertEquals(52, metadata.expectedPages)
+            } else {
+                assertEquals(26, metadata.sourcePages)
+                assertEquals(26, metadata.expectedPages)
             }
             assertEquals(metadata.expectedPages, pages.size)
             assertEquals(pages.indices.toList(), pages.map { it.index })
@@ -112,7 +115,7 @@ class MangaTRLiveTest {
             )
             println(
                 "MangaTR browser fixture reader ${metadata.reader} chapter ${metadata.chapter}: " +
-                    "gate request/pointer/config OK; ${pages.size} separate pages",
+                    "gate request/pointer/config OK; ${pages.size} full pages",
             )
         }
     }
@@ -240,10 +243,12 @@ class MangaTRLiveTest {
             assertEquals((pages.indices).toList(), pages.map { it.index })
             assertEquals(pages.size, pages.map { it.imageUrl }.distinct().size)
             if (chapter.chapter_number == 1f) {
-                assertEquals("Reader $readerId chapter one slice count changed", 104, pages.size)
+                assertEquals("Reader $readerId chapter one full-page count changed", 52, pages.size)
+            } else {
+                assertEquals("Reader $readerId chapter two full-page count changed", 26, pages.size)
             }
 
-            println("MangaTR live reader $readerId: gate/config OK; ${pages.size} separate pages")
+            println("MangaTR live reader $readerId: gate/config OK; ${pages.size} full pages")
             if (verifyImages) {
                 val sampleIndexes = if (chapter.chapter_number == 1f) {
                     setOf(0, pages.size / 2, pages.lastIndex)
@@ -317,34 +322,59 @@ class MangaTRLiveTest {
         val fragment = requireNotNull(imageUrl.toHttpUrl().fragment)
         val selectedDestination: Int?
         val codeText: String
-        if (fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
-            val parts = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX).split('-', limit = 2)
-            assertEquals(2, parts.size)
-            selectedDestination = parts[0].toInt()
-            codeText = parts[1]
-        } else {
-            selectedDestination = null
-            codeText = fragment.removePrefix("v2-")
+        when {
+            fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX) -> {
+                selectedDestination = null
+                codeText = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX)
+            }
+
+            fragment.startsWith(MangaTRReaderContract.LEGACY_SLICE_PREFIX) -> {
+                val parts = fragment.removePrefix(MangaTRReaderContract.LEGACY_SLICE_PREFIX).split('-', limit = 2)
+                assertEquals(2, parts.size)
+                selectedDestination = parts[0].toInt()
+                codeText = parts[1]
+            }
+
+            else -> {
+                selectedDestination = null
+                codeText = fragment.removePrefix("v2-")
+            }
         }
         val codes = codeText.split(',').map { it.toInt() }
         assertEquals(codes.indices.toList(), codes.map { it % 100 }.sorted())
         assertTrue(codes.size <= source.height)
         if (selectedDestination != null) assertTrue(selectedDestination in codes.indices)
-        val stripHeight = source.height / codes.size
-        assertTrue(stripHeight > 0)
-        val outputHeight = if (selectedDestination == null) stripHeight * codes.size else stripHeight
+
+        fun stripTop(index: Int) = index * source.height / codes.size
+
+        fun stripBottom(index: Int) = if (index == codes.lastIndex) {
+            source.height
+        } else {
+            (index + 1) * source.height / codes.size
+        }
+
+        val destinationTops = IntArray(codes.size)
+        if (selectedDestination == null) {
+            var nextTop = 0
+            codes.indices.forEach { destination ->
+                val sourceIndex = codes.indexOfFirst { it % 100 == destination }
+                destinationTops[destination] = nextTop
+                nextTop += stripBottom(sourceIndex) - stripTop(sourceIndex)
+            }
+        }
+        val selectedSourceIndex = selectedDestination?.let { destination ->
+            codes.indexOfFirst { it % 100 == destination }
+        }
+        val outputHeight = selectedSourceIndex?.let { stripBottom(it) - stripTop(it) } ?: source.height
         val output = BufferedImage(source.width, outputHeight, BufferedImage.TYPE_INT_RGB)
         val graphics = output.createGraphics()
-        val sourceIndexes = if (selectedDestination == null) {
-            codes.indices.toList()
-        } else {
-            listOf(codes.indexOfFirst { it % 100 == selectedDestination })
-        }
+        val sourceIndexes = selectedSourceIndex?.let { listOf(it) } ?: codes.indices.toList()
         try {
             sourceIndexes.forEach { sourceIndex ->
                 val code = codes[sourceIndex]
-                val strip = source.getSubimage(0, sourceIndex * stripHeight, source.width, stripHeight)
-                val top = if (selectedDestination == null) (code % 100) * stripHeight else 0
+                val stripHeight = stripBottom(sourceIndex) - stripTop(sourceIndex)
+                val strip = source.getSubimage(0, stripTop(sourceIndex), source.width, stripHeight)
+                val top = selectedDestination?.let { 0 } ?: destinationTops[code % 100]
                 val transform = AffineTransform()
                 transform.translate(
                     if (MangaTRReaderContract.flipHorizontally(code)) source.width.toDouble() else 0.0,
@@ -358,6 +388,10 @@ class MangaTRLiveTest {
             }
         } finally {
             graphics.dispose()
+        }
+        if (selectedDestination == null) {
+            assertEquals(source.width, output.width)
+            assertEquals(source.height, output.height)
         }
         return output
     }

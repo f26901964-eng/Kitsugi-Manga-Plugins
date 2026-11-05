@@ -36,8 +36,8 @@ tasks.withType<Test>().configureEach {
 
 keiyoushi {
     name = "Manga-TR"
-    // Reader contract 33: use the live jQuery pointer flow and separate strips.
-    versionCode = 33
+    // Reader contract 34: join ordered/flipped strips into one full-size page.
+    versionCode = 34
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

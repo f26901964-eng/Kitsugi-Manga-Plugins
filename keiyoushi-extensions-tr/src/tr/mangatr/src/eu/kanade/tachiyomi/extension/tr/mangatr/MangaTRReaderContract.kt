@@ -10,7 +10,8 @@ import java.util.Base64
 
 /** The encryption, strip order and orientation contract of Manga-TR's cap.js reader. */
 internal object MangaTRReaderContract {
-    const val CACHE_VERSION_PREFIX = "v3-"
+    const val CACHE_VERSION_PREFIX = "v4-"
+    const val LEGACY_SLICE_PREFIX = "v3-"
 
     private val json = Json { ignoreUnknownKeys = true }
     private val GATE_PATH_REGEX = Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""")
@@ -169,12 +170,9 @@ internal object MangaTRReaderContract {
             } else if (order.isEmpty()) {
                 pages += Page(pages.size, imageUrl = imageUrl)
             } else {
-                // The current site presents every CSS background slice as its
-                // own image. Do the same instead of joining two slices into a
-                // single Android reader page.
-                order.indices.forEach { destination ->
-                    pageWithFragment("$CACHE_VERSION_PREFIX$destination-${order.joinToString(",")}")
-                }
+                // CSS shows the strips together as one original image. Emit one
+                // Android page with the same full dimensions, never two halves.
+                pageWithFragment("$CACHE_VERSION_PREFIX${order.joinToString(",")}")
             }
         }
         return pages.ifEmpty { null }

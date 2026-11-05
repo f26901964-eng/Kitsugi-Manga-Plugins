@@ -3,7 +3,7 @@ package eu.kanade.tachiyomi.extension.tr.mangatr
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Rect
+import android.graphics.Matrix
 import eu.kanade.tachiyomi.source.model.Page
 import okhttp3.CacheControl
 import okhttp3.Headers
@@ -19,14 +19,17 @@ import java.io.IOException
 internal object MangaTRImagePipeline {
     fun imageRequest(page: Page, headers: Headers, baseUrl: String): Request {
         val imageUrl = requireNotNull(page.imageUrl) { "Manga-TR page has no image URL" }
+        val fragment = imageUrl.substringAfter('#', "")
         return Request.Builder()
             .url(imageUrl)
             .headers(headers.newBuilder().mangaTrImageHeaders("$baseUrl/").build())
             .apply {
-                if (imageUrl.substringAfter('#', "").startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
-                    // Never let a cached combined v1/v2 bitmap bypass the v3
-                    // crop interceptor. Corrected slices can still be cached
-                    // by the reader after this request has been transformed.
+                if (
+                    fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX) ||
+                    fragment.startsWith(MangaTRReaderContract.LEGACY_SLICE_PREFIX)
+                ) {
+                    // Never let a cached v1/v2 bitmap bypass the current
+                    // full-image (v4) or legacy-slice (v3) transformer.
                     cacheControl(CacheControl.FORCE_NETWORK)
                 }
             }
@@ -40,34 +43,47 @@ internal object MangaTRImagePipeline {
         val fragment = request.url.fragment ?: return response
         val selectedDestination: Int?
         val orderText: String
-        if (fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
-            val parts = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX).split('-', limit = 2)
-            if (parts.size != 2) throw IOException("Manga-TR slice fragment is malformed")
-            selectedDestination = parts[0].toIntOrNull() ?: throw IOException("Manga-TR slice destination is malformed")
-            orderText = parts[1]
-        } else {
-            // v2 and unprefixed fragments reconstruct one combined bitmap for
-            // older reader sessions and legacy encrypted order attributes.
-            selectedDestination = null
-            orderText = fragment.removePrefix("v2-")
+        val strictTransform: Boolean
+        when {
+            fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX) -> {
+                // Current contract: all strips become one full original image.
+                selectedDestination = null
+                orderText = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX)
+                strictTransform = true
+            }
+
+            fragment.startsWith(MangaTRReaderContract.LEGACY_SLICE_PREFIX) -> {
+                // v3 is accepted only for pages already opened by 1.6.31–1.6.33.
+                val parts = fragment.removePrefix(MangaTRReaderContract.LEGACY_SLICE_PREFIX).split('-', limit = 2)
+                if (parts.size != 2) throw IOException("Manga-TR slice fragment is malformed")
+                selectedDestination = parts[0].toIntOrNull() ?: throw IOException("Manga-TR slice destination is malformed")
+                orderText = parts[1]
+                strictTransform = true
+            }
+
+            else -> {
+                // v2 and unprefixed fragments reconstruct legacy reader pages.
+                selectedDestination = null
+                orderText = fragment.removePrefix("v2-")
+                strictTransform = false
+            }
         }
         val order = orderText
             .takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
             ?.split(',')
             ?.mapNotNull { it.toIntOrNull() }
-            ?: return if (selectedDestination == null) response else throw IOException("Manga-TR slice order is malformed")
+            ?: return if (strictTransform) throw IOException("Manga-TR image order is malformed") else response
         if (order.isEmpty()) {
-            if (selectedDestination != null) throw IOException("Manga-TR slice order is empty")
+            if (strictTransform) throw IOException("Manga-TR image order is empty")
             return response
         }
 
-        // Keep the original bytes so every failure path can return a readable response.
+        // Keep original bytes only for legacy fallback. Current v4/v3 failures
+        // must never silently show a scrambled or incomplete source bitmap.
         val contentType = response.body.contentType()
         val imageBytes = response.use { it.body.bytes() }
         fun originalResponse(): Response {
-            if (selectedDestination != null) {
-                throw IOException("Manga-TR selected image slice could not be decoded")
-            }
+            if (strictTransform) throw IOException("Manga-TR current image could not be decoded")
             return response.newBuilder()
                 .body(Buffer().write(imageBytes).asResponseBody(contentType))
                 .build()
@@ -89,35 +105,64 @@ internal object MangaTRImagePipeline {
             source.recycle()
             return originalResponse()
         }
-        val stripHeight = source.height / order.size
-        if (stripHeight <= 0) {
-            source.recycle()
-            return originalResponse()
+
+        fun stripTop(index: Int): Int = index * source.height / order.size
+
+        fun stripBottom(index: Int): Int = if (index == order.lastIndex) {
+            source.height
+        } else {
+            (index + 1) * source.height / order.size
         }
-        val outputHeight = if (selectedDestination == null) stripHeight * order.size else stripHeight
+
+        fun stripHeight(index: Int): Int = stripBottom(index) - stripTop(index)
+
+        // Preserve every source row, including the remainder when the source
+        // height is not divisible by grid. Destination heights follow their
+        // actual source strips instead of rounding every strip to one size.
+        val destinationTops = IntArray(order.size)
+        if (selectedDestination == null) {
+            var nextTop = 0
+            order.indices.forEach { destination ->
+                val sourceIndex = order.indexOfFirst { it % 100 == destination }
+                destinationTops[destination] = nextTop
+                nextTop += stripHeight(sourceIndex)
+            }
+        }
+
+        val selectedSourceIndex = selectedDestination?.let { destination ->
+            order.indexOfFirst { it % 100 == destination }
+        }
+        val outputHeight = selectedSourceIndex?.let { stripHeight(it) } ?: source.height
         val output = Bitmap.createBitmap(source.width, outputHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
-        val sourceIndexes = if (selectedDestination == null) {
-            order.indices.toList()
-        } else {
-            listOf(order.indexOfFirst { it % 100 == selectedDestination })
-        }
+        val sourceIndexes = selectedSourceIndex?.let { listOf(it) } ?: order.indices.toList()
 
         sourceIndexes.forEach { sourceIndex ->
             val code = order[sourceIndex]
-            val src = Rect(0, sourceIndex * stripHeight, source.width, (sourceIndex + 1) * stripHeight)
-            val top = if (selectedDestination == null) (code % 100) * stripHeight else 0
-            val dst = Rect(0, top, source.width, top + stripHeight)
-
-            canvas.save()
-            canvas.scale(
-                if (MangaTRReaderContract.flipHorizontally(code)) -1f else 1f,
-                if (MangaTRReaderContract.flipVertically(code)) -1f else 1f,
-                source.width / 2f,
-                top + stripHeight / 2f,
+            val stripHeight = stripHeight(sourceIndex)
+            val top = selectedDestination?.let { 0 } ?: destinationTops[code % 100]
+            var strip = Bitmap.createBitmap(
+                source,
+                0,
+                stripTop(sourceIndex),
+                source.width,
+                stripHeight,
             )
-            canvas.drawBitmap(source, src, dst, null)
-            canvas.restore()
+            val flipX = MangaTRReaderContract.flipHorizontally(code)
+            val flipY = MangaTRReaderContract.flipVertically(code)
+            if (flipX || flipY) {
+                // Flip the isolated strip in local coordinates. Applying a
+                // negative Canvas scale to a source Rect can flip the Rect
+                // mapping as well and move content into the wrong strip.
+                val matrix = Matrix().apply {
+                    setScale(if (flipX) -1f else 1f, if (flipY) -1f else 1f)
+                }
+                val flipped = Bitmap.createBitmap(strip, 0, 0, strip.width, strip.height, matrix, true)
+                if (flipped !== strip) strip.recycle()
+                strip = flipped
+            }
+            canvas.drawBitmap(strip, 0f, top.toFloat(), null)
+            if (strip !== source) strip.recycle()
         }
         source.recycle()
 
@@ -127,6 +172,8 @@ internal object MangaTRImagePipeline {
         output.recycle()
 
         return response.newBuilder()
+            .removeHeader("Content-Length")
+            .removeHeader("Content-Encoding")
             .body(buffer.asResponseBody("image/jpeg".toMediaType()))
             .build()
     }

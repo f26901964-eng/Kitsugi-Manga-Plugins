@@ -13,6 +13,7 @@ import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
 import okio.Buffer
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,39 +28,58 @@ import java.lang.reflect.Proxy
 class MangaTRImagePipelineTest {
 
     @Test
-    fun `image request retains the selected slice fragment`() {
-        val imageUrl = "https://image.mngtr.site/img_part.php?key=test#v3-1-300,1"
+    fun `image request retains the current full image fragment`() {
+        val imageUrl = "https://image.mngtr.site/img_part.php?key=test#v4-300,1"
         val request = MangaTRImagePipeline.imageRequest(
             Page(0, imageUrl = imageUrl),
             Headers.Builder().build(),
             "https://manga-tr.com",
         )
-        assertEquals("v3-1-300,1", request.url.fragment)
+        assertEquals("v4-300,1", request.url.fragment)
         assertEquals("key=test", request.url.query)
         assertEquals("no-cache", request.header("Cache-Control"))
     }
 
     @Test
-    fun `interceptor returns two separate bitmaps instead of the combined source`() {
-        val first = decodeSlice("v3-0-0,1")
-        val second = decodeSlice("v3-1-0,1")
+    fun `current interceptor returns one bitmap with the original full dimensions`() {
+        val corrected = decodeTransformed("v4-300,1")
+
+        assertEquals(20, corrected.width)
+        assertEquals(40, corrected.height)
+        // Robolectric does not prove real Canvas pixels or orientation. The
+        // production size contract is nevertheless one uncropped 20x40 image.
+    }
+
+    @Test
+    fun `odd source height keeps the final row and original dimensions`() {
+        val corrected = decodeTransformed("v4-1,0", sourceHeight = 41)
+
+        assertEquals(20, corrected.width)
+        assertEquals(41, corrected.height)
+    }
+
+    @Test(expected = IOException::class)
+    fun `invalid current full image order never returns the scrambled source`() {
+        decodeTransformed("v4-0,2")
+    }
+
+    @Test
+    fun `legacy v3 requests still return their selected strip only`() {
+        val first = decodeTransformed("v3-0-0,1")
+        val second = decodeTransformed("v3-1-0,1")
 
         assertEquals(20, first.width)
         assertEquals(20, first.height)
         assertEquals(20, second.width)
         assertEquals(20, second.height)
-
-        // Robolectric does not perform real Canvas pixel rendering. The
-        // production contract asserted here is one standalone bitmap per
-        // request, never the original two-slice 20x40 composite.
     }
 
     @Test(expected = IOException::class)
-    fun `invalid current slice never returns the combined source bitmap`() {
-        decodeSlice("v3-2-0,1")
+    fun `invalid legacy slice never returns the combined source bitmap`() {
+        decodeTransformed("v3-2-0,1")
     }
 
-    private fun decodeSlice(fragment: String): Bitmap {
+    private fun decodeTransformed(fragment: String, sourceHeight: Int = 40): Bitmap {
         val request = Request.Builder()
             .url("https://image.mngtr.site/img_part.php?key=test#$fragment")
             .build()
@@ -68,22 +88,24 @@ class MangaTRImagePipelineTest {
             .protocol(Protocol.HTTP_1_1)
             .code(200)
             .message("OK")
-            .body(Buffer().write(sourceImage()).asResponseBody("image/png".toMediaType()))
+            .header("Content-Length", "999")
+            .body(Buffer().write(sourceImage(sourceHeight)).asResponseBody("image/png".toMediaType()))
             .build()
         val chain = stubChain(request, networkResponse)
 
         val corrected = MangaTRImagePipeline.intercept(chain)
         assertEquals("image/jpeg", corrected.body.contentType()?.toString())
+        assertNull(corrected.header("Content-Length"))
         return requireNotNull(
             corrected.use { BitmapFactory.decodeStream(it.body.byteStream()) },
         )
     }
 
-    private fun sourceImage(): ByteArray {
-        val bitmap = Bitmap.createBitmap(20, 40, Bitmap.Config.ARGB_8888)
-        for (y in 0 until 40) {
+    private fun sourceImage(height: Int): ByteArray {
+        val bitmap = Bitmap.createBitmap(20, height, Bitmap.Config.ARGB_8888)
+        for (y in 0 until height) {
             for (x in 0 until 20) {
-                bitmap.setPixel(x, y, if (y < 20) Color.RED else Color.BLUE)
+                bitmap.setPixel(x, y, if (y < height / 2) Color.RED else Color.BLUE)
             }
         }
         val output = ByteArrayOutputStream()
