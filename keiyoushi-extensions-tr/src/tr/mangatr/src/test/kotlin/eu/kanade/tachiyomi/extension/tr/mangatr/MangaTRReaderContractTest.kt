@@ -91,9 +91,9 @@ class MangaTRReaderContractTest {
     @Test
     fun `cache version survives in the image fragment without changing the request target`() {
         val url = "https://image.mngtr.site/img_part.php?key=test&p=1".toHttpUrl().newBuilder()
-            .fragment(MangaTRReaderContract.CACHE_VERSION_PREFIX + "100,101")
+            .fragment(MangaTRReaderContract.CACHE_VERSION_PREFIX + "0-100,101")
             .build()
-        assertEquals("v2-100,101", url.fragment)
+        assertEquals("v3-0-100,101", url.fragment)
         assertEquals("key=test&p=1", url.query)
     }
 
@@ -137,7 +137,7 @@ class MangaTRReaderContractTest {
     }
 
     @Test
-    fun `configured pages use generated flips instead of the encrypted data order decoy`() {
+    fun `configured pages expose one corrected image per generated slice`() {
         fun payload(page: Int) = encrypt(
             """["https://image.mngtr.site/img_part.php?key=test&p=$page"]""",
             "attr|$PAGE_KEY|reader",
@@ -159,7 +159,14 @@ class MangaTRReaderContractTest {
         )
 
         val pages = requireNotNull(MangaTRReaderContract.parseConfiguredPages(document, config, PAGE_KEY))
-        assertEquals(listOf("v2-300,1", "v2-201,200"), pages.map { it.imageUrl?.toHttpUrl()?.fragment })
+        assertEquals(4, pages.size)
+        assertEquals(listOf(0, 1, 2, 3), pages.map { it.index })
+        assertEquals(
+            listOf("v3-0-300,1", "v3-1-300,1", "v3-0-201,200", "v3-1-201,200"),
+            pages.map { it.imageUrl?.toHttpUrl()?.fragment },
+        )
+        assertEquals(2, pages.map { it.imageUrl?.toHttpUrl()?.newBuilder()?.fragment(null)?.build() }.distinct().size)
+        assertTrue(pages.none { it.imageUrl.orEmpty().contains("300,300") })
     }
 
     @Test

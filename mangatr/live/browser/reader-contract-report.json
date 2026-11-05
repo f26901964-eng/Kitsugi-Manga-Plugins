@@ -4,6 +4,27 @@
     {
       "page": 1,
       "page_index": "0",
+      "part_count": 1,
+      "dom_slices": [
+        {
+          "destination": 0,
+          "backgroundPosition": "0% 0%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scaleY(-1) translateZ(0px)"
+        },
+        {
+          "destination": 1,
+          "backgroundPosition": "0% 100%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "translateZ(0px)"
+        }
+      ],
       "generated_codes": [
         200,
         1
@@ -13,11 +34,37 @@
         1
       ],
       "matches_live_dom": true,
-      "image_source": "synthetic"
+      "image_source": "synthetic",
+      "output_slice_count": 2,
+      "output_slice_dimensions": [
+        800,
+        600
+      ]
     },
     {
       "page": 2,
       "page_index": "1",
+      "part_count": 1,
+      "dom_slices": [
+        {
+          "destination": 0,
+          "backgroundPosition": "0% 100%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "translateZ(0px)"
+        },
+        {
+          "destination": 1,
+          "backgroundPosition": "0% 0%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "translateZ(0px)"
+        }
+      ],
       "generated_codes": [
         1,
         0
@@ -27,11 +74,37 @@
         0
       ],
       "matches_live_dom": true,
-      "image_source": "synthetic"
+      "image_source": "synthetic",
+      "output_slice_count": 2,
+      "output_slice_dimensions": [
+        800,
+        600
+      ]
     },
     {
       "page": 3,
       "page_index": "2",
+      "part_count": 1,
+      "dom_slices": [
+        {
+          "destination": 0,
+          "backgroundPosition": "0% 100%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scaleY(-1) translateZ(0px)"
+        },
+        {
+          "destination": 1,
+          "backgroundPosition": "0% 0%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scale(-1, -1) translateZ(0px)"
+        }
+      ],
       "generated_codes": [
         301,
         200
@@ -41,11 +114,37 @@
         200
       ],
       "matches_live_dom": true,
-      "image_source": "synthetic"
+      "image_source": "synthetic",
+      "output_slice_count": 2,
+      "output_slice_dimensions": [
+        800,
+        600
+      ]
     },
     {
       "page": 27,
       "page_index": "26",
+      "part_count": 1,
+      "dom_slices": [
+        {
+          "destination": 0,
+          "backgroundPosition": "0% 0%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scaleX(-1) translateZ(0px)"
+        },
+        {
+          "destination": 1,
+          "backgroundPosition": "0% 100%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scale(-1, -1) translateZ(0px)"
+        }
+      ],
       "generated_codes": [
         100,
         301
@@ -55,11 +154,37 @@
         301
       ],
       "matches_live_dom": true,
-      "image_source": "synthetic"
+      "image_source": "synthetic",
+      "output_slice_count": 2,
+      "output_slice_dimensions": [
+        800,
+        600
+      ]
     },
     {
       "page": 52,
       "page_index": "51",
+      "part_count": 1,
+      "dom_slices": [
+        {
+          "destination": 0,
+          "backgroundPosition": "0% 100%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scaleX(-1) translateZ(0px)"
+        },
+        {
+          "destination": 1,
+          "backgroundPosition": "0% 0%",
+          "backgroundSize": "100% 200%",
+          "backgroundPart": 0,
+          "hasBackgroundImage": true,
+          "childImages": 0,
+          "transform": "scaleY(-1) translateZ(0px)"
+        }
+      ],
       "generated_codes": [
         201,
         100
@@ -69,7 +194,12 @@
         100
       ],
       "matches_live_dom": true,
-      "image_source": "synthetic"
+      "image_source": "synthetic",
+      "output_slice_count": 2,
+      "output_slice_dimensions": [
+        800,
+        600
+      ]
     }
   ],
   "reader_status": 200,
@@ -193,7 +323,7 @@
     {
       "page": 1,
       "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "status": 500
     },
     {
       "page": 1,
@@ -213,7 +343,7 @@
     {
       "page": 2,
       "service": "allorigins",
-      "error": "cannot identify image file <_io.BytesIO object at 0x7fad8576d030>"
+      "error": "cannot identify image file <_io.BytesIO object at 0x7f6291952110>"
     },
     {
       "page": 2,
@@ -233,7 +363,7 @@
     {
       "page": 3,
       "service": "allorigins",
-      "error": "cannot identify image file <_io.BytesIO object at 0x7fad856bd850>"
+      "error": "cannot identify image file <_io.BytesIO object at 0x7f629193a110>"
     },
     {
       "page": 3,
@@ -311,49 +441,49 @@
       "status": 404
     },
     {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
       "page": 27,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
       "service": "weserv",
       "status": 404
     },
     {
       "page": 27,
       "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "status": 502
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
     },
     {
       "page": 27,
@@ -406,24 +536,24 @@
       "status": 404
     },
     {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
       "page": 52,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
       "service": "weserv",
       "status": 404
     },
     {
       "page": 52,
       "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "status": 500
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
     },
     {
       "page": 52,

@@ -139,7 +139,7 @@ class MangaTRLiveTest {
             assertEquals((pages.indices).toList(), pages.map { it.index })
             assertEquals(pages.size, pages.map { it.imageUrl }.distinct().size)
             if (chapter.chapter_number == 1f) {
-                assertEquals("Reader $readerId chapter one page count changed", 52, pages.size)
+                assertEquals("Reader $readerId chapter one slice count changed", 104, pages.size)
             }
 
             val sampleIndexes = if (chapter.chapter_number == 1f) {
@@ -207,19 +207,36 @@ class MangaTRLiveTest {
 
     private fun unscramble(imageUrl: String, source: BufferedImage): BufferedImage {
         val fragment = requireNotNull(imageUrl.toHttpUrl().fragment)
-        val codes = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX)
-            .split(',')
-            .map { it.toInt() }
+        val selectedDestination: Int?
+        val codeText: String
+        if (fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
+            val parts = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX).split('-', limit = 2)
+            assertEquals(2, parts.size)
+            selectedDestination = parts[0].toInt()
+            codeText = parts[1]
+        } else {
+            selectedDestination = null
+            codeText = fragment.removePrefix("v2-")
+        }
+        val codes = codeText.split(',').map { it.toInt() }
         assertEquals(codes.indices.toList(), codes.map { it % 100 }.sorted())
         assertTrue(codes.size <= source.height)
+        if (selectedDestination != null) assertTrue(selectedDestination in codes.indices)
         val stripHeight = source.height / codes.size
         assertTrue(stripHeight > 0)
-        val output = BufferedImage(source.width, stripHeight * codes.size, BufferedImage.TYPE_INT_RGB)
+        val outputHeight = if (selectedDestination == null) stripHeight * codes.size else stripHeight
+        val output = BufferedImage(source.width, outputHeight, BufferedImage.TYPE_INT_RGB)
         val graphics = output.createGraphics()
+        val sourceIndexes = if (selectedDestination == null) {
+            codes.indices.toList()
+        } else {
+            listOf(codes.indexOfFirst { it % 100 == selectedDestination })
+        }
         try {
-            codes.forEachIndexed { sourceIndex, code ->
+            sourceIndexes.forEach { sourceIndex ->
+                val code = codes[sourceIndex]
                 val strip = source.getSubimage(0, sourceIndex * stripHeight, source.width, stripHeight)
-                val top = (code % 100) * stripHeight
+                val top = if (selectedDestination == null) (code % 100) * stripHeight else 0
                 val transform = AffineTransform()
                 transform.translate(
                     if (MangaTRReaderContract.flipHorizontally(code)) source.width.toDouble() else 0.0,

@@ -2,41 +2,43 @@
 
 ## Kapsam ve sürüm
 
-Bu çalışma, Chainsaw Man Bölüm 1 sayfalarının 180° ters görünmesini düzeltir. Hazırlanan kaynak sürümü `1.6.30`, katalog sürüm kodu `106030`, eklenti `versionCode` değeri `30`'dur. Önceki yayın `1.6.29 / 106029` idi.
+Bu çalışma Chainsaw Man Bölüm 1'deki ters/birleşik görüntü sorununu hedefler. Kullanıcı ekran görüntüleri tek Android okuyucu sayfasında iki farklı yöndeki görsel parçasının birlikte gösterildiğini ortaya koydu. Yeni kaynak sürümü `1.6.31`, katalog sürüm kodu `106031`, eklenti `versionCode` değeri `31`'dir.
+
+## Canlı reader'da belirlenen yapı
+
+Canlı Chromium run `42082228450` ve önceki DOM tanılaması şunları gösterdi:
+
+- Her reader elemanının şifreli `parts` listesinde bu bölüm için **bir URL** bulunuyor; dolayısıyla `.first()` bu bölümde ikinci bir URL'yi kaybetmiyor.
+- Site aynı URL'yi `background-size: 100% 200%` ile **iki ayrı CSS slice** olarak sunuyor.
+- Slice sırası ve `scaleX` / `scaleY` / iki eksen flip değerleri sayfa seed'inden üretiliyor.
+- Önceki eklenti bu iki slice'ı yeniden birleştirip tek `Page` veriyordu. Yeni sürüm sitenin sunumuna uygun olarak her slice'ı ayrı `Page` ve ayrı JPEG çıktısı yapıyor.
 
 ## Uygulanan düzeltme
 
-- Güncel `cap.js` okuyucusundaki xorshift32, Fisher–Yates şerit sıralaması ve sayfa bazındaki flip bitleri Android tarafına taşındı.
-- Flip kodları `1 = yatay`, `2 = dikey`, `3 = iki eksen` olarak uygulanır. Böylece iki ekseni de çevrilen şeritler 180° ters kalmaz.
-- `_fpx` gate isteği gerçek reader ile aynı `{"n": nonce, "cv": canvasFingerprint(c)}` gövdesini ve pointer-delta çözümleme anahtarını kullanır.
-- Yeni üretilen sıra/flip fragment'ları `v2-` öneki taşır; eski ters bitmap önbelleği yeniden kullanılmaz.
-- Şifre çözme, seed dizi/obje biçimleri, canvas fingerprint vektörleri, pointer ve sıra/flip üretimi JVM sözleşme testleriyle korunur.
+- Mevcut seed/grid okuyucusunda her hedef slice için `v3-{destination}-{codes}` fragment'ı üretilir.
+- Bitmap interceptor yalnız istenen hedefin kaynak strip'ini seçer, gerekli flip'i uygular ve **tek strip yüksekliğinde** görsel döndürür.
+- İki slice kullanan 52 reader elemanı uygulamaya 104 bağımsız sayfa olarak gider.
+- `v3-` öneki eski birleştirilmiş bitmap önbelleğini ayırır. Eski `v2-` ve legacy şifreli order birleştirme yolu geriye dönük olarak korunur.
+- Gate nonce+canvas fingerprint, pointer-delta, config/page-list ve flip üretimi korunur.
 
 ## Otomatik test sonuçları
 
-- Kotlin CI run `42054697934`: Spotless, JVM fixture/contract testleri ve release APK derlemesi başarılı.
-- Release run `42054698092`: testleri yeniden çalıştırıp `1.6.30 / 106030` APK ve kataloglarını üretti.
-- Canlı Chromium run `42054516546`: DDoS-Guard exchange 200, reader 200, eklenti `n+cv` gate çözümlemesi başarılı; grid `2`, seed/page count `52`; gate+DOM sözleşmesi yeşil.
-- Aynı canlı reader'da üretilen kodlar site DOM'undaki kodlarla beş örnekte birebir eşleşti:
-
-| Sayfa | Kodlar |
-| --- | --- |
-| 1 | `[200,1]` |
-| 2 | `[1,0]` |
-| 3 | `[301,200]` |
-| 27 | `[100,301]` |
-| 52 | `[201,100]` |
-
-- `1` ve `3` kodlu örnekler sırasıyla yalnız yatay ve iki eksenli flip içerir; yeni kodun eski ters görüntü hatasını hedefleyen yolu canlı DOM değerleriyle doğrulanmıştır.
+- Kotlin CI run `42082228411`: formatter, JVM sözleşme/fixture testleri ve release derlemesi başarılı.
+- Release run `42082228514`: testleri yeniden çalıştırıp `1.6.31 / 106031` APK ve kataloglarını üretti.
+- Canlı run `42082228450`: gate+DOM sözleşmesi başarılı; sayfa 1, 2, 3, 27 ve 52'nin her biri için site iki slice, yeni hat iki ayrı çıktı üretti.
+- Sentetik dönüşüm örneklerinde her çıktı `800×600`; önceki birleştirilmiş çıktı `800×1200` idi.
+- JVM canlı test sözleşmesi chapter-one için 104 ayrı sayfa ve tek-slice decode yolu bekleyecek şekilde güncellendi.
+- APK `classes.dex` içinde yeni `v3-` sözleşmesinin bulunduğu doğrulandı.
+- Python katalog testleri: 15 test başarılı, özel snapshot gerektiren 4 test skip.
 
 ## Bilinen doğrulama sınırı
 
-GitHub Actions runner'ı `image.mngtr.site` isteklerinde CDN `403` alıyor. Android image header'ları, Windows/macOS runner'ları ve yalnız test amaçlı public image proxy denemeleri gerçek beş sayfa görselini sağlamadı. Bu nedenle gerçek pikseller üzerinde OCR/180° kabulü tamamlanmış sayılmaz.
+GitHub Actions runner'ı `image.mngtr.site` isteklerinde CDN `403` alıyor; test proxy'leri de gerçek sayfaları sağlamadı. Bu nedenle gerçek pikseller üzerinde OCR/180° kabulü ve Android cihaz testi tamamlanmış değildir. Sentetik görseller yön kanıtı sayılmaz; raporda `real_images_verified=false` kalır.
 
-Testin ürettiği etiketli sentetik PNG'ler yalnız dönüşüm hattını çalıştırmak içindir; gerçek sayfa veya doğru yön kanıtı değildir. `real_images_verified=false` sonucu gizlenmez. Gerçek Android/Kitsugi-Beta kurulumunda Chainsaw Man Bölüm 1 sayfa 1, 2, 3, 27 ve 52 ayrıca kullanıcı tarafında kontrol edilmelidir.
+Kullanıcı cihazında yeni sürümün her okuyucu sayfasında yalnız bir görsel gösterdiği ve metinlerin düz olduğu ayrıca kontrol edilmelidir.
 
 ## Dağıtım durumu
 
-Release run `42054698092`, `tachiyomi-tr.mangatr-v1.6.30.apk` dosyasını ve bütün katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` altındaki üç kopya da **99.639 bayt** ve SHA-256 **`0c3be7ecb932a1108f8db80743b3b313070484f1044e4e04841719da33383144`** olarak eşleşti. Katalog sürümü `1.6.30`, sürüm kodu `106030`'dur.
+Release run `42082228514`, `tachiyomi-tr.mangatr-v1.6.31.apk` dosyasını ve katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` kopyaları **100.011 bayt** ve SHA-256 **`e319220ce96d93f9a7799e613426f4fa71e72deb4a9e75aed32c1b5b6ac5bab7`** olarak eşleşti.
 
-Kalıcı katalog URL'si ayrı `builds` dalını kullanır. Ana dal PR'ı birleştirilip `manga-yayin` workflow'u tamamlandığında bu URL'nin yeni APK'yı sunduğu ayrıca doğrulanacaktır.
+Ana dal PR'ı ve kalıcı `builds` yayını bu aşamada bekleniyor.

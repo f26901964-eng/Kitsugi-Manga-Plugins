@@ -1512,12 +1512,26 @@ abstract class MangaTR : KeiSource() {
         val request = chain.request()
         val response = chain.proceed(request)
         if (!response.isSuccessful) return response
-        val order = request.url.fragment
-            ?.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX)
-            ?.takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
+        val fragment = request.url.fragment ?: return response
+        val selectedDestination: Int?
+        val orderText: String
+        if (fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
+            val parts = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX).split('-', limit = 2)
+            if (parts.size != 2) return response
+            selectedDestination = parts[0].toIntOrNull() ?: return response
+            orderText = parts[1]
+        } else {
+            // v2 and unprefixed fragments reconstruct one combined bitmap for
+            // older reader sessions and legacy encrypted order attributes.
+            selectedDestination = null
+            orderText = fragment.removePrefix("v2-")
+        }
+        val order = orderText
+            .takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
             ?.split(',')
             ?.mapNotNull { it.toIntOrNull() }
             ?: return response
+        if (order.isEmpty()) return response
 
         // Keep the original bytes so every failure path can return a readable response.
         val contentType = response.body.contentType()
@@ -1536,7 +1550,8 @@ abstract class MangaTR : KeiSource() {
         if (
             order.size > source.height ||
             order.any { it / 100 !in 0..3 || it % 100 !in order.indices } ||
-            order.map { it % 100 }.distinct().size != order.size
+            order.map { it % 100 }.distinct().size != order.size ||
+            (selectedDestination != null && selectedDestination !in order.indices)
         ) {
             source.recycle()
             return originalResponse()
@@ -1546,13 +1561,19 @@ abstract class MangaTR : KeiSource() {
             source.recycle()
             return originalResponse()
         }
-        val output = Bitmap.createBitmap(source.width, stripHeight * order.size, Bitmap.Config.ARGB_8888)
+        val outputHeight = if (selectedDestination == null) stripHeight * order.size else stripHeight
+        val output = Bitmap.createBitmap(source.width, outputHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
+        val sourceIndexes = if (selectedDestination == null) {
+            order.indices.toList()
+        } else {
+            listOf(order.indexOfFirst { it % 100 == selectedDestination })
+        }
 
-        order.forEachIndexed { sourceIndex, code ->
-            val destination = code % 100
+        sourceIndexes.forEach { sourceIndex ->
+            val code = order[sourceIndex]
             val src = Rect(0, sourceIndex * stripHeight, source.width, (sourceIndex + 1) * stripHeight)
-            val top = destination * stripHeight
+            val top = if (selectedDestination == null) (code % 100) * stripHeight else 0
             val dst = Rect(0, top, source.width, top + stripHeight)
 
             canvas.save()
