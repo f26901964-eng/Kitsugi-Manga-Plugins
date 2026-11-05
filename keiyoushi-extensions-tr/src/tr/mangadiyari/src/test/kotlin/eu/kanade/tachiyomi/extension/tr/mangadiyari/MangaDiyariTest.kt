@@ -49,7 +49,8 @@ class MangaDiyariTest {
         val second = response.series[1].toEntry(BASE)
         assertNull(second.thumbnailUrl)
         assertEquals(SManga.COMPLETED, second.status)
-        assertNull(second.genre)
+        // The series type is always part of the genre list, even when the site sends no genres.
+        assertEquals("Manga", second.genre)
         assertNull(second.description)
     }
 
