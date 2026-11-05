@@ -14,8 +14,9 @@ Bu çalışma, Chainsaw Man Bölüm 1 sayfalarının 180° ters görünmesini d�
 
 ## Otomatik test sonuçları
 
-- Kotlin CI run `42047594906`: Spotless, JVM fixture/contract testleri ve derleme kontrolleri başarılı.
-- Canlı Chromium run `42052741943`: DDoS-Guard exchange 200, reader 200, eklenti `n+cv` gate çözümlemesi başarılı; grid `2`, seed/page count `52`.
+- Kotlin CI run `42054697934`: Spotless, JVM fixture/contract testleri ve release APK derlemesi başarılı.
+- Release run `42054698092`: testleri yeniden çalıştırıp `1.6.30 / 106030` APK ve kataloglarını üretti.
+- Canlı Chromium run `42054516546`: DDoS-Guard exchange 200, reader 200, eklenti `n+cv` gate çözümlemesi başarılı; grid `2`, seed/page count `52`; gate+DOM sözleşmesi yeşil.
 - Aynı canlı reader'da üretilen kodlar site DOM'undaki kodlarla beş örnekte birebir eşleşti:
 
 | Sayfa | Kodlar |
@@ -36,4 +37,6 @@ Testin ürettiği etiketli sentetik PNG'ler yalnız dönüşüm hattını çalı
 
 ## Dağıtım durumu
 
-`1.6.30` kaynak kodu hazırdır; bu dosyanın yazıldığı aşamada APK/katalog yayını henüz tamamlanmamıştır. Yayın sonrası kalıcı APK URL'si, sürüm kodu ve SHA-256 değeri ayrıca doğrulanmalıdır.
+Release run `42054698092`, `tachiyomi-tr.mangatr-v1.6.30.apk` dosyasını ve bütün katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` altındaki üç kopya da **99.639 bayt** ve SHA-256 **`0c3be7ecb932a1108f8db80743b3b313070484f1044e4e04841719da33383144`** olarak eşleşti. Katalog sürümü `1.6.30`, sürüm kodu `106030`'dur.
+
+Kalıcı katalog URL'si ayrı `builds` dalını kullanır. Ana dal PR'ı birleştirilip `manga-yayin` workflow'u tamamlandığında bu URL'nin yeni APK'yı sunduğu ayrıca doğrulanacaktır.
