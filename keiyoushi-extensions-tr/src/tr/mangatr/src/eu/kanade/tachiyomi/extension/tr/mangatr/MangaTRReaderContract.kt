@@ -68,11 +68,13 @@ internal object MangaTRReaderContract {
         return hash.toUInt().toString(16).padStart(8, '0')
     }
 
-    /** CSS/ease can still be empty when cap.js calculates its one-time pointer. */
+    /** jQuery's live flow (currently 84) differs from the CSS fallback (20). */
     fun pointerDeltaCandidates(nonce: String, ease: String, flow: String): List<String> = listOf(
         pointerDelta(nonce, ease, flow),
+        pointerDelta(nonce, ease, "84"),
         pointerDelta(nonce, ease, ""),
         pointerDelta(nonce, "", flow),
+        pointerDelta(nonce, "", "84"),
         pointerDelta(nonce, "", ""),
         "",
     ).distinct()

@@ -39,7 +39,7 @@ class MangaTRLiveTest {
                 "MANGATR_LIVE_FIXTURE_DIR is required for the live fixture test"
             },
         )
-        val fixtureDirs = fixtureRoot.listFiles().orEmpty().filter { it.isDirectory }
+        val fixtureDirs = fixtureRoot.listFiles().orEmpty().filter { it.isDirectory }.sortedBy { it.name }
         assertEquals(setOf("125451", "125989"), fixtureDirs.map { it.name }.toSet())
 
         fixtureDirs.forEach { fixtureDir ->
