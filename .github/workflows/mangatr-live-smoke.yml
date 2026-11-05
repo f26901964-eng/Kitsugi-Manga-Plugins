@@ -19,7 +19,7 @@ jobs:
         working-directory: keiyoushi-extensions-tr
         run: |
           set -o pipefail
-          ./gradlew :src:tr:mangatr:testDebugUnitTest --tests '*MangaTRLiveTest' --stacktrace 2>&1 | tee /tmp/mangatr-live-gradle.log
+          ./gradlew :src:tr:mangatr:testDebugUnitTest --tests '*MangaTRLiveTest' 2>&1 | tee /tmp/mangatr-live-gradle.log
       - name: Expose live result in the check summary
         if: always()
         run: |
