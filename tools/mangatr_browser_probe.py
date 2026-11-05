@@ -16,6 +16,7 @@ from playwright.sync_api import sync_playwright
 
 BASE = "https://manga-tr.com/"
 DETAIL = BASE + "manga-chainsaw-man.html"
+READER = BASE + "id-123931-read-chainsaw-man-chapter-2.html"
 OUT = Path("mangatr/live/browser")
 OUT.mkdir(parents=True, exist_ok=True)
 UA = (
@@ -44,7 +45,7 @@ def main() -> None:
         raise RuntimeError("Chrome/Chromium is required for the public browser probe")
 
     captured: dict[str, str] = {}
-    report: dict[str, object] = {"chapter_requests": [], "chapter_index": {}}
+    report: dict[str, object] = {"chapter_requests": [], "chapter_index": {}, "image_requests": []}
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(executable_path=chrome, headless=True, args=["--no-sandbox"])
@@ -59,6 +60,36 @@ def main() -> None:
 
         def on_response(response) -> None:
             parsed = urlparse(response.url)
+            hostname = parsed.hostname or ""
+            if "mngtr" in hostname and response.request.resource_type == "image":
+                if len(report["image_requests"]) >= 12:
+                    return
+                headers = response.request.headers
+                safe_headers = {
+                    key: headers.get(key, "")
+                    for key in (
+                        "accept",
+                        "referer",
+                        "sec-fetch-dest",
+                        "sec-fetch-mode",
+                        "sec-fetch-site",
+                        "user-agent",
+                    )
+                }
+                response_headers = response.headers
+                report["image_requests"].append(
+                    {
+                        "host": hostname,
+                        "status": response.status,
+                        "headers": safe_headers,
+                        "response": {
+                            key: response_headers.get(key, "")
+                            for key in ("content-type", "server", "cf-mitigated", "cache-control")
+                        },
+                    }
+                )
+                print(f"Reader image host={hostname}: status={response.status}")
+                return
             if parsed.path != "/cek/fetch_pages_manga.php" or response.request.method != "POST":
                 return
             try:
@@ -137,6 +168,15 @@ def main() -> None:
                 page.wait_for_timeout(1_000)
             if expected_offset not in captured:
                 print("Warning: offset was not captured:", expected_offset)
+
+        reader_response = page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
+        report["reader_status"] = reader_response.status if reader_response else None
+        print("Reader status:", report["reader_status"])
+        page.wait_for_timeout(8_000)
+        if not report["image_requests"]:
+            page.mouse.wheel(0, 1_500)
+            page.wait_for_timeout(5_000)
+        report["reader_title"] = page.title()
 
         browser.close()
 
