@@ -1,8 +1,8 @@
 browser captured live configs decode with production Kotlin contract
-org.junit.ComparisonFailure: Reader 125989 browser/Kotlin pointer mismatch expected:<[7a650382]> but was:<[88ed870c]>
-org.junit.ComparisonFailure: Reader 125989 browser/Kotlin pointer mismatch expected:<[7a650382]> but was:<[88ed870c]>
+org.junit.ComparisonFailure: Reader 125989 browser/Kotlin pointer algorithm mismatch expected:<[634bd2ad]> but was:<[96584217]>
+org.junit.ComparisonFailure: Reader 125989 browser/Kotlin pointer algorithm mismatch expected:<[634bd2ad]> but was:<[96584217]>
 	at org.junit.Assert.assertEquals(Assert.java:117)
-	at eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.browser captured live configs decode with production Kotlin contract(MangaTRLiveTest.kt:78)
+	at eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.browser captured live configs decode with production Kotlin contract(MangaTRLiveTest.kt:64)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)

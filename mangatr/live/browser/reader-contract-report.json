@@ -216,7 +216,15 @@
     "ease": "mTr_v4",
     "flow": "20"
   },
+  "extension_pointer_inputs_after": {
+    "ease": "mTr_v4",
+    "flow": "20"
+  },
   "chapter_two_pointer_inputs": {
+    "ease": "mTr_v4",
+    "flow": "20"
+  },
+  "chapter_two_pointer_inputs_after": {
     "ease": "mTr_v4",
     "flow": "20"
   },
@@ -458,17 +466,17 @@
       "status": 404
     },
     {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
       "page": 27,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
       "service": "weserv",
       "status": 404
     },
@@ -570,12 +578,7 @@
     {
       "page": 52,
       "service": "allorigins",
-      "status": 200
-    },
-    {
-      "page": 52,
-      "service": "allorigins",
-      "error": "cannot identify image file <_io.BytesIO object at 0x7fb685c18d10>"
+      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
     },
     {
       "page": 52,
