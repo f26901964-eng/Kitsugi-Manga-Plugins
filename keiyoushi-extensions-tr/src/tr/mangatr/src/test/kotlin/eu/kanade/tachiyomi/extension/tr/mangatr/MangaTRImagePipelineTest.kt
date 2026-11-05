@@ -29,7 +29,7 @@ class MangaTRImagePipelineTest {
     @Test
     fun `image request retains the selected slice fragment`() {
         val imageUrl = "https://image.mngtr.site/img_part.php?key=test#v3-1-300,1"
-        val request = source.imageRequest(Page(0, imageUrl = imageUrl))
+        val request = source.requestFor(Page(0, imageUrl = imageUrl))
         assertEquals("v3-1-300,1", request.url.fragment)
         assertEquals("key=test", request.url.query)
     }
@@ -109,5 +109,7 @@ class MangaTRImagePipelineTest {
         override val baseUrl: String = "https://manga-tr.com"
         override val lang: String = "tr"
         override val name: String = "Manga-TR test"
+
+        fun requestFor(page: Page): Request = imageRequest(page)
     }
 }
