@@ -25,7 +25,9 @@ jobs:
           java-version: 17
       - name: Apply the repository Kotlin formatter
         working-directory: keiyoushi-extensions-tr
-        run: ./gradlew :src:tr:mangatr:spotlessApply
+        run: |
+          set -o pipefail
+          ./gradlew :src:tr:mangatr:spotlessApply --stacktrace 2>&1 | tee /tmp/mangatr-gradle.log
       - name: Save formatter-only changes
         run: |
           git config user.name 'github-actions[bot]'
