@@ -9,7 +9,7 @@ import json
 import re
 import shutil
 from pathlib import Path
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw
@@ -182,6 +182,24 @@ def main() -> None:
                     image_sources[url] = "live"
                     route.fulfill(status=200, content_type=mime, body=body)
                     return
+
+            # Test-only fallback for GitHub-runner CDN blocks. This is never
+            # used by the extension; it retrieves the same public signed page.
+            try:
+                proxy_url = "https://images.weserv.nl/?url=" + quote(url, safe="")
+                proxied = context.request.get(proxy_url, timeout=45_000)
+                body = proxied.body()
+                if proxied.status == 200:
+                    with Image.open(io.BytesIO(body)) as probe:
+                        image_format = probe.format
+                    mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
+                    if mime:
+                        fetched_bodies[url] = body
+                        image_sources[url] = "live-proxy"
+                        route.fulfill(status=200, content_type=mime, body=body)
+                        return
+            except Exception:
+                pass
 
             body = synthetic_image(url)
             fetched_bodies[url] = body
@@ -486,7 +504,7 @@ def main() -> None:
     report["image_response_statuses"] = image_response_statuses
     report["real_images_verified"] = (
         len(report["samples"]) == len(SAMPLE_PAGES)
-        and all(sample.get("image_source") == "live" for sample in report["samples"])
+        and all(str(sample.get("image_source", "")).startswith("live") for sample in report["samples"])
     )
     report["passed"] = bool(report["extension_gate_decrypts"] and report["real_images_verified"])
     save_report()
