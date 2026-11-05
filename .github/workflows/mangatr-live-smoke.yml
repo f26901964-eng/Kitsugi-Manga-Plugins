@@ -3,7 +3,7 @@ name: Manga-TR live reader and orientation test
 on:
   workflow_dispatch:
   push:
-    branches: [arena/720282f3-kitsugi-manga-plugins]
+    branches: [arena/5307b37d-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTR.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRContract.kt
@@ -43,11 +43,12 @@ jobs:
         working-directory: keiyoushi-extensions-tr
         env:
           MANGATR_LIVE_TEST: '1'
+          MANGATR_LIVE_NETWORK: '1'
           MANGATR_LIVE_FIXTURE_DIR: '/tmp/mangatr-kotlin-live-fixture'
         run: |
           rm -f ../mangatr/live/browser/kotlin-live-failure.txt
           set -o pipefail
-          ./gradlew :src:tr:mangatr:spotlessApply :src:tr:mangatr:testDebugUnitTest --tests 'eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest' 2>&1 | tee /tmp/mangatr-kotlin-live.log
+          ./gradlew :src:tr:mangatr:spotlessCheck :src:tr:mangatr:testDebugUnitTest --tests 'eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest' 2>&1 | tee /tmp/mangatr-kotlin-live.log
       - name: Publish the real Kotlin failure without browser/CDN log noise
         if: failure()
         run: |
