@@ -21,6 +21,10 @@ dependencies {
     testImplementation(libs.junit)
 }
 
+tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin") }.configureEach {
+    enabled = false
+}
+
 tasks.withType<Test>().configureEach {
     systemProperty("mangatr.fixtureDir", rootDir.parentFile.resolve("mangatr/live/browser").absolutePath)
 }
