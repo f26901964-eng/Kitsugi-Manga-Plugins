@@ -1,10 +1,10 @@
 chapter one and two readers decode current configs and page lists
-java.lang.AssertionError: Reader 122230 failed expected:<200> but was:<403>
-java.lang.AssertionError: Reader 122230 failed expected:<200> but was:<403>
+java.lang.AssertionError: Reader 125451 failed expected:<200> but was:<403>
+java.lang.AssertionError: Reader 125451 failed expected:<200> but was:<403>
 	at org.junit.Assert.fail(Assert.java:89)
 	at org.junit.Assert.failNotEquals(Assert.java:835)
 	at org.junit.Assert.assertEquals(Assert.java:120)
-	at eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.chapter one and two readers decode current configs and page lists(MangaTRLiveTest.kt:82)
+	at eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.chapter one and two readers decode current configs and page lists(MangaTRLiveTest.kt:91)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
