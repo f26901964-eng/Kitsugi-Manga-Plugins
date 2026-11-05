@@ -5,6 +5,7 @@ chapter responses are the same public HTML fragments shown to anonymous readers.
 """
 from __future__ import annotations
 
+import base64
 import json
 import re
 import shutil
@@ -38,6 +39,30 @@ def clear_ddos_guard() -> requests.Session:
             gate = session.get(BASE.rstrip("/") + match.group(1), timeout=30)
             print("DDoS-Guard exchange:", gate.status_code)
     return session
+
+
+def first_reader_image(document: str) -> str | None:
+    script_tag = re.search(r"<script\b[^>]*\bid=[\"']rdm-[^\"']+[\"'][^>]*>", document, re.I)
+    if not script_tag:
+        return None
+    key_match = re.search(r"\b[\w-]+=([\"'])([0-9a-f]{32})\1", script_tag.group(0))
+    if not key_match:
+        return None
+    key = f"attr|{key_match.group(2)}|reader".encode()
+    encrypted_values = re.findall(
+        r"\sdata-[\w-]+\s*=\s*([\"'])([A-Za-z0-9_+/=\-]{80,})\1",
+        document,
+    )
+    for _, value in encrypted_values:
+        try:
+            raw = base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+            decoded = bytes(byte ^ key[index % len(key)] for index, byte in enumerate(raw))
+            urls = json.loads(decoded)
+        except (ValueError, UnicodeError):
+            continue
+        if isinstance(urls, list) and urls and isinstance(urls[0], str) and "img_part.php" in urls[0]:
+            return urls[0]
+    return None
 
 
 def main() -> None:
@@ -90,7 +115,23 @@ def main() -> None:
                 )
                 return
             if parsed.path.startswith("/cek/f/"):
-                report["reader_gate_responses"].append({"status": response.status, "type": response.request.resource_type})
+                gate_result = {
+                    "status": response.status,
+                    "type": response.request.resource_type,
+                    "method": response.request.method,
+                }
+                try:
+                    gate_body = response.text()
+                    gate_result["bytes"] = len(gate_body)
+                    gate_data = json.loads(gate_body)
+                    if isinstance(gate_data, dict):
+                        gate_result["json_keys"] = sorted(gate_data)
+                        gate_result["key_length"] = len(gate_data.get("k", ""))
+                except (ValueError, TypeError):
+                    pass
+                except Exception:
+                    gate_result["body_read"] = "failed"
+                report["reader_gate_responses"].append(gate_result)
                 return
             if "mngtr" in hostname and response.request.resource_type == "image":
                 if len(report["image_requests"]) >= 12:
@@ -204,6 +245,18 @@ def main() -> None:
         report["reader_status"] = reader_response.status if reader_response else None
         print("Reader status:", report["reader_status"])
         page.wait_for_timeout(8_000)
+        if not report["image_requests"]:
+            probe_image_url = first_reader_image(page.content())
+            report["manual_image_found"] = probe_image_url is not None
+            if probe_image_url:
+                page.evaluate(
+                    """url => {
+                        window.__mangatrProbeImage = new Image();
+                        window.__mangatrProbeImage.src = url;
+                    }""",
+                    probe_image_url,
+                )
+                page.wait_for_timeout(8_000)
         report["group_skip_visible"] = page.locator("#skipGroupBtn").is_visible()
         if not report["image_requests"] and report["group_skip_visible"]:
             page.locator("#skipGroupBtn").click()
