@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import eu.kanade.tachiyomi.source.model.Page
+import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Protocol
@@ -24,12 +25,14 @@ import java.lang.reflect.Proxy
 @Config(sdk = [28], manifest = Config.NONE)
 class MangaTRImagePipelineTest {
 
-    private val source = TestMangaTR()
-
     @Test
     fun `image request retains the selected slice fragment`() {
         val imageUrl = "https://image.mngtr.site/img_part.php?key=test#v3-1-300,1"
-        val request = source.requestFor(Page(0, imageUrl = imageUrl))
+        val request = MangaTRImagePipeline.imageRequest(
+            Page(0, imageUrl = imageUrl),
+            Headers.Builder().build(),
+            "https://manga-tr.com",
+        )
         assertEquals("v3-1-300,1", request.url.fragment)
         assertEquals("key=test", request.url.query)
     }
@@ -68,7 +71,7 @@ class MangaTRImagePipelineTest {
             .build()
         val chain = stubChain(request, networkResponse)
 
-        val corrected = source.scrambledImageInterceptor(chain)
+        val corrected = MangaTRImagePipeline.intercept(chain)
         assertEquals("image/jpeg", corrected.body.contentType()?.toString())
         return requireNotNull(
             corrected.use { BitmapFactory.decodeStream(it.body.byteStream()) },
@@ -104,12 +107,4 @@ class MangaTRImagePipelineTest {
             else -> throw UnsupportedOperationException(method.name)
         }
     } as Interceptor.Chain
-
-    private class TestMangaTR : MangaTR() {
-        override val baseUrl: String = "https://manga-tr.com"
-        override val lang: String = "tr"
-        override val name: String = "Manga-TR test"
-
-        fun requestFor(page: Page): Request = imageRequest(page)
-    }
 }
