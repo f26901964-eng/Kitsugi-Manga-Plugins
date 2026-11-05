@@ -150,57 +150,57 @@ class MangaTRLiveTest {
 
             println("MangaTR live reader $readerId: gate/config OK; ${pages.size} separate pages")
             if (verifyImages) {
-            val sampleIndexes = if (chapter.chapter_number == 1f) {
-                setOf(0, pages.size / 2, pages.lastIndex)
-            } else {
-                setOf(0)
-            }
-            pages.filter { it.index in sampleIndexes }.forEach { page ->
-                val imageRequest = Request.Builder()
-                    .url(requireNotNull(page.imageUrl))
-                    .headers(navigationHeaders.newBuilder().mangaTrImageHeaders("$BASE_URL/").build())
-                    .get()
-                    .build()
-                client.newCall(imageRequest).execute().use { image ->
-                    val imageBytes = image.body.bytes()
-                    val safeErrorBody = if (image.code == 200) {
-                        ""
-                    } else {
-                        imageBytes.toString(Charsets.UTF_8).take(500)
-                            .replace(Regex("[A-Za-z0-9_\\-+/=]{24,}"), "<redacted>")
-                    }
-                    val detail = "HTTP ${image.code}, type=${image.header("Content-Type")}, " +
-                        "server=${image.header("Server")}, bytes=${imageBytes.size}"
-                    when {
-                        image.code == 200 && imageBytes.size > 100 -> {
-                            val source = ImageIO.read(ByteArrayInputStream(imageBytes))
-                            if (source == null) {
-                                imageFailures += "reader $readerId page ${page.index + 1}: unsupported image encoding"
-                            } else {
-                                val corrected = unscramble(requireNotNull(page.imageUrl), source)
-                                decodedImages++
-                                if (chapter.chapter_number == 1f) {
-                                    val output = File("build/mangatr-live/reader-$readerId/page-${page.index + 1}.png")
-                                    output.parentFile.mkdirs()
-                                    ImageIO.write(corrected, "png", output)
+                val sampleIndexes = if (chapter.chapter_number == 1f) {
+                    setOf(0, pages.size / 2, pages.lastIndex)
+                } else {
+                    setOf(0)
+                }
+                pages.filter { it.index in sampleIndexes }.forEach { page ->
+                    val imageRequest = Request.Builder()
+                        .url(requireNotNull(page.imageUrl))
+                        .headers(navigationHeaders.newBuilder().mangaTrImageHeaders("$BASE_URL/").build())
+                        .get()
+                        .build()
+                    client.newCall(imageRequest).execute().use { image ->
+                        val imageBytes = image.body.bytes()
+                        val safeErrorBody = if (image.code == 200) {
+                            ""
+                        } else {
+                            imageBytes.toString(Charsets.UTF_8).take(500)
+                                .replace(Regex("[A-Za-z0-9_\\-+/=]{24,}"), "<redacted>")
+                        }
+                        val detail = "HTTP ${image.code}, type=${image.header("Content-Type")}, " +
+                            "server=${image.header("Server")}, bytes=${imageBytes.size}"
+                        when {
+                            image.code == 200 && imageBytes.size > 100 -> {
+                                val source = ImageIO.read(ByteArrayInputStream(imageBytes))
+                                if (source == null) {
+                                    imageFailures += "reader $readerId page ${page.index + 1}: unsupported image encoding"
+                                } else {
+                                    val corrected = unscramble(requireNotNull(page.imageUrl), source)
+                                    decodedImages++
+                                    if (chapter.chapter_number == 1f) {
+                                        val output = File("build/mangatr-live/reader-$readerId/page-${page.index + 1}.png")
+                                        output.parentFile.mkdirs()
+                                        ImageIO.write(corrected, "png", output)
+                                    }
+                                    println(
+                                        "MangaTR live reader $readerId: ${pages.size} pages; " +
+                                            "page ${page.index + 1} decoded and unscrambled ${corrected.width}x${corrected.height}",
+                                    )
                                 }
-                                println(
-                                    "MangaTR live reader $readerId: ${pages.size} pages; " +
-                                        "page ${page.index + 1} decoded and unscrambled ${corrected.width}x${corrected.height}",
-                                )
                             }
-                        }
 
-                        image.code == 403 && image.header("Server").equals("cloudflare", ignoreCase = true) &&
-                            safeErrorBody.contains("Attention Required", ignoreCase = true) -> {
-                            cloudflareImageBlocks += "$readerId/${page.index + 1}"
-                            println("MangaTR live reader $readerId: ${pages.size} pages; image blocked by Cloudflare on the runner")
-                        }
+                            image.code == 403 && image.header("Server").equals("cloudflare", ignoreCase = true) &&
+                                safeErrorBody.contains("Attention Required", ignoreCase = true) -> {
+                                cloudflareImageBlocks += "$readerId/${page.index + 1}"
+                                println("MangaTR live reader $readerId: ${pages.size} pages; image blocked by Cloudflare on the runner")
+                            }
 
-                        else -> imageFailures += "reader $readerId page ${page.index + 1}: $detail, body=$safeErrorBody"
+                            else -> imageFailures += "reader $readerId page ${page.index + 1}: $detail, body=$safeErrorBody"
+                        }
                     }
                 }
-            }
             }
         }
         if (!verifyImages) {
