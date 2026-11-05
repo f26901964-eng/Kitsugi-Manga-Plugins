@@ -21,8 +21,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     env:
-      ANDROID_HOME: ${{ runner.temp }}/android-sdk
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+      ANDROID_HOME: /tmp/android-sdk
+      ANDROID_SDK_ROOT: /tmp/android-sdk
     steps:
       - name: Check out the patch and research report
         uses: actions/checkout@v4
