@@ -49,7 +49,7 @@ jobs:
             python3 - <<'PY'
           from pathlib import Path
           lines = Path('/tmp/mangatr-gradle.log').read_text(errors='replace').splitlines()
-          hits = [i for i, line in enumerate(lines) if line.startswith('e: ') or 'FAILURE: Build failed' in line or 'Execution failed for task' in line or 'What went wrong:' in line]
+          hits = [i for i, line in enumerate(lines) if line.startswith('e: ') or 'FAILURE: Build failed' in line or 'Execution failed for task' in line or 'What went wrong:' in line or 'MangaTRParserTest >' in line]
           selected = set()
           for i in hits:
               selected.update(range(max(0, i - 2), min(len(lines), i + 6)))
