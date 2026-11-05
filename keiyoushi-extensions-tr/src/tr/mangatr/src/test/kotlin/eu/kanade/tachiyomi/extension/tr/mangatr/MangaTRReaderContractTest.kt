@@ -1,9 +1,8 @@
 package eu.kanade.tachiyomi.extension.tr.mangatr
 
-import keiyoushi.utils.toJsonRequestBody
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okio.Buffer
 import org.jsoup.Jsoup
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -92,10 +91,10 @@ class MangaTRReaderContractTest {
 
     @Test
     fun `gate request serializes the nonce and canvas fingerprint fields`() {
-        val body = ReaderGateRequestDto("test-nonce", "1,2,3|4,5,6").toJsonRequestBody()
-        val buffer = Buffer()
-        body.writeTo(buffer)
-        assertEquals("""{"n":"test-nonce","cv":"1,2,3|4,5,6"}""", buffer.readUtf8())
+        assertEquals(
+            """{"n":"test-nonce","cv":"1,2,3|4,5,6"}""",
+            json.encodeToString(ReaderGateRequestDto("test-nonce", "1,2,3|4,5,6")),
+        )
     }
 
     @Test
