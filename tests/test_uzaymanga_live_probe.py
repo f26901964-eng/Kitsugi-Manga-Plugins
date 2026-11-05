@@ -41,14 +41,18 @@ class UzayMangaLiveProbeTests(unittest.TestCase):
             def json():
                 return {'nodes': [None, 'metadata', {'type': 'data', 'data': [{'root': 1}]}]}
 
+        captured = {}
+
         class FakeSession:
             @staticmethod
             def get(*args, **kwargs):
+                captured.update(kwargs)
                 return FakeResponse()
 
         data, root = get_svelte(FakeSession(), 'https://source.example/__data.json')
         self.assertEqual({'root': 1}, root)
         self.assertEqual([{'root': 1}], data.array)
+        self.assertEqual({'Accept': '*/*'}, captured['headers'])
 
     def test_cdn_resolution_preserves_absolute_urls_and_normalizes_slashes(self):
         candidate = Candidate('test', 'Test', 'https://source.example', 'https://cdn.example/', '1.0')

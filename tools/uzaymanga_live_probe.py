@@ -122,7 +122,7 @@ def request(session: requests.Session, url: str, *, image: bool = False) -> requ
     try:
         response = session.get(
             url,
-            headers={"Accept": "image/avif,image/webp,image/*,*/*;q=0.8"} if image else "*/*",
+            headers={"Accept": "image/avif,image/webp,image/*,*/*;q=0.8" if image else "*/*"},
             timeout=TIMEOUT,
         )
     except requests.RequestException as exc:
