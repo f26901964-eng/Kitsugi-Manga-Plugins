@@ -2,3 +2,4 @@
 # Listede olmayan eklentiler yayın kataloğunda görünmez ve derlenmez.
 # main dalındaki değişiklikler GitHub Actions ile builds kataloğuna yayınlanır.
 tr/mangatr
+tr/mangacix
