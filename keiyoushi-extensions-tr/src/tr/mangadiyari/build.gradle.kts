@@ -1,12 +1,42 @@
 import io.github.keiyoushi.gradle.api.ContentWarning
+import org.gradle.api.tasks.testing.Test
 
 plugins {
     alias(kei.plugins.extension)
 }
 
+android {
+    sourceSets.named("main") {
+        java.setSrcDirs(listOf("src/eu"))
+        kotlin.setSrcDirs(listOf("src/eu"))
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
+    }
+}
+
+dependencies {
+    testImplementation(libs.bundles.common)
+    testImplementation(libs.tachiyomi.lib.v16)
+    testImplementation(libs.junit)
+    testImplementation(libs.robolectric)
+}
+
+// The @Source generated entry point is only needed for the packaged extension, not for unit tests.
+tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin") }.configureEach {
+    enabled = false
+}
+
+tasks.withType<Test>().configureEach {
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
+
 keiyoushi {
     name = "Manga Diyarı"
-    versionCode = 1
+    // 2: chapter and reader fixes for the current site (number based reader route, optional fields).
+    versionCode = 2
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
 

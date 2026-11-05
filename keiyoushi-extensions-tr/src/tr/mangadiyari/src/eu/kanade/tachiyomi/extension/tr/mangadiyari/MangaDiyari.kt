@@ -11,9 +11,10 @@ import keiyoushi.network.get
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.firstInstanceOrNull
-import keiyoushi.utils.getString
+import keiyoushi.utils.getStringOrNull
 import keiyoushi.utils.parseAs
 import kotlinx.serialization.json.JsonElement
+import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -25,15 +26,18 @@ abstract class MangaDiyari : KeiSource() {
         rateLimit(2)
     }
 
+    // The JSON endpoints are the same ones the site's own reader calls, so the client presents itself
+    // the way that page does: XHR accept headers and a Turkiye locale.
+    override fun Headers.Builder.configureHeaders() = apply {
+        set("Accept", "application/json, text/plain, */*")
+        set("Accept-Language", "tr-TR,tr;q=0.9,en;q=0.8")
+        set("X-Requested-With", "XMLHttpRequest")
+    }
+
     override suspend fun getPopularManga(page: Int): MangasPage = seriesPage(page, sort = "popular")
 
     override suspend fun getLatestUpdates(page: Int): MangasPage {
-        val url = "$baseUrl/api/series/latest-updates".toHttpUrl().newBuilder()
-            .addQueryParameter("limit", PAGE_SIZE.toString())
-            .addQueryParameter("page", page.toString())
-            .build()
-
-        val response = client.get(url).parseAs<LatestUpdatesResponse>()
+        val response = client.get(latestUpdatesUrl(baseUrl, page)).parseAs<LatestUpdatesResponse>()
         return MangasPage(response.updates.map { it.toSManga(baseUrl) }, response.hasMore)
     }
 
@@ -53,24 +57,7 @@ abstract class MangaDiyari : KeiSource() {
         status: String = "",
         genres: String = "",
     ): MangasPage {
-        val url = "$baseUrl/api/series".toHttpUrl().newBuilder().apply {
-            if (query.isNotBlank()) {
-                addQueryParameter("search", query)
-            }
-            if (genres.isNotBlank()) {
-                addQueryParameter("genre", genres)
-            }
-            addQueryParameter("sort", sort)
-            if (status.isNotBlank()) {
-                addQueryParameter("status", status)
-            }
-            if (type.isNotBlank()) {
-                addQueryParameter("type", type)
-            }
-            addQueryParameter("limit", PAGE_SIZE.toString())
-            addQueryParameter("page", page.toString())
-        }.build()
-
+        val url = seriesListUrl(baseUrl, page, query, sort, type, status, genres)
         val response = client.get(url).parseAs<SeriesListResponse>()
         return MangasPage(response.series.map { it.toSManga(baseUrl) }, response.hasMore)
     }
@@ -79,7 +66,7 @@ abstract class MangaDiyari : KeiSource() {
         if (url.host != baseUrl.toHttpUrl().host) {
             return null
         }
-        if (url.pathSegments.getOrNull(0)?.lowercase() !in listOf("series", "seri")) {
+        if (url.pathSegments.getOrNull(0)?.lowercase() !in SERIES_PATHS) {
             return null
         }
         val slug = url.pathSegments.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return null
@@ -89,7 +76,11 @@ abstract class MangaDiyari : KeiSource() {
 
     override fun getMangaUrl(manga: SManga): String = "$baseUrl/series/${manga.url}"
 
-    override fun getChapterUrl(chapter: SChapter): String = "$baseUrl/seri/${chapter.memo.getString("slug")}/bolum/${chapter.memo.getString("number")}"
+    override fun getChapterUrl(chapter: SChapter): String {
+        val slug = chapter.memo.getStringOrNull("slug") ?: return "$baseUrl/seri/${chapter.url}"
+        val number = chapter.memo.getStringOrNull("number") ?: chapter.url
+        return readerUrl(baseUrl, slug, number)
+    }
 
     override suspend fun fetchMangaUpdate(
         manga: SManga,
@@ -97,22 +88,16 @@ abstract class MangaDiyari : KeiSource() {
         fetchDetails: Boolean,
         fetchChapters: Boolean,
     ): SMangaUpdate {
-        val details = client.get("$baseUrl/api/series/${manga.url}").parseAs<SeriesDetailsResponse>()
+        val details = client.get(seriesDetailsUrl(baseUrl, manga.url)).parseAs<SeriesDetailsResponse>()
         return SMangaUpdate(
             details.series.toSManga(baseUrl),
-            details.chapters
-                .sortedByDescending { it.chapterNumber }
-                .map { it.toSChapter(details.series.slug) },
+            details.chapters.toSChapters(details.series.slug),
         )
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val response = client.get("$baseUrl/api/chapters/${chapter.url}").parseAs<ChapterPagesResponse>()
-        return response.pages
-            .sortedBy { it.pageNumber }
-            .mapIndexed { index, page ->
-                Page(index, url = getChapterUrl(chapter), imageUrl = baseUrl.resolveImage(page.displayImage))
-            }
+        val response = client.get(chapterPagesUrl(baseUrl, chapter.url)).parseAs<ChapterPagesResponse>()
+        return response.pages.toPages(baseUrl, getChapterUrl(chapter))
     }
 
     override fun getFilterList(data: JsonElement?) = FilterList(
@@ -123,6 +108,6 @@ abstract class MangaDiyari : KeiSource() {
     )
 
     companion object {
-        private const val PAGE_SIZE = 24
+        private val SERIES_PATHS = setOf("series", "seri")
     }
 }

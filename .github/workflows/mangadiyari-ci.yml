@@ -1,0 +1,98 @@
+name: Manga Diyarı tests and APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/35de187e-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/mangadiyari/**
+      - tools/mangadiyari_probe.py
+      - tools/prepare_mangadiyari_release.py
+      - .github/workflows/mangadiyari-ci.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: mangadiyari-ci-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Probe the live API contract from the runner
+        run: |
+          python3 -m pip install requests pillow
+          set -o pipefail
+          python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary 2>&1 | tee /tmp/probe.log
+        continue-on-error: true
+
+      - name: Apply the repository Kotlin formatter
+        working-directory: keiyoushi-extensions-tr
+        run: |
+          set -o pipefail
+          ./gradlew :src:tr:mangadiyari:spotlessApply 2>&1 | tee /tmp/mangadiyari-gradle.log
+
+      - name: Save formatter-only changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add keiyoushi-extensions-tr/src/tr/mangadiyari
+          git diff --cached --quiet && exit 0
+          git commit -m 'style(mangadiyari): apply repository Kotlin formatter [skip ci]'
+          git pull --rebase origin arena/35de187e-kitsugi-manga-plugins
+          git push origin HEAD:arena/35de187e-kitsugi-manga-plugins
+
+      - name: Run contract tests and build the release APK
+        working-directory: keiyoushi-extensions-tr
+        run: |
+          set -o pipefail
+          ./gradlew :src:tr:mangadiyari:testDebugUnitTest :src:tr:mangadiyari:assembleRelease 2>&1 | tee /tmp/mangadiyari-gradle.log
+
+      - name: Expose failures in the check annotations
+        if: failure()
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import xml.etree.ElementTree as ET
+          failures = []
+          for report in Path('keiyoushi-extensions-tr/src/tr/mangadiyari/build/test-results').rglob('TEST-*.xml'):
+              for case in ET.parse(report).getroot().iter('testcase'):
+                  for failure in list(case.findall('failure')) + list(case.findall('error')):
+                      failures.append(case.get('name', 'test') + '\n' + failure.get('message', '') + '\n' + (failure.text or '')[:8000])
+          log = Path('/tmp/mangadiyari-gradle.log')
+          lines = log.read_text(errors='replace').splitlines() if log.exists() else []
+          hits = [i for i, line in enumerate(lines) if line.startswith('e: ') or 'What went wrong' in line or 'Execution failed for task' in line]
+          selected = set()
+          for i in hits:
+              selected.update(range(max(0, i - 2), min(len(lines), i + 6)))
+          text = '\n\n'.join(failures) if failures else ('\n'.join(lines[i] for i in sorted(selected))[-24000:] if hits else '\n'.join(lines)[-16000:])
+          text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Manga Diyarı build failure::' + text)
+          PY
+
+      - name: Upload the probe report and test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangadiyari-diagnostics
+          path: |
+            mangadiyari-probe.json
+            keiyoushi-extensions-tr/src/tr/mangadiyari/build/test-results/
+          if-no-files-found: warn
+
+      - name: Upload the release APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangadiyari-release-apk
+          path: keiyoushi-extensions-tr/src/tr/mangadiyari/build/outputs/apk/release/*.apk
+          if-no-files-found: error
