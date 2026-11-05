@@ -6,6 +6,10 @@ plugins {
 }
 
 android {
+    sourceSets.named("main") {
+        java.exclude("test/**")
+        kotlin.exclude("test/**")
+    }
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
