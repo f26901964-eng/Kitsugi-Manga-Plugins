@@ -1,4 +1,6 @@
 {
   "ease": "mTr_v4",
-  "flow": "20"
+  "flow": "84",
+  "jqueryFlow": "84",
+  "cssFlow": "20"
 }

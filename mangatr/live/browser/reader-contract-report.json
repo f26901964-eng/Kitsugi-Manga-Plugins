@@ -214,19 +214,27 @@
   "extension_pointer_delta_length": 8,
   "extension_pointer_inputs": {
     "ease": "mTr_v4",
-    "flow": "20"
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
   },
   "extension_pointer_inputs_after": {
     "ease": "mTr_v4",
-    "flow": "20"
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
   },
   "chapter_two_pointer_inputs": {
     "ease": "mTr_v4",
-    "flow": "20"
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
   },
   "chapter_two_pointer_inputs_after": {
     "ease": "mTr_v4",
-    "flow": "20"
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
   },
   "extension_gate_request": "n-cv",
   "extension_config_types": {
@@ -471,12 +479,12 @@
       "status": 404
     },
     {
-      "stage": "route",
+      "page": 27,
       "service": "weserv",
       "status": 404
     },
     {
-      "page": 27,
+      "stage": "route",
       "service": "weserv",
       "status": 404
     },
