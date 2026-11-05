@@ -88,24 +88,22 @@ class MangaTRImagePipelineTest {
         return output.toByteArray()
     }
 
-    private fun stubChain(request: Request, response: Response): Interceptor.Chain {
-        return Proxy.newProxyInstance(
-            Interceptor.Chain::class.java.classLoader,
-            arrayOf(Interceptor.Chain::class.java),
-        ) { proxy, method, arguments ->
-            when (method.name) {
-                "request" -> request
-                "proceed" -> response
-                "connection" -> null
-                "connectTimeoutMillis", "readTimeoutMillis", "writeTimeoutMillis" -> 0
-                "withConnectTimeout", "withReadTimeout", "withWriteTimeout" -> proxy
-                "hashCode" -> System.identityHashCode(proxy)
-                "equals" -> proxy === arguments?.get(0)
-                "toString" -> "MangaTR test chain"
-                else -> throw UnsupportedOperationException(method.name)
-            }
-        } as Interceptor.Chain
-    }
+    private fun stubChain(request: Request, response: Response): Interceptor.Chain = Proxy.newProxyInstance(
+        Interceptor.Chain::class.java.classLoader,
+        arrayOf(Interceptor.Chain::class.java),
+    ) { proxy, method, arguments ->
+        when (method.name) {
+            "request" -> request
+            "proceed" -> response
+            "connection" -> null
+            "connectTimeoutMillis", "readTimeoutMillis", "writeTimeoutMillis" -> 0
+            "withConnectTimeout", "withReadTimeout", "withWriteTimeout" -> proxy
+            "hashCode" -> System.identityHashCode(proxy)
+            "equals" -> proxy === arguments?.get(0)
+            "toString" -> "MangaTR test chain"
+            else -> throw UnsupportedOperationException(method.name)
+        }
+    } as Interceptor.Chain
 
     private class TestMangaTR : MangaTR() {
         override val baseUrl: String = "https://manga-tr.com"
