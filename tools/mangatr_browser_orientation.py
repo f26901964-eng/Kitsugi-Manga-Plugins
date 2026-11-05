@@ -163,6 +163,18 @@ def main() -> None:
             "() => typeof window._calcPointerDelta === 'function' ? window._calcPointerDelta.toString() : ''"
         )
         (PUBLIC_OUT / "pointer-delta.js").write_text(pointer_source + "\n", encoding="utf-8")
+        pointer_inputs = page.evaluate(
+            """() => {
+                const body = document.body || document.documentElement;
+                return {
+                    ease: String((window._mouseCurve || {}).ease || ''),
+                    flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
+                };
+            }"""
+        )
+        (PUBLIC_OUT / "reader-pointer-input.json").write_text(
+            json.dumps(pointer_inputs, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
         safe_gate_request = dict(post_data)
         for token_name in ("n", "c"):
             if token_name in safe_gate_request:
@@ -219,6 +231,13 @@ def main() -> None:
             (str(value) for value in extension_script.attrs.values() if HEX_KEY.match(str(value))), ""
         )
         extension_encrypted = extension_script.decode_contents().strip()
+        extension_gate_url = BASE.rstrip("/") + extension_key_match.group(1)
+        extension_nonce = parse_qs(urlparse(extension_gate_url).query).get("n", [""])[0]
+        extension_pointer = extension_page.evaluate(
+            "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
+            extension_nonce,
+        )
+        report["extension_pointer_delta_length"] = len(str(extension_pointer))
         extension_gate = extension_page.evaluate(
             """async gateUrl => {
                 const attempt = async options => {
@@ -233,13 +252,17 @@ def main() -> None:
                 if (result.status !== 200) result = await attempt({method: 'GET'});
                 return result;
             }""",
-            BASE.rstrip("/") + extension_key_match.group(1),
+            extension_gate_url,
         )
         if extension_gate["status"] != 200:
             raise RuntimeError(f"Extension gate returned {extension_gate['status']} on its first request")
         extension_gate_key = str(json.loads(extension_gate["body"])["k"])
         extension_gate_format = None
-        for label, gate_segment in (("empty-pointer", f"{extension_gate_key}|"), ("legacy", extension_gate_key)):
+        for label, gate_segment in (
+            ("current-pointer", f"{extension_gate_key}|{extension_pointer}"),
+            ("empty-pointer", f"{extension_gate_key}|"),
+            ("legacy", extension_gate_key),
+        ):
             try:
                 candidate = json.loads(
                     decrypt(
@@ -258,7 +281,9 @@ def main() -> None:
         save_report()
 
         attributes = config["data"]
-        seeds = {str(key): int(value) for key, value in (config.get("seeds") or {}).items()}
+        raw_seeds = config.get("seeds") or {}
+        seed_items = raw_seeds.items() if isinstance(raw_seeds, dict) else enumerate(raw_seeds)
+        seeds = {str(key): int(value) for key, value in seed_items}
         grid = int(config.get("grid") or 2)
         if not seeds:
             raise RuntimeError("Live reader config did not expose current seeds")
