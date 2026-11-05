@@ -5,8 +5,8 @@ import java.security.MessageDigest
 
 internal object MangaTRContract {
     fun seedFromCss(css: String): Int? {
-        val white = CSS_NUMBER_REGEX.find(css, "--mdx-white") ?: return null
-        val black = CSS_NUMBER_REGEX.find(css, "--mdx-black") ?: return null
+        val white = CssNumberRegex.find(css, "--mdx-white") ?: return null
+        val black = CssNumberRegex.find(css, "--mdx-black") ?: return null
         return white + black
     }
 
@@ -16,7 +16,7 @@ internal object MangaTRContract {
         return hash.joinToString("") { "%02x".format(it) }
     }
 
-    private object CSS_NUMBER_REGEX {
+    private object CssNumberRegex {
         fun find(css: String, variable: String): Int? =
             Regex("""${Regex.escape(variable)}\s*:\s*(\d+)""")
                 .find(css)
