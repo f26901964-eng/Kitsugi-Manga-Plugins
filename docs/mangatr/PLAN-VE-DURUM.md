@@ -3,27 +3,30 @@
 ## Kullanıcı kanıtı ve mevcut sonuç
 
 - `1.6.30` ve `1.6.31` kullanıcı ekranında birleşik/ters/bozuk görseller üretti.
-- `1.6.32 / 106032` PR #12 ile kalıcı yayınlandı; CI, release, APK hash ve DEX kontrolleri başarılı oldu.
-- Buna rağmen kullanıcı `image-11.png` ve `image-12.png` ile Chainsaw Man Bölüm 1 ve 2'nin açılmadığını bildirdi: `Manga-TR okuyucu anahtarı/config'i çözülemedi` / `KTS-SRC-9008`.
-- Dolayısıyla `1.6.32` ürün sorununu çözmedi. Derleme veya dağıtım başarısı cihaz başarısı olarak sunulmayacak.
+- `1.6.32 / 106032` PR #12 ile kalıcı yayınlandı ancak kullanıcı `image-11.png` ve `image-12.png` ile Chainsaw Man Bölüm 1 ve 2'nin `KTS-SRC-9008` gate/config hatası verdiğini bildirdi.
+- `1.6.32` ürün sorununu çözmedi. Yeni aday `1.6.33 / 106033`; cihaz sonucu henüz doğrulanmadı.
 
-## Aktif teknik çalışma
+## Tamamlanan teknik düzeltmeler
 
 - Aktif dal `arena/f3fadc72-kitsugi-manga-plugins`; eski Arena dalına işlem yapılmıyor.
-- Reader cevabının ham HTML'i artık Jsoup parse öncesinde korunuyor. Gate URL/query, fallback page key ve pointer girdileri ham gövdeden çıkarılıyor; grup seçimi sonrası yeni cevap da aynı yolu kullanıyor.
+- Reader cevabının ham HTML'i Jsoup parse öncesinde korunuyor. Gate URL/query, fallback page key ve pointer girdileri ham gövdeden çıkarılıyor; grup seçimi sonrası yeni cevap da aynı yolu kullanıyor.
+- Encrypted script verisi temel Base64 decoder'ından önce trim ediliyor. String grid/seed değerleri için savunma amaçlı DTO desteği eklendi.
 - Gate hataları aşamalı `KTS-SRC-9101`–`9104` kodlarına ayrıldı. Ham birleşik görsel fallback'i açık değil.
-- Canlı browser run `42093595643`, `n/c` query'sini, 16 karakterlik nonce/canvas token'ını ve sayısal grid/seed tiplerini doğruladı; `current-pointer` config'i çözüyor.
-- Production Kotlin canlı testi aynı `n/cv` gate isteği ve pointer delta ile Bölüm 1/2 reader'larını çalıştıracak şekilde güncellendi.
-- Trim sonrası fixture/APK run `42096850038` başarılı oldu. Canlı run `42098534354` ise reader/gate öncesindeki gereksiz detay isteğinde HTTP 403 aldı; trim veya gate/config sonucu olarak yorumlanamaz.
-- Browser `.strip()` kullanırken Android Base64 decoder'ının script whitespace'ini reddetmesi kök neden adayı olarak düzeltildi. Decoder öncesi `trim()` ve whitespace'li script fixture testi eklendi.
-- Detay isteği kaldırıldı; canlı test artık doğrudan reader→gate→config→page-list yolunu çalıştırıyor ve CDN görsel indirmeyi ayrı opt-in tutuyor.
+- Sitenin `_calcPointerDelta` fonksiyonunun jQuery `$.css(body, 'flow')` kullandığı doğrulandı. Gerçek reader'larda `ease=mTr_v4`, `flow=84`; CSS fallback `20`. Production canlı 84, eski 20 ve boş ease/flow pointer adaylarını kapsıyor.
 
-## Kontrol adımları
+## Canlı doğrulama sonucu
 
-- [ ] Production Kotlin fixture/unit testleri ve release derlemesi başarılı olmalı.
-- [ ] Gerçek OkHttp + DDoSGuardInterceptor + production DTO/config canlı testi gate/config aşamalarını geçmeli.
-- [ ] Yeni sürüm numarasıyla APK ve kataloglar üretilmeli; eski `1.6.32` APK'sının üzerine yazılmamalı.
-- [ ] PR, ana dal ve kalıcı `builds` yayını doğrulanmalı.
+- Runner'da doğrudan OkHttp reader istekleri HTTP 403 olduğu için ağ testi tekrarlanmadı. Chromium gerçek reader ve `n/cv` gate'i çalıştırdı; ham HTML/gate/pointer değerleri yalnız `/tmp` içinde production Kotlin testine verildi.
+- Canlı browser-fixture + production Kotlin run `42107749381` **başarılı**: canvas ve pointer aynı, config çözülüyor, ayrı `v3` sayfalar üretiliyor.
+- Bölüm 1 `125451`: 52 × 2 = **104 ayrı sayfa**. Bölüm 2 `125989`: 26 × 2 = **52 ayrı sayfa**.
+- Fixture/unit + release APK CI run `42107749466` **başarılı**. Browser DOM doğrulaması geçti; gerçek CDN piksel kanıtı yok (`real_images_verified=false`).
+
+## Yayın ve kullanıcı adımları
+
+- [x] Production Kotlin fixture/unit testleri ve kaynak derlemesi başarılı.
+- [x] Bölüm 1 ve 2'nin canlı browser fixture'ları production Kotlin config/page kodundan geçti.
+- [ ] `1.6.33 / 106033` APK ve katalogları üret; eski `1.6.32` APK'sının üzerine yazma.
+- [ ] PR, ana dal ve kalıcı `builds` yayınını doğrula.
 - [ ] Kullanıcı yeni sürümde Chainsaw Man Bölüm 1 ve 2'yi açmalı.
 
 ## Kullanıcı kabul ölçütleri
@@ -33,4 +36,4 @@
 - [ ] Sıra ve yön doğru olmalı.
 - [ ] Gate/config hatası ham birleşik görselle sessizce geçiştirilmemeli.
 
-Runner gerçek CDN görsellerini alamadığında `real_images_verified=false` kalır. Browser DOM, sentetik crop, DEX string'i veya release başarısı tek başına kullanıcı kabulü değildir.
+Browser DOM, canlı config/page-list, sentetik crop, DEX string'i veya release başarısı tek başına kullanıcı kabulü değildir.

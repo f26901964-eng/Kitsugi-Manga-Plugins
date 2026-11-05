@@ -2,7 +2,7 @@
 
 ## Kapsam ve sürüm
 
-Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Kalıcı yayınlanan `1.6.32 / 106032` de cihazda başarılı olmadı: Chainsaw Man Bölüm 1 ve 2, `KTS-SRC-9008` gate/config hatasıyla açılmadı. Bu nedenle `1.6.32` ürün düzeltmesi olarak kabul edilmiyor; yeni ham-HTML gate düzeltmesi henüz kullanıcı cihazında doğrulanmadı.
+Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Kalıcı yayınlanan `1.6.32 / 106032` de cihazda başarılı olmadı: Chainsaw Man Bölüm 1 ve 2, `KTS-SRC-9008` gate/config hatasıyla açılmadı. Bu nedenle `1.6.32` ürün düzeltmesi olarak kabul edilmiyor. Yeni aday `1.6.33 / 106033`; canlı production Kotlin testleri geçti, kullanıcı cihazı doğrulaması henüz yapılmadı.
 
 ## Aktif gate/config düzeltmesi
 
@@ -10,9 +10,12 @@ Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümleri
 - Gate path, `n`/`c` query değerleri, fallback page key ve pointer girdileri Jsoup'un yeniden serialize ettiği HTML yerine ham cevaptan çıkarılıyor.
 - Gate URL, gate anahtarı, config decrypt ve sayfa üretimi hataları `KTS-SRC-9101`–`9104` ile ayrılıyor; gizli anahtar/nonce kullanıcı mesajına yazılmıyor.
 - Browser referansı encrypted config'i `.strip()` ile okurken Android temel Base64 decoder'ına script'in newline/girintisini temizlemeden veriyordu. `decrypt` artık decoder öncesinde `trim()` uyguluyor; whitespace'li gerçek `<script type="application/json">` fixture testi eklendi.
-- Trim sonrası fixture/APK CI run `42096850038` başarılı oldu. Canlı run `42098534354` ise `MangaTRLiveTest.kt:51` üzerindeki gereksiz manga detay isteğinin HTTP 403 vermesiyle reader/gate öncesinde durdu; gate/config veya trim başarısızlığı kanıtı değildir. Detay isteği kaldırıldı, CDN görselleri ayrı opt-in yapıldı ve gerçek reader→gate→config canlı sonucu yeniden beklenecek.
-- Canlı browser run `42093595643`: gate query alanları `c,n`, nonce 16, canvas token 16; config `grid=int`, `seeds=list<int>` ve `current-pointer` ile çözülüyor. String-DTO esnekliği yalnız savunma amaçlı eklendi, canlı sitenin mevcut tipi string değil.
-- Bu bulgular browser/Android eşdeğerliği veya cihaz başarısı kanıtı değildir. Production Kotlin canlı gate testi ve kullanıcı cihazı doğrulaması ayrı tutulur.
+- Sitenin `_calcPointerDelta` fonksiyonu flow'u önce jQuery `$.css(body, 'flow')` ile okuyor. Her iki canlı reader'da gerçek girdi `ease=mTr_v4`, `flow=84`; CSS `--ui-flow` değeri `20`. Production artık canlı 84, CSS 20 ve CSS/ease henüz boşken oluşan sınırlı pointer adaylarını deniyor.
+- Canlı browser-fixture + production Kotlin run `42107749381` başarılıdır. Chromium'dan alınan gerçek ham HTML, `n/cv` gate cevabı ve pointer yalnız `/tmp` içinde tutuldu; Git'e veya artifact'a gizli değer yazılmadı. Kotlin aynı canvas/pointer değerlerini üretti, config'i çözdü ve ayrı `v3` sayfaları üretti.
+- Bölüm 1 reader `125451`: 52 kaynak eleman × 2 = **104 ayrı sayfa**. Bölüm 2 reader `125989`: 26 kaynak eleman × 2 = **52 ayrı sayfa**. İki config de `current-pointer` ile çözüldü.
+- Aynı kaynak commit'in fixture/unit + release APK CI run `42107749466` başarılıdır. Browser DOM doğrulaması da geçti; gerçek CDN piksel doğrulaması `real_images_verified=false` durumundadır.
+- Canlı browser run `42093595643`: gate query alanları `c,n`, nonce 16, canvas token 16; config `grid=int`, `seeds=list<int>`. String-DTO esnekliği yalnız savunma amaçlıdır.
+- Bu sonuçlar cihaz başarısı iddiası değildir; kullanıcının Bölüm 1 ve 2 ekranındaki tek parça/sıra/yön sonucu ayrıca doğrulanmalıdır.
 
 ## Canlı reader yapısı
 

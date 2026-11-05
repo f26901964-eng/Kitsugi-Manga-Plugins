@@ -36,8 +36,8 @@ tasks.withType<Test>().configureEach {
 
 keiyoushi {
     name = "Manga-TR"
-    // Reader contract 32: prevent raw composite fallback and stale cache reuse.
-    versionCode = 32
+    // Reader contract 33: use the live jQuery pointer flow and separate strips.
+    versionCode = 33
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 
