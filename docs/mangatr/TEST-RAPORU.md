@@ -53,3 +53,5 @@ Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/y
 ## Dağıtım durumu
 
 `tachiyomi-tr.mangatr-v1.6.32.apk` PR #12 ile ana dala ve kalıcı `builds` dalına yayınlandı. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti; kalıcı yayın run `42091010382` başarılı oldu. Ancak kullanıcının `image-11.png` ve `image-12.png` kanıtları bu sürümün Bölüm 1 ve 2'de gate/config hatası verdiğini gösterir. Dağıtım başarısı ürün başarısı değildir.
+
+Yeni `tachiyomi-tr.mangatr-v1.6.33.apk` PR #13 ile ana dala alındı. Branch release `42108951711`, main build `42109766869` ve kalıcı yayın `42109766922` başarılıdır. Üç branch APK kopyası ve kalıcı `builds` APK'sı **100.739 bayt**, SHA-256 **`49f1b018b6a28f90619a8175a25958329cfff3b26dcc870fad67948da21ed4c9`** olarak doğrulandı. Beş kullanıcı kataloğu `1.6.33 / 106033` gösteriyor. Python testleri 15 başarılı, 4 özel snapshot skip. Cihaz kabulü hâlâ kullanıcı doğrulamasına bağlıdır.

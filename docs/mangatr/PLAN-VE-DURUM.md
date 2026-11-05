@@ -25,8 +25,9 @@
 
 - [x] Production Kotlin fixture/unit testleri ve kaynak derlemesi başarılı.
 - [x] Bölüm 1 ve 2'nin canlı browser fixture'ları production Kotlin config/page kodundan geçti.
-- [ ] `1.6.33 / 106033` APK ve katalogları üret; eski `1.6.32` APK'sının üzerine yazma.
-- [ ] PR, ana dal ve kalıcı `builds` yayınını doğrula.
+- [x] `1.6.33 / 106033` APK ve katalogları üretildi; branch release `42108951711` başarılı.
+- [x] PR #13 ana dala birleştirildi; main build `42109766869` ve kalıcı yayın `42109766922` başarılı.
+- [x] Kalıcı `builds` APK'sı 100.739 bayt ve SHA-256 `49f1b018b6a28f90619a8175a25958329cfff3b26dcc870fad67948da21ed4c9`; beş kullanıcı kataloğu `1.6.33 / 106033`.
 - [ ] Kullanıcı yeni sürümde Chainsaw Man Bölüm 1 ve 2'yi açmalı.
 
 ## Kullanıcı kabul ölçütleri
