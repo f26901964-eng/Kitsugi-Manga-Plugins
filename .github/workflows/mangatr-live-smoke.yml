@@ -28,10 +28,21 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - name: Install browser and image-orientation verification tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-tur
+          python3 -m pip install requests playwright beautifulsoup4 pillow
+      - name: Compare generated strip codes with the live Chromium reader DOM
+        run: |
+          rm -f mangatr/live/browser/kotlin-live-failure.txt
+          set -o pipefail
+          xvfb-run -a -s '-screen 0 1280x720x24' python3 tools/mangatr_browser_orientation.py 2>&1 | tee /tmp/mangatr-browser.log
       - name: Verify live gates and configs with the production Kotlin contract
         working-directory: keiyoushi-extensions-tr
         env:
           MANGATR_LIVE_TEST: '1'
+          MANGATR_LIVE_FIXTURE_DIR: '/tmp/mangatr-kotlin-live-fixture'
         run: |
           rm -f ../mangatr/live/browser/kotlin-live-failure.txt
           set -o pipefail
@@ -59,15 +70,6 @@ jobs:
           escaped = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
           print('::error title=Production Kotlin live failure::' + escaped)
           PY
-      - name: Install browser and image-orientation verification tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-tur
-          python3 -m pip install requests playwright beautifulsoup4 pillow
-      - name: Compare generated strip codes with the live Chromium reader DOM
-        run: |
-          set -o pipefail
-          xvfb-run -a -s '-screen 0 1280x720x24' python3 tools/mangatr_browser_orientation.py 2>&1 | tee /tmp/mangatr-browser.log
       - name: Run OCR here only if this runner received real images
         run: |
           set -o pipefail

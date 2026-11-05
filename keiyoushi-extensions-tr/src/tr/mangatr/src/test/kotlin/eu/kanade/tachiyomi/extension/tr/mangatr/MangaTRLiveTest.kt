@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.mangatr
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.Cookie
@@ -32,7 +33,85 @@ class MangaTRLiveTest {
     }
 
     @Test
+    fun `browser captured live configs decode with production Kotlin contract`() {
+        val fixtureRoot = File(
+            requireNotNull(System.getenv("MANGATR_LIVE_FIXTURE_DIR")) {
+                "MANGATR_LIVE_FIXTURE_DIR is required for the live fixture test"
+            },
+        )
+        val fixtureDirs = fixtureRoot.listFiles().orEmpty().filter { it.isDirectory }
+        assertEquals(setOf("125451", "125989"), fixtureDirs.map { it.name }.toSet())
+
+        fixtureDirs.forEach { fixtureDir ->
+            val metadata = json.decodeFromString<LiveFixtureMetadataDto>(File(fixtureDir, "metadata.json").readText())
+            val readerBody = File(fixtureDir, "reader.html").readText()
+            val readerDocument = Jsoup.parse(readerBody, BASE_URL)
+            val gatePath = requireNotNull(MangaTRReaderContract.gatePath(readerBody))
+            val gateUrl = requireNotNull(BASE_URL.toHttpUrl().resolve(gatePath))
+            val nonce = gateUrl.queryParameter("n").orEmpty()
+            val gateRequest = json.decodeFromString<ReaderGateRequestDto>(File(fixtureDir, "request.json").readText())
+
+            assertEquals("Reader ${metadata.reader} nonce changed", nonce, gateRequest.n)
+            assertEquals(
+                "Reader ${metadata.reader} canvas fingerprint changed",
+                gateRequest.cv,
+                MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+            )
+            val pointer = MangaTRReaderContract.pointerDelta(
+                nonce,
+                MangaTRReaderContract.readerEase(readerBody),
+                MangaTRReaderContract.readerFlow(readerBody),
+            )
+            assertEquals(
+                "Reader ${metadata.reader} browser/Kotlin pointer mismatch",
+                File(fixtureDir, "pointer.txt").readText().trim(),
+                pointer,
+            )
+
+            val configScript = requireNotNull(
+                readerDocument.selectFirst("script[type=application/json][id^=rdm-]")
+                    ?: readerDocument.selectFirst("script[id^=rdm-]")
+                    ?: readerDocument.selectFirst("[id^=rdm-]"),
+            )
+            val pageKey = requireNotNull(
+                configScript.attributes().firstNotNullOfOrNull { attr ->
+                    attr.value.takeIf { HEX_KEY_REGEX.matches(it) }
+                } ?: HEX_KEY_REGEX.find(readerBody)?.value,
+            )
+            val gateKey = json.decodeFromString<ReaderGateDto>(File(fixtureDir, "gate.json").readText()).k
+            val config = requireNotNull(
+                MangaTRReaderContract.decryptConfig(
+                    configScript.data().ifBlank { configScript.html() },
+                    gateKey,
+                    pageKey,
+                    pointer,
+                ),
+            ) { "Reader ${metadata.reader} production Kotlin config decrypt failed" }
+            val pages = requireNotNull(MangaTRReaderContract.parseConfiguredPages(readerDocument, config, pageKey)) {
+                "Reader ${metadata.reader} production Kotlin page generation failed"
+            }
+
+            assertTrue(metadata.sourcePages > 0)
+            if (metadata.chapter == 1) {
+                assertEquals(52, metadata.sourcePages)
+                assertEquals(104, metadata.expectedPages)
+            }
+            assertEquals(metadata.expectedPages, pages.size)
+            assertEquals(pages.indices.toList(), pages.map { it.index })
+            assertEquals(pages.size, pages.map { it.imageUrl }.distinct().size)
+            assertTrue(
+                pages.all { it.imageUrl?.substringAfter('#', "")?.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX) == true },
+            )
+            println(
+                "MangaTR browser fixture reader ${metadata.reader} chapter ${metadata.chapter}: " +
+                    "gate request/pointer/config OK; ${pages.size} separate pages",
+            )
+        }
+    }
+
+    @Test
     fun `chapter one and two readers decode current configs and page lists`() {
+        assumeTrue(System.getenv("MANGATR_LIVE_NETWORK") == "1")
         val verifyImages = System.getenv("MANGATR_LIVE_IMAGES") == "1"
         val cookieJar = MemoryCookieJar()
         val gateClient = OkHttpClient.Builder()
@@ -289,6 +368,15 @@ class MangaTRLiveTest {
         .set("Referer", "$BASE_URL/")
         .set("Origin", BASE_URL)
         .build()
+
+    @Serializable
+    private data class LiveFixtureMetadataDto(
+        val reader: String,
+        val chapter: Int,
+        val sourcePages: Int,
+        val expectedPages: Int,
+        val gateFormat: String,
+    )
 
     private class MemoryCookieJar : CookieJar {
         private val cookies = mutableListOf<Cookie>()
