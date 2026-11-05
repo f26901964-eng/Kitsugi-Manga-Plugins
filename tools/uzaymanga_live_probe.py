@@ -330,13 +330,19 @@ def probe(candidate: Candidate) -> dict[str, Any]:
             **reader,
         }
     except Exception as exc:
+        location = "unknown"
+        traceback = exc.__traceback__
+        if traceback is not None:
+            while traceback.tb_next is not None:
+                traceback = traceback.tb_next
+            location = f"{traceback.tb_frame.f_code.co_name}:{traceback.tb_lineno}"
         return {
             "name": candidate.name,
             "extensionVersion": candidate.extension_version,
             "ok": False,
             "error": (
                 f"{stage}:{exc}" if isinstance(exc, ProbeFailure)
-                else f"{stage}:unexpected={type(exc).__name__}"
+                else f"{stage}:unexpected={type(exc).__name__}@{location}"
             ),
         }
     finally:
