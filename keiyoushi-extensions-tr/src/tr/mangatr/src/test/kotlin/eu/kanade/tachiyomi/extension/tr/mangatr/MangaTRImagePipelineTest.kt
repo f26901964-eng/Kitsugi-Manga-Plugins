@@ -19,12 +19,14 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import org.robolectric.annotation.GraphicsMode
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import java.lang.reflect.Proxy
 
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [28], manifest = Config.NONE)
+@GraphicsMode(GraphicsMode.Mode.NATIVE)
 class MangaTRImagePipelineTest {
 
     @Test
@@ -46,8 +48,48 @@ class MangaTRImagePipelineTest {
 
         assertEquals(20, corrected.width)
         assertEquals(40, corrected.height)
-        // Robolectric does not prove real Canvas pixels or orientation. The
-        // production size contract is nevertheless one uncropped 20x40 image.
+        // This test checks dimensions; the NATIVE graphics test below checks
+        // production output pixels for order and all flip combinations.
+    }
+
+    @Test
+    fun `native graphics verify order and every flip on production output pixels`() {
+        val upright = listOf(Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW)
+        val cases = listOf(
+            PixelCase(
+                "horizontal",
+                "v4-100,1",
+                listOf(Color.GREEN, Color.RED, Color.YELLOW, Color.BLUE),
+                upright,
+            ),
+            PixelCase(
+                "vertical",
+                "v4-200,1",
+                listOf(Color.BLUE, Color.YELLOW, Color.RED, Color.GREEN),
+                upright,
+            ),
+            PixelCase(
+                "180 degree",
+                "v4-300,1",
+                listOf(Color.YELLOW, Color.BLUE, Color.GREEN, Color.RED),
+                upright,
+            ),
+            PixelCase(
+                "destination order and 180 degree",
+                "v4-1,300",
+                listOf(Color.YELLOW, Color.BLUE, Color.GREEN, Color.RED),
+                upright,
+            ),
+        )
+
+        cases.forEach { case ->
+            val bitmap = decodeTransformed(case.fragment, labelled = true)
+            assertEquals(20, bitmap.width)
+            assertEquals(40, bitmap.height)
+            assertQuadrants(bitmap, case.top, 0, "${case.name} top")
+            assertQuadrants(bitmap, case.bottom, 20, "${case.name} bottom")
+            bitmap.recycle()
+        }
     }
 
     @Test
@@ -79,7 +121,37 @@ class MangaTRImagePipelineTest {
         decodeTransformed("v3-2-0,1")
     }
 
-    private fun decodeTransformed(fragment: String, sourceHeight: Int = 40): Bitmap {
+    private data class PixelCase(
+        val name: String,
+        val fragment: String,
+        val top: List<Int>,
+        val bottom: List<Int>,
+    )
+
+    private fun assertQuadrants(bitmap: Bitmap, expected: List<Int>, top: Int, label: String) {
+        val coordinates = listOf(5 to top + 5, 15 to top + 5, 5 to top + 15, 15 to top + 15)
+        coordinates.zip(expected).forEach { (coordinate, color) ->
+            val actual = bitmap.getPixel(coordinate.first, coordinate.second)
+            assertTrue(
+                "$label pixel $coordinate expected ${Integer.toHexString(color)}, " +
+                    "got ${Integer.toHexString(actual)}",
+                colorDistance(actual, color) < 90,
+            )
+        }
+    }
+
+    private fun colorDistance(first: Int, second: Int): Int {
+        return listOf(Color::red, Color::green, Color::blue).sumOf { channel ->
+            val difference = channel(first) - channel(second)
+            difference * difference
+        }
+    }
+
+    private fun decodeTransformed(
+        fragment: String,
+        sourceHeight: Int = 40,
+        labelled: Boolean = false,
+    ): Bitmap {
         val request = Request.Builder()
             .url("https://image.mngtr.site/img_part.php?key=test#$fragment")
             .build()
@@ -89,7 +161,11 @@ class MangaTRImagePipelineTest {
             .code(200)
             .message("OK")
             .header("Content-Length", "999")
-            .body(Buffer().write(sourceImage(sourceHeight)).asResponseBody("image/png".toMediaType()))
+            .body(
+                Buffer()
+                    .write(if (labelled) labelledSourceImage() else sourceImage(sourceHeight))
+                    .asResponseBody("image/png".toMediaType()),
+            )
             .build()
         val chain = stubChain(request, networkResponse)
 
@@ -99,6 +175,27 @@ class MangaTRImagePipelineTest {
         return requireNotNull(
             corrected.use { BitmapFactory.decodeStream(it.body.byteStream()) },
         )
+    }
+
+    private fun labelledSourceImage(): ByteArray {
+        val bitmap = Bitmap.createBitmap(20, 40, Bitmap.Config.ARGB_8888)
+        for (y in 0 until 40) {
+            for (x in 0 until 20) {
+                val right = x >= 10
+                val bottom = y % 20 >= 10
+                val color = when {
+                    !right && !bottom -> Color.RED
+                    right && !bottom -> Color.GREEN
+                    !right && bottom -> Color.BLUE
+                    else -> Color.YELLOW
+                }
+                bitmap.setPixel(x, y, color)
+            }
+        }
+        val output = ByteArrayOutputStream()
+        assertTrue(bitmap.compress(Bitmap.CompressFormat.PNG, 100, output))
+        bitmap.recycle()
+        return output.toByteArray()
     }
 
     private fun sourceImage(height: Int): ByteArray {
