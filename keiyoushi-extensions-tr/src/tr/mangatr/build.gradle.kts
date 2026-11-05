@@ -36,8 +36,8 @@ tasks.withType<Test>().configureEach {
 
 keiyoushi {
     name = "Manga-TR"
-    // Reader contract 31: expose each current reader slice as its own image.
-    versionCode = 31
+    // Reader contract 32: prevent raw composite fallback and stale cache reuse.
+    versionCode = 32
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 
