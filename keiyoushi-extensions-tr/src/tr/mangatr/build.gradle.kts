@@ -7,8 +7,8 @@ plugins {
 
 android {
     sourceSets.named("main") {
-        java.exclude("test/**")
-        kotlin.exclude("test/**")
+        java.setSrcDirs(listOf("src/eu"))
+        kotlin.setSrcDirs(listOf("src/eu"))
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
