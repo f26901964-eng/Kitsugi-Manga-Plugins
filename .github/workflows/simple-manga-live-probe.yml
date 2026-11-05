@@ -1,0 +1,84 @@
+name: Simple manga live probe
+
+on:
+  push:
+    branches:
+      - arena/edcbd911-kitsugi-manga-plugins
+    paths:
+      - tools/simple_manga_live_probe.py
+      - .github/workflows/simple-manga-live-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install requests==2.32.5 pillow==11.3.0
+      - name: Probe series, chapters and real image decoding
+        id: probe
+        run: python tools/simple_manga_live_probe.py --output "$RUNNER_TEMP/simple-manga-live-results.json"
+      - name: Publish sanitized probe result
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNNER_TEMP: ${{ runner.temp }}
+          JOB_STATUS: ${{ job.status }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          RESULT="$RUNNER_TEMP/simple-manga-live-results.json"
+          if [ ! -s "$RESULT" ]; then
+            printf '{"ok":false,"sources":{},"error":"probe-result-missing"}\n' > "$RESULT"
+          fi
+          python - "$RESULT" "$RUNNER_TEMP/check-run.json" <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+
+          result = json.loads(Path(sys.argv[1]).read_text())
+          lines = ["Live flow: popular list → details → chapters → pages → first/last image bytes → Pillow decode.", ""]
+          for key, source in result.get("sources", {}).items():
+              if source.get("ok"):
+                  images = source.get("images", [])
+                  decoded = "; ".join(
+                      f"{image.get('format')} {image.get('width')}x{image.get('height')} "
+                      f"{image.get('bytes')} bytes ({image.get('contentType')})"
+                      for image in images
+                  )
+                  lines.append(
+                      f"PASS {source.get('name', key)} — title={source.get('title')!r}; "
+                      f"series={source.get('seriesInListing')}; chapters={source.get('chaptersReturned')}; "
+                      f"pages={source.get('pages')}; decoded=[{decoded}]"
+                  )
+              else:
+                  lines.append(f"FAIL {source.get('name', key)} — {source.get('error', 'unknown')}")
+          lines.extend([
+              "",
+              "No HTML, image bytes, cookies, tokens or full page/image URLs are included.",
+              "A real HTTP decode on CI is not an Android device rendering guarantee.",
+          ])
+          conclusion = "success" if result.get("ok") and "${JOB_STATUS}" == "success" else "failure"
+          payload = {
+              "name": "simple-manga-live-probe",
+              "head_sha": "${SHA}",
+              "status": "completed",
+              "conclusion": conclusion,
+              "output": {
+                  "title": "Simple manga real-image probe",
+                  "summary": "\n".join(lines),
+                  "text": json.dumps(result, ensure_ascii=False, indent=2),
+              },
+          }
+          Path(sys.argv[2]).write_text(json.dumps(payload, ensure_ascii=False))
+          PY
+          gh api --method POST repos/${{ github.repository }}/check-runs --input "$RUNNER_TEMP/check-run.json" > /dev/null
