@@ -63,6 +63,33 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `raw reader gate keeps nonce canvas token and unquoted pointer ease`() {
+        val rawHtml = """
+            <script>
+            var _fpx = '/cek/f/gate?n=raw-nonce&c=0001000200030004';
+            var _mouseCurve = {ease:'mTr_v4',samples:20};
+            </script>
+            <style>:root { --ui-flow: 20; }</style>
+        """.trimIndent()
+
+        val gateUrl = "https://manga-tr.com/".toHttpUrl()
+            .resolve(requireNotNull(MangaTRReaderContract.gatePath(rawHtml)))!!
+
+        assertEquals("raw-nonce", gateUrl.queryParameter("n"))
+        assertEquals("0001000200030004", gateUrl.queryParameter("c"))
+        assertEquals("mTr_v4", MangaTRReaderContract.readerEase(rawHtml))
+        assertEquals("20", MangaTRReaderContract.readerFlow(rawHtml))
+        assertEquals(
+            "57,102,149|101,169,251",
+            MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+        )
+        assertEquals(
+            MangaTRReaderContract.pointerDelta("raw-nonce", "mTr_v4", "20"),
+            MangaTRReaderContract.pointerDelta(gateUrl.queryParameter("n").orEmpty(), "mTr_v4", "20"),
+        )
+    }
+
+    @Test
     fun `current config keeps seeds and grid while legacy order stays optional`() {
         val current = json.decodeFromString<ReaderConfigDto>(
             """{"cls":"reader","data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":305419896,"1":2},"grid":2}""",
@@ -87,6 +114,21 @@ class MangaTRReaderContractTest {
         assertEquals(mapOf("0" to 305419896L, "1" to 2L, "2" to 123456789L), config.seeds)
         assertEquals(2L, MangaTRReaderContract.seedForPage(config.seeds, "1"))
         assertEquals(305419896L, MangaTRReaderContract.seedForPage(config.seeds, "99"))
+    }
+
+    @Test
+    fun `string grid and seed values decode in object and array configs`() {
+        val objectConfig = json.decodeFromString<ReaderConfigDto>(
+            """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":"305419896","1":"2"},"grid":"2"}""",
+        )
+        assertEquals(2, objectConfig.grid)
+        assertEquals(mapOf("0" to 305419896L, "1" to 2L), objectConfig.seeds)
+
+        val arrayConfig = json.decodeFromString<ReaderConfigDto>(
+            """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":["305419896","2"],"grid":"2"}""",
+        )
+        assertEquals(objectConfig.seeds, arrayConfig.seeds)
+        assertEquals(2, arrayConfig.grid)
     }
 
     @Test

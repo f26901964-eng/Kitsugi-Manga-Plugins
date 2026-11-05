@@ -1107,12 +1107,13 @@ abstract class MangaTR : KeiSource() {
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         var response = client.get(baseUrl + chapter.url)
+        var rawHtml = response.peekBody(Long.MAX_VALUE).string()
         var document = response.asJsoup()
 
-        suspend fun parsePages(doc: Document): List<Page> {
-            // Run the site's reader gate before using its encrypted image URLs.
-            // The direct attribute parser remains a fallback for older gate responses.
-            val bentoPages = tryParseBentoPages(doc, response.request.url.toString())
+        suspend fun parsePages(doc: Document, html: String): List<Page> {
+            // Gate values must come from the exact HTTP bytes, not a Jsoup
+            // serialization that can escape or normalize script contents.
+            val bentoPages = tryParseBentoPages(doc, response.request.url.toString(), html)
             if (!bentoPages.isNullOrEmpty()) return bentoPages
 
             val directBentoPages = MangaTRParser.parseReaderPages(doc)
@@ -1150,7 +1151,7 @@ abstract class MangaTR : KeiSource() {
         }
 
         validateDocument()
-        var pages = parsePages(document)
+        var pages = parsePages(document, rawHtml)
 
         // Only an actual interstitial without pages needs another request. Prefer
         // the group already associated with this reader ID, never an arbitrary group.
@@ -1159,8 +1160,9 @@ abstract class MangaTR : KeiSource() {
             if (groupSelection != null) {
                 response = groupSelection.first
                 document = groupSelection.second
+                rawHtml = groupSelection.third
                 validateDocument()
-                pages = parsePages(document)
+                pages = parsePages(document, rawHtml)
             }
         }
 
@@ -1173,7 +1175,7 @@ abstract class MangaTR : KeiSource() {
 
     override fun imageRequest(page: Page): Request = MangaTRImagePipeline.imageRequest(page, headers, baseUrl)
 
-    private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
+    private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Triple<Response, Document, String>? {
         // Detect modal title
         val hasModal = document.selectFirst("*:contains(Çeviri Grubu Seçimi)") != null ||
             document.text().contains("farklı çeviri grubu tarafından", ignoreCase = true) ||
@@ -1219,14 +1221,15 @@ abstract class MangaTR : KeiSource() {
         // Fetch the selected group's page
         return try {
             val newResp = client.get(href)
+            val newRawHtml = newResp.peekBody(Long.MAX_VALUE).string()
             val newDoc = newResp.asJsoup()
-            Pair(newResp, newDoc)
+            Triple(newResp, newDoc, newRawHtml)
         } catch (e: Exception) {
             null
         }
     }
 
-    private suspend fun tryParseBentoPages(document: Document, readerUrl: String): List<Page>? {
+    private suspend fun tryParseBentoPages(document: Document, readerUrl: String, rawHtml: String): List<Page>? {
         val configScript = document.selectFirst("script[type=application/json][id^=rdm-]")
             ?: document.selectFirst("script[id^=rdm-]")
             ?: document.selectFirst("[id^=rdm-]")
@@ -1236,68 +1239,57 @@ abstract class MangaTR : KeiSource() {
         val pageKey = configScript.attributes().firstNotNullOfOrNull { attr ->
             attr.value.takeIf { HEX_KEY_REGEX.matches(it) }
         } ?: run {
-            HEX_KEY_REGEX.find(document.html())?.value
+            HEX_KEY_REGEX.find(rawHtml)?.value
         } ?: return null
 
-        // Extract gate path
-        val gatePath = GATE_PATH_REGEX.find(document.html())?.groupValues?.get(1)
-            ?: Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""").find(document.html())?.groupValues?.get(1)
-
-        var config: ReaderConfigDto? = null
+        // Extract gate path from the unmodified response, including its n/c query.
+        val gatePath = MangaTRReaderContract.gatePath(rawHtml)
 
         if (gatePath != null) {
             val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
                 ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host }
-            if (gateUrl != null) {
-                val gateHeaders = headers.newBuilder()
-                    .mangaTrAjaxHeaders(readerUrl)
-                    .set("Origin", baseUrl)
-                    .build()
-                val nonce = gateUrl.queryParameter("n").orEmpty()
-                val gateKey = try {
-                    client.newCall(
-                        Request.Builder()
-                            .url(gateUrl)
-                            .headers(gateHeaders)
-                            .post(
-                                ReaderGateRequestDto(
-                                    nonce,
-                                    MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
-                                ).toJsonRequestBody(),
-                            )
-                            .build(),
-                    ).execute().parseAs<ReaderGateDto>().k
-                } catch (e: Exception) {
-                    try {
-                        client.newCall(Request.Builder().url(gateUrl).headers(gateHeaders).get().build())
-                            .execute().parseAs<ReaderGateDto>().k
-                    } catch (_: Exception) {
-                        null
-                    }
+                ?: throw IOException("Manga-TR okuyucu gate adresi geçersiz. KTS-SRC-9101")
+            val gateHeaders = headers.newBuilder()
+                .mangaTrAjaxHeaders(readerUrl)
+                .set("Origin", baseUrl)
+                .build()
+            val nonce = gateUrl.queryParameter("n").orEmpty()
+            val gateKey = try {
+                client.newCall(
+                    Request.Builder()
+                        .url(gateUrl)
+                        .headers(gateHeaders)
+                        .post(
+                            ReaderGateRequestDto(
+                                nonce,
+                                MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+                            ).toJsonRequestBody(),
+                        )
+                        .build(),
+                ).execute().parseAs<ReaderGateDto>().k
+            } catch (_: Exception) {
+                try {
+                    client.newCall(Request.Builder().url(gateUrl).headers(gateHeaders).get().build())
+                        .execute().parseAs<ReaderGateDto>().k
+                } catch (_: Exception) {
+                    null
                 }
-                if (gateKey != null) {
-                    val html = document.html()
-                    val ease = READER_EASE_REGEX.find(html)?.groupValues?.get(1) ?: "mTr_v4"
-                    val flow = READER_FLOW_REGEX.find(html)?.groupValues?.get(1) ?: "20"
-                    config = MangaTRReaderContract.decryptConfig(
-                        configScript.data().ifBlank { configScript.html() },
-                        gateKey,
-                        pageKey,
-                        MangaTRReaderContract.pointerDelta(nonce, ease, flow),
-                    )
-                }
-            }
-        }
+            }?.takeIf { it.isNotBlank() }
+                ?: throw IOException("Manga-TR okuyucu gate anahtarı alınamadı. KTS-SRC-9102")
 
-        if (config != null) {
-            return requireNotNull(MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)) {
-                "Manga-TR okuyucu config'i çözüldü ancak ayrı görsel sayfaları üretilemedi."
-            }
-        }
-        if (gatePath != null) {
-            // Never silently serve the site's raw, scrambled composite image
-            // when the current gate/config contract failed.
-            throw IOException("Manga-TR okuyucu anahtarı/config'i çözülemedi. Bölümü yeniden açmayı deneyin.")
+            val config = MangaTRReaderContract.decryptConfig(
+                configScript.data().ifBlank { configScript.html() },
+                gateKey,
+                pageKey,
+                MangaTRReaderContract.pointerDelta(
+                    nonce,
+                    MangaTRReaderContract.readerEase(rawHtml),
+                    MangaTRReaderContract.readerFlow(rawHtml),
+                ),
+            ) ?: throw IOException("Manga-TR okuyucu config'i çözülemedi. KTS-SRC-9103")
+
+            return MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)
+                ?: throw IOException("Manga-TR config'den ayrı görsel sayfaları üretilemedi. KTS-SRC-9104")
         }
 
         // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)
@@ -1567,9 +1559,6 @@ abstract class MangaTR : KeiSource() {
         private val NUMBER_REGEX = Regex("""\d+""")
         private val CHALLENGE_REGEX = Regex("""challenge:\s*"([^"]+)"""")
         private val CHAPTER_KEY_REGEX = Regex("""listKey:\s*'([^']+)'""")
-        private val GATE_PATH_REGEX = Regex("""_fpx\s*=\s*"([^"]+)"""")
-        private val READER_EASE_REGEX = Regex("""["']ease["']\s*:\s*["']([^"']*)["']""")
-        private val READER_FLOW_REGEX = Regex("""--ui-flow\s*:\s*([^;}\s]+)""")
         private val HEX_KEY_REGEX = Regex("""[0-9a-f]{32}""")
         private val READER_ID_REGEX = Regex("""(?:^|/)id-(\d+)-read-""")
         private val TRAILING_YEAR_REGEX = Regex("""\s*\((?:19|20)\d{2}\)\s*$""")

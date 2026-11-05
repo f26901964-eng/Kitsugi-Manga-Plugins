@@ -13,6 +13,9 @@ internal object MangaTRReaderContract {
     const val CACHE_VERSION_PREFIX = "v3-"
 
     private val json = Json { ignoreUnknownKeys = true }
+    private val GATE_PATH_REGEX = Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""")
+    private val READER_EASE_REGEX = Regex("""["']?ease["']?\s*:\s*["']([^"']+)["']""")
+    private val READER_FLOW_REGEX = Regex("""--ui-flow\s*:\s*([^\s;"']+)""")
 
     fun decrypt(value: String, key: String): String {
         val normalized = value.replace('-', '+').replace('_', '/')
@@ -44,6 +47,12 @@ internal object MangaTRReaderContract {
         val lighter = base.mapIndexed { index, value -> minOf(255, value + extra[index]) }
         return base.joinToString(",") + "|" + lighter.joinToString(",")
     }
+
+    fun gatePath(rawHtml: String): String? = GATE_PATH_REGEX.find(rawHtml)?.groupValues?.get(1)
+
+    fun readerEase(rawHtml: String): String = READER_EASE_REGEX.find(rawHtml)?.groupValues?.get(1) ?: "mTr_v4"
+
+    fun readerFlow(rawHtml: String): String = READER_FLOW_REGEX.find(rawHtml)?.groupValues?.get(1) ?: "20"
 
     /** FNV-1a pointer checksum calculated by the site's _calcPointerDelta function. */
     fun pointerDelta(nonce: String, ease: String = "", flow: String = ""): String {
