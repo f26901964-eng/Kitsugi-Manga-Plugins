@@ -214,4 +214,8 @@ class MangaDiyariTest {
 
     @kotlinx.serialization.Serializable
     private data class ProbeFailure(val check: String)
+
+    private companion object {
+        const val BASE = "https://mangadiyari.com"
+    }
 }
