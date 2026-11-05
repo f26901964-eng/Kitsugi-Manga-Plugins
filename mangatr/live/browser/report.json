@@ -53,6 +53,9 @@
     "status": 200,
     "rows": 50
   },
+  "image_requests": [],
+  "reader_status": 200,
+  "reader_title": "2 - Chainsaw Man - Manga-TR.com Türkçe Çevrimiçi Oku",
   "captured_offsets": [
     "0",
     "20",
