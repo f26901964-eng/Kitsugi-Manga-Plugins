@@ -41,4 +41,4 @@ Kullanıcı cihazında yeni sürümün her okuyucu sayfasında yalnız bir görs
 
 Release run `42082228514`, `tachiyomi-tr.mangatr-v1.6.31.apk` dosyasını ve katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` kopyaları **100.011 bayt** ve SHA-256 **`e319220ce96d93f9a7799e613426f4fa71e72deb4a9e75aed32c1b5b6ac5bab7`** olarak eşleşti.
 
-Ana dal PR'ı ve kalıcı `builds` yayını bu aşamada bekleniyor.
+PR [#11](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/11) ana dala birleştirildi. `manga-yayin` run `42083252779` ve ana dal derleme run `42083252572` başarılı oldu. Kalıcı `builds` dalındaki iki APK kopyası da yukarıdaki boyut/SHA-256 ile doğrulandı; beş kullanıcı kataloğu `1.6.31 / 106031` ve yeni APK URL'sini gösteriyor.
