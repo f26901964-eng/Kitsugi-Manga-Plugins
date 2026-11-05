@@ -20,6 +20,9 @@ jobs:
   build-patched-app:
     runs-on: ubuntu-latest
     timeout-minutes: 60
+    env:
+      ANDROID_HOME: ${{ runner.temp }}/android-sdk
+      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
     steps:
       - name: Check out the patch and research report
         uses: actions/checkout@v4
@@ -45,13 +48,22 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
-      - uses: android-actions/setup-android@v3
+
+      - name: Install the official Android command-line tools
+        run: |
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl --fail --location --retry 3 \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+            --output "$RUNNER_TEMP/android-command-line-tools.zip"
+          unzip -q "$RUNNER_TEMP/android-command-line-tools.zip" -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
 
       - name: Install Android SDK packages
         run: |
           set -o pipefail
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "cmake;3.22.1" "platforms;android-36" "build-tools;36.0.0" 2>&1 | tee "$RUNNER_TEMP/kitsugi-sdk-install.log" | tail -n 20
+          sdkmanager --install "cmake;3.22.1" "platform-tools" "platforms;android-36" "build-tools;36.0.0" 2>&1 | tee "$RUNNER_TEMP/kitsugi-sdk-install.log" | tail -n 20
 
       - name: Configure CI memory
         run: |
