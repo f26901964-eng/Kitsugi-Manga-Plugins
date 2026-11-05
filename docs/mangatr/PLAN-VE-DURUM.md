@@ -29,10 +29,13 @@ Sitenin reader JavaScript/CSS sözleşmesi Android bitmap yoluna uyarlanıyor. S
 
 ## Kalan işler
 
-- [ ] Kotlin unit/Robolectric testlerini ve release derlemesini CI'da geçir.
-- [ ] Gerçek Chromium live fixture ile gate/config, DOM kodları ve 52/26 full-page sözleşmesini geçir.
-- [ ] Testleri geçen `1.6.34` APK'sını ve katalogları yayınla; `1.6.33` dosyasının üzerine yazma.
+- [x] Kotlin unit/Robolectric testlerini ve release derlemesini CI'da geçir (`42115170299`, native pixel testleriyle `42118286341`).
+- [x] Gerçek Chromium live fixture ile gate/config, DOM kodları ve 52/26 full-page sözleşmesini geçir (`42117796891`).
+- [x] Testleri geçen `1.6.34` branch APK'sını ve katalogları üret (`42115170298`); `1.6.33` yerine yeni `1.6.34` dosyası oluşturuldu.
+- [ ] PR'ı main'e al ve kalıcı `builds` yayınını doğrula.
 - [ ] Kullanıcı cihazında Bölüm 1 ve 2'nin tam görsel, sıra ve yön sonucunu doğrula.
+
+Branch APK'sı üç kopyada **100.971 bayt**, SHA-256 **`065d68642bed39db94be33a214532d263d6d3636805cca40d60504b5cae986ec`**. Kataloglar `1.6.34 / 106034`. Live run'da `full_page_contract_passed=true`; CDN 403 nedeniyle `real_images_verified=false`.
 
 ## Yayın geçmişi notu
 

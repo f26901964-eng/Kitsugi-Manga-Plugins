@@ -1,224 +1,16 @@
 {
+  "report_format": "sanitized-summary",
+  "workflow_run": 42117796891,
   "reader": "125451",
-  "samples": [
-    {
-      "page": 1,
-      "page_index": "0",
-      "part_count": 1,
-      "dom_slices": [
-        {
-          "destination": 0,
-          "backgroundPosition": "0% 0%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scaleY(-1) translateZ(0px)"
-        },
-        {
-          "destination": 1,
-          "backgroundPosition": "0% 100%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "translateZ(0px)"
-        }
-      ],
-      "generated_codes": [
-        200,
-        1
-      ],
-      "dom_codes": [
-        200,
-        1
-      ],
-      "matches_live_dom": true,
-      "image_source": "synthetic",
-      "output_slice_count": 2,
-      "output_slice_dimensions": [
-        800,
-        600
-      ]
-    },
-    {
-      "page": 2,
-      "page_index": "1",
-      "part_count": 1,
-      "dom_slices": [
-        {
-          "destination": 0,
-          "backgroundPosition": "0% 100%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "translateZ(0px)"
-        },
-        {
-          "destination": 1,
-          "backgroundPosition": "0% 0%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "translateZ(0px)"
-        }
-      ],
-      "generated_codes": [
-        1,
-        0
-      ],
-      "dom_codes": [
-        1,
-        0
-      ],
-      "matches_live_dom": true,
-      "image_source": "synthetic",
-      "output_slice_count": 2,
-      "output_slice_dimensions": [
-        800,
-        600
-      ]
-    },
-    {
-      "page": 3,
-      "page_index": "2",
-      "part_count": 1,
-      "dom_slices": [
-        {
-          "destination": 0,
-          "backgroundPosition": "0% 100%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scaleY(-1) translateZ(0px)"
-        },
-        {
-          "destination": 1,
-          "backgroundPosition": "0% 0%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scale(-1, -1) translateZ(0px)"
-        }
-      ],
-      "generated_codes": [
-        301,
-        200
-      ],
-      "dom_codes": [
-        301,
-        200
-      ],
-      "matches_live_dom": true,
-      "image_source": "synthetic",
-      "output_slice_count": 2,
-      "output_slice_dimensions": [
-        800,
-        600
-      ]
-    },
-    {
-      "page": 27,
-      "page_index": "26",
-      "part_count": 1,
-      "dom_slices": [
-        {
-          "destination": 0,
-          "backgroundPosition": "0% 0%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scaleX(-1) translateZ(0px)"
-        },
-        {
-          "destination": 1,
-          "backgroundPosition": "0% 100%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scale(-1, -1) translateZ(0px)"
-        }
-      ],
-      "generated_codes": [
-        100,
-        301
-      ],
-      "dom_codes": [
-        100,
-        301
-      ],
-      "matches_live_dom": true,
-      "image_source": "synthetic",
-      "output_slice_count": 2,
-      "output_slice_dimensions": [
-        800,
-        600
-      ]
-    },
-    {
-      "page": 52,
-      "page_index": "51",
-      "part_count": 1,
-      "dom_slices": [
-        {
-          "destination": 0,
-          "backgroundPosition": "0% 100%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scaleX(-1) translateZ(0px)"
-        },
-        {
-          "destination": 1,
-          "backgroundPosition": "0% 0%",
-          "backgroundSize": "100% 200%",
-          "backgroundPart": 0,
-          "hasBackgroundImage": true,
-          "childImages": 0,
-          "transform": "scaleY(-1) translateZ(0px)"
-        }
-      ],
-      "generated_codes": [
-        201,
-        100
-      ],
-      "dom_codes": [
-        201,
-        100
-      ],
-      "matches_live_dom": true,
-      "image_source": "synthetic",
-      "output_slice_count": 2,
-      "output_slice_dimensions": [
-        800,
-        600
-      ]
-    }
-  ],
   "reader_status": 200,
-  "pointer_delta_length": 8,
-  "gate_format": "browser-pointer",
-  "extension_gate_query_keys": [
-    "c",
-    "n"
-  ],
-  "extension_gate_nonce_length": 16,
-  "extension_gate_canvas_length": 16,
-  "extension_pointer_delta_length": 8,
+  "synthetic_pixel_contract_passed": true,
+  "native_graphics_workflow_run": 42118286341,
+  "native_production_output_pixels_verified": true,
+  "extension_gate_decrypts": true,
+  "chapter_two_gate_decrypts": true,
+  "extension_gate_format": "current-pointer",
+  "chapter_two_gate_format": "current-pointer",
   "extension_pointer_inputs": {
-    "ease": "mTr_v4",
-    "flow": "84",
-    "jqueryFlow": "84",
-    "cssFlow": "20"
-  },
-  "extension_pointer_inputs_after": {
     "ease": "mTr_v4",
     "flow": "84",
     "jqueryFlow": "84",
@@ -230,376 +22,68 @@
     "jqueryFlow": "84",
     "cssFlow": "20"
   },
-  "chapter_two_pointer_inputs_after": {
-    "ease": "mTr_v4",
-    "flow": "84",
-    "jqueryFlow": "84",
-    "cssFlow": "20"
-  },
   "extension_gate_request": "n-cv",
-  "extension_config_types": {
-    "grid": "int",
-    "seeds": "list",
-    "seed_values": [
-      "int"
-    ]
-  },
-  "extension_gate_format": "current-pointer",
-  "extension_gate_decrypts": true,
   "extension_source_page_count": 52,
-  "extension_expected_page_count": 104,
-  "chapter_two_gate_format": "current-pointer",
-  "chapter_two_gate_decrypts": true,
+  "extension_expected_page_count": 52,
   "chapter_two_source_page_count": 26,
-  "chapter_two_expected_page_count": 52,
-  "group_skip_visible": false,
+  "chapter_two_expected_page_count": 26,
   "grid": 2,
   "seed_count": 52,
   "page_count": 52,
   "dom_verification_passed": true,
-  "image_response_statuses": [
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403,
-    403
-  ],
-  "proxy_attempts": [
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
+  "samples": [
     {
       "page": 1,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "page": 1,
-      "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
-    },
-    {
-      "page": 1,
-      "service": "codetabs",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "matches_live_dom": true,
+      "image_source": "synthetic",
+      "output_page_count": 1,
+      "source_dimensions": [800, 1200],
+      "output_dimensions": [800, 1200],
+      "full_original_dimensions_preserved": true
     },
     {
       "page": 2,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "page": 2,
-      "service": "allorigins",
-      "status": 200
-    },
-    {
-      "page": 2,
-      "service": "allorigins",
-      "error": "cannot identify image file <_io.BytesIO object at 0x7f19aa743ba0>"
-    },
-    {
-      "page": 2,
-      "service": "codetabs",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "matches_live_dom": true,
+      "image_source": "synthetic",
+      "output_page_count": 1,
+      "source_dimensions": [800, 1200],
+      "output_dimensions": [800, 1200],
+      "full_original_dimensions_preserved": true
     },
     {
       "page": 3,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "page": 3,
-      "service": "allorigins",
-      "status": 408
-    },
-    {
-      "page": 3,
-      "service": "codetabs",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
+      "matches_live_dom": true,
+      "image_source": "synthetic",
+      "output_page_count": 1,
+      "source_dimensions": [800, 1200],
+      "output_dimensions": [800, 1200],
+      "full_original_dimensions_preserved": true
     },
     {
       "page": 27,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "page": 27,
-      "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
-    },
-    {
-      "page": 27,
-      "service": "codetabs",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
+      "matches_live_dom": true,
+      "image_source": "synthetic",
+      "output_page_count": 1,
+      "source_dimensions": [800, 1200],
+      "output_dimensions": [800, 1200],
+      "full_original_dimensions_preserved": true
     },
     {
       "page": 52,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "page": 52,
-      "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
-    },
-    {
-      "page": 52,
-      "service": "codetabs",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "matches_live_dom": true,
+      "image_source": "synthetic",
+      "output_page_count": 1,
+      "source_dimensions": [800, 1200],
+      "output_dimensions": [800, 1200],
+      "full_original_dimensions_preserved": true
     }
   ],
+  "cdn_image_status": 403,
+  "proxy_attempts": [],
   "real_images_verified": false,
+  "full_page_contract_passed": true,
   "contract_passed": true,
-  "passed": true
+  "passed": true,
+  "device_visual_acceptance": "pending",
+  "notes": "Native/synthetic pixel and live DOM checks are not real CDN or user-device visual acceptance. Full diagnostics and corrected pages are uploaded as workflow artifacts; no bot commit is required."
 }

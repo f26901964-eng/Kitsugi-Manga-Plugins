@@ -35,7 +35,7 @@ Her iki reader için daha önce gate/config teknik doğrulaması başarılıydı
 - Eski v3 slice istekleri yalnız geriye dönük oturum uyumluluğu için test edilir; current Page üretiminde kullanılmaz.
 - Reader contract iki kaynak eleman için 4 slice Page yerine **2 full Page** ve `v4-300,1`, `v4-201,200` fragment'ları üretir.
 
-Robolectric boyut testi gerçek Canvas piksel/yön kanıtı değildir.
+`MangaTRImagePipelineTest` ayrıca `@GraphicsMode(NATIVE)` ile çalışır. Dört renkli 20×40 kaynak üzerinde production interceptor çıktısının gerçek pikselleri okunur; yatay flip, dikey flip, 180° flip, destination sırası ve iki strip'in tek 20×40 çıktıya yerleşimi ayrı ayrı doğrulanır. CI run `42118286341` bu testlerle başarılıdır.
 
 ### Browser / sentetik piksel
 
@@ -57,13 +57,20 @@ CDN engeli nedeniyle sentetik kaynak kullanılırsa `real_images_verified=false`
 - Etiketli Pillow piksel sözleşmesi: sıra, yatay/dikey/180° flip ve tek sayılı yükseklik kontrolleri başarılı.
 - Python syntax ve üç MangaTR workflow YAML/branch kontrolü başarılı.
 - `git diff --check` temiz.
-- Yerel Java/Gradle bulunmadığından Kotlin derleme ve Robolectric sonuçları CI'dan beklenecek.
+- Yerel Java/Gradle bulunmadığından Kotlin derleme ve Robolectric doğrulaması CI'da yapıldı; sonuçlar aşağıdadır.
+
+## CI ve branch yayın sonuçları
+
+- İlk Kotlin/test/APK run `42115170299`: **success**.
+- Native production output pixel testlerini içeren run `42118286341`: **success**.
+- Live Chromium + production Kotlin fixture run `42117796891`: **success**; `full_page_contract_passed=true`, Bölüm 1 `52`, Bölüm 2 `26`, DOM sıra/flip eşleşmesi ve kaynakla aynı output boyutları doğrulandı.
+- Branch release run `42115170298`: **success**. Üç `1.6.34` APK kopyası **100.971 bayt**, SHA-256 **`065d68642bed39db94be33a214532d263d6d3636805cca40d60504b5cae986ec`**; kataloglar `1.6.34 / 106034`.
+- Live runner gerçek CDN görsellerinde 403 aldı; `real_images_verified=false`. Native/sentetik piksel testleri gerçek CDN veya cihaz kabulü değildir.
+- İlk iki live workflow yalnız sanitized diagnostics'i bot commit'iyle kaydetme adımında Git `128` verdi. Diagnostics artık read-only artifact olarak yükleniyor; başarılı run `42117796891` bu sorunun da çözüldüğünü doğrular.
 
 ## Henüz kanıtlanmayanlar
 
-- CI Kotlin/test/APK sonucu.
-- Yeni live Chromium fixture sonucu.
-- `1.6.34` APK ve katalog yayın sonucu.
+- PR'ın main'e alınması ve kalıcı `builds` yayınının aynı APK'yı içermesi.
 - Kullanıcının cihazında Bölüm 1 ve 2'de tam görsel, doğru sıra ve doğru yön.
 
-Bu maddeler tamamlanmadan ürün düzeltmesi kesinleşmiş sayılmaz.
+Kullanıcı cihazı kabulü olmadan ürün düzeltmesi kesinleşmiş sayılmaz.
