@@ -5,6 +5,7 @@ import kotlinx.serialization.json.JsonObject
 
 internal fun createTestChapter(): SChapter = TestChapter()
 
+@Suppress("PropertyName")
 private class TestChapter : SChapter {
     override var url: String = ""
     override var name: String = ""
