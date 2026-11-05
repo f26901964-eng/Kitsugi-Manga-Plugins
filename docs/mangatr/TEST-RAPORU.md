@@ -1,55 +1,76 @@
-# Manga-TR inceleme / test raporu — 5 Kasım 2026
+# MangaTR — test raporu
 
-## Kapsam ve sürüm
+## Kullanıcı sonucu
 
-Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Kalıcı yayınlanan `1.6.32 / 106032` de cihazda başarılı olmadı: Chainsaw Man Bölüm 1 ve 2, `KTS-SRC-9008` gate/config hatasıyla açılmadı. Bu nedenle `1.6.32` ürün düzeltmesi olarak kabul edilmiyor. Yeni aday `1.6.33 / 106033`; canlı production Kotlin testleri geçti, kullanıcı cihazı doğrulaması henüz yapılmadı.
+`1.6.33 / 106033` kalıcı olarak yayınlandı ve gate/config aşamasını geçti; ancak kullanıcının `image-13.png`–`image-17.png` kanıtları aynı kaynağın iki strip'ini ayrı okuyucu sayfaları olarak gösterdi. Yarım/kesik sayfalar nedeniyle bu sürüm başarısız kabul edilir. Son `image-18.png`–`image-20.png` örnekleri ise sitenin kendi reader'ının tam ve doğru görseller gösterdiğini doğrular; hedef sitenin bu sonucudur.
 
-## Aktif gate/config düzeltmesi
+Yeni aday `1.6.34 / 106034` için gerçek cihaz kabulü henüz yoktur.
 
-- `getPageList` artık HTTP cevabının ham gövdesini `asJsoup()` öncesinde alıyor; grup seçimi sonrasındaki cevap için de aynısını yapıyor.
-- Gate path, `n`/`c` query değerleri, fallback page key ve pointer girdileri Jsoup'un yeniden serialize ettiği HTML yerine ham cevaptan çıkarılıyor.
-- Gate URL, gate anahtarı, config decrypt ve sayfa üretimi hataları `KTS-SRC-9101`–`9104` ile ayrılıyor; gizli anahtar/nonce kullanıcı mesajına yazılmıyor.
-- Browser referansı encrypted config'i `.strip()` ile okurken Android temel Base64 decoder'ına script'in newline/girintisini temizlemeden veriyordu. `decrypt` artık decoder öncesinde `trim()` uyguluyor; whitespace'li gerçek `<script type="application/json">` fixture testi eklendi.
-- Sitenin `_calcPointerDelta` fonksiyonu flow'u önce jQuery `$.css(body, 'flow')` ile okuyor. Her iki canlı reader'da gerçek girdi `ease=mTr_v4`, `flow=84`; CSS `--ui-flow` değeri `20`. Production artık canlı 84, CSS 20 ve CSS/ease henüz boşken oluşan sınırlı pointer adaylarını deniyor.
-- Canlı browser-fixture + production Kotlin run `42107749381` başarılıdır. Chromium'dan alınan gerçek ham HTML, `n/cv` gate cevabı ve pointer yalnız `/tmp` içinde tutuldu; Git'e veya artifact'a gizli değer yazılmadı. Kotlin aynı canvas/pointer değerlerini üretti, config'i çözdü ve ayrı `v3` sayfaları üretti.
-- Bölüm 1 reader `125451`: 52 kaynak eleman × 2 = **104 ayrı sayfa**. Bölüm 2 reader `125989`: 26 kaynak eleman × 2 = **52 ayrı sayfa**. İki config de `current-pointer` ile çözüldü.
-- Aynı kaynak commit'in fixture/unit + release APK CI run `42107749466` başarılıdır. Browser DOM doğrulaması da geçti; gerçek CDN piksel doğrulaması `real_images_verified=false` durumundadır.
-- Canlı browser run `42093595643`: gate query alanları `c,n`, nonce 16, canvas token 16; config `grid=int`, `seeds=list<int>`. String-DTO esnekliği yalnız savunma amaçlıdır.
-- Bu sonuçlar cihaz başarısı iddiası değildir; kullanıcının Bölüm 1 ve 2 ekranındaki tek parça/sıra/yön sonucu ayrıca doğrulanmalıdır.
+## Düzeltilen teknik model
 
-## Canlı reader yapısı
+- Eski current `v3-{destination}-{codes}` modeli her destination için ayrı `Page` ve 20×40 örneğinde iki ayrı 20×20 bitmap üretiyordu. Bu artık current üretim yolu değildir.
+- Current `v4-{codes}` modeli her kaynak URL/reader elemanı için tek `Page` üretir.
+- Interceptor bütün source strip'leri okur, her strip'i kendi yerel koordinatlarında yatay/dikey çevirir ve destination sırasına göre tek bitmap'e yerleştirir.
+- Output `source.width × source.height` olur. `source.height % grid != 0` olduğunda son strip kaynak sonuna kadar alınır; satır kaybı olmaz.
+- Current v4 ve geriye dönük v3 isteklerinde `FORCE_NETWORK` kullanılır; malformed order veya decode hatasında ham karışık bitmap başarılı cevap olarak dönmez.
+- Dönüştürülmüş cevabın eski `Content-Length` ve `Content-Encoding` header'ları temizlenir.
 
-- Chainsaw Man Bölüm 1 reader elemanları tek URL taşıyor; site bu URL'yi `background-size: 100% 200%` ile iki CSS slice olarak sunuyor.
-- `1.6.31` her hedef slice için ayrı `v3-{destination}-{codes}` fragment'ı üretiyordu ancak kullanıcı cihazında birleşik kaynak görsel gelmeye devam etti.
-- `1.6.32` artık request üretimini açıkça yapıyor, current `v3` isteğinde `FORCE_NETWORK` kullanıyor ve current config veya slice decode başarısızsa ham birleşik bitmap'i başarılı cevap olarak döndürmüyor.
+## Beklenen canlı sayfa sayıları
 
-## Uygulanan düzeltme
+| Reader | Bölüm | Kaynak eleman | Beklenen tam Page |
+|---|---:|---:|---:|
+| `125451` | 1 | 52 | **52** |
+| `125989` | 2 | 26 | **26** |
 
-- `MangaTRImagePipeline` production request ve bitmap yolunu `HttpSource` Android stub'ından bağımsız, doğrudan test edilebilir hâle getirir.
-- `imageRequest` seçilen slice fragment'ını açık `Request.Builder` ile korur; current `v3` için `Cache-Control: no-cache` / `FORCE_NETWORK` uygular.
-- İki slice kullanan 52 reader elemanı 104 ayrı sayfa üretir; her cevap yalnız seçilen source strip'in crop+flip sonucudur.
-- Current gate/config çözülemezse eski encrypted-attribute fallback ile ham scramble görsel kullanılmaz; açık hata verilir.
-- Current `v3` fragment/order/decode geçersizse orijinal birleşik görsel döndürülmez.
-- Eski `v2-` ve legacy encrypted-order birleştirme davranışı yalnız eski okuyucular için korunur.
+Her iki reader için daha önce gate/config teknik doğrulaması başarılıydı: `ease=mTr_v4`, canlı jQuery `flow=84`, CSS fallback `20`; gate POST alanları `n/cv`. Bu sonuç yalnız gate/config içindir, bitmap doğruluğu anlamına gelmez.
 
-## Gerçek production pipeline testleri
+## Yeni testler
 
-Kotlin CI run `42089413923` ve release run `42090052071` başarılıdır:
+### Kotlin / Robolectric
 
-- `Page → imageRequest` fragment'ı ve imzalı query hedefini korur; `no-cache` header'ı doğrulanır.
-- Gerçek production interceptor'ına `20×40`, iki parçalı sentetik PNG verilir.
-- `v3-0-0,1` ve `v3-1-0,1` isteklerinin her biri **`20×20`** ayrı bitmap döndürür; orijinal `20×40` bitmap dönmez.
-- Geçersiz current destination (`v3-2-0,1`) ham birleşik kaynağa dönmek yerine `IOException` üretir.
-- Gate DTO'sunun `n` ve `cv` alanları doğru serialize edilir; crypto/seed/order/flip sözleşme testleri geçer.
-- Robolectric gerçek Canvas piksel render'ı yapmadığından renk/piksel iddiası test edilmez; boyut ve fallback yasağı gerçek production kodunda test edilir.
-- Canlı gate+DOM run `42090052016` başarılıdır; gerçek CDN piksel doğrulaması hâlâ yoktur.
-- Python katalog testleri: 15 başarılı, özel snapshot gerektiren 4 skip.
-- Release DEX içinde `v3-`, `no-cache` ve current-slice hata korumaları doğrulandı.
+- Current fragment `v4-300,1` korunur ve request `no-cache` olur.
+- İki 20×20 strip içeren 20×40 kaynak için current cevap **tek 20×40 bitmap** olur.
+- 20×41 kaynak için current cevap **20×41** olur; tek sayılı yükseklikte son satır kaybolmaz.
+- Geçersiz `v4-0,2` ham kaynağa dönmek yerine `IOException` üretir.
+- Eski v3 slice istekleri yalnız geriye dönük oturum uyumluluğu için test edilir; current Page üretiminde kullanılmaz.
+- Reader contract iki kaynak eleman için 4 slice Page yerine **2 full Page** ve `v4-300,1`, `v4-201,200` fragment'ları üretir.
 
-## Bilinen doğrulama sınırı
+`MangaTRImagePipelineTest` ayrıca `@GraphicsMode(NATIVE)` ile çalışır. Dört renkli 20×40 kaynak üzerinde production interceptor çıktısının gerçek pikselleri okunur; yatay flip, dikey flip, 180° flip, destination sırası ve iki strip'in tek 20×40 çıktıya yerleşimi ayrı ayrı doğrulanır. CI run `42118286341` bu testlerle başarılıdır.
 
-Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/yön kontrolü tamamlanamadı. Sentetik görseller gerçek manga sayfası veya cihaz kanıtı değildir. Kullanıcının yeni sürümde Bölüm 1 ve 2'yi açması, her sayfada tek görsel ve doğru sıra/yön görmesi gerekir; bu doğrulama yapılmadan düzeltme başarılı sayılmaz.
+### Browser / sentetik piksel
 
-## Dağıtım durumu
+`tools/mangatr_browser_orientation.py` önce küçük etiketli bitmap'lerde şu kontrolleri yapar:
 
-`tachiyomi-tr.mangatr-v1.6.32.apk` PR #12 ile ana dala ve kalıcı `builds` dalına yayınlandı. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti; kalıcı yayın run `42091010382` başarılı oldu. Ancak kullanıcının `image-11.png` ve `image-12.png` kanıtları bu sürümün Bölüm 1 ve 2'de gate/config hatası verdiğini gösterir. Dağıtım başarısı ürün başarısı değildir.
+- destination sırası;
+- yatay flip;
+- dikey flip;
+- 180° flip;
+- 4×5 tek sayılı yükseklikte bütün satır/sütunların korunması.
+
+Ardından canlı DOM'daki `data-reader-slice`, `background-position` ve `transform` değerlerini production seed kodlarıyla karşılaştırır. Her örnek için tek çıktı ve `source_dimensions == output_dimensions` zorunludur. Rapor `full_page_contract_passed`, 52/26 sayfa sayıları ve gate/DOM sonucu birlikte başarılı olmadan contract geçmez.
+
+CDN engeli nedeniyle sentetik kaynak kullanılırsa `real_images_verified=false` kalır. Sentetik piksel testi algoritmayı doğrular; gerçek CDN görüntüsü veya kullanıcı cihazı kabulü değildir.
+
+## Yerel kontroller — 6 Kasım 2026
+
+- Python katalog/test paketi: **15 test başarılı, 4 private snapshot testi skip**.
+- Etiketli Pillow piksel sözleşmesi: sıra, yatay/dikey/180° flip ve tek sayılı yükseklik kontrolleri başarılı.
+- Python syntax ve üç MangaTR workflow YAML/branch kontrolü başarılı.
+- `git diff --check` temiz.
+- Yerel Java/Gradle bulunmadığından Kotlin derleme ve Robolectric doğrulaması CI'da yapıldı; sonuçlar aşağıdadır.
+
+## CI ve branch yayın sonuçları
+
+- İlk Kotlin/test/APK run `42115170299`: **success**.
+- Native production output pixel testlerini içeren run `42118286341`: **success**.
+- Live Chromium + production Kotlin fixture run `42117796891`: **success**; `full_page_contract_passed=true`, Bölüm 1 `52`, Bölüm 2 `26`, DOM sıra/flip eşleşmesi ve kaynakla aynı output boyutları doğrulandı.
+- Branch release run `42115170298`: **success**. Üç `1.6.34` APK kopyası **100.971 bayt**, SHA-256 **`065d68642bed39db94be33a214532d263d6d3636805cca40d60504b5cae986ec`**; kataloglar `1.6.34 / 106034`.
+- Live runner gerçek CDN görsellerinde 403 aldı; `real_images_verified=false`. Native/sentetik piksel testleri gerçek CDN veya cihaz kabulü değildir.
+- İlk iki live workflow yalnız sanitized diagnostics'i bot commit'iyle kaydetme adımında Git `128` verdi. Diagnostics artık read-only artifact olarak yükleniyor; başarılı run `42117796891` bu sorunun da çözüldüğünü doğrular.
+
+## Henüz kanıtlanmayanlar
+
+- PR'ın main'e alınması ve kalıcı `builds` yayınının aynı APK'yı içermesi.
+- Kullanıcının cihazında Bölüm 1 ve 2'de tam görsel, doğru sıra ve doğru yön.
+
+Kullanıcı cihazı kabulü olmadan ürün düzeltmesi kesinleşmiş sayılmaz.

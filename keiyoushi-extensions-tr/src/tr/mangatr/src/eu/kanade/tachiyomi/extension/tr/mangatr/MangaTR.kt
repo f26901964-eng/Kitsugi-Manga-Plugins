@@ -1289,7 +1289,7 @@ abstract class MangaTR : KeiSource() {
             ) ?: throw IOException("Manga-TR okuyucu config'i çözülemedi. KTS-SRC-9103")
 
             return MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)
-                ?: throw IOException("Manga-TR config'den ayrı görsel sayfaları üretilemedi. KTS-SRC-9104")
+                ?: throw IOException("Manga-TR config'den tam görsel sayfaları üretilemedi. KTS-SRC-9104")
         }
 
         // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)

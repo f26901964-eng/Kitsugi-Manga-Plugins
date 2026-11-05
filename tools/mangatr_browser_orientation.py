@@ -9,7 +9,7 @@ import json
 import re
 import shutil
 from pathlib import Path
-from urllib.parse import parse_qs, quote, urlparse
+from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
 from PIL import Image, ImageDraw
@@ -61,34 +61,64 @@ def attribute(element, name: str) -> str:
 
 
 def corrected_image(source: Image.Image, codes: list[int]) -> Image.Image:
+    """Apply the site's crop/flip/order contract to one full original image."""
     grid = len(codes)
-    strip_height = source.height // grid
-    if strip_height <= 0:
+    if source.height < grid:
         raise RuntimeError("Image is shorter than its reader grid")
-    output = Image.new("RGB", (source.width, strip_height * grid))
+
+    def strip_top(index: int) -> int:
+        return index * source.height // grid
+
+    def strip_bottom(index: int) -> int:
+        return source.height if index == grid - 1 else (index + 1) * source.height // grid
+
+    strips: dict[int, Image.Image] = {}
     for source_index, code in enumerate(codes):
-        strip = source.crop((0, source_index * strip_height, source.width, (source_index + 1) * strip_height))
+        strip = source.crop((0, strip_top(source_index), source.width, strip_bottom(source_index)))
         if code // 100 & 1:
             strip = strip.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
         if code // 100 & 2:
             strip = strip.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-        output.paste(strip, (0, (code % 100) * strip_height))
+        strips[code % 100] = strip
+
+    output = Image.new("RGB", source.size)
+    next_top = 0
+    for destination in range(grid):
+        strip = strips[destination]
+        output.paste(strip, (0, next_top))
+        next_top += strip.height
+    if next_top != source.height or output.size != source.size:
+        raise RuntimeError("Corrected image did not preserve every source row and column")
     return output
 
 
-def corrected_slice(source: Image.Image, codes: list[int], destination: int) -> Image.Image:
-    """Return the same single image that the new Android v3 fragment selects."""
-    strip_height = source.height // len(codes)
-    if strip_height <= 0:
-        raise RuntimeError("Image is shorter than its reader grid")
-    source_index = next(index for index, code in enumerate(codes) if code % 100 == destination)
-    code = codes[source_index]
-    strip = source.crop((0, source_index * strip_height, source.width, (source_index + 1) * strip_height))
-    if code // 100 & 1:
-        strip = strip.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
-    if code // 100 & 2:
-        strip = strip.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
-    return strip
+def verify_corrected_image_contract() -> None:
+    """Pixel-check order/flips and odd-height row preservation without a network."""
+    source = Image.new("RGB", (4, 5))
+    for y in range(source.height):
+        for x in range(source.width):
+            source.putpixel((x, y), (x * 40, y * 40, (x + y) * 10))
+    rows = [[source.getpixel((x, y)) for x in range(source.width)] for y in range(source.height)]
+
+    # Source strip 1 goes first with a horizontal flip; source strip 0 goes
+    # second with a vertical flip. The 4x5 input deliberately has an odd height.
+    corrected = corrected_image(source, [201, 100])
+    expected_rows = [list(reversed(row)) for row in rows[2:5]] + list(reversed(rows[0:2]))
+    actual_rows = [[corrected.getpixel((x, y)) for x in range(corrected.width)] for y in range(corrected.height)]
+    if corrected.size != source.size or actual_rows != expected_rows:
+        raise RuntimeError("Full-image pixel contract failed for odd-height order/horizontal/vertical flips")
+
+    # A 180-degree flip must reverse both axes inside the selected strip only.
+    upright = Image.new("RGB", (2, 4))
+    for y in range(4):
+        for x in range(2):
+            upright.putpixel((x, y), (x * 100, y * 50, 0))
+    upright_rows = [[upright.getpixel((x, y)) for x in range(2)] for y in range(4)]
+    rotated = corrected_image(upright, [300, 1])
+    expected_rotated = [list(reversed(row)) for row in reversed(upright_rows[0:2])] + upright_rows[2:4]
+    actual_rotated = [[rotated.getpixel((x, y)) for x in range(2)] for y in range(4)]
+    if rotated.size != upright.size or actual_rotated != expected_rotated:
+        raise RuntimeError("Full-image pixel contract failed for the 180-degree flip")
 
 
 def synthetic_image(url: str) -> bytes:
@@ -208,7 +238,6 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
 
         attributes = candidate["data"]
         source_pages = soup.select(f"[{attributes['parts']}]")
-        grid = int(candidate.get("grid") or 2)
         fixture_dir = LIVE_FIXTURE_OUT / reader_id
         fixture_dir.mkdir(parents=True, exist_ok=True)
         (fixture_dir / "reader.html").write_text(raw_html, encoding="utf-8")
@@ -221,7 +250,7 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
             "reader": reader_id,
             "chapter": chapter,
             "sourcePages": len(source_pages),
-            "expectedPages": len(source_pages) * grid,
+            "expectedPages": len(source_pages),
             "gateFormat": gate_format,
         }
         (fixture_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
@@ -246,6 +275,7 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
 
 
 def main() -> None:
+    verify_corrected_image_contract()
     CORRECTED_OUT.mkdir(parents=True, exist_ok=True)
     SITE_OUT.mkdir(parents=True, exist_ok=True)
     REPORT_OUT.mkdir(parents=True, exist_ok=True)
@@ -253,7 +283,11 @@ def main() -> None:
     if LIVE_FIXTURE_OUT.exists():
         shutil.rmtree(LIVE_FIXTURE_OUT)
     LIVE_FIXTURE_OUT.mkdir(parents=True, exist_ok=True)
-    report: dict[str, object] = {"reader": READER_ID, "samples": []}
+    report: dict[str, object] = {
+        "reader": READER_ID,
+        "synthetic_pixel_contract_passed": True,
+        "samples": [],
+    }
 
     def save_report() -> None:
         body = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
@@ -336,29 +370,6 @@ def main() -> None:
                     image_sources[url] = "live"
                     route.fulfill(status=200, content_type=mime, body=body)
                     return
-
-            # Fetch signed images while they are fresh. The later five-sample
-            # fallback cannot prove orientation if a short-lived URL expired.
-            try:
-                proxied = context.request.get(
-                    "https://images.weserv.nl/?url=" + quote(url, safe=""),
-                    timeout=8_000,
-                )
-                proxy_body = proxied.body()
-                proxy_attempts.append({"stage": "route", "service": "weserv", "status": proxied.status})
-                if proxied.status == 200:
-                    with Image.open(io.BytesIO(proxy_body)) as probe:
-                        image_format = probe.format
-                        probe.verify()
-                    mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
-                    if mime is None:
-                        raise ValueError("proxy returned a non-image body")
-                    fetched_bodies[url] = proxy_body
-                    image_sources[url] = "live-weserv"
-                    route.fulfill(status=200, content_type=mime, body=proxy_body)
-                    return
-            except Exception as error:
-                proxy_attempts.append({"stage": "route", "service": "weserv", "error": redact(error)})
 
             body = synthetic_image(url)
             fetched_bodies[url] = body
@@ -605,46 +616,25 @@ def main() -> None:
                 if image_response.status != 200:
                     raise RuntimeError(f"Page {position + 1} image returned {image_response.status}")
                 body = image_response.body()
-            if image_sources.get(image_url) == "synthetic":
-                # Test-only fallbacks for GitHub-runner CDN blocks, limited to
-                # the five OCR samples. Runtime extension code never uses them.
-                for service, template in (
-                    ("weserv", "https://images.weserv.nl/?url="),
-                    ("allorigins", "https://api.allorigins.win/raw?url="),
-                    ("codetabs", "https://api.codetabs.com/v1/proxy?quest="),
-                ):
-                    try:
-                        proxied = context.request.get(template + quote(image_url, safe=""), timeout=8_000)
-                        proxy_body = proxied.body()
-                        proxy_attempts.append({"page": position + 1, "service": service, "status": proxied.status})
-                        if proxied.status == 200:
-                            with Image.open(io.BytesIO(proxy_body)) as probe:
-                                probe.verify()
-                            body = proxy_body
-                            image_sources[image_url] = f"live-{service}"
-                            break
-                    except Exception as error:
-                        proxy_attempts.append({"page": position + 1, "service": service, "error": redact(error)})
             sample["image_source"] = image_sources.get(image_url, "live")
             save_report()
             with Image.open(io.BytesIO(body)) as raw:
                 source = raw.convert("RGB")
                 source.load()
             corrected = corrected_image(source, codes)
-            corrected.save(CORRECTED_OUT / f"page-{position + 1}.png", format="PNG")
-            slice_out = CORRECTED_OUT / "slices"
-            slice_out.mkdir(parents=True, exist_ok=True)
-            for destination in range(len(codes)):
-                corrected_slice(source, codes, destination).save(
-                    slice_out / f"page-{position + 1}-slice-{destination}.png",
-                    format="PNG",
+            if corrected.size != source.size:
+                raise RuntimeError(
+                    f"Page {position + 1} changed dimensions: {source.size} -> {corrected.size}"
                 )
-            sample["output_slice_count"] = len(codes)
-            sample["output_slice_dimensions"] = [corrected.width, corrected.height // len(codes)]
+            corrected.save(CORRECTED_OUT / f"page-{position + 1}.png", format="PNG")
+            sample["output_page_count"] = 1
+            sample["source_dimensions"] = list(source.size)
+            sample["output_dimensions"] = list(corrected.size)
+            sample["full_original_dimensions_preserved"] = True
             save_report()
             print(
                 f"Reader {READER_ID} page {position + 1}: live DOM matches generated order/flips; "
-                f"{len(codes)} separate {corrected.width}x{corrected.height // len(codes)} images; "
+                f"one full {corrected.width}x{corrected.height} image; "
                 f"source={sample['image_source']}"
             )
 
@@ -657,7 +647,22 @@ def main() -> None:
         len(report["samples"]) == len(SAMPLE_PAGES)
         and all(str(sample.get("image_source", "")).startswith("live") for sample in report["samples"])
     )
-    report["contract_passed"] = bool(report["extension_gate_decrypts"] and report["dom_verification_passed"])
+    report["full_page_contract_passed"] = (
+        report["extension_expected_page_count"] == 52
+        and report["chapter_two_expected_page_count"] == 26
+        and len(report["samples"]) == len(SAMPLE_PAGES)
+        and all(
+            sample.get("output_page_count") == 1
+            and sample.get("full_original_dimensions_preserved") is True
+            and sample.get("source_dimensions") == sample.get("output_dimensions")
+            for sample in report["samples"]
+        )
+    )
+    report["contract_passed"] = bool(
+        report["extension_gate_decrypts"]
+        and report["dom_verification_passed"]
+        and report["full_page_contract_passed"]
+    )
     # Pixel evidence is deliberately a separate result: synthetic images never
     # satisfy real_images_verified and are not used to claim visual acceptance.
     report["passed"] = report["contract_passed"]
