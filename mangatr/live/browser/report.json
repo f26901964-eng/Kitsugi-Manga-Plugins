@@ -82,11 +82,19 @@
   "reader_gate_responses": [
     {
       "status": 200,
-      "type": "xhr"
+      "type": "xhr",
+      "method": "POST",
+      "bytes": 46,
+      "json_keys": [
+        "k",
+        "s"
+      ],
+      "key_length": 32
     }
   ],
   "reader_errors": [],
   "reader_status": 200,
+  "manual_image_found": true,
   "group_skip_visible": true,
   "reader_title": "2 - Chainsaw Man - Manga-TR.com Türkçe Çevrimiçi Oku",
   "reader_dom": {
