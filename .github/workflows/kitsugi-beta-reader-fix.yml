@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  checks: write
 
 concurrency:
   group: kitsugi-beta-reader-fix-${{ github.ref }}
@@ -119,6 +120,22 @@ jobs:
           if [ -f "$RUNNER_TEMP/kitsugi-reader-build.log" ]; then
             tail -n 60 "$RUNNER_TEMP/kitsugi-reader-build.log" >> "$GITHUB_STEP_SUMMARY"
           fi
+
+      - name: Expose a build failure through the Checks API
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LOG="$RUNNER_TEMP/kitsugi-reader-build.log"
+          if [ -f "$LOG" ]; then
+            SUMMARY=$(grep -nE '^e: |FAILURE|What went wrong|Execution failed|Caused by|error:' "$LOG" | tail -n 100 | cut -c1-500 | tr '\n' '|')
+            if [ -z "$SUMMARY" ]; then SUMMARY=$(tail -n 100 "$LOG" | cut -c1-500 | tr '\n' '|'); fi
+          else
+            SUMMARY='Build log was not created; inspect the failed setup step.'
+          fi
+          jq -n --arg sha "$GITHUB_SHA" --arg summary "$SUMMARY" \
+            '{name:"kitsugi-reader-build-failure",head_sha:$sha,status:"completed",conclusion:"neutral",output:{title:"Patched Kitsugi-Beta build failure",summary:$summary}}' > "$RUNNER_TEMP/reader-check.json"
+          gh api "repos/$GITHUB_REPOSITORY/check-runs" --method POST --input "$RUNNER_TEMP/reader-check.json" --jq '.html_url'
 
       - name: Upload the test APK (not a release)
         if: success()
