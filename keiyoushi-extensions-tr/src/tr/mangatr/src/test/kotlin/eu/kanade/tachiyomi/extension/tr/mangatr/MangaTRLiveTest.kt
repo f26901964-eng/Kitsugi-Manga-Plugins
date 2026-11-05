@@ -62,7 +62,7 @@ class MangaTRLiveTest {
             )
             val browserPointer = File(fixtureDir, "pointer.txt").readText().trim()
             assertEquals(
-                "Reader ${metadata.reader} browser/Kotlin pointer algorithm mismatch",
+                "Reader ${metadata.reader} browser/Kotlin pointer algorithm mismatch: $pointerInputs",
                 browserPointer,
                 MangaTRReaderContract.pointerDelta(nonce, pointerInputs.ease, pointerInputs.flow),
             )
@@ -71,7 +71,7 @@ class MangaTRLiveTest {
             val pointer = MangaTRReaderContract.pointerDelta(nonce, ease, flow)
             val pointerCandidates = MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, flow)
             assertTrue(
-                "Reader ${metadata.reader} browser pointer is outside production candidates",
+                "Reader ${metadata.reader} browser pointer is outside production candidates: $pointerInputs",
                 browserPointer in pointerCandidates,
             )
 
@@ -380,6 +380,8 @@ class MangaTRLiveTest {
     private data class LiveFixturePointerDto(
         val ease: String,
         val flow: String,
+        val jqueryFlow: String = "",
+        val cssFlow: String = "",
     )
 
     @Serializable

@@ -138,9 +138,14 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
             """nonce => {
                 const inputs = () => {
                     const body = document.body || document.documentElement;
+                    const jqueryFlow = typeof $ === 'function' && typeof $.css === 'function'
+                        ? String($.css(body, 'flow') || '') : '';
+                    const cssFlow = String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim();
                     return {
                         ease: String((window._mouseCurve || {}).ease || ''),
-                        flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
+                        flow: jqueryFlow || cssFlow,
+                        jqueryFlow,
+                        cssFlow,
                     };
                 };
                 const before = inputs();
@@ -409,9 +414,14 @@ def main() -> None:
         pointer_inputs = page.evaluate(
             """() => {
                 const body = document.body || document.documentElement;
+                const jqueryFlow = typeof $ === 'function' && typeof $.css === 'function'
+                    ? String($.css(body, 'flow') || '') : '';
+                const cssFlow = String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim();
                 return {
                     ease: String((window._mouseCurve || {}).ease || ''),
-                    flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
+                    flow: jqueryFlow || cssFlow,
+                    jqueryFlow,
+                    cssFlow,
                 };
             }"""
         )
