@@ -98,6 +98,15 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `canvas fingerprint matches the two integer readback positions`() {
+        assertEquals("57,102,149|101,169,251", MangaTRReaderContract.canvasFingerprint("0001000200030004"))
+        assertEquals("40,41,210|127,121,220", MangaTRReaderContract.canvasFingerprint("1234abcd55aa0000"))
+        assertEquals("215,155,25|255,230,40", MangaTRReaderContract.canvasFingerprint("ffffffffffffffff"))
+        assertEquals("20,20,20|30,30,30", MangaTRReaderContract.canvasFingerprint("0000000000000000"))
+        assertEquals("", MangaTRReaderContract.canvasFingerprint(""))
+    }
+
+    @Test
     fun `pointer delta matches the public cap js checksum vectors`() {
         assertEquals("82f9678b", MangaTRReaderContract.pointerDelta("0123456789abcdef"))
         assertEquals("0cd07291", MangaTRReaderContract.pointerDelta("abcdef0123456789", "cubic", "ltr"))

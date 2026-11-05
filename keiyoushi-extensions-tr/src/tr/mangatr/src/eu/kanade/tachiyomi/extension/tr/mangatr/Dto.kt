@@ -15,7 +15,7 @@ class ChallengeRequestDto(val challenge: String)
 class ReaderGateDto(val k: String)
 
 @Serializable
-class ReaderGateRequestDto(val n: String)
+class ReaderGateRequestDto(val n: String, val cv: String)
 
 @Serializable
 class ReaderConfigDto(

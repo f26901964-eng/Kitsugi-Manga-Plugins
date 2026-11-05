@@ -1268,7 +1268,12 @@ abstract class MangaTR : KeiSource() {
                         Request.Builder()
                             .url(gateUrl)
                             .headers(gateHeaders)
-                            .post(ReaderGateRequestDto(nonce).toJsonRequestBody())
+                            .post(
+                                ReaderGateRequestDto(
+                                    nonce,
+                                    MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+                                ).toJsonRequestBody(),
+                            )
                             .build(),
                     ).execute().parseAs<ReaderGateDto>().k
                 } catch (e: Exception) {

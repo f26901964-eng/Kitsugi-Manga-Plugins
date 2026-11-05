@@ -25,6 +25,26 @@ internal object MangaTRReaderContract {
         return String(xored, StandardCharsets.UTF_8)
     }
 
+    /** Integer equivalent of the site's two canvas readbacks; no WebView is needed. */
+    fun canvasFingerprint(token: String): String {
+        if (token.length < 16) return ""
+        val values = listOf(0, 4, 8, 12).map { offset ->
+            token.substring(offset, offset + 4).toIntOrNull(16) ?: 0
+        }
+        val base = listOf(
+            values[0] * 37 % 200 + 20,
+            values[1] * 41 % 200 + 20,
+            values[2] * 43 % 200 + 20,
+        )
+        val extra = listOf(
+            values[1] * 17 % 100 + 10,
+            values[2] * 19 % 100 + 10,
+            values[3] * 23 % 100 + 10,
+        )
+        val lighter = base.mapIndexed { index, value -> minOf(255, value + extra[index]) }
+        return base.joinToString(",") + "|" + lighter.joinToString(",")
+    }
+
     /** FNV-1a pointer checksum calculated by the site's _calcPointerDelta function. */
     fun pointerDelta(nonce: String, ease: String = "", flow: String = ""): String {
         if (nonce.isEmpty()) return ""

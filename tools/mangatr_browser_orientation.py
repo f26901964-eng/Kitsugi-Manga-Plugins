@@ -243,9 +243,19 @@ def main() -> None:
             extension_nonce,
         )
         report["extension_pointer_delta_length"] = len(str(extension_pointer))
-        report["extension_gate_request"] = "n-only"
+        report["extension_gate_request"] = "n-cv"
         extension_gate = extension_page.evaluate(
             """async gateUrl => {
+                const url = new URL(gateUrl);
+                const n = url.searchParams.get('n') || '';
+                const c = url.searchParams.get('c') || '';
+                let cv = '';
+                if (c.length >= 16) {
+                    const v = [0, 4, 8, 12].map(offset => parseInt(c.slice(offset, offset + 4), 16) || 0);
+                    const base = [v[0] * 37 % 200 + 20, v[1] * 41 % 200 + 20, v[2] * 43 % 200 + 20];
+                    const extra = [v[1] * 17 % 100 + 10, v[2] * 19 % 100 + 10, v[3] * 23 % 100 + 10];
+                    cv = base.join(',') + '|' + base.map((value, index) => Math.min(255, value + extra[index])).join(',');
+                }
                 const attempt = async options => {
                     const response = await fetch(gateUrl, {...options, credentials: 'include'});
                     return {status: response.status, body: await response.text()};
@@ -253,7 +263,7 @@ def main() -> None:
                 let result = await attempt({
                     method: 'POST',
                     headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-                    body: JSON.stringify({n: new URL(gateUrl).searchParams.get('n') || ''}),
+                    body: JSON.stringify({n, cv}),
                 });
                 if (result.status !== 200) result = await attempt({method: 'GET'});
                 return result;
@@ -281,6 +291,12 @@ def main() -> None:
                     break
             except (ValueError, UnicodeError, KeyError):
                 continue
+        if extension_gate_format is None:
+            report["extension_gate_format"] = None
+            report["extension_gate_decrypts"] = False
+            save_report()
+            extension_page.close()
+            raise RuntimeError("Extension n-cv request and current pointer did not decrypt the fresh config")
         extension_page.close()
         page.bring_to_front()
         page.wait_for_timeout(1_000)
