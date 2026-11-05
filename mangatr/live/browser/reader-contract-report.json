@@ -5,6 +5,7 @@
   "pointer_delta_length": 8,
   "gate_format": "browser-pointer",
   "extension_pointer_delta_length": 8,
+  "extension_gate_request": "n-only",
   "extension_gate_format": null,
   "extension_gate_decrypts": false
 }
