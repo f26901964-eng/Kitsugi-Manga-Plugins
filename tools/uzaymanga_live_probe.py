@@ -122,7 +122,10 @@ def request(session: requests.Session, url: str, *, image: bool = False) -> requ
     try:
         response = session.get(
             url,
-            headers={"Accept": "image/avif,image/webp,image/*,*/*;q=0.8" if image else "*/*"},
+            headers=(
+                {"Accept": "image/avif,image/webp,image/*,*/*;q=0.8"}
+                if image else {"Accept": "*/*", "X-Requested-With": "XMLHttpRequest"}
+            ),
             timeout=TIMEOUT,
         )
     except requests.RequestException as exc:
@@ -322,7 +325,8 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         reader = reader_probe(session, candidate, latest_series)
         return {
             "name": candidate.name,
-            "extensionVersion": candidate.extension_version,
+            "archivedExtensionVersion": candidate.extension_version,
+            "requestMode": "upstream-XHR",
             "ok": True,
             "latestPageSize": len(latest_array),
             "latestTitles": [item["name"] for item in latest_series[:10]],
@@ -338,7 +342,8 @@ def probe(candidate: Candidate) -> dict[str, Any]:
             location = f"{traceback.tb_frame.f_code.co_name}:{traceback.tb_lineno}"
         return {
             "name": candidate.name,
-            "extensionVersion": candidate.extension_version,
+            "archivedExtensionVersion": candidate.extension_version,
+            "requestMode": "upstream-XHR",
             "ok": False,
             "error": (
                 f"{stage}:{exc}" if isinstance(exc, ProbeFailure)

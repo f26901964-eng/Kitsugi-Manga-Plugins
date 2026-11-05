@@ -52,7 +52,7 @@ class UzayMangaLiveProbeTests(unittest.TestCase):
         data, root = get_svelte(FakeSession(), 'https://source.example/__data.json')
         self.assertEqual({'root': 1}, root)
         self.assertEqual([{'root': 1}], data.array)
-        self.assertEqual({'Accept': '*/*'}, captured['headers'])
+        self.assertEqual({'Accept': '*/*', 'X-Requested-With': 'XMLHttpRequest'}, captured['headers'])
 
     def test_cdn_resolution_preserves_absolute_urls_and_normalizes_slashes(self):
         candidate = Candidate('test', 'Test', 'https://source.example', 'https://cdn.example/', '1.0')
