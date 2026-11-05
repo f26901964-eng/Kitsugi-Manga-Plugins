@@ -27,7 +27,16 @@ jobs:
           ./gradlew :src:tr:mangatr:testReleaseUnitTest --tests '*MangaTRLiveTest' --stacktrace 2>&1 | tee /tmp/mangatr-live-gradle.log
       - name: Expose live result in the check summary
         if: always()
-        run: tail -n 250 /tmp/mangatr-live-gradle.log >> "$GITHUB_STEP_SUMMARY" || true
+        run: |
+          tail -n 250 /tmp/mangatr-live-gradle.log >> "$GITHUB_STEP_SUMMARY" || true
+          if [ "${{ job.status }}" = "failure" ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          text = Path('/tmp/mangatr-live-gradle.log').read_text(errors='replace')[-24000:]
+          text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Live test failure log::' + text)
+          PY
+          fi
       - name: Upload live smoke test results
         if: always()
         uses: actions/upload-artifact@v4

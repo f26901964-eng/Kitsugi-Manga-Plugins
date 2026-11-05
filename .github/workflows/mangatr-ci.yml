@@ -27,7 +27,16 @@ jobs:
           ./gradlew :src:tr:mangatr:testReleaseUnitTest :src:tr:mangatr:assembleRelease --stacktrace 2>&1 | tee /tmp/mangatr-gradle.log
       - name: Expose build result in the check summary
         if: always()
-        run: tail -n 250 /tmp/mangatr-gradle.log >> "$GITHUB_STEP_SUMMARY" || true
+        run: |
+          tail -n 250 /tmp/mangatr-gradle.log >> "$GITHUB_STEP_SUMMARY" || true
+          if [ "${{ job.status }}" = "failure" ]; then
+            python3 - <<'PY'
+          from pathlib import Path
+          text = Path('/tmp/mangatr-gradle.log').read_text(errors='replace')[-24000:]
+          text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Gradle failure log::' + text)
+          PY
+          fi
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
