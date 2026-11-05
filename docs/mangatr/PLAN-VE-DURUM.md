@@ -12,8 +12,14 @@
 - `1.6.29` / `106029` APK'sı üretildi; `prebuilt/apk`, `apk`, `builds/apk` ve bütün JSON katalogları release run `42015177025` tarafından güncellendi.
 - Üç yayın APK'sının boyutu `96.819` bayt ve SHA-256 değeri `14389dc6feba2f3bed493699c28f142e15c0adca803482444e5b080025f2a518` olarak eşleşti.
 
+## Dağıtım durumu
+
+- PR [#7](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/7) `main` için açıldı; otomatik birleştirilmedi.
+- APK ve kataloglar bu çalışma dalında hazır. Kataloglardaki kalıcı `builds` dalı URL'sinin yeni APK'yı sunması için PR birleştirilmeli ve mevcut `build-mangatr` / `manga-yayin` workflow'ları çalışmalıdır. `builds` dalında yeni APK henüz bulunmadığı API ile kontrol edildi.
+
 ## Kalan kullanıcı-doğrulama adımı
 
+- [ ] PR #7'yi incele/birleştir ve `builds` dalındaki dağıtım workflow'unun tamamlandığını kontrol et.
 - [ ] APK'yı gerçek Android/Kitsugi-Beta kurulumunda aç; arama, detay, dört chapter-2 çevirisi ve her çevirinin ilk görselini kontrol et.
 - [ ] Şeritli/scramble bir bölümde görsel sırasını ve önbellekten yeniden açmayı kontrol et.
 

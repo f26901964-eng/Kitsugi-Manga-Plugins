@@ -17,11 +17,15 @@ Drive'daki özel HTML örnekleri oturum/tek kullanımlık anahtarlar içerebildi
 ## Otomatik test sonuçları
 
 - CI run `42015176872`: `1.6.29` için Spotless, JVM fixture/contract testleri, debug/release derlemesi ve release APK üretimi başarılı.
-- Release run `42015177025`: testleri yeniden çalıştırıp `3d8287f` commit'iyle APK ve katalogları yayımladı. Üç APK kopyası `96.819` bayt ve SHA-256 `14389dc6feba2f3bed493699c28f142e15c0adca803482444e5b080025f2a518` olarak doğrulandı.
+- Release run `42015177025`: testleri yeniden çalıştırıp `3d8287f` commit'iyle APK ve katalogları çalışma dalına yazdı. Üç APK kopyası `96.819` bayt ve SHA-256 `14389dc6feba2f3bed493699c28f142e15c0adca803482444e5b080025f2a518` olarak doğrulandı.
 - Live run `41963754037`: imzalı bölüm istekleri, dört chapter-2 reader-ID'si, gate yanıtları, sıralı ve benzersiz sayfa listeleri başarılı. Dört okuyucunun tamamı çalıştırıldı; test ilk görselde erken durmadı.
 - Aynı live run'da dört ilk görsel de runner'a Cloudflare `403 Attention Required` döndürdü. Bu dış engel açık bir JUnit assumption skip ve GitHub warning olarak raporlandı; görsel indirme başarılı sayılmadı. Cloudflare dışı görsel hatası gözlenmedi.
 - Headed Android Chrome probe run `41962731386`: gerçek okuyucu scripti ve gate 200 çalıştı; görsel yüklemeleri `net::ERR_BLOCKED_BY_ORB` ile engellendi. Bu, sorunun yalnız OkHttp header'larından ibaret olmadığını ve GitHub runner ortamındaki Cloudflare cevabını doğrular.
 - Python testleri özel Drive snapshot ortam değişkeni olmadan ilgili örnekleri skip eder; katalog ve sürüm eşleme testleri her ortamda çalışır.
+
+## Dağıtım durumu
+
+APK ve kataloglar çalışma dalında üretildi; PR [#7](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/7) `main` için açık. Kalıcı katalog URL'lerinin kullandığı ayrı `builds` dalında `1.6.29` APK'sı henüz yok. PR birleştirildiğinde mevcut `build-mangatr` ve `manga-yayin` workflow'ları dağıtımı tamamlar.
 
 ## Bilinen doğrulama sınırı
 
