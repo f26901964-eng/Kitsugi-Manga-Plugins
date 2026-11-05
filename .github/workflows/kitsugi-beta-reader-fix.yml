@@ -1,0 +1,153 @@
+name: Kitsugi-Beta manga reader fix verification
+
+on:
+  push:
+    branches: [arena/cd3fbd27-kitsugi-manga-plugins]
+    paths:
+      - tools/kitsugi-beta-manga-reader-black-pages.patch
+      - .github/workflows/kitsugi-beta-reader-fix.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  checks: write
+
+concurrency:
+  group: kitsugi-beta-reader-fix-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-patched-app:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      ANDROID_HOME: /tmp/android-sdk
+      ANDROID_SDK_ROOT: /tmp/android-sdk
+    steps:
+      - name: Check out the patch and research report
+        uses: actions/checkout@v4
+
+      - name: Check out the exact Kitsugi-Beta base
+        uses: actions/checkout@v4
+        with:
+          repository: f26901964-eng/Kitsugi-Beta
+          ref: ab81c9ef889e9246a5bceca22f2d2a8da6144f53
+          path: kitsugi-beta
+
+      - name: Apply the reader fix as a commit
+        working-directory: kitsugi-beta
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git am "$GITHUB_WORKSPACE/tools/kitsugi-beta-manga-reader-black-pages.patch"
+          git log -2 --oneline
+
+      - name: Set up JDK and Gradle
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Install the official Android command-line tools
+        run: |
+          mkdir -p "$ANDROID_HOME/cmdline-tools"
+          curl --fail --location --retry 3 \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip \
+            --output "$RUNNER_TEMP/android-command-line-tools.zip"
+          unzip -q "$RUNNER_TEMP/android-command-line-tools.zip" -d "$ANDROID_HOME/cmdline-tools"
+          mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+          echo "$ANDROID_HOME/cmdline-tools/latest/bin" >> "$GITHUB_PATH"
+
+      - name: Install Android SDK packages
+        run: |
+          set -o pipefail
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager --install "cmake;3.22.1" "platform-tools" "platforms;android-36" "build-tools;36.0.0" 2>&1 | tee "$RUNNER_TEMP/kitsugi-sdk-install.log" | tail -n 20
+
+      - name: Configure CI memory
+        run: |
+          if [ ! -f /swapfile ]; then
+            sudo dd if=/dev/zero of=/swapfile bs=1M count=6144 status=none
+            sudo chmod 600 /swapfile
+            sudo mkswap /swapfile
+          fi
+          sudo swapon /swapfile || true
+          mkdir -p ~/.gradle
+          cat >> ~/.gradle/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4g -Xms1g -Xss16m -XX:+UseG1GC -Dfile.encoding=UTF-8
+          org.gradle.workers.max=1
+          org.gradle.parallel=true
+          org.gradle.caching=true
+          kotlin.daemon.jvmargs=-Xmx4g -Xms1g -Xss16m -XX:+UseG1GC
+          kotlin.compiler.execution.strategy=daemon
+          EOF
+
+      - name: Verify the Coil/Telephoto runtime dependency graph
+        working-directory: kitsugi-beta
+        run: |
+          ./gradlew :app:dependencies --configuration fossDebugRuntimeClasspath --console=plain > "$RUNNER_TEMP/reader-dependencies.txt"
+          if grep -E 'zoomable-image-coil:' "$RUNNER_TEMP/reader-dependencies.txt"; then
+            echo 'Coil 2 Telephoto artifact is still present' >&2
+            exit 1
+          fi
+          grep -E 'zoomable-image-coil3:0\.14\.0' "$RUNNER_TEMP/reader-dependencies.txt"
+
+      - name: Run brightness tests and build the patched Foss Debug APK
+        working-directory: kitsugi-beta
+        run: |
+          set -o pipefail
+          ./gradlew :app:testFossDebugUnitTest \
+            --tests 'com.kitsugi.animelist.data.settings.MangaBrightnessTest' \
+            :app:assembleFossDebug --stacktrace --console=plain 2>&1 | tee "$RUNNER_TEMP/kitsugi-reader-build.log"
+          python3 scripts/verify_apk_dex_bytecode.py app/build/outputs/apk/foss/debug/*.apk 2>&1 | tee -a "$RUNNER_TEMP/kitsugi-reader-build.log"
+
+      - name: Record verification limits
+        if: always()
+        run: |
+          {
+            echo '## Kitsugi-Beta reader patch verification'
+            echo
+            echo '- Base: `ab81c9ef889e9246a5bceca22f2d2a8da6144f53`'
+            echo '- Patch: `8d7e548965a9cd0176412c4b4005d3cb3cd298ba`'
+            echo '- This workflow verifies dependency resolution, unit tests, compilation and DEX bytecode.'
+            echo '- It does not prove on-device image decoding or rendering; MangaTR and Mangacix still require a device check.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "$RUNNER_TEMP/kitsugi-sdk-install.log" ]; then
+            tail -n 20 "$RUNNER_TEMP/kitsugi-sdk-install.log" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          if [ -f "$RUNNER_TEMP/kitsugi-reader-build.log" ]; then
+            tail -n 60 "$RUNNER_TEMP/kitsugi-reader-build.log" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Expose a build failure through the Checks API
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LOG="$RUNNER_TEMP/kitsugi-reader-build.log"
+          if [ -f "$LOG" ]; then
+            SUMMARY=$(grep -nE '^e: |FAILURE|What went wrong|Execution failed|Caused by|error:' "$LOG" | tail -n 100 | cut -c1-500 | tr '\n' '|')
+            if [ -z "$SUMMARY" ]; then SUMMARY=$(tail -n 100 "$LOG" | cut -c1-500 | tr '\n' '|'); fi
+          else
+            SUMMARY='Build log was not created; inspect the failed setup step.'
+          fi
+          jq -n --arg sha "$GITHUB_SHA" --arg summary "$SUMMARY" \
+            '{name:"kitsugi-reader-build-failure",head_sha:$sha,status:"completed",conclusion:"neutral",output:{title:"Patched Kitsugi-Beta build failure",summary:$summary}}' > "$RUNNER_TEMP/reader-check.json"
+          gh api "repos/$GITHUB_REPOSITORY/check-runs" --method POST --input "$RUNNER_TEMP/reader-check.json" --jq '.html_url'
+
+      - name: Upload the test APK (not a release)
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kitsugi-reader-coil3-fix-debug-apk
+          path: kitsugi-beta/app/build/outputs/apk/foss/debug/*.apk
+          retention-days: 7
+
+      - name: Upload failure log
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: kitsugi-reader-fix-build-log
+          path: ${{ runner.temp }}/kitsugi-reader-build.log
+          if-no-files-found: ignore

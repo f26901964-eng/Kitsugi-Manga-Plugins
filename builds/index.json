@@ -9,5 +9,16 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangatr-v1.6.29.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangatr.png"
+  },
+  {
+    "name": "MangaciX",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.mangacix",
+    "apk": "tachiyomi-tr.mangacix-v1.6.2.apk",
+    "lang": "tr",
+    "code": 106002,
+    "version": "1.6.2",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangacix-v1.6.2.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangacix.png"
   }
 ]
