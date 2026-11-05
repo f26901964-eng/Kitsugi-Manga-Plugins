@@ -52,7 +52,9 @@ internal object ReaderSeedsSerializer : JsonTransformingSerializer<Map<String, L
         is JsonArray -> JsonObject(
             element.mapIndexed { index, value -> index.toString() to value.numericPrimitive() }.toMap(),
         )
+
         is JsonObject -> JsonObject(element.mapValues { (_, value) -> value.numericPrimitive() })
+
         else -> element
     }
 }
