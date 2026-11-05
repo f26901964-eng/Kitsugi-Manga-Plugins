@@ -17,6 +17,7 @@ from playwright.sync_api import sync_playwright
 BASE = "https://manga-tr.com/"
 DETAIL = BASE + "manga-chainsaw-man.html"
 READER = BASE + "id-123931-read-chainsaw-man-chapter-2.html"
+READER_SCRIPT = BASE + "app/manga/themes/default/assets/js/chapter-reader.js?v=2709-2"
 OUT = Path("mangatr/live/browser")
 OUT.mkdir(parents=True, exist_ok=True)
 UA = (
@@ -40,12 +41,23 @@ def clear_ddos_guard() -> requests.Session:
 
 def main() -> None:
     session = clear_ddos_guard()
+    reader_script_response = session.get(READER_SCRIPT, timeout=30)
+    if reader_script_response.status_code == 200:
+        (OUT / "chapter-reader.js").write_text(reader_script_response.text, encoding="utf-8")
     chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
     if not chrome:
         raise RuntimeError("Chrome/Chromium is required for the public browser probe")
 
     captured: dict[str, str] = {}
-    report: dict[str, object] = {"chapter_requests": [], "chapter_index": {}, "image_requests": []}
+    report: dict[str, object] = {
+        "chapter_requests": [],
+        "chapter_index": {},
+        "image_requests": [],
+        "reader_script": {"status": reader_script_response.status_code, "bytes": len(reader_script_response.content)},
+        "reader_script_responses": [],
+        "reader_gate_responses": [],
+        "reader_errors": [],
+    }
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(executable_path=chrome, headless=True, args=["--no-sandbox"])
@@ -57,10 +69,22 @@ def main() -> None:
             ]
         )
         page = context.new_page()
+        page.on(
+            "pageerror",
+            lambda error: report["reader_errors"].append(
+                re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(error))[:500]
+            ),
+        )
 
         def on_response(response) -> None:
             parsed = urlparse(response.url)
             hostname = parsed.hostname or ""
+            if parsed.path.endswith("/chapter-reader.js"):
+                report["reader_script_responses"].append({"status": response.status, "type": response.request.resource_type})
+                return
+            if parsed.path.startswith("/cek/f/"):
+                report["reader_gate_responses"].append({"status": response.status, "type": response.request.resource_type})
+                return
             if "mngtr" in hostname and response.request.resource_type == "image":
                 if len(report["image_requests"]) >= 12:
                     return
@@ -177,6 +201,17 @@ def main() -> None:
             page.mouse.wheel(0, 1_500)
             page.wait_for_timeout(5_000)
         report["reader_title"] = page.title()
+        report["reader_dom"] = page.evaluate(
+            """() => ({
+                imageCount: document.images.length,
+                readerConfigCount: document.querySelectorAll('script[id^="rdm-"]').length,
+                images: Array.from(document.images).slice(0, 30).map(image => ({
+                    host: new URL(image.currentSrc || image.src, location.href).hostname,
+                    complete: image.complete,
+                    naturalWidth: image.naturalWidth,
+                })),
+            })"""
+        )
 
         browser.close()
 
