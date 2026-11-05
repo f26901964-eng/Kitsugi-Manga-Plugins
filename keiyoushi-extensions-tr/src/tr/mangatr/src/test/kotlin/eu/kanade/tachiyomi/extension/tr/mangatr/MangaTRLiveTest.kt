@@ -152,11 +152,13 @@ class MangaTRLiveTest {
                 when {
                     image.code == 200 && imageBytes.size > 100 ->
                         println("MangaTR live reader $readerId: ${pages.size} pages; first image OK")
+
                     image.code == 403 && image.header("Server").equals("cloudflare", ignoreCase = true) &&
                         safeErrorBody.contains("Attention Required", ignoreCase = true) -> {
                         cloudflareImageBlocks += readerId
                         println("MangaTR live reader $readerId: ${pages.size} pages; image blocked by Cloudflare on the runner")
                     }
+
                     else -> imageFailures += "reader $readerId: $detail, body=$safeErrorBody"
                 }
             }
