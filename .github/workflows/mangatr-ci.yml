@@ -48,12 +48,18 @@ jobs:
           if [ "${{ job.status }}" = "failure" ]; then
             python3 - <<'PY'
           from pathlib import Path
+          import xml.etree.ElementTree as ET
+          failures = []
+          for report in Path('keiyoushi-extensions-tr/src/tr/mangatr/build/test-results').rglob('TEST-*.xml'):
+              for case in ET.parse(report).getroot().iter('testcase'):
+                  for failure in list(case.findall('failure')) + list(case.findall('error')):
+                      failures.append(case.get('name', 'test') + '\n' + failure.get('message', '') + '\n' + (failure.text or '')[:12000])
           lines = Path('/tmp/mangatr-gradle.log').read_text(errors='replace').splitlines()
           hits = [i for i, line in enumerate(lines) if line.startswith('e: ') or 'FAILURE: Build failed' in line or 'Execution failed for task' in line or 'What went wrong:' in line or 'MangaTRParserTest >' in line]
           selected = set()
           for i in hits:
               selected.update(range(max(0, i - 2), min(len(lines), i + 6)))
-          text = '\n'.join(lines[i] for i in sorted(selected))[-48000:] if hits else '\n'.join(lines)[-24000:]
+          text = '\n\n'.join(failures) if failures else ('\n'.join(lines[i] for i in sorted(selected))[-48000:] if hits else '\n'.join(lines)[-24000:])
           text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
           print('::error title=Gradle failure log::' + text)
           PY
