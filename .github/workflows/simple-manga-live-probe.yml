@@ -1,0 +1,46 @@
+name: Simple manga live probe
+
+on:
+  push:
+    branches:
+      - arena/edcbd911-kitsugi-manga-plugins
+    paths:
+      - tools/simple_manga_live_probe.py
+      - .github/workflows/simple-manga-live-probe.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests==2.32.5 pillow==11.3.0
+      - name: Probe series, chapters and real image decoding
+        run: |
+          mkdir -p reports
+          python tools/simple_manga_live_probe.py --output reports/simple-manga-live-results.json
+      - name: Record sanitized probe result
+        if: always()
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p reports
+          if [ ! -s reports/simple-manga-live-results.json ]; then
+            printf '{"ok":false,"sources":{},"error":"probe-result-missing"}\n' > reports/simple-manga-live-results.json
+          fi
+          git config user.name kitsugi-live-probe
+          git config user.email kitsugi-live-probe@users.noreply.github.com
+          git add reports/simple-manga-live-results.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "ci: record simple manga live probe [skip ci]"
+          git push origin "HEAD:$BRANCH"
