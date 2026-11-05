@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.mangatr
 
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import okhttp3.Cookie
 import okhttp3.CookieJar
@@ -90,22 +91,30 @@ class MangaTRLiveTest {
                 it.body.string()
             }
             val readerDocument = Jsoup.parse(readerBody, readerUrl)
-            val gatePath = requireNotNull(GATE_PATH.find(readerBody)?.groupValues?.get(1)) {
+            val gatePath = requireNotNull(MangaTRReaderContract.gatePath(readerBody)) {
                 "Reader $readerId did not expose its reader gate"
             }
             assertTrue("Reader $readerId exposed an unexpected gate path", gatePath.startsWith("/cek/f/"))
+            val gateUrl = requireNotNull(BASE_URL.toHttpUrl().resolve(gatePath))
+            val nonce = gateUrl.queryParameter("n").orEmpty()
             val gateHeaders = navigationHeaders.newBuilder()
                 .mangaTrAjaxHeaders(readerUrl)
                 .set("Origin", BASE_URL)
                 .build()
+            val gateRequest = json.encodeToString(
+                ReaderGateRequestDto(
+                    nonce,
+                    MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+                ),
+            )
             val gatePost = Request.Builder()
-                .url(BASE_URL + gatePath)
+                .url(gateUrl)
                 .headers(gateHeaders)
-                .post("{}".toRequestBody("application/json".toMediaType()))
+                .post(gateRequest.toRequestBody("application/json".toMediaType()))
                 .build()
             var gateResult = client.newCall(gatePost).execute().use { it.code to it.body.string() }
             if (gateResult.first != 200) {
-                val gateGet = Request.Builder().url(BASE_URL + gatePath).headers(gateHeaders).get().build()
+                val gateGet = Request.Builder().url(gateUrl).headers(gateHeaders).get().build()
                 gateResult = client.newCall(gateGet).execute().use { it.code to it.body.string() }
             }
             assertEquals("Reader gate $readerId failed", 200, gateResult.first)
@@ -126,6 +135,11 @@ class MangaTRLiveTest {
                     configScript.data().ifBlank { configScript.html() },
                     gateKey,
                     pageKey,
+                    MangaTRReaderContract.pointerDelta(
+                        nonce,
+                        MangaTRReaderContract.readerEase(readerBody),
+                        MangaTRReaderContract.readerFlow(readerBody),
+                    ),
                 ),
             ) { "Reader $readerId config did not match the current or legacy gate key" }
             assertTrue("Reader $readerId did not expose current seeds", config.seeds.isNotEmpty())
@@ -292,7 +306,6 @@ class MangaTRLiveTest {
         private val EXPECTED_READER_IDS = setOf("123931", "125989", "135286", "136245")
         private val EXPECTED_CHAPTER_ONE_READER_IDS = setOf("122230", "125451", "135285", "136286")
         private val READER_ID = Regex("""(?:^|/)id-(\d+)-read-""")
-        private val GATE_PATH = Regex("""_fpx\s*=\s*"([^"]+)"""")
         private val HEX_KEY_REGEX = Regex("""[0-9a-f]{32}""")
         private val json = Json { ignoreUnknownKeys = true }
     }
