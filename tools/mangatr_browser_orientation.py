@@ -140,23 +140,49 @@ def main() -> None:
 
         def serve_reader_image(route) -> None:
             url = route.request.url
+            candidates: list[tuple[int, bytes, str]] = []
             try:
                 fetched = route.fetch(timeout=45_000)
                 body = fetched.body()
                 image_response_statuses.append(fetched.status)
-                if fetched.status == 200:
+                candidates.append((fetched.status, body, str(fetched.headers.get("server", ""))))
+            except Exception:
+                image_response_statuses.append(0)
+
+            # Retry exactly like MangaTR.imageRequest rather than a CSS browser
+            # request. The root referer and cross-site marker are significant.
+            try:
+                direct = context.request.get(
+                    url,
+                    headers={
+                        "User-Agent": UA,
+                        "Accept": "image/avif,image/webp,image/*,*/*;q=0.8",
+                        "Referer": BASE,
+                        "Sec-Fetch-Dest": "image",
+                        "Sec-Fetch-Mode": "no-cors",
+                        "Sec-Fetch-Site": "cross-site",
+                    },
+                    timeout=45_000,
+                )
+                candidates.append((direct.status, direct.body(), str(direct.headers.get("server", ""))))
+            except Exception:
+                pass
+
+            for status, body, _server in candidates:
+                if status != 200:
+                    continue
+                try:
                     with Image.open(io.BytesIO(body)) as probe:
                         image_format = probe.format
                     mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
-                    if mime:
-                        fetched_bodies[url] = body
-                        image_sources[url] = "live"
-                        headers = dict(fetched.headers)
-                        headers["content-type"] = mime
-                        route.fulfill(response=fetched, body=body, headers=headers)
-                        return
-            except Exception:
-                image_response_statuses.append(0)
+                except Exception:
+                    mime = None
+                if mime:
+                    fetched_bodies[url] = body
+                    image_sources[url] = "live"
+                    route.fulfill(status=200, content_type=mime, body=body)
+                    return
+
             body = synthetic_image(url)
             fetched_bodies[url] = body
             image_sources[url] = "synthetic"
