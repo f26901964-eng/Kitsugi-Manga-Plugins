@@ -74,7 +74,7 @@ class MangaTRLiveTest {
                 assertEquals("Chapter request failed at offset $offset", 200, it.code)
                 it.body.string()
             }
-            val batch = MangaTRParser.parseChapterDocument(Jsoup.parse(body, BASE_URL))
+            val batch = MangaTRParser.parseChapterDocument(Jsoup.parse(body, BASE_URL), chapterFactory = ::createTestChapter)
             assertTrue("No chapter cards at offset $offset", batch.cardCount > 0)
             assertTrue("No translations at offset $offset", batch.chapters.isNotEmpty())
             chapters += batch.chapters

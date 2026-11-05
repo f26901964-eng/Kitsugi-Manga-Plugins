@@ -25,9 +25,10 @@ internal object MangaTRParser {
     fun parseChapterDocument(
         document: Document,
         now: ZonedDateTime = ZonedDateTime.now(),
+        chapterFactory: () -> SChapter = { SChapter.create() },
     ): ChapterBatch {
         val cards = document.select(CHAPTER_CARD_SELECTOR)
-        val chapters = cards.flatMap { parseChapterCard(it, now) }
+        val chapters = cards.flatMap { parseChapterCard(it, now, chapterFactory) }
             .distinctBy { chapterIdentity(it.url) }
 
         val hasMore = document.selectFirst("#has-more-chapters")
@@ -42,6 +43,7 @@ internal object MangaTRParser {
     fun parseChapterCard(
         card: Element,
         now: ZonedDateTime = ZonedDateTime.now(),
+        chapterFactory: () -> SChapter = { SChapter.create() },
     ): List<SChapter> {
         val translationRows = card.select(".bento-ep-translation-row")
         if (translationRows.isNotEmpty()) {
@@ -51,14 +53,14 @@ internal object MangaTRParser {
                 val link = row.selectFirst("a.bento-ep-group-link[href]")
                     ?: row.selectFirst("a[href*='-read-'], [data-href*='-read-']")
                     ?: return@mapNotNull null
-                createChapter(card, row, link, now)
+                createChapter(card, row, link, now, chapterFactory)
             }.distinctBy { chapterIdentity(it.url) }
         }
 
         val link = card.selectFirst("a.bento-ep-title-link[href]")
             ?: card.selectFirst("a[href*='-read-'], [data-href*='-read-']")
             ?: return emptyList()
-        return listOfNotNull(createChapter(card, card, link, now))
+        return listOfNotNull(createChapter(card, card, link, now, chapterFactory))
     }
 
     private fun createChapter(
@@ -66,6 +68,7 @@ internal object MangaTRParser {
         row: Element,
         link: Element,
         now: ZonedDateTime,
+        chapterFactory: () -> SChapter,
     ): SChapter? {
         val href = link.absUrl("href").ifBlank { link.absUrl("data-href") }
             .ifBlank { link.attr("data-href") }
@@ -109,7 +112,7 @@ internal object MangaTRParser {
             url.encodedPath + url.encodedQuery?.let { query -> "?$query" }.orEmpty()
         } ?: href
 
-        return SChapter.create().apply {
+        return chapterFactory().apply {
             this.url = relativeUrl
             this.name = name
             this.chapter_number = chapterNumber

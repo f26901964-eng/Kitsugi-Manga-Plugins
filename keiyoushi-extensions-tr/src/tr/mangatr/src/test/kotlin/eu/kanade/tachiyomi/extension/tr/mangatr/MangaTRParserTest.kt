@@ -125,7 +125,7 @@ class MangaTRParserTest {
     private fun parseChapterFixture(name: String): MangaTRParser.ChapterBatch {
         val file = fixtureDir.resolve(name)
         assertTrue("Missing live fixture: ${file.absolutePath}", file.isFile)
-        return MangaTRParser.parseChapterDocument(Jsoup.parse(file.readText(), BASE_URL), now)
+        return MangaTRParser.parseChapterDocument(Jsoup.parse(file.readText(), BASE_URL), now, ::createTestChapter)
     }
 
     private fun readerHtml(indexAttribute: String, payloadAttribute: String, reverse: Boolean): String {
