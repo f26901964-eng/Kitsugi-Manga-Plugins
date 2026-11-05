@@ -88,10 +88,12 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=Path, default=DEFAULT_INPUT)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--expected", type=int, default=12)
+    parser.add_argument("--minimum-text-samples", type=int, default=3)
     args = parser.parse_args()
     paths = sorted(args.input.glob("reader-*/page-*.png"))
-    if len(paths) != 12:
-        raise SystemExit(f"Expected 12 corrected chapter-one samples, found {len(paths)}")
+    if len(paths) != args.expected:
+        raise SystemExit(f"Expected {args.expected} corrected chapter-one samples, found {len(paths)}")
     args.output.mkdir(parents=True, exist_ok=True)
 
     results: list[dict[str, object]] = []
@@ -130,7 +132,7 @@ def main() -> None:
     rotated_wins = sum(result["rotated"]["score"] > result["corrected"]["score"] * 1.1 for result in eligible)
     corrected_total = sum(result["corrected"]["score"] for result in eligible)
     rotated_total = sum(result["rotated"]["score"] for result in eligible)
-    required_wins = max(3, math.ceil(len(eligible) * 0.7))
+    required_wins = max(args.minimum_text_samples, math.ceil(len(eligible) * 0.7))
     summary = {
         "samples": len(results),
         "text_rich_samples": len(eligible),
@@ -140,7 +142,7 @@ def main() -> None:
         "corrected_total_score": round(corrected_total, 2),
         "rotated_total_score": round(rotated_total, 2),
         "passed": (
-            len(eligible) >= 3
+            len(eligible) >= args.minimum_text_samples
             and corrected_wins >= required_wins
             and corrected_wins > rotated_wins
             and corrected_total >= rotated_total * 1.25

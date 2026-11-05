@@ -1,0 +1,317 @@
+#!/usr/bin/env python3
+"""Verify Manga-TR's seed/flip implementation against the site's live Chromium DOM."""
+from __future__ import annotations
+
+import base64
+import io
+import json
+import re
+import shutil
+from pathlib import Path
+from urllib.parse import parse_qs, urlparse
+
+from bs4 import BeautifulSoup
+from PIL import Image
+from playwright.sync_api import expect, sync_playwright
+
+from mangatr_browser_probe import BASE, UA, clear_ddos_guard
+
+READER_ID = "125451"
+READER = BASE + f"id-{READER_ID}-read-chainsaw-man-chapter-1.html?fs_done=1"
+SAMPLE_PAGES = (0, 1, 2, 26, 51)
+MODULE_BUILD = Path("keiyoushi-extensions-tr/src/tr/mangatr/build")
+CORRECTED_OUT = MODULE_BUILD / "mangatr-live" / f"reader-{READER_ID}"
+SITE_OUT = MODULE_BUILD / "mangatr-browser-site" / f"reader-{READER_ID}"
+REPORT_OUT = MODULE_BUILD / "mangatr-orientation"
+HEX_KEY = re.compile(r"^[0-9a-f]{32}$")
+
+
+def decrypt(value: str, key: str) -> str:
+    normalized = value.replace("-", "+").replace("_", "/")
+    encrypted = base64.b64decode(normalized + "=" * (-len(normalized) % 4))
+    key_bytes = key.encode()
+    plain = bytes(byte ^ key_bytes[index % len(key_bytes)] for index, byte in enumerate(encrypted))
+    return plain.decode("utf-8")
+
+
+def scramble_codes(seed: int, grid: int) -> list[int]:
+    state = seed & 0xFFFFFFFF
+    if state == 0:
+        state = 123456789
+
+    def next_uint() -> int:
+        nonlocal state
+        state = (state ^ ((state << 13) & 0xFFFFFFFF)) & 0xFFFFFFFF
+        state = (state ^ (state >> 17)) & 0xFFFFFFFF
+        state = (state ^ ((state << 5) & 0xFFFFFFFF)) & 0xFFFFFFFF
+        return state
+
+    destinations = list(range(grid))
+    for index in range(grid - 1, 0, -1):
+        other = next_uint() % (index + 1)
+        destinations[index], destinations[other] = destinations[other], destinations[index]
+    return [next_uint() % 4 * 100 + destinations[source] for source in range(grid)]
+
+
+def attribute(element, name: str) -> str:
+    return str(element.get(name) or element.get(name.removeprefix("data-")) or "")
+
+
+def corrected_image(source: Image.Image, codes: list[int]) -> Image.Image:
+    grid = len(codes)
+    strip_height = source.height // grid
+    if strip_height <= 0:
+        raise RuntimeError("Image is shorter than its reader grid")
+    output = Image.new("RGB", (source.width, strip_height * grid))
+    for source_index, code in enumerate(codes):
+        strip = source.crop((0, source_index * strip_height, source.width, (source_index + 1) * strip_height))
+        if code // 100 & 1:
+            strip = strip.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+        if code // 100 & 2:
+            strip = strip.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+        output.paste(strip, (0, (code % 100) * strip_height))
+    return output
+
+
+def redact(value: object) -> str:
+    return re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(value))[:1000]
+
+
+def main() -> None:
+    CORRECTED_OUT.mkdir(parents=True, exist_ok=True)
+    SITE_OUT.mkdir(parents=True, exist_ok=True)
+    REPORT_OUT.mkdir(parents=True, exist_ok=True)
+    report: dict[str, object] = {"reader": READER_ID, "samples": []}
+    session = clear_ddos_guard()
+    chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
+    if not chrome:
+        raise RuntimeError("Chrome/Chromium is required for the live reader verification")
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(
+            executable_path=chrome,
+            headless=False,
+            args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+        )
+        context = browser.new_context(
+            user_agent=UA,
+            viewport={"width": 412, "height": 915},
+            device_scale_factor=2.625,
+            is_mobile=True,
+            has_touch=True,
+            locale="tr-TR",
+        )
+        context.add_cookies(
+            [
+                {"name": cookie.name, "value": cookie.value, "domain": cookie.domain, "path": cookie.path or "/"}
+                for cookie in session.cookies
+            ]
+        )
+        page = context.new_page()
+        gates: list[dict[str, object]] = []
+        image_bodies: dict[str, bytes] = {}
+
+        def on_response(response) -> None:
+            path = urlparse(response.url).path
+            try:
+                if path.startswith("/cek/f/"):
+                    gates.append(
+                        {
+                            "url": response.url,
+                            "status": response.status,
+                            "body": response.text(),
+                            "post": response.request.post_data or "",
+                        }
+                    )
+                elif path.endswith("/img_part.php") and response.status == 200:
+                    image_bodies[response.url] = response.body()
+            except Exception:
+                # The explicit requests below provide a second, checked path.
+                pass
+
+        page.on("response", on_response)
+        response = page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
+        report["reader_status"] = response.status if response else None
+        if response is None or response.status != 200:
+            raise RuntimeError(f"Live reader returned {report['reader_status']}")
+        raw_html = response.text()
+        page.wait_for_timeout(4_000)
+
+        gate = next((item for item in reversed(gates) if item["status"] == 200), None)
+        if gate is None:
+            raise RuntimeError("The browser did not receive a successful reader gate response")
+        gate_data = json.loads(str(gate["body"]))
+        gate_key = str(gate_data["k"])
+        try:
+            post_data = json.loads(str(gate["post"] or "{}"))
+        except ValueError:
+            post_data = {}
+        nonce = str(post_data.get("n") or parse_qs(urlparse(str(gate["url"])).query).get("n", [""])[0])
+        pointer = page.evaluate(
+            "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
+            nonce,
+        )
+
+        soup = BeautifulSoup(raw_html, "html.parser")
+        config_script = next((node for node in soup.select("script[id^='rdm-']") if node.get("id")), None)
+        if config_script is None:
+            raise RuntimeError("Raw reader response did not contain its encrypted config")
+        page_key = next((str(value) for value in config_script.attrs.values() if HEX_KEY.match(str(value))), "")
+        if not page_key:
+            raise RuntimeError("Reader config did not contain a page key")
+        encrypted_config = config_script.decode_contents().strip()
+        config = None
+        used_gate_format = None
+        for label, gate_segment in (
+            ("browser-pointer", f"{gate_key}|{pointer}"),
+            ("empty-pointer", f"{gate_key}|"),
+            ("legacy", gate_key),
+        ):
+            try:
+                candidate = json.loads(decrypt(decrypt(encrypted_config, f"gate|{gate_segment}|reader"), f"boot|{page_key}|reader"))
+                if candidate.get("data") and candidate.get("key"):
+                    config = candidate
+                    used_gate_format = label
+                    break
+            except (ValueError, UnicodeError, KeyError):
+                continue
+        if config is None:
+            raise RuntimeError("None of the browser/current/legacy gate formats decrypted the config")
+        report["gate_format"] = used_gate_format
+
+        # Replay the extension's exact empty-body gate flow in the same browser
+        # session, then apply the two key formats shipped in the APK.
+        extension_gate = page.evaluate(
+            """async gateUrl => {
+                const attempt = async options => {
+                    const response = await fetch(gateUrl, {...options, credentials: 'include'});
+                    return {status: response.status, body: await response.text()};
+                };
+                let result = await attempt({
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                    body: '{}',
+                });
+                if (result.status !== 200) result = await attempt({method: 'GET'});
+                return result;
+            }""",
+            str(gate["url"]),
+        )
+        if extension_gate["status"] != 200:
+            raise RuntimeError(f"Extension gate replay returned {extension_gate['status']}")
+        extension_key = str(json.loads(extension_gate["body"])["k"])
+        extension_gate_format = None
+        for label, gate_segment in (("empty-pointer", f"{extension_key}|"), ("legacy", extension_key)):
+            try:
+                candidate = json.loads(
+                    decrypt(
+                        decrypt(encrypted_config, f"gate|{gate_segment}|reader"),
+                        f"boot|{page_key}|reader",
+                    )
+                )
+                if candidate.get("data") and candidate.get("key"):
+                    extension_gate_format = label
+                    break
+            except (ValueError, UnicodeError, KeyError):
+                continue
+        if extension_gate_format is None:
+            raise RuntimeError("The extension's empty-body gate replay could not decrypt the live config")
+        report["extension_gate_format"] = extension_gate_format
+
+        attributes = config["data"]
+        seeds = {str(key): int(value) for key, value in (config.get("seeds") or {}).items()}
+        grid = int(config.get("grid") or 2)
+        if not seeds:
+            raise RuntimeError("Live reader config did not expose current seeds")
+        report["grid"] = grid
+        report["seed_count"] = len(seeds)
+        pages = soup.select(f"[{attributes['parts']}]")
+        pages.sort(key=lambda node: int(attribute(node, attributes["pageIndex"]) or 0))
+        report["page_count"] = len(pages)
+        if len(pages) != 52:
+            raise RuntimeError(f"Expected 52 chapter-one pages, found {len(pages)}")
+
+        for position in SAMPLE_PAGES:
+            node = pages[position]
+            page_index = attribute(node, attributes["pageIndex"])
+            seed = seeds.get(page_index, seeds.get("0", 0))
+            codes = scramble_codes(seed, grid)
+            encrypted_parts = attribute(node, attributes["parts"])
+            image_url = json.loads(decrypt(encrypted_parts, f"attr|{page_key}|reader"))[0]
+
+            locator = page.locator(f"[{attributes['parts']}]").nth(position)
+            locator.scroll_into_view_if_needed(timeout=30_000)
+            slices = locator.locator("[data-reader-slice]")
+            expect(slices).to_have_count(grid, timeout=45_000)
+            dom_slices = slices.evaluate_all(
+                """(nodes, grid) => nodes.map(node => ({
+                    destination: Number(node.getAttribute('data-reader-slice')),
+                    backgroundPosition: node.style.backgroundPosition,
+                    transform: node.style.transform,
+                }))""",
+                grid,
+            )
+            reference_codes = [None] * grid
+            for item in dom_slices:
+                destination = int(item["destination"])
+                y_percent = float(str(item["backgroundPosition"]).split()[1].rstrip("%"))
+                source_index = round(y_percent / 100 * (grid - 1)) if grid > 1 else 0
+                transform = str(item["transform"])
+                if "scale(-1, -1)" in transform:
+                    flip = 3
+                elif "scaleX(-1)" in transform:
+                    flip = 1
+                elif "scaleY(-1)" in transform:
+                    flip = 2
+                else:
+                    flip = 0
+                reference_codes[source_index] = flip * 100 + destination
+            matches = reference_codes == codes
+            sample = {
+                "page": position + 1,
+                "page_index": page_index,
+                "generated_codes": codes,
+                "dom_codes": reference_codes,
+                "matches_live_dom": matches,
+            }
+            report["samples"].append(sample)
+            if not matches:
+                raise RuntimeError(f"Page {position + 1} seed/flip codes differ from the live DOM")
+
+            locator.screenshot(path=str(SITE_OUT / f"page-{position + 1}.png"), timeout=30_000)
+            body = image_bodies.get(image_url)
+            if body is None:
+                image_response = context.request.get(
+                    image_url,
+                    headers={"Referer": READER, "Accept": "image/avif,image/webp,image/apng,image/*,*/*;q=0.8"},
+                    timeout=45_000,
+                )
+                if image_response.status != 200:
+                    raise RuntimeError(f"Page {position + 1} image returned {image_response.status}")
+                body = image_response.body()
+            with Image.open(io.BytesIO(body)) as raw:
+                source = raw.convert("RGB")
+                source.load()
+            corrected = corrected_image(source, codes)
+            corrected.save(CORRECTED_OUT / f"page-{position + 1}.png", format="PNG")
+            print(
+                f"Reader {READER_ID} page {position + 1}: live DOM matches generated order/flips; "
+                f"corrected {corrected.width}x{corrected.height}"
+            )
+
+        browser.close()
+
+    report["passed"] = True
+    (REPORT_OUT / "browser-contract-report.json").write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    print(json.dumps({key: value for key, value in report.items() if key != "samples"}, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as error:
+        REPORT_OUT.mkdir(parents=True, exist_ok=True)
+        (REPORT_OUT / "browser-contract-error.txt").write_text(redact(error) + "\n", encoding="utf-8")
+        raise RuntimeError(redact(error)) from error
