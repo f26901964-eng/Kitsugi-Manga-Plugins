@@ -301,6 +301,53 @@ def reader_probe(
     raise last_failure
 
 
+def browser_clearance(session: requests.Session, candidate: Candidate) -> None:
+    """Let Chromium solve a non-interactive challenge, as the app's WebView does."""
+    try:
+        from playwright.sync_api import sync_playwright
+    except ModuleNotFoundError:
+        raise ProbeFailure("browser=playwright-unavailable") from None
+    try:
+        with sync_playwright() as playwright:
+            browser = playwright.chromium.launch(
+                headless=True,
+                args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+            )
+            context = browser.new_context(
+                user_agent=USER_AGENT,
+                locale="tr-TR",
+                viewport={"width": 412, "height": 915},
+                is_mobile=True,
+                has_touch=True,
+            )
+            page = context.new_page()
+            page.goto(candidate.base_url + "/", wait_until="domcontentloaded", timeout=45_000)
+            challenge_markers = (
+                "just a moment", "bir dakika", "attention required",
+                "security check", "checking your browser", "doğrulan",
+            )
+            for _ in range(12):
+                title = page.title().strip().lower()
+                if title and not any(marker in title for marker in challenge_markers):
+                    break
+                page.wait_for_timeout(5_000)
+            else:
+                raise ProbeFailure("browser=unresolved-challenge")
+            user_agent = page.evaluate("navigator.userAgent")
+            if isinstance(user_agent, str) and user_agent:
+                session.headers["User-Agent"] = user_agent
+            for cookie in context.cookies(candidate.base_url):
+                session.cookies.set(
+                    cookie["name"], cookie["value"],
+                    domain=cookie.get("domain"), path=cookie.get("path", "/"),
+                )
+            browser.close()
+    except ProbeFailure:
+        raise
+    except Exception as exc:
+        raise ProbeFailure(f"browser={type(exc).__name__}") from None
+
+
 def probe(candidate: Candidate) -> dict[str, Any]:
     session = requests.Session()
     session.headers.update({
@@ -310,8 +357,18 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         "Origin": candidate.base_url,
     })
     stage = "catalog"
+    browser_used = False
     try:
-        catalog = catalog_sample(session, candidate)
+        try:
+            catalog = catalog_sample(session, candidate)
+        except ProbeFailure as exc:
+            if "http=403" not in str(exc):
+                raise
+            stage = "browser-clearance"
+            browser_clearance(session, candidate)
+            browser_used = True
+            stage = "catalog-after-clearance"
+            catalog = catalog_sample(session, candidate)
         stage = "latest"
         svelte, root = get_svelte(session, f"{candidate.base_url}/__data.json?page=1")
         latest = svelte.resolve_object(root, "lastEpisodes")
@@ -327,6 +384,7 @@ def probe(candidate: Candidate) -> dict[str, Any]:
             "name": candidate.name,
             "archivedExtensionVersion": candidate.extension_version,
             "requestMode": "upstream-XHR",
+            "browserClearanceUsed": browser_used,
             "ok": True,
             "latestPageSize": len(latest_array),
             "latestTitles": [item["name"] for item in latest_series[:10]],
@@ -344,6 +402,7 @@ def probe(candidate: Candidate) -> dict[str, Any]:
             "name": candidate.name,
             "archivedExtensionVersion": candidate.extension_version,
             "requestMode": "upstream-XHR",
+            "browserClearanceUsed": browser_used,
             "ok": False,
             "error": (
                 f"{stage}:{exc}" if isinstance(exc, ProbeFailure)
