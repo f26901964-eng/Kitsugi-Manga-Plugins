@@ -179,9 +179,26 @@ def main() -> None:
             raise RuntimeError("None of the browser/current/legacy gate formats decrypted the config")
         report["gate_format"] = used_gate_format
 
-        # Replay the extension's exact empty-body gate flow in the same browser
-        # session, then apply the two key formats shipped in the APK.
-        extension_gate = page.evaluate(
+        # Use a fresh reader where the site's automatic gate is aborted. The
+        # extension's empty-body request is therefore the first and only gate,
+        # rather than an invalid second attempt against a one-time key.
+        extension_page = context.new_page()
+        extension_page.route("**/cek/f/**", lambda route: route.abort())
+        extension_response = extension_page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
+        if extension_response is None or extension_response.status != 200:
+            raise RuntimeError("Fresh extension reader could not be loaded")
+        extension_html = extension_response.text()
+        extension_page.unroute("**/cek/f/**")
+        extension_soup = BeautifulSoup(extension_html, "html.parser")
+        extension_script = next((node for node in extension_soup.select("script[id^='rdm-']") if node.get("id")), None)
+        extension_key_match = re.search(r"_fpx\s*=\s*[\"']([^\"']+)[\"']", extension_html)
+        if extension_script is None or extension_key_match is None:
+            raise RuntimeError("Fresh extension reader did not expose its config/gate")
+        extension_page_key = next(
+            (str(value) for value in extension_script.attrs.values() if HEX_KEY.match(str(value))), ""
+        )
+        extension_encrypted = extension_script.decode_contents().strip()
+        extension_gate = extension_page.evaluate(
             """async gateUrl => {
                 const attempt = async options => {
                     const response = await fetch(gateUrl, {...options, credentials: 'include'});
@@ -195,18 +212,18 @@ def main() -> None:
                 if (result.status !== 200) result = await attempt({method: 'GET'});
                 return result;
             }""",
-            str(gate["url"]),
+            BASE.rstrip("/") + extension_key_match.group(1),
         )
         if extension_gate["status"] != 200:
-            raise RuntimeError(f"Extension gate replay returned {extension_gate['status']}")
-        extension_key = str(json.loads(extension_gate["body"])["k"])
+            raise RuntimeError(f"Extension gate returned {extension_gate['status']} on its first request")
+        extension_gate_key = str(json.loads(extension_gate["body"])["k"])
         extension_gate_format = None
-        for label, gate_segment in (("empty-pointer", f"{extension_key}|"), ("legacy", extension_key)):
+        for label, gate_segment in (("empty-pointer", f"{extension_gate_key}|"), ("legacy", extension_gate_key)):
             try:
                 candidate = json.loads(
                     decrypt(
-                        decrypt(encrypted_config, f"gate|{gate_segment}|reader"),
-                        f"boot|{page_key}|reader",
+                        decrypt(extension_encrypted, f"gate|{gate_segment}|reader"),
+                        f"boot|{extension_page_key}|reader",
                     )
                 )
                 if candidate.get("data") and candidate.get("key"):
@@ -214,8 +231,12 @@ def main() -> None:
                     break
             except (ValueError, UnicodeError, KeyError):
                 continue
+        extension_page.close()
         if extension_gate_format is None:
-            raise RuntimeError("The extension's empty-body gate replay could not decrypt the live config")
+            raise RuntimeError(
+                "The extension's first empty-body gate could not decrypt its fresh config; "
+                f"normal browser used {used_gate_format}"
+            )
         report["extension_gate_format"] = extension_gate_format
 
         attributes = config["data"]
