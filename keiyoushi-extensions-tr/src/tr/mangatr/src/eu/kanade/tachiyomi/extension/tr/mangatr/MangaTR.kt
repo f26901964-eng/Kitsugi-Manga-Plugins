@@ -1157,10 +1157,7 @@ abstract class MangaTR : KeiSource() {
 
         fun validateDocument() {
             if (MangaTRParser.requiresReaderLogin(document)) {
-                throw IOException(
-                    "Bu içerik yalnızca kayıtlı MangaTR üyelerine açık. " +
-                        "MangaTR WebView üzerinden giriş yapıp bölümü yeniden açın.",
-                )
+                throw IOException("Bu bölümü okuyabilmek için WebView üzerinden üye girişi yapmanız gerekmektedir.")
             }
             if (document.selectFirst("canvas#sliderCanvas, div.box h2:contains(Güvenlik Doğrulaması), div.cf-turnstile, div#turnstile") != null) {
                 captchaUrl = response.request.url.toString()
