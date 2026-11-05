@@ -1515,7 +1515,7 @@ abstract class MangaTR : KeiSource() {
         val contentType = response.body.contentType()
         val imageBytes = response.use { it.body.bytes() }
         fun originalResponse() = response.newBuilder()
-            .body(imageBytes.asResponseBody(contentType))
+            .body(Buffer().write(imageBytes).asResponseBody(contentType))
             .build()
 
         val source = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)

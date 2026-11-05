@@ -27,7 +27,10 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Verify signed chapters, four readers, and first images
+      - name: Apply the repository Kotlin formatter
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:mangatr:spotlessApply
+      - name: Verify chapter-one and chapter-two readers and real page images
         working-directory: keiyoushi-extensions-tr
         run: |
           set -o pipefail
