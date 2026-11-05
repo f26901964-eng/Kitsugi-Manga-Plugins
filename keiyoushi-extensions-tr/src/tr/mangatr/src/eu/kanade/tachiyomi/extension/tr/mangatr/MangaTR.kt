@@ -18,7 +18,6 @@ import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.JSON_MEDIA_TYPE
 import keiyoushi.utils.asJsoup
-import keiyoushi.utils.attrOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.textOrNull
 import keiyoushi.utils.toJsonRequestBody
@@ -1255,7 +1254,7 @@ abstract class MangaTR : KeiSource() {
         val gatePath = GATE_PATH_REGEX.find(document.html())?.groupValues?.get(1)
             ?: Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""").find(document.html())?.groupValues?.get(1)
 
-        var config: ReaderAttributesDto? = null
+        var config: ReaderConfigDto? = null
 
         if (gatePath != null) {
             val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
@@ -1282,55 +1281,17 @@ abstract class MangaTR : KeiSource() {
                     }
                 }
                 if (gateKey != null) {
-                    config = try {
-                        configScript.data().ifBlank { configScript.html() }
-                            .decrypt("gate|$gateKey|reader")
-                            .decrypt("boot|$pageKey|reader")
-                            .parseAs<ReaderConfigDto>().data
-                    } catch (_: Exception) {
-                        null
-                    }
+                    config = MangaTRReaderContract.decryptConfig(
+                        configScript.data().ifBlank { configScript.html() },
+                        gateKey,
+                        pageKey,
+                    )
                 }
             }
         }
 
-        if (config != null) {
-            val elements = try {
-                document.select("[${config.parts}]")
-                    .sortedBy { it.attr(config.pageIndex).toIntOrNull() ?: it.attr(config.pageIndex.removePrefix("data-"))?.toIntOrNull() ?: Int.MAX_VALUE }
-            } catch (_: Exception) {
-                emptyList<Element>()
-            }
-
-            if (elements.isNotEmpty()) {
-                val pages = elements.mapIndexed { index, element ->
-                    val encryptedParts = element.attr(config!!.parts).ifBlank { element.attr(config.parts.removePrefix("data-")) }
-                    if (encryptedParts.isBlank()) return@mapIndexed null
-                    val imageUrl = try {
-                        encryptedParts.decrypt("attr|$pageKey|reader").parseAs<List<String>>().first()
-                    } catch (_: Exception) {
-                        return@mapIndexed null
-                    }
-                    val orderRaw = element.attrOrNull(config.order) ?: element.attrOrNull(config.order.removePrefix("data-"))
-                    val order = try {
-                        orderRaw?.takeIf { it.isNotBlank() }
-                            ?.decrypt("order|$pageKey|reader")?.parseAs<List<Int>>()
-                    } catch (_: Exception) {
-                        null
-                    }
-                    val url = if (order.isNullOrEmpty()) {
-                        imageUrl
-                    } else {
-                        try {
-                            imageUrl.toHttpUrl().newBuilder().fragment(order.joinToString(",")).toString()
-                        } catch (_: Exception) {
-                            imageUrl
-                        }
-                    }
-                    Page(index, imageUrl = url)
-                }.filterNotNull()
-                if (pages.isNotEmpty()) return pages
-            }
+        config?.let { readerConfig ->
+            MangaTRReaderContract.parseConfiguredPages(document, readerConfig, pageKey)?.let { return it }
         }
 
         // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)
@@ -1544,53 +1505,43 @@ abstract class MangaTR : KeiSource() {
         val response = chain.proceed(request)
         if (!response.isSuccessful) return response
         val order = request.url.fragment
+            ?.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX)
             ?.takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
             ?.split(',')
             ?.mapNotNull { it.toIntOrNull() }
             ?: return response
 
-        // Validate response is image
-        val contentType = response.header("Content-Type") ?: ""
-        if (!contentType.contains("image") && !request.url.toString().contains("img_part") && !request.url.toString().contains("mangatr")) {
-            // Still process if fragment present, as site uses fragment for order even without content-type
-        }
+        // Keep the original bytes so every failure path can return a readable response.
+        val contentType = response.body.contentType()
+        val imageBytes = response.use { it.body.bytes() }
+        fun originalResponse() = response.newBuilder()
+            .body(imageBytes.asResponseBody(contentType))
+            .build()
 
-        val source = try {
-            response.use { BitmapFactory.decodeStream(it.body.byteStream()) }
-        } catch (e: Exception) {
-            null
-        }
-            ?: return response
-        // Workaround: if source is null, return original
+        val source = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+            ?: return originalResponse()
         if (source.width <= 0 || source.height <= 0) {
             source.recycle()
-            return response
+            return originalResponse()
         }
 
-        if (order.size > source.height || order.any { it / 100 !in 0..3 || it % 100 !in order.indices } ||
+        if (
+            order.size > source.height ||
+            order.any { it / 100 !in 0..3 || it % 100 !in order.indices } ||
             order.map { it % 100 }.distinct().size != order.size
         ) {
             source.recycle()
-            // Invalid order, return original image instead of throwing, to avoid breaking reading
-            return response.newBuilder()
-                .body(
-                    source.let {
-                        // Re-encode original? But we consumed stream; need to re-fetch?
-                        // Since we already consumed, we need to return error image fallback
-                        // We'll just return original response body re-created from bitmap
-                        val buf = Buffer().apply { it.compress(Bitmap.CompressFormat.JPEG, 95, outputStream()) }
-                        it.recycle()
-                        buf.asResponseBody("image/jpeg".toMediaType())
-                    },
-                )
-                .build()
+            return originalResponse()
         }
         val stripHeight = source.height / order.size
+        if (stripHeight <= 0) {
+            source.recycle()
+            return originalResponse()
+        }
         val output = Bitmap.createBitmap(source.width, stripHeight * order.size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(output)
 
         order.forEachIndexed { sourceIndex, code ->
-            val flip = code / 100
             val destination = code % 100
             val src = Rect(0, sourceIndex * stripHeight, source.width, (sourceIndex + 1) * stripHeight)
             val top = destination * stripHeight
@@ -1598,8 +1549,8 @@ abstract class MangaTR : KeiSource() {
 
             canvas.save()
             canvas.scale(
-                if (flip and 1 != 0) -1f else 1f,
-                if (flip and 2 != 0) -1f else 1f,
+                if (MangaTRReaderContract.flipHorizontally(code)) -1f else 1f,
+                if (MangaTRReaderContract.flipVertically(code)) -1f else 1f,
                 source.width / 2f,
                 top + stripHeight / 2f,
             )

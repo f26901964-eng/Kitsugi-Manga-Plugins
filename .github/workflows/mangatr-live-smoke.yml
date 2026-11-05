@@ -3,13 +3,16 @@ name: Manga-TR live end-to-end smoke test
 on:
   workflow_dispatch:
   push:
-    branches: [arena/d305cc76-kitsugi-manga-plugins]
+    branches: [arena/b636bb7e-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTR.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRContract.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRReaderContract.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRParser.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/Dto.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/DDoSGuardInterceptor.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/test/kotlin/**/MangaTRLiveTest.kt
+      - tools/mangatr_orientation_check.py
       - .github/workflows/mangatr-live-smoke.yml
 
 jobs:
@@ -29,10 +32,26 @@ jobs:
         run: |
           set -o pipefail
           ./gradlew :src:tr:mangatr:testDebugUnitTest --tests '*MangaTRLiveTest' 2>&1 | tee /tmp/mangatr-live-gradle.log
+      - name: Install image-orientation verification tools
+        if: success()
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends tesseract-ocr tesseract-ocr-tur
+          python3 -m pip install pillow
+      - name: Compare real corrected pages with 180-degree copies
+        if: success()
+        run: |
+          set -o pipefail
+          if find keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-live -name 'page-*.png' -print -quit 2>/dev/null | grep -q .; then
+            python3 tools/mangatr_orientation_check.py 2>&1 | tee /tmp/mangatr-orientation.log
+          else
+            echo 'No decoded images were produced; the live test records the runner-only network skip.'
+          fi
       - name: Expose live result in the check summary
         if: always()
         run: |
           tail -n 250 /tmp/mangatr-live-gradle.log >> "$GITHUB_STEP_SUMMARY" || true
+          cat /tmp/mangatr-orientation.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           if [ "${{ job.status }}" = "failure" ]; then
             python3 - <<'PY'
           from pathlib import Path
@@ -66,6 +85,15 @@ jobs:
                           message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
                           print('::warning title=Live image verification skipped::' + message)
           PY
+      - name: Upload corrected pages and orientation comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-orientation-evidence
+          path: |
+            keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-live/
+            keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-orientation/
+          if-no-files-found: warn
       - name: Upload live smoke test results
         if: always()
         uses: actions/upload-artifact@v4

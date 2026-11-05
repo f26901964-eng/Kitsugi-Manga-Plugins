@@ -9,11 +9,15 @@ class ChallengeRequestDto(val challenge: String)
 class ReaderGateDto(val k: String)
 
 @Serializable
-class ReaderConfigDto(val data: ReaderAttributesDto)
+class ReaderConfigDto(
+    val data: ReaderAttributesDto,
+    val seeds: Map<String, Long> = emptyMap(),
+    val grid: Int = 2,
+)
 
 @Serializable
 class ReaderAttributesDto(
     val parts: String,
-    val order: String,
     val pageIndex: String,
+    val order: String? = null,
 )
