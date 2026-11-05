@@ -10,8 +10,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
-  checks: write
+  contents: write
 
 jobs:
   probe:
@@ -22,63 +21,26 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-          cache: pip
       - run: python -m pip install requests==2.32.5 pillow==11.3.0
       - name: Probe series, chapters and real image decoding
-        id: probe
-        run: python tools/simple_manga_live_probe.py --output "$RUNNER_TEMP/simple-manga-live-results.json"
-      - name: Publish sanitized probe result
+        run: |
+          mkdir -p reports
+          python tools/simple_manga_live_probe.py --output reports/simple-manga-live-results.json
+      - name: Record sanitized probe result
         if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
-          RUNNER_TEMP: ${{ runner.temp }}
-          JOB_STATUS: ${{ job.status }}
-          SHA: ${{ github.sha }}
+          BRANCH: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          RESULT="$RUNNER_TEMP/simple-manga-live-results.json"
-          if [ ! -s "$RESULT" ]; then
-            printf '{"ok":false,"sources":{},"error":"probe-result-missing"}\n' > "$RESULT"
+          mkdir -p reports
+          if [ ! -s reports/simple-manga-live-results.json ]; then
+            printf '{"ok":false,"sources":{},"error":"probe-result-missing"}\n' > reports/simple-manga-live-results.json
           fi
-          python - "$RESULT" "$RUNNER_TEMP/check-run.json" <<'PY'
-          import json
-          import sys
-          from pathlib import Path
-
-          result = json.loads(Path(sys.argv[1]).read_text())
-          lines = ["Live flow: popular list → details → chapters → pages → first/last image bytes → Pillow decode.", ""]
-          for key, source in result.get("sources", {}).items():
-              if source.get("ok"):
-                  images = source.get("images", [])
-                  decoded = "; ".join(
-                      f"{image.get('format')} {image.get('width')}x{image.get('height')} "
-                      f"{image.get('bytes')} bytes ({image.get('contentType')})"
-                      for image in images
-                  )
-                  lines.append(
-                      f"PASS {source.get('name', key)} — title={source.get('title')!r}; "
-                      f"series={source.get('seriesInListing')}; chapters={source.get('chaptersReturned')}; "
-                      f"pages={source.get('pages')}; decoded=[{decoded}]"
-                  )
-              else:
-                  lines.append(f"FAIL {source.get('name', key)} — {source.get('error', 'unknown')}")
-          lines.extend([
-              "",
-              "No HTML, image bytes, cookies, tokens or full page/image URLs are included.",
-              "A real HTTP decode on CI is not an Android device rendering guarantee.",
-          ])
-          conclusion = "success" if result.get("ok") and "${JOB_STATUS}" == "success" else "failure"
-          payload = {
-              "name": "simple-manga-live-probe",
-              "head_sha": "${SHA}",
-              "status": "completed",
-              "conclusion": conclusion,
-              "output": {
-                  "title": "Simple manga real-image probe",
-                  "summary": "\n".join(lines),
-                  "text": json.dumps(result, ensure_ascii=False, indent=2),
-              },
-          }
-          Path(sys.argv[2]).write_text(json.dumps(payload, ensure_ascii=False))
-          PY
-          gh api --method POST repos/${{ github.repository }}/check-runs --input "$RUNNER_TEMP/check-run.json" > /dev/null
+          git config user.name kitsugi-live-probe
+          git config user.email kitsugi-live-probe@users.noreply.github.com
+          git add reports/simple-manga-live-results.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "ci: record simple manga live probe [skip ci]"
+          git push origin "HEAD:$BRANCH"
