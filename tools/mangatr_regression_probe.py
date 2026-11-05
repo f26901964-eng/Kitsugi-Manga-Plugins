@@ -12,6 +12,7 @@ from urllib.parse import urlencode, urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
+from mangatr_browser_probe import clear_ddos_guard
 
 BASE = "https://manga-tr.com"
 UA = (
@@ -224,7 +225,8 @@ def probe_target(session: requests.Session, seed: int, key: str, query: str, kno
 
 
 def main() -> int:
-    session = requests.Session()
+    # Use the same public DDoS-Guard exchange as the production/browser probes.
+    session = clear_ddos_guard()
     session.headers.update({"User-Agent": UA, "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.7"})
     try:
         seed = get_seed(session)
