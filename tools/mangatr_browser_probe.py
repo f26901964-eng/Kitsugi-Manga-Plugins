@@ -92,8 +92,19 @@ def main() -> None:
     }
 
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(executable_path=chrome, headless=True, args=["--no-sandbox"])
-        context = browser.new_context(user_agent=UA)
+        browser = playwright.chromium.launch(
+            executable_path=chrome,
+            headless=False,
+            args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+        )
+        context = browser.new_context(
+            user_agent=UA,
+            viewport={"width": 412, "height": 915},
+            device_scale_factor=2.625,
+            is_mobile=True,
+            has_touch=True,
+            locale="tr-TR",
+        )
         context.add_cookies(
             [
                 {"name": c.name, "value": c.value, "domain": c.domain, "path": c.path or "/"}

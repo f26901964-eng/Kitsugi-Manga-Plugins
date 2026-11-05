@@ -20,7 +20,7 @@ jobs:
       - name: Install public-page probe dependencies
         run: python3 -m pip install requests playwright
       - name: Capture anonymous chapter responses
-        run: python3 tools/mangatr_browser_probe.py
+        run: xvfb-run -a -s '-screen 0 1280x720x24' python3 tools/mangatr_browser_probe.py
       - name: Upload sanitized probe report
         if: always()
         uses: actions/upload-artifact@v4
