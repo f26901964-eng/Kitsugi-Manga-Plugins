@@ -24,7 +24,7 @@ jobs:
         working-directory: keiyoushi-extensions-tr
         run: |
           set -o pipefail
-          ./gradlew :src:tr:mangatr:testReleaseUnitTest :src:tr:mangatr:assembleRelease --stacktrace 2>&1 | tee /tmp/mangatr-gradle.log
+          ./gradlew :src:tr:mangatr:testDebugUnitTest :src:tr:mangatr:assembleRelease --stacktrace 2>&1 | tee /tmp/mangatr-gradle.log
       - name: Expose build result in the check summary
         if: always()
         run: |
