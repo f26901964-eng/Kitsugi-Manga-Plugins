@@ -39,4 +39,6 @@ Testin ürettiği etiketli sentetik PNG'ler yalnız dönüşüm hattını çalı
 
 Release run `42054698092`, `tachiyomi-tr.mangatr-v1.6.30.apk` dosyasını ve bütün katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` altındaki üç kopya da **99.639 bayt** ve SHA-256 **`0c3be7ecb932a1108f8db80743b3b313070484f1044e4e04841719da33383144`** olarak eşleşti. Katalog sürümü `1.6.30`, sürüm kodu `106030`'dur.
 
-Kalıcı katalog URL'si ayrı `builds` dalını kullanır. Ana dal PR'ı birleştirilip `manga-yayin` workflow'u tamamlandığında bu URL'nin yeni APK'yı sunduğu ayrıca doğrulanacaktır.
+PR [#10](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/10) `c0fc7e9` merge commit'iyle ana dala birleştirildi. `manga-yayin` run `42057945193` ve ana dal derleme run `42057945255` başarılı oldu.
+
+Kalıcı `builds` dalındaki `apk` ve `builds/apk` kopyaları da 99.639 bayt ve yukarıdaki SHA-256 ile doğrulandı. Kullanıcıya sunulan `index.json`, `plugins.json`, `builds/index.json`, `builds/plugins.json` ve `builds/index.v2.json` dosyalarının tamamı `1.6.30 / 106030` ve yeni APK URL'sini gösteriyor.

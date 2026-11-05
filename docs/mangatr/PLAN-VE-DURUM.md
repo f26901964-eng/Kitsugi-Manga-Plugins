@@ -15,8 +15,8 @@
 
 - [x] Release APK'sını ve bütün katalogları `1.6.30 / 106030` için üret (`42054698092`).
 - [x] Üç APK kopyasını karşılaştır: 99.639 bayt; SHA-256 `0c3be7ecb932a1108f8db80743b3b313070484f1044e4e04841719da33383144`.
-- [ ] Çalışma dalındaki değişiklikler için PR aç/merge et ve dağıtım workflow'unun tamamlandığını kontrol et.
-- [ ] Kalıcı `builds` URL'sinin yeni dosyayı sunduğunu doğrula.
+- [x] PR [#10](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/10) ana dala merge edildi; dağıtım run'ları `42057945193` ve `42057945255` başarılı.
+- [x] Kalıcı `builds` dalındaki iki APK kopyası ve beş kullanıcı kataloğu `1.6.30 / 106030` için doğrulandı.
 
 ## Kullanıcı-doğrulama adımı
 
