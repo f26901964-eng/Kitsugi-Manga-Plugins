@@ -75,7 +75,7 @@ class SeriesDto(
 @Serializable
 class ChapterDto(
     // `url` carries this id because `/api/chapters/{id}` is how the page list is read.
-    private val id: Long,
+    val id: Long,
     // The site stores unnumbered chapters, so this is not guaranteed.
     @SerialName("chapter_number") val chapterNumber: Float? = null,
     private val title: String? = null,
