@@ -8,11 +8,16 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.annotation.Config
 
 /**
  * Fixtures are the exact JSON shapes the site returned while the extension was fixed
  * (2026-11-06); keep them verbatim so a contract change shows up as a test failure.
  */
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [28], manifest = Config.NONE)
 class MangaDiyariTest {
 
     private val json = Json { ignoreUnknownKeys = true }
