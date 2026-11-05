@@ -205,11 +205,54 @@
   "reader_status": 200,
   "pointer_delta_length": 8,
   "gate_format": "browser-pointer",
+  "extension_gate_query_keys": [
+    "c",
+    "n"
+  ],
+  "extension_gate_nonce_length": 16,
+  "extension_gate_canvas_length": 16,
   "extension_pointer_delta_length": 8,
+  "extension_pointer_inputs": {
+    "ease": "mTr_v4",
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
+  },
+  "extension_pointer_inputs_after": {
+    "ease": "mTr_v4",
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
+  },
+  "chapter_two_pointer_inputs": {
+    "ease": "mTr_v4",
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
+  },
+  "chapter_two_pointer_inputs_after": {
+    "ease": "mTr_v4",
+    "flow": "84",
+    "jqueryFlow": "84",
+    "cssFlow": "20"
+  },
   "extension_gate_request": "n-cv",
-  "group_skip_visible": false,
+  "extension_config_types": {
+    "grid": "int",
+    "seeds": "list",
+    "seed_values": [
+      "int"
+    ]
+  },
   "extension_gate_format": "current-pointer",
   "extension_gate_decrypts": true,
+  "extension_source_page_count": 52,
+  "extension_expected_page_count": 104,
+  "chapter_two_gate_format": "current-pointer",
+  "chapter_two_gate_decrypts": true,
+  "chapter_two_source_page_count": 26,
+  "chapter_two_expected_page_count": 52,
+  "group_skip_visible": false,
   "grid": 2,
   "seed_count": 52,
   "page_count": 52,
@@ -338,7 +381,12 @@
     {
       "page": 2,
       "service": "allorigins",
-      "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.allorigins.win/raw?url=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+      "status": 200
+    },
+    {
+      "page": 2,
+      "service": "allorigins",
+      "error": "cannot identify image file <_io.BytesIO object at 0x7f19aa743ba0>"
     },
     {
       "page": 2,
@@ -353,17 +401,22 @@
     {
       "page": 3,
       "service": "allorigins",
-      "status": 200
-    },
-    {
-      "page": 3,
-      "service": "allorigins",
-      "error": "cannot identify image file <_io.BytesIO object at 0x7f9b91728590>"
+      "status": 408
     },
     {
       "page": 3,
       "service": "codetabs",
       "error": "APIRequestContext.get: Timeout 8000ms exceeded.\nCall log:\n  - → GET https://api.codetabs.com/v1/proxy?quest=https%3A%2F%2Fimage.mngtr.site%2Fimg_part.php%3Fkey%<redacted>%26t%<redacted>%26p%<redacted>%26v%3D20\n    - user-agent: Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36\n    - accept: */*\n    - accept-encoding: gzip,deflate,br\n"
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
     },
     {
       "stage": "route",
@@ -447,16 +500,6 @@
     },
     {
       "page": 27,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
       "service": "weserv",
       "status": 404
     },

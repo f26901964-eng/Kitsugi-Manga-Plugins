@@ -25,6 +25,7 @@ CORRECTED_OUT = MODULE_BUILD / "mangatr-live" / f"reader-{READER_ID}"
 SITE_OUT = MODULE_BUILD / "mangatr-browser-site" / f"reader-{READER_ID}"
 REPORT_OUT = MODULE_BUILD / "mangatr-orientation"
 PUBLIC_OUT = Path("mangatr/live/browser")
+LIVE_FIXTURE_OUT = Path("/tmp/mangatr-kotlin-live-fixture")
 HEX_KEY = re.compile(r"^[0-9a-f]{32}$")
 
 
@@ -110,11 +111,148 @@ def redact(value: object) -> str:
     return re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(value))[:1000]
 
 
+def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: str) -> dict[str, object]:
+    """Capture live secrets only in /tmp for the production Kotlin contract test."""
+    fixture_page = context.new_page()
+    try:
+        fixture_page.route("**/cek/f/**", lambda route: route.abort())
+        fixture_page.route("**/img_part.php*", lambda route: route.abort())
+        response = fixture_page.goto(reader_url, wait_until="domcontentloaded", timeout=45_000)
+        if response is None or response.status != 200:
+            raise RuntimeError(f"Fixture reader {reader_id} returned {response.status if response else None}")
+        raw_html = response.text()
+        fixture_page.unroute("**/cek/f/**")
+        soup = BeautifulSoup(raw_html, "html.parser")
+        config_script = next((node for node in soup.select("script[id^='rdm-']") if node.get("id")), None)
+        gate_match = re.search(r"_fpx\s*=\s*[\"']([^\"']+)[\"']", raw_html)
+        if config_script is None or gate_match is None:
+            raise RuntimeError(f"Fixture reader {reader_id} did not expose its config/gate")
+        page_key = next((str(value) for value in config_script.attrs.values() if HEX_KEY.match(str(value))), "")
+        if not page_key:
+            raise RuntimeError(f"Fixture reader {reader_id} did not expose its page key")
+        encrypted = config_script.decode_contents().strip()
+        gate_url = BASE.rstrip("/") + gate_match.group(1)
+        query = parse_qs(urlparse(gate_url).query)
+        nonce = query.get("n", [""])[0]
+        pointer_result = fixture_page.evaluate(
+            """nonce => {
+                const inputs = () => {
+                    const body = document.body || document.documentElement;
+                    const jqueryFlow = typeof $ === 'function' && typeof $.css === 'function'
+                        ? String($.css(body, 'flow') || '') : '';
+                    const cssFlow = String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim();
+                    return {
+                        ease: String((window._mouseCurve || {}).ease || ''),
+                        flow: jqueryFlow || cssFlow,
+                        jqueryFlow,
+                        cssFlow,
+                    };
+                };
+                const before = inputs();
+                const pointer = typeof window._calcPointerDelta === 'function'
+                    ? (window._calcPointerDelta(nonce || '') || '') : '';
+                return {pointer, before, after: inputs()};
+            }""",
+            nonce,
+        )
+        pointer = pointer_result["pointer"]
+        pointer_inputs = pointer_result["before"]
+        pointer_inputs_after = pointer_result["after"]
+        gate = fixture_page.evaluate(
+            """async gateUrl => {
+                const url = new URL(gateUrl);
+                const n = url.searchParams.get('n') || '';
+                const c = url.searchParams.get('c') || '';
+                let cv = '';
+                if (c.length >= 16) {
+                    const v = [0, 4, 8, 12].map(offset => parseInt(c.slice(offset, offset + 4), 16) || 0);
+                    const base = [v[0] * 37 % 200 + 20, v[1] * 41 % 200 + 20, v[2] * 43 % 200 + 20];
+                    const extra = [v[1] * 17 % 100 + 10, v[2] * 19 % 100 + 10, v[3] * 23 % 100 + 10];
+                    cv = base.join(',') + '|' + base.map((value, index) => Math.min(255, value + extra[index])).join(',');
+                }
+                const request = {n, cv};
+                const attempt = async options => {
+                    const response = await fetch(gateUrl, {...options, credentials: 'include'});
+                    return {status: response.status, body: await response.text()};
+                };
+                let result = await attempt({
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
+                    body: JSON.stringify(request),
+                });
+                if (result.status !== 200) result = await attempt({method: 'GET'});
+                return {...result, request};
+            }""",
+            gate_url,
+        )
+        if gate["status"] != 200:
+            raise RuntimeError(f"Fixture reader {reader_id} gate returned {gate['status']}")
+        gate_key = str(json.loads(gate["body"])["k"])
+        gate_format = None
+        candidate = None
+        for label, gate_segment in (
+            ("current-pointer", f"{gate_key}|{pointer}"),
+            ("empty-pointer", f"{gate_key}|"),
+            ("legacy", gate_key),
+        ):
+            try:
+                decrypted = json.loads(decrypt(decrypt(encrypted, f"gate|{gate_segment}|reader"), f"boot|{page_key}|reader"))
+                if decrypted.get("data") and decrypted.get("key"):
+                    candidate = decrypted
+                    gate_format = label
+                    break
+            except (ValueError, UnicodeError, KeyError):
+                continue
+        if candidate is None or gate_format is None:
+            raise RuntimeError(f"Fixture reader {reader_id} config did not decrypt")
+
+        attributes = candidate["data"]
+        source_pages = soup.select(f"[{attributes['parts']}]")
+        grid = int(candidate.get("grid") or 2)
+        fixture_dir = LIVE_FIXTURE_OUT / reader_id
+        fixture_dir.mkdir(parents=True, exist_ok=True)
+        (fixture_dir / "reader.html").write_text(raw_html, encoding="utf-8")
+        (fixture_dir / "gate.json").write_text(gate["body"], encoding="utf-8")
+        (fixture_dir / "request.json").write_text(json.dumps(gate["request"]), encoding="utf-8")
+        (fixture_dir / "pointer.txt").write_text(str(pointer), encoding="utf-8")
+        (fixture_dir / "pointer-input.json").write_text(json.dumps(pointer_inputs), encoding="utf-8")
+        (fixture_dir / "pointer-input-after.json").write_text(json.dumps(pointer_inputs_after), encoding="utf-8")
+        metadata = {
+            "reader": reader_id,
+            "chapter": chapter,
+            "sourcePages": len(source_pages),
+            "expectedPages": len(source_pages) * grid,
+            "gateFormat": gate_format,
+        }
+        (fixture_dir / "metadata.json").write_text(json.dumps(metadata), encoding="utf-8")
+        seeds = candidate.get("seeds") or {}
+        seed_values = seeds.values() if isinstance(seeds, dict) else seeds
+        return {
+            "metadata": metadata,
+            "gate_query_keys": sorted(query),
+            "nonce_length": len(nonce),
+            "canvas_length": len(query.get("c", [""])[0]),
+            "pointer_delta_length": len(str(pointer)),
+            "pointer_inputs": pointer_inputs,
+            "pointer_inputs_after": pointer_inputs_after,
+            "config_types": {
+                "grid": type(candidate.get("grid")).__name__,
+                "seeds": type(seeds).__name__,
+                "seed_values": sorted({type(value).__name__ for value in seed_values}),
+            },
+        }
+    finally:
+        fixture_page.close()
+
+
 def main() -> None:
     CORRECTED_OUT.mkdir(parents=True, exist_ok=True)
     SITE_OUT.mkdir(parents=True, exist_ok=True)
     REPORT_OUT.mkdir(parents=True, exist_ok=True)
     PUBLIC_OUT.mkdir(parents=True, exist_ok=True)
+    if LIVE_FIXTURE_OUT.exists():
+        shutil.rmtree(LIVE_FIXTURE_OUT)
+    LIVE_FIXTURE_OUT.mkdir(parents=True, exist_ok=True)
     report: dict[str, object] = {"reader": READER_ID, "samples": []}
 
     def save_report() -> None:
@@ -276,9 +414,14 @@ def main() -> None:
         pointer_inputs = page.evaluate(
             """() => {
                 const body = document.body || document.documentElement;
+                const jqueryFlow = typeof $ === 'function' && typeof $.css === 'function'
+                    ? String($.css(body, 'flow') || '') : '';
+                const cssFlow = String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim();
                 return {
                     ease: String((window._mouseCurve || {}).ease || ''),
-                    flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
+                    flow: jqueryFlow || cssFlow,
+                    jqueryFlow,
+                    cssFlow,
                 };
             }"""
         )
@@ -327,96 +470,41 @@ def main() -> None:
             raise RuntimeError("None of the browser/current/legacy gate formats decrypted the config")
         report["gate_format"] = used_gate_format
 
-        # Use a fresh reader where the site's automatic gate is aborted. The
-        # extension's empty-body request is therefore the first and only gate,
-        # rather than an invalid second attempt against a one-time key.
-        extension_page = context.new_page()
-        extension_page.route("**/cek/f/**", lambda route: route.abort())
-        extension_page.route("**/img_part.php*", lambda route: route.abort())
-        extension_response = extension_page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
-        if extension_response is None or extension_response.status != 200:
-            raise RuntimeError("Fresh extension reader could not be loaded")
-        extension_html = extension_response.text()
-        extension_page.unroute("**/cek/f/**")
-        extension_soup = BeautifulSoup(extension_html, "html.parser")
-        extension_script = next((node for node in extension_soup.select("script[id^='rdm-']") if node.get("id")), None)
-        extension_key_match = re.search(r"_fpx\s*=\s*[\"']([^\"']+)[\"']", extension_html)
-        if extension_script is None or extension_key_match is None:
-            raise RuntimeError("Fresh extension reader did not expose its config/gate")
-        extension_page_key = next(
-            (str(value) for value in extension_script.attrs.values() if HEX_KEY.match(str(value))), ""
+        # Capture both live readers for the production Kotlin contract. Raw
+        # HTML, gate keys and signed values stay in /tmp, never in Git/artifacts.
+        chapter_one_fixture = capture_kotlin_fixture(context, READER_ID, 1, READER)
+        chapter_two_fixture = capture_kotlin_fixture(
+            context,
+            "125989",
+            2,
+            BASE + "id-125989-read-chainsaw-man-chapter-2.html?fs_done=1",
         )
-        extension_encrypted = extension_script.decode_contents().strip()
-        extension_gate_url = BASE.rstrip("/") + extension_key_match.group(1)
-        extension_nonce = parse_qs(urlparse(extension_gate_url).query).get("n", [""])[0]
-        extension_pointer = extension_page.evaluate(
-            "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
-            extension_nonce,
-        )
-        report["extension_pointer_delta_length"] = len(str(extension_pointer))
+        chapter_one_metadata = chapter_one_fixture["metadata"]
+        chapter_two_metadata = chapter_two_fixture["metadata"]
+        report["extension_gate_query_keys"] = chapter_one_fixture["gate_query_keys"]
+        report["extension_gate_nonce_length"] = chapter_one_fixture["nonce_length"]
+        report["extension_gate_canvas_length"] = chapter_one_fixture["canvas_length"]
+        report["extension_pointer_delta_length"] = chapter_one_fixture["pointer_delta_length"]
+        report["extension_pointer_inputs"] = chapter_one_fixture["pointer_inputs"]
+        report["extension_pointer_inputs_after"] = chapter_one_fixture["pointer_inputs_after"]
+        report["chapter_two_pointer_inputs"] = chapter_two_fixture["pointer_inputs"]
+        report["chapter_two_pointer_inputs_after"] = chapter_two_fixture["pointer_inputs_after"]
         report["extension_gate_request"] = "n-cv"
-        extension_gate = extension_page.evaluate(
-            """async gateUrl => {
-                const url = new URL(gateUrl);
-                const n = url.searchParams.get('n') || '';
-                const c = url.searchParams.get('c') || '';
-                let cv = '';
-                if (c.length >= 16) {
-                    const v = [0, 4, 8, 12].map(offset => parseInt(c.slice(offset, offset + 4), 16) || 0);
-                    const base = [v[0] * 37 % 200 + 20, v[1] * 41 % 200 + 20, v[2] * 43 % 200 + 20];
-                    const extra = [v[1] * 17 % 100 + 10, v[2] * 19 % 100 + 10, v[3] * 23 % 100 + 10];
-                    cv = base.join(',') + '|' + base.map((value, index) => Math.min(255, value + extra[index])).join(',');
-                }
-                const attempt = async options => {
-                    const response = await fetch(gateUrl, {...options, credentials: 'include'});
-                    return {status: response.status, body: await response.text()};
-                };
-                let result = await attempt({
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest'},
-                    body: JSON.stringify({n, cv}),
-                });
-                if (result.status !== 200) result = await attempt({method: 'GET'});
-                return result;
-            }""",
-            extension_gate_url,
-        )
-        if extension_gate["status"] != 200:
-            raise RuntimeError(f"Extension gate returned {extension_gate['status']} on its first request")
-        extension_gate_key = str(json.loads(extension_gate["body"])["k"])
-        extension_gate_format = None
-        for label, gate_segment in (
-            ("current-pointer", f"{extension_gate_key}|{extension_pointer}"),
-            ("empty-pointer", f"{extension_gate_key}|"),
-            ("legacy", extension_gate_key),
-        ):
-            try:
-                candidate = json.loads(
-                    decrypt(
-                        decrypt(extension_encrypted, f"gate|{gate_segment}|reader"),
-                        f"boot|{extension_page_key}|reader",
-                    )
-                )
-                if candidate.get("data") and candidate.get("key"):
-                    extension_gate_format = label
-                    break
-            except (ValueError, UnicodeError, KeyError):
-                continue
-        if extension_gate_format is None:
-            report["extension_gate_format"] = None
-            report["extension_gate_decrypts"] = False
-            save_report()
-            extension_page.close()
-            raise RuntimeError("Extension n-cv request and current pointer did not decrypt the fresh config")
-        extension_page.close()
+        report["extension_config_types"] = chapter_one_fixture["config_types"]
+        report["extension_gate_format"] = chapter_one_metadata["gateFormat"]
+        report["extension_gate_decrypts"] = True
+        report["extension_source_page_count"] = chapter_one_metadata["sourcePages"]
+        report["extension_expected_page_count"] = chapter_one_metadata["expectedPages"]
+        report["chapter_two_gate_format"] = chapter_two_metadata["gateFormat"]
+        report["chapter_two_gate_decrypts"] = True
+        report["chapter_two_source_page_count"] = chapter_two_metadata["sourcePages"]
+        report["chapter_two_expected_page_count"] = chapter_two_metadata["expectedPages"]
         page.bring_to_front()
         page.wait_for_timeout(1_000)
         report["group_skip_visible"] = page.locator("#skipGroupBtn").is_visible()
         if report["group_skip_visible"]:
             page.locator("#skipGroupBtn").click()
             page.wait_for_timeout(5_000)
-        report["extension_gate_format"] = extension_gate_format
-        report["extension_gate_decrypts"] = extension_gate_format is not None
         save_report()
 
         attributes = config["data"]

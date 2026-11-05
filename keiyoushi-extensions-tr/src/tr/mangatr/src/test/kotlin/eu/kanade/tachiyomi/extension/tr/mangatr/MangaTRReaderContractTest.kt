@@ -63,6 +63,33 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `raw reader gate keeps nonce canvas token and unquoted pointer ease`() {
+        val rawHtml = """
+            <script>
+            var _fpx = '/cek/f/gate?n=raw-nonce&c=0001000200030004';
+            var _mouseCurve = {ease:'mTr_v4',samples:20};
+            </script>
+            <style>:root { --ui-flow: 20; }</style>
+        """.trimIndent()
+
+        val gateUrl = "https://manga-tr.com/".toHttpUrl()
+            .resolve(requireNotNull(MangaTRReaderContract.gatePath(rawHtml)))!!
+
+        assertEquals("raw-nonce", gateUrl.queryParameter("n"))
+        assertEquals("0001000200030004", gateUrl.queryParameter("c"))
+        assertEquals("mTr_v4", MangaTRReaderContract.readerEase(rawHtml))
+        assertEquals("20", MangaTRReaderContract.readerFlow(rawHtml))
+        assertEquals(
+            "57,102,149|101,169,251",
+            MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
+        )
+        assertEquals(
+            MangaTRReaderContract.pointerDelta("raw-nonce", "mTr_v4", "20"),
+            MangaTRReaderContract.pointerDelta(gateUrl.queryParameter("n").orEmpty(), "mTr_v4", "20"),
+        )
+    }
+
+    @Test
     fun `current config keeps seeds and grid while legacy order stays optional`() {
         val current = json.decodeFromString<ReaderConfigDto>(
             """{"cls":"reader","data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":305419896,"1":2},"grid":2}""",
@@ -87,6 +114,21 @@ class MangaTRReaderContractTest {
         assertEquals(mapOf("0" to 305419896L, "1" to 2L, "2" to 123456789L), config.seeds)
         assertEquals(2L, MangaTRReaderContract.seedForPage(config.seeds, "1"))
         assertEquals(305419896L, MangaTRReaderContract.seedForPage(config.seeds, "99"))
+    }
+
+    @Test
+    fun `string grid and seed values decode in object and array configs`() {
+        val objectConfig = json.decodeFromString<ReaderConfigDto>(
+            """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":"305419896","1":"2"},"grid":"2"}""",
+        )
+        assertEquals(2, objectConfig.grid)
+        assertEquals(mapOf("0" to 305419896L, "1" to 2L), objectConfig.seeds)
+
+        val arrayConfig = json.decodeFromString<ReaderConfigDto>(
+            """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":["305419896","2"],"grid":"2"}""",
+        )
+        assertEquals(objectConfig.seeds, arrayConfig.seeds)
+        assertEquals(2, arrayConfig.grid)
     }
 
     @Test
@@ -142,6 +184,77 @@ class MangaTRReaderContractTest {
             "gate|test-gate|$pointer|reader",
         )
         val config = MangaTRReaderContract.decryptConfig(encrypted, "test-gate", PAGE_KEY, pointer)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
+    }
+
+    @Test
+    fun `config accepts pointer calculated before CSS flow loads`() {
+        val nonce = "0123456789abcdef"
+        val ease = "mTr_v4"
+        val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
+        val earlyPointer = MangaTRReaderContract.pointerDelta(nonce, ease, "")
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate|$earlyPointer|reader",
+        )
+        val candidates = MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, "20")
+
+        assertTrue(earlyPointer in candidates)
+        val config = MangaTRReaderContract.decryptConfig(
+            encrypted,
+            "test-gate",
+            PAGE_KEY,
+            MangaTRReaderContract.pointerDelta(nonce, ease, "20"),
+            candidates,
+        )
+        assertEquals(2, config?.grid)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
+    }
+
+    @Test
+    fun `config accepts live jQuery flow 84 instead of CSS fallback 20`() {
+        val nonce = "0123456789abcdef"
+        val ease = "mTr_v4"
+        val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
+        val livePointer = MangaTRReaderContract.pointerDelta(nonce, ease, "84")
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate|$livePointer|reader",
+        )
+        val candidates = MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, "20")
+
+        assertTrue(livePointer in candidates)
+        val config = MangaTRReaderContract.decryptConfig(
+            encrypted,
+            "test-gate",
+            PAGE_KEY,
+            MangaTRReaderContract.pointerDelta(nonce, ease, "20"),
+            candidates,
+        )
+        assertEquals(2, config?.grid)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
+    }
+
+    @Test
+    fun `encrypted script config accepts leading newline and indentation`() {
+        val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate||reader",
+        )
+        val script = requireNotNull(
+            Jsoup.parse(
+                """
+                <script id="rdm-test" type="application/json" data-key="$PAGE_KEY">
+                    $encrypted
+                </script>
+                """.trimIndent(),
+            ).selectFirst("script#rdm-test"),
+        )
+
+        assertTrue(script.data().any(Char::isWhitespace))
+        val config = MangaTRReaderContract.decryptConfig(script.data(), "test-gate", PAGE_KEY)
+        assertEquals(2, config?.grid)
         assertEquals(mapOf("0" to 2L), config?.seeds)
     }
 

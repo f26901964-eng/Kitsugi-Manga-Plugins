@@ -13,9 +13,15 @@ internal object MangaTRReaderContract {
     const val CACHE_VERSION_PREFIX = "v3-"
 
     private val json = Json { ignoreUnknownKeys = true }
+    private val GATE_PATH_REGEX = Regex("""(?:_fpx|gatePath|mtrGatePath|readerGate)\s*=\s*["']([^"']+)["']""")
+    private val READER_EASE_REGEX = Regex("""["']?ease["']?\s*:\s*["']([^"']+)["']""")
+    private val READER_FLOW_REGEX = Regex("""--ui-flow\s*:\s*([^\s;"']+)""")
 
     fun decrypt(value: String, key: String): String {
-        val normalized = value.replace('-', '+').replace('_', '/')
+        // Script data normally contains a leading newline and indentation.
+        // java.util.Base64's basic decoder rejects those bytes; the browser
+        // reference explicitly strips them before decoding the same config.
+        val normalized = value.trim().replace('-', '+').replace('_', '/')
         val padded = normalized + "=".repeat((4 - normalized.length % 4) % 4)
         val bytes = Base64.getDecoder().decode(padded)
         val keyBytes = key.toByteArray(StandardCharsets.UTF_8)
@@ -45,6 +51,12 @@ internal object MangaTRReaderContract {
         return base.joinToString(",") + "|" + lighter.joinToString(",")
     }
 
+    fun gatePath(rawHtml: String): String? = GATE_PATH_REGEX.find(rawHtml)?.groupValues?.get(1)
+
+    fun readerEase(rawHtml: String): String = READER_EASE_REGEX.find(rawHtml)?.groupValues?.get(1) ?: "mTr_v4"
+
+    fun readerFlow(rawHtml: String): String = READER_FLOW_REGEX.find(rawHtml)?.groupValues?.get(1) ?: "20"
+
     /** FNV-1a pointer checksum calculated by the site's _calcPointerDelta function. */
     fun pointerDelta(nonce: String, ease: String = "", flow: String = ""): String {
         if (nonce.isEmpty()) return ""
@@ -56,12 +68,28 @@ internal object MangaTRReaderContract {
         return hash.toUInt().toString(16).padStart(8, '0')
     }
 
+    /** jQuery's live flow (currently 84) differs from the CSS fallback (20). */
+    fun pointerDeltaCandidates(nonce: String, ease: String, flow: String): List<String> = listOf(
+        pointerDelta(nonce, ease, flow),
+        pointerDelta(nonce, ease, "84"),
+        pointerDelta(nonce, ease, ""),
+        pointerDelta(nonce, "", flow),
+        pointerDelta(nonce, "", "84"),
+        pointerDelta(nonce, "", ""),
+        "",
+    ).distinct()
+
     /** Current cap.js includes a pointer-delta segment; old readers omit it. */
-    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String, pointerDelta: String = ""): ReaderConfigDto? = listOf(
-        "gate|$gateKey|$pointerDelta|reader",
-        "gate|$gateKey||reader",
-        "gate|$gateKey|reader",
-    ).distinct().firstNotNullOfOrNull { key ->
+    fun decryptConfig(
+        encrypted: String,
+        gateKey: String,
+        pageKey: String,
+        pointerDelta: String = "",
+        additionalPointerDeltas: List<String> = emptyList(),
+    ): ReaderConfigDto? = (
+        (listOf(pointerDelta) + additionalPointerDeltas).map { "gate|$gateKey|$it|reader" } +
+            listOf("gate|$gateKey||reader", "gate|$gateKey|reader")
+        ).distinct().firstNotNullOfOrNull { key ->
         try {
             json.decodeFromString<ReaderConfigDto>(
                 decrypt(decrypt(encrypted, key), "boot|$pageKey|reader"),
