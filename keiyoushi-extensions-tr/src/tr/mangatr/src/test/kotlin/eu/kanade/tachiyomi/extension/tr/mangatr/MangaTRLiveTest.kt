@@ -57,10 +57,23 @@ class MangaTRLiveTest {
                 gateRequest.cv,
                 MangaTRReaderContract.canvasFingerprint(gateUrl.queryParameter("c").orEmpty()),
             )
+            val pointerInputs = json.decodeFromString<LiveFixturePointerDto>(
+                File(fixtureDir, "pointer-input.json").readText(),
+            )
+            assertEquals(
+                "Reader ${metadata.reader} ease mismatch",
+                pointerInputs.ease,
+                MangaTRReaderContract.readerEase(readerBody),
+            )
+            assertEquals(
+                "Reader ${metadata.reader} flow mismatch",
+                pointerInputs.flow,
+                MangaTRReaderContract.readerFlow(readerBody),
+            )
             val pointer = MangaTRReaderContract.pointerDelta(
                 nonce,
-                MangaTRReaderContract.readerEase(readerBody),
-                MangaTRReaderContract.readerFlow(readerBody),
+                pointerInputs.ease,
+                pointerInputs.flow,
             )
             assertEquals(
                 "Reader ${metadata.reader} browser/Kotlin pointer mismatch",
@@ -368,6 +381,12 @@ class MangaTRLiveTest {
         .set("Referer", "$BASE_URL/")
         .set("Origin", BASE_URL)
         .build()
+
+    @Serializable
+    private data class LiveFixturePointerDto(
+        val ease: String,
+        val flow: String,
+    )
 
     @Serializable
     private data class LiveFixtureMetadataDto(
