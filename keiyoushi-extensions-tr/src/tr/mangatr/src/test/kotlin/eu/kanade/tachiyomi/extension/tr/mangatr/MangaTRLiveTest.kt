@@ -111,12 +111,23 @@ class MangaTRLiveTest {
 
             val imageRequest = Request.Builder()
                 .url(requireNotNull(pages.first().imageUrl))
-                .headers(navigationHeaders.newBuilder().mangaTrImageHeaders(readerUrl).build())
+                .headers(navigationHeaders.newBuilder().mangaTrImageHeaders("$BASE_URL/").build())
                 .get()
                 .build()
             client.newCall(imageRequest).execute().use { image ->
-                assertEquals("First image of reader $readerId failed", 200, image.code)
-                assertTrue("First image of reader $readerId was empty", image.body.bytes().size > 100)
+                val imageBytes = image.body.bytes()
+                val safeErrorBody = if (image.code == 200) {
+                    ""
+                } else {
+                    imageBytes.toString(Charsets.UTF_8).take(500)
+                        .replace(Regex("[A-Za-z0-9_\\-+/=]{24,}"), "<redacted>")
+                }
+                assertTrue(
+                    "First image of reader $readerId failed: HTTP ${image.code}, " +
+                        "type=${image.header("Content-Type")}, server=${image.header("Server")}, " +
+                        "bytes=${imageBytes.size}, body=$safeErrorBody",
+                    image.code == 200 && imageBytes.size > 100,
+                )
             }
             println("MangaTR live reader $readerId: ${pages.size} pages; first image OK")
         }

@@ -120,11 +120,11 @@ class MangaTRParserTest {
             .set("X-Requested-With", "XMLHttpRequest")
             .set("Sec-Fetch-Dest", "document")
             .set("Sec-Fetch-Mode", "navigate")
-            .mangaTrImageHeaders("$BASE_URL/id-123931-read-chainsaw-man-chapter-2.html")
+            .mangaTrImageHeaders("$BASE_URL/")
             .build()
 
         assertEquals("image/avif,image/webp,image/*,*/*;q=0.8", headers["Accept"])
-        assertEquals("$BASE_URL/id-123931-read-chainsaw-man-chapter-2.html", headers["Referer"])
+        assertEquals("$BASE_URL/", headers["Referer"])
         assertEquals("image", headers["Sec-Fetch-Dest"])
         assertEquals("no-cors", headers["Sec-Fetch-Mode"])
         assertEquals("cross-site", headers["Sec-Fetch-Site"])
