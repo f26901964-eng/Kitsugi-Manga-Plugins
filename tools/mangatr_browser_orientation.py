@@ -137,6 +137,7 @@ def main() -> None:
         fetched_bodies: dict[str, bytes] = {}
         image_sources: dict[str, str] = {}
         image_response_statuses: list[int] = []
+        proxy_attempts: list[dict[str, object]] = []
 
         def serve_reader_image(route) -> None:
             url = route.request.url
@@ -469,19 +470,25 @@ def main() -> None:
                     raise RuntimeError(f"Page {position + 1} image returned {image_response.status}")
                 body = image_response.body()
             if image_sources.get(image_url) == "synthetic":
-                # Test-only fallback for GitHub-runner CDN blocks, limited to
-                # the five OCR samples. Runtime extension code never uses it.
-                try:
-                    proxy_url = "https://images.weserv.nl/?url=" + quote(image_url, safe="")
-                    proxied = context.request.get(proxy_url, timeout=20_000)
-                    proxy_body = proxied.body()
-                    if proxied.status == 200:
-                        with Image.open(io.BytesIO(proxy_body)) as probe:
-                            probe.verify()
-                        body = proxy_body
-                        image_sources[image_url] = "live-proxy"
-                except Exception:
-                    pass
+                # Test-only fallbacks for GitHub-runner CDN blocks, limited to
+                # the five OCR samples. Runtime extension code never uses them.
+                for service, template in (
+                    ("weserv", "https://images.weserv.nl/?url="),
+                    ("allorigins", "https://api.allorigins.win/raw?url="),
+                    ("codetabs", "https://api.codetabs.com/v1/proxy?quest="),
+                ):
+                    try:
+                        proxied = context.request.get(template + quote(image_url, safe=""), timeout=20_000)
+                        proxy_body = proxied.body()
+                        proxy_attempts.append({"page": position + 1, "service": service, "status": proxied.status})
+                        if proxied.status == 200:
+                            with Image.open(io.BytesIO(proxy_body)) as probe:
+                                probe.verify()
+                            body = proxy_body
+                            image_sources[image_url] = f"live-{service}"
+                            break
+                    except Exception as error:
+                        proxy_attempts.append({"page": position + 1, "service": service, "error": redact(error)})
             sample["image_source"] = image_sources.get(image_url, "live")
             save_report()
             with Image.open(io.BytesIO(body)) as raw:
@@ -498,6 +505,7 @@ def main() -> None:
 
     report["dom_verification_passed"] = True
     report["image_response_statuses"] = image_response_statuses
+    report["proxy_attempts"] = proxy_attempts
     report["real_images_verified"] = (
         len(report["samples"]) == len(SAMPLE_PAGES)
         and all(str(sample.get("image_source", "")).startswith("live") for sample in report["samples"])
