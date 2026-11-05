@@ -68,9 +68,17 @@ CDN engeli nedeniyle sentetik kaynak kullanılırsa `real_images_verified=false`
 - Live runner gerçek CDN görsellerinde 403 aldı; `real_images_verified=false`. Native/sentetik piksel testleri gerçek CDN veya cihaz kabulü değildir.
 - İlk iki live workflow yalnız sanitized diagnostics'i bot commit'iyle kaydetme adımında Git `128` verdi. Diagnostics artık read-only artifact olarak yükleniyor; başarılı run `42117796891` bu sorunun da çözüldüğünü doğrular.
 
+## Kalıcı main / builds yayını
+
+- PR #14 merge commit'i `01440e4`.
+- Main build run `42119772292`: **success**.
+- Kalıcı katalog publish run `42119772449`: **success**.
+- Kalıcı `builds` dalındaki APK ile branch'te test edilen APK aynı: **100.971 bayt**, SHA-256 **`065d68642bed39db94be33a214532d263d6d3636805cca40d60504b5cae986ec`**.
+- Kalıcı `index.json`, `plugins.json`, `builds/index.json`, `builds/plugins.json`, `builds/index.v2.json`: **`1.6.34 / 106034`**.
+- Kalıcı APK DEX'inde `v4-`, geriye dönük `v3-`, `no-cache` ve `KTS-SRC-9101`–`9104` doğrulandı.
+
 ## Henüz kanıtlanmayanlar
 
-- PR'ın main'e alınması ve kalıcı `builds` yayınının aynı APK'yı içermesi.
 - Kullanıcının cihazında Bölüm 1 ve 2'de tam görsel, doğru sıra ve doğru yön.
 
-Kullanıcı cihazı kabulü olmadan ürün düzeltmesi kesinleşmiş sayılmaz.
+Dağıtım tamamlandı; kullanıcı cihazı kabulü olmadan ürün düzeltmesi kesinleşmiş sayılmaz.
