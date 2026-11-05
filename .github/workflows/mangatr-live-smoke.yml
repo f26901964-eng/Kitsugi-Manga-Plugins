@@ -17,7 +17,7 @@ on:
       - .github/workflows/mangatr-live-smoke.yml
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   live-smoke:
@@ -79,22 +79,26 @@ jobs:
           else
             echo 'Synthetic pixel checks passed, but they are not real-image or device visual evidence.'
           fi
-      - name: Save sanitized public reader contract diagnostics
+      - name: Expose sanitized reader contract diagnostics
         if: always()
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A mangatr/live/browser/kotlin-live-failure.txt
-          git add mangatr/live/browser/reader-contract-report.json mangatr/live/browser/reader-gate-request.json mangatr/live/browser/reader-pointer-input.json mangatr/live/browser/reader-pointer-snippets.txt mangatr/live/browser/pointer-delta.js
-          git diff --cached --quiet && exit 0
-          git commit -m 'test(mangatr): capture sanitized live reader contract [skip ci]'
-          for attempt in 1 2 3; do
-            if git push origin HEAD:arena/720282f3-kitsugi-manga-plugins; then
-              exit 0
-            fi
-            git -c rebase.autoStash=true pull --rebase origin arena/720282f3-kitsugi-manga-plugins
-          done
-          exit 1
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          report_path = Path('mangatr/live/browser/reader-contract-report.json')
+          if report_path.exists():
+              report = json.loads(report_path.read_text())
+              keys = (
+                  'extension_gate_decrypts', 'chapter_two_gate_decrypts',
+                  'extension_expected_page_count', 'chapter_two_expected_page_count',
+                  'dom_verification_passed', 'full_page_contract_passed',
+                  'real_images_verified', 'contract_passed',
+              )
+              print(json.dumps({key: report.get(key) for key in keys}, ensure_ascii=False))
+          failure = Path('mangatr/live/browser/kotlin-live-failure.txt')
+          if failure.exists():
+              print(failure.read_text(errors='replace')[-4000:])
+          PY
       - name: Require the extension gate and live DOM contract
         run: |
           python3 - <<'PY'
@@ -142,4 +146,10 @@ jobs:
             keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-browser-site/
             keiyoushi-extensions-tr/src/tr/mangatr/build/mangatr-orientation/
             keiyoushi-extensions-tr/src/tr/mangatr/build/test-results/
+            mangatr/live/browser/reader-contract-report.json
+            mangatr/live/browser/reader-gate-request.json
+            mangatr/live/browser/reader-pointer-input.json
+            mangatr/live/browser/reader-pointer-snippets.txt
+            mangatr/live/browser/pointer-delta.js
+            mangatr/live/browser/kotlin-live-failure.txt
           if-no-files-found: warn
