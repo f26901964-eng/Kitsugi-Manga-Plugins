@@ -2,26 +2,26 @@
 
 ## Tamamlananlar
 
-- Güncel ana sayfa/arama/detay seçicileri ve imzalı bölüm-listesi API'si korunuyor.
-- Aynı bölümün farklı çevirileri ayrı reader-ID, başlık, tarih ve scanlator değerleriyle sunuluyor.
-- Güncel şifreli okuyucu için nonce+canvas gate, pointer-delta, config/page-list ve dizi/obje seed biçimleri uygulandı.
-- Chainsaw Man Bölüm 1'deki 180° hatası için cap.js xorshift32/Fisher–Yates sıralaması ve yatay/dikey flip bitleri Android bitmap dönüşümüne eklendi.
-- `v2-` cache öneki eski ters bitmap'lerin yeniden kullanılmasını önlüyor.
-- JVM sözleşme testleri, Spotless ve derleme CI kontrolleri çalıştırıldı.
-- Gerçek Chromium reader'ında eklentinin `n+cv` gate çözümlemesi açıldı; sayfa 1, 2, 3, 27 ve 52 için üretilen sıra/flip kodları canlı DOM ile birebir eşleşti.
-- Kaynak sürüm `1.6.30 / 106030` olarak hazırlandı.
+- Kullanıcının iki görsel parçasının tek sayfada birleşmesi şikâyeti canlı reader DOM'uyla incelendi.
+- Bu bölümde her elemanın tek URL kullandığı, sitenin bu URL'yi iki CSS slice olarak sunduğu doğrulandı.
+- `1.6.30`'daki tek bitmap/tek `Page` yaklaşımı kaldırıldı.
+- `1.6.31` her hedef slice'ı ayrı `Page` ve tek-strip JPEG olarak döndürüyor; sıra ve flip değerleri korunuyor.
+- Yeni `v3-` fragment'ları eski birleştirilmiş önbelleği ayırıyor; legacy `v2-` yolu desteklenmeye devam ediyor.
+- Sözleşme testleri iki reader elemanından dört ayrı sayfa ve doğru hedef fragment'larını doğruluyor.
+- Canlı örneklerin her biri için iki ayrı çıktı üretildi.
+- Kotlin CI `42082228411`, release `42082228514` ve canlı gate+DOM run `42082228450` başarılı.
+- `1.6.31 / 106031` APK ve katalogları üretildi; üç kopyanın SHA-256 değeri `e319220ce96d93f9a7799e613426f4fa71e72deb4a9e75aed32c1b5b6ac5bab7` olarak eşleşti.
 
 ## Yayın adımları
 
-- [x] Release APK'sını ve bütün katalogları `1.6.30 / 106030` için üret (`42054698092`).
-- [x] Üç APK kopyasını karşılaştır: 99.639 bayt; SHA-256 `0c3be7ecb932a1108f8db80743b3b313070484f1044e4e04841719da33383144`.
-- [ ] Çalışma dalındaki değişiklikler için PR aç/merge et ve dağıtım workflow'unun tamamlandığını kontrol et.
-- [ ] Kalıcı `builds` URL'sinin yeni dosyayı sunduğunu doğrula.
+- [ ] Çalışma dalı için PR aç ve ana dala birleştir.
+- [ ] `manga-yayin` ve ana dal derleme workflow'larının tamamlandığını kontrol et.
+- [ ] Kalıcı `builds` dalındaki APK ve kullanıcı kataloglarının `1.6.31 / 106031` olduğunu doğrula.
 
 ## Kullanıcı-doğrulama adımı
 
-- [ ] Kitsugi-Beta'da eklentiyi `1.6.30` sürümüne güncelle.
-- [ ] Chainsaw Man Bölüm 1 sayfa 1, 2, 3, 27 ve 52'yi aç; metinlerin ve sayfaların düz olduğunu kontrol et.
-- [ ] Bölümü kapatıp yeniden açarak yeni önbellek yolunu da kontrol et.
+- [ ] Kitsugi-Beta'da Manga-TR'yi `1.6.31` sürümüne güncelle ve bölümü yeniden aç.
+- [ ] Chainsaw Man Bölüm 1'in 104 ayrı sayfa geldiğini ve her sayfada yalnız bir görsel bulunduğunu kontrol et.
+- [ ] Özellikle önceki hatalı örneklerde metinlerin ve görsellerin düz olduğunu kontrol et.
 
-GitHub runner'ının CDN erişimi gerçek pikselleri sağlamadığı için OCR/180° görsel kabulü tamamlanmış değildir. Sentetik test görselleri doğru yön kanıtı sayılmaz. Ayrıntılar `TEST-RAPORU.md` içindedir.
+Runner CDN engeli nedeniyle gerçek piksel OCR/Android doğrulaması tamamlanmış değildir; sentetik çıktılar gerçek sayfa kanıtı değildir.
