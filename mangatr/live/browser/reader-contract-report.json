@@ -1,0 +1,9 @@
+{
+  "reader": "125451",
+  "samples": [],
+  "reader_status": 200,
+  "pointer_delta_length": 8,
+  "gate_format": "browser-pointer",
+  "extension_gate_format": null,
+  "extension_gate_decrypts": false
+}
