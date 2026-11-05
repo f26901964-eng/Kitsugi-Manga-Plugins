@@ -3,7 +3,7 @@ name: Manga-TR live reader and orientation test
 on:
   workflow_dispatch:
   push:
-    branches: [arena/b636bb7e-kitsugi-manga-plugins]
+    branches: [arena/ca45a998-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTR.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRContract.kt
@@ -49,8 +49,8 @@ jobs:
           git add mangatr/live/browser/reader-contract-report.json mangatr/live/browser/reader-gate-request.json mangatr/live/browser/reader-pointer-input.json mangatr/live/browser/reader-pointer-snippets.txt mangatr/live/browser/pointer-delta.js
           git diff --cached --quiet && exit 0
           git commit -m 'test(mangatr): capture sanitized live reader contract [skip ci]'
-          git pull --rebase origin arena/b636bb7e-kitsugi-manga-plugins
-          git push origin HEAD:arena/b636bb7e-kitsugi-manga-plugins
+          git pull --rebase origin arena/ca45a998-kitsugi-manga-plugins
+          git push origin HEAD:arena/ca45a998-kitsugi-manga-plugins
       - name: Require the extension gate and live DOM contract
         run: |
           python3 - <<'PY'

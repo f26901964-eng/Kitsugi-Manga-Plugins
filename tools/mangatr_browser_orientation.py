@@ -425,7 +425,8 @@ def main() -> None:
             seed = seeds.get(page_index, seeds.get("0", 0))
             codes = scramble_codes(seed, grid)
             encrypted_parts = attribute(node, attributes["parts"])
-            image_url = json.loads(decrypt(encrypted_parts, f"attr|{page_key}|reader"))[0]
+            part_urls = json.loads(decrypt(encrypted_parts, f"attr|{page_key}|reader"))
+            image_url = part_urls[0]
 
             locator = page.locator(f"[{attributes['parts']}]").nth(position)
             locator.scroll_into_view_if_needed(timeout=30_000)
@@ -446,12 +447,19 @@ def main() -> None:
                 save_report()
                 raise
             dom_slices = slices.evaluate_all(
-                """(nodes, grid) => nodes.map(node => ({
-                    destination: Number(node.getAttribute('data-reader-slice')),
-                    backgroundPosition: node.style.backgroundPosition,
-                    transform: node.style.transform,
-                }))""",
-                grid,
+                """(nodes, urls) => nodes.map(node => {
+                    const backgroundImage = node.style.backgroundImage;
+                    return {
+                        destination: Number(node.getAttribute('data-reader-slice')),
+                        backgroundPosition: node.style.backgroundPosition,
+                        backgroundSize: node.style.backgroundSize,
+                        backgroundPart: urls.findIndex(url => backgroundImage.includes(url)),
+                        hasBackgroundImage: backgroundImage !== '' && backgroundImage !== 'none',
+                        childImages: node.querySelectorAll('img').length,
+                        transform: node.style.transform,
+                    };
+                })""",
+                part_urls,
             )
             reference_codes = [None] * grid
             for item in dom_slices:
@@ -472,6 +480,8 @@ def main() -> None:
             sample = {
                 "page": position + 1,
                 "page_index": page_index,
+                "part_count": len(part_urls),
+                "dom_slices": dom_slices,
                 "generated_codes": codes,
                 "dom_codes": reference_codes,
                 "matches_live_dom": matches,
