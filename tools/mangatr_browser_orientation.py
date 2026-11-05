@@ -75,6 +75,21 @@ def corrected_image(source: Image.Image, codes: list[int]) -> Image.Image:
     return output
 
 
+def corrected_slice(source: Image.Image, codes: list[int], destination: int) -> Image.Image:
+    """Return the same single image that the new Android v3 fragment selects."""
+    strip_height = source.height // len(codes)
+    if strip_height <= 0:
+        raise RuntimeError("Image is shorter than its reader grid")
+    source_index = next(index for index, code in enumerate(codes) if code % 100 == destination)
+    code = codes[source_index]
+    strip = source.crop((0, source_index * strip_height, source.width, (source_index + 1) * strip_height))
+    if code // 100 & 1:
+        strip = strip.transpose(Image.Transpose.FLIP_LEFT_RIGHT)
+    if code // 100 & 2:
+        strip = strip.transpose(Image.Transpose.FLIP_TOP_BOTTOM)
+    return strip
+
+
 def synthetic_image(url: str) -> bytes:
     digest = hashlib.sha256(url.encode()).hexdigest()
     image = Image.new("RGB", (800, 1200), "white")
@@ -529,9 +544,20 @@ def main() -> None:
                 source.load()
             corrected = corrected_image(source, codes)
             corrected.save(CORRECTED_OUT / f"page-{position + 1}.png", format="PNG")
+            slice_out = CORRECTED_OUT / "slices"
+            slice_out.mkdir(parents=True, exist_ok=True)
+            for destination in range(len(codes)):
+                corrected_slice(source, codes, destination).save(
+                    slice_out / f"page-{position + 1}-slice-{destination}.png",
+                    format="PNG",
+                )
+            sample["output_slice_count"] = len(codes)
+            sample["output_slice_dimensions"] = [corrected.width, corrected.height // len(codes)]
+            save_report()
             print(
                 f"Reader {READER_ID} page {position + 1}: live DOM matches generated order/flips; "
-                f"corrected {corrected.width}x{corrected.height}; source={sample['image_source']}"
+                f"{len(codes)} separate {corrected.width}x{corrected.height // len(codes)} images; "
+                f"source={sample['image_source']}"
             )
 
         browser.close()

@@ -10,7 +10,7 @@ import java.util.Base64
 
 /** The encryption, strip order and orientation contract of Manga-TR's cap.js reader. */
 internal object MangaTRReaderContract {
-    const val CACHE_VERSION_PREFIX = "v2-"
+    const val CACHE_VERSION_PREFIX = "v3-"
 
     private val json = Json { ignoreUnknownKeys = true }
 
@@ -86,16 +86,17 @@ internal object MangaTRReaderContract {
         }
         if (elements.isEmpty()) return null
 
-        val pages = elements.mapIndexedNotNull { index, element ->
+        val pages = mutableListOf<Page>()
+        elements.forEach { element ->
             val encryptedParts = element.attr(attributes.parts)
                 .ifBlank { element.attr(attributes.parts.removePrefix("data-")) }
-            if (encryptedParts.isBlank()) return@mapIndexedNotNull null
+            if (encryptedParts.isBlank()) return@forEach
             val imageUrl = try {
                 json.decodeFromString<List<String>>(
                     decrypt(encryptedParts, "attr|$pageKey|reader"),
                 ).first()
             } catch (_: Exception) {
-                return@mapIndexedNotNull null
+                return@forEach
             }
 
             val legacyOrder = if (config.seeds.isEmpty() && attributes.order != null) {
@@ -120,19 +121,33 @@ internal object MangaTRReaderContract {
                 val grid = config.grid.takeIf { it in 1..100 } ?: 2
                 scrambleCodes(seed, grid)
             }
-            val cachePrefix = if (legacyOrder == null) CACHE_VERSION_PREFIX else ""
-            val url = if (order.isEmpty()) {
-                imageUrl
-            } else {
-                try {
-                    imageUrl.toHttpUrl().newBuilder()
-                        .fragment(cachePrefix + order.joinToString(","))
-                        .toString()
+
+            fun pageWithFragment(fragment: String) {
+                val url = try {
+                    imageUrl.toHttpUrl().newBuilder().fragment(fragment).toString()
                 } catch (_: Exception) {
                     imageUrl
                 }
+                pages += Page(pages.size, imageUrl = url)
             }
-            Page(index, imageUrl = url)
+
+            if (legacyOrder != null) {
+                // Older readers explicitly describe one reconstructed bitmap.
+                if (legacyOrder.isEmpty()) {
+                    pages += Page(pages.size, imageUrl = imageUrl)
+                } else {
+                    pageWithFragment(legacyOrder.joinToString(","))
+                }
+            } else if (order.isEmpty()) {
+                pages += Page(pages.size, imageUrl = imageUrl)
+            } else {
+                // The current site presents every CSS background slice as its
+                // own image. Do the same instead of joining two slices into a
+                // single Android reader page.
+                order.indices.forEach { destination ->
+                    pageWithFragment("$CACHE_VERSION_PREFIX$destination-${order.joinToString(",")}")
+                }
+            }
         }
         return pages.ifEmpty { null }
     }

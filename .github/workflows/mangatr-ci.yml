@@ -3,7 +3,7 @@ name: Manga-TR tests and APK
 on:
   workflow_dispatch:
   push:
-    branches: [arena/b636bb7e-kitsugi-manga-plugins]
+    branches: [arena/ca45a998-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangatr/**
       - mangatr/live/browser/**
@@ -39,7 +39,7 @@ jobs:
           git add keiyoushi-extensions-tr/src/tr/mangatr
           git diff --cached --quiet && exit 0
           git commit -m 'style(mangatr): apply repository Kotlin formatter [skip ci]'
-          git push origin HEAD:arena/b636bb7e-kitsugi-manga-plugins
+          git push origin HEAD:arena/ca45a998-kitsugi-manga-plugins
       - name: Run fixture tests and build release APK
         working-directory: keiyoushi-extensions-tr
         run: |
