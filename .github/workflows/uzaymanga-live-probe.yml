@@ -1,0 +1,41 @@
+name: UzayManga family live comparison
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/5307b37d-kitsugi-manga-plugins]
+    paths:
+      - tools/uzaymanga_live_probe.py
+      - tests/test_uzaymanga_live_probe.py
+      - .github/workflows/uzaymanga-live-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install live probe dependencies
+        run: python -m pip install requests==2.32.5 pillow==11.3.0
+      - name: Check devalue parsing, chapter ordering and CDN rules
+        run: python -m unittest tests.test_uzaymanga_live_probe -v
+      - name: Compare catalogs, chapters and real image decoding
+        run: |
+          mkdir -p reports
+          python tools/uzaymanga_live_probe.py --output reports/uzaymanga-live-results.json
+      - name: Expose comparison in the check summary
+        if: always()
+        run: cat reports/uzaymanga-live-results.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload sanitized comparison
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: uzaymanga-live-comparison
+          path: reports/uzaymanga-live-results.json
+          if-no-files-found: error
