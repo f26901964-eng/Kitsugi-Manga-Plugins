@@ -17,12 +17,11 @@ internal object MangaTRContract {
     }
 
     private object CssNumberRegex {
-        fun find(css: String, variable: String): Int? =
-            Regex("""${Regex.escape(variable)}\s*:\s*(\d+)""")
-                .find(css)
-                ?.groupValues
-                ?.get(1)
-                ?.toIntOrNull()
+        fun find(css: String, variable: String): Int? = Regex("""${Regex.escape(variable)}\s*:\s*(\d+)""")
+            .find(css)
+            ?.groupValues
+            ?.get(1)
+            ?.toIntOrNull()
     }
 }
 

@@ -127,11 +127,10 @@ class MangaTRLiveTest {
         }
     }
 
-    private fun get(client: OkHttpClient, url: String, headers: Headers): String =
-        client.newCall(Request.Builder().url(url).headers(headers).get().build()).execute().use { response ->
-            assertEquals(200, response.code)
-            response.body.string()
-        }
+    private fun get(client: OkHttpClient, url: String, headers: Headers): String = client.newCall(Request.Builder().url(url).headers(headers).get().build()).execute().use { response ->
+        assertEquals(200, response.code)
+        response.body.string()
+    }
 
     private fun navigationHeaders(): Headers = Headers.Builder()
         .set("User-Agent", USER_AGENT)
@@ -161,8 +160,7 @@ class MangaTRLiveTest {
         }
 
         @Synchronized
-        override fun loadForRequest(url: HttpUrl): List<Cookie> =
-            cookies.filter { it.matches(url) }
+        override fun loadForRequest(url: HttpUrl): List<Cookie> = cookies.filter { it.matches(url) }
     }
 
     companion object {
