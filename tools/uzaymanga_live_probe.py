@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Compare live UzayManga-family sources without persisting URLs or response bodies.
+"""Compare live fourth-source candidates without persisting response bodies.
 
-The URL, devalue traversal and CDN rules mirror lib-multisrc/uzaymanga. Only public
- titles, counts, timestamps, HTTP/image metadata and sanitized errors are reported.
+The UzayManga URL/devalue rules and Mangitto API/CDN rules mirror production. Only
+public titles, counts, timestamps, HTTP/image metadata and sanitized errors are reported.
 """
 from __future__ import annotations
 
@@ -24,6 +24,9 @@ USER_AGENT = (
 TIMEOUT = 35
 PAGE_SIZE = 20
 MAX_CATALOG_PAGES = 25
+# The 2026-11-06 Chromium run ended in unresolved challenges on all three domains.
+# Do not repeatedly retry those interactive checks on every subsequent probe.
+ATTEMPT_CLOUDFLARE_CLEARANCE = False
 
 
 @dataclass(frozen=True)
@@ -364,6 +367,8 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         except ProbeFailure as exc:
             if "http=403" not in str(exc):
                 raise
+            if not ATTEMPT_CLOUDFLARE_CLEARANCE:
+                raise ProbeFailure(f"{exc};browser=unresolved-challenge-not-retried") from None
             stage = "browser-clearance"
             browser_clearance(session, candidate)
             browser_used = True
@@ -413,6 +418,171 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         session.close()
 
 
+def mangitto_json(session: requests.Session, url: str) -> dict[str, Any]:
+    try:
+        response = session.get(url, headers={"Accept": "application/json"}, timeout=TIMEOUT)
+    except requests.RequestException as exc:
+        raise ProbeFailure(f"network={type(exc).__name__}") from None
+    if response.status_code != 200:
+        raise ProbeFailure(f"http={response.status_code}")
+    try:
+        payload = response.json()
+    except ValueError:
+        raise ProbeFailure("response=not-json") from None
+    if not isinstance(payload, dict):
+        raise ProbeFailure("response=not-object")
+    return payload
+
+
+def mangitto_chapter_number(value: Any) -> str:
+    if not isinstance(value, (int, float)) or isinstance(value, bool):
+        raise ProbeFailure("chapter=invalid-number")
+    return str(int(value)) if float(value).is_integer() else str(value)
+
+
+def optional_date(item: dict[str, Any]) -> str | None:
+    for key in ("createdAt", "created_at", "publishAt", "publish_at", "releaseDate", "updatedAt"):
+        value = item.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return None
+
+
+def date_age_hours(value: str | None) -> float | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return round((datetime.now(timezone.utc) - parsed.astimezone(timezone.utc)).total_seconds() / 3600, 1)
+    except ValueError:
+        return None
+
+
+def probe_mangitto() -> dict[str, Any]:
+    base_url = "https://mangtto.com"
+    api_url = f"{base_url}/api/manga"
+    session = requests.Session()
+    session.headers.update({
+        "User-Agent": USER_AGENT,
+        "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.7",
+        "Referer": base_url + "/",
+        "Origin": base_url,
+    })
+    stage = "popular"
+    try:
+        popular = mangitto_json(session, f"{api_url}/populer?skip=0&take=50")
+        popular_items = popular.get("mangas")
+        total = popular.get("total")
+        if not isinstance(popular_items, list) or not popular_items or not isinstance(total, int):
+            raise ProbeFailure("popular=invalid-response")
+        stage = "latest"
+        latest = mangitto_json(session, f"{api_url}/latest?skip=0&take=50")
+        latest_items = latest.get("chapters")
+        if not isinstance(latest_items, list) or not latest_items:
+            raise ProbeFailure("latest=empty")
+        latest_series = []
+        latest_dates = {}
+        for entry in latest_items:
+            if not isinstance(entry, dict) or not isinstance(entry.get("manga"), dict):
+                continue
+            manga = entry["manga"]
+            title, slug = manga.get("title"), manga.get("slug")
+            if not isinstance(title, str) or not isinstance(slug, str) or not slug:
+                continue
+            if slug not in latest_dates:
+                latest_series.append(manga)
+                latest_dates[slug] = optional_date(entry)
+        if not latest_series:
+            raise ProbeFailure("latest=missing-series")
+        stage = "reader"
+        last_failure = ProbeFailure("chapters=0")
+        reader = None
+        for manga in latest_series[:3]:
+            slug = manga["slug"]
+            try:
+                details = mangitto_json(session, f"{api_url}/{slug}")
+                if details.get("slug") != slug or not isinstance(details.get("title"), str):
+                    raise ProbeFailure("details=invalid-response")
+                all_chapters = []
+                total_chapters = None
+                for skip in range(0, 2000, 50):
+                    page = mangitto_json(session, f"{api_url}/{slug}/chapters?skip={skip}&take=50")
+                    chapter_page = page.get("chapters")
+                    if not isinstance(chapter_page, list):
+                        raise ProbeFailure("chapters=invalid-response")
+                    all_chapters.extend(chapter_page)
+                    total_chapters = page.get("total")
+                    if not chapter_page or not isinstance(total_chapters, int) or len(all_chapters) >= total_chapters:
+                        break
+                if not all_chapters:
+                    raise ProbeFailure("chapters=0")
+                if not isinstance(total_chapters, int) or len(all_chapters) < total_chapters:
+                    raise ProbeFailure("chapters=truncated")
+                latest_chapter = max(
+                    (item for item in all_chapters if isinstance(item, dict)),
+                    key=lambda item: float(item.get("chapter", float("-inf"))),
+                )
+                chapter = mangitto_chapter_number(latest_chapter.get("chapter"))
+                page_data = mangitto_json(session, f"{api_url}/{slug}/{chapter}")
+                uploads = page_data.get("uploads")
+                cdn = page_data.get("cdn")
+                if not isinstance(uploads, list) or not uploads or not isinstance(cdn, str):
+                    raise ProbeFailure("pages=missing-upload")
+                upload = uploads[0]
+                length, fansub = upload.get("fileLength"), upload.get("fansubId")
+                if not isinstance(length, int) or length <= 0 or not isinstance(fansub, str):
+                    raise ProbeFailure("pages=invalid-upload")
+                page_numbers = [1] if length == 1 else [1, length]
+                images = [
+                    decode_image(session, f"{cdn.rstrip('/')}/manga/{slug}/{chapter}/{number}-{fansub}.webp")
+                    for number in page_numbers
+                ]
+                reader = {
+                    "title": manga["title"],
+                    "chapter": chapter,
+                    "chaptersReturned": total_chapters if isinstance(total_chapters, int) else len(all_chapters),
+                    "latestChapterDate": latest_dates.get(slug),
+                    "latestChapterAgeHours": date_age_hours(latest_dates.get(slug)),
+                    "pages": length,
+                    "images": images,
+                }
+                break
+            except ProbeFailure as exc:
+                last_failure = exc
+        if reader is None:
+            raise last_failure
+        popular_titles = [item.get("title") for item in popular_items if isinstance(item, dict)]
+        return {
+            "name": "Mangitto",
+            "archivedExtensionVersion": "1.6.1",
+            "requestMode": "production-direct",
+            "browserClearanceUsed": False,
+            "ok": True,
+            "latestPageSize": len(latest_items),
+            "latestTitles": [item["title"] for item in latest_series[:10]],
+            "catalogPagesScanned": 1,
+            "catalogSeriesFound": total,
+            "catalogScanComplete": True,
+            "catalogCountIsMinimum": False,
+            "catalogCountSource": "api-total",
+            "sampledPopularTitles": [title for title in popular_titles if isinstance(title, str)][:10],
+            **reader,
+        }
+    except Exception as exc:
+        return {
+            "name": "Mangitto",
+            "archivedExtensionVersion": "1.6.1",
+            "requestMode": "production-direct",
+            "browserClearanceUsed": False,
+            "ok": False,
+            "error": f"{stage}:{exc}" if isinstance(exc, ProbeFailure) else f"{stage}:unexpected={type(exc).__name__}",
+        }
+    finally:
+        session.close()
+
+
 def run() -> dict[str, Any]:
     report: dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
@@ -420,6 +590,7 @@ def run() -> dict[str, Any]:
     }
     for candidate in CANDIDATES:
         report["sources"][candidate.key] = probe(candidate)
+    report["sources"]["mangitto"] = probe_mangitto()
     report["ok"] = any(item["ok"] for item in report["sources"].values())
     report["fullyVerified"] = all(item["ok"] for item in report["sources"].values())
     return report

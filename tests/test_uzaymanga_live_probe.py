@@ -2,9 +2,11 @@ import unittest
 from datetime import datetime, timezone
 
 try:
-    from tools.uzaymanga_live_probe import Candidate, SvelteData, chapters, get_svelte, image_url
+    from tools.uzaymanga_live_probe import (
+        Candidate, SvelteData, chapters, get_svelte, image_url, mangitto_chapter_number,
+    )
 except ModuleNotFoundError:
-    Candidate = SvelteData = chapters = get_svelte = image_url = None
+    Candidate = SvelteData = chapters = get_svelte = image_url = mangitto_chapter_number = None
 
 
 @unittest.skipIf(SvelteData is None, 'live probe dependencies are not installed')
@@ -53,6 +55,11 @@ class UzayMangaLiveProbeTests(unittest.TestCase):
         self.assertEqual({'root': 1}, root)
         self.assertEqual([{'root': 1}], data.array)
         self.assertEqual({'Accept': '*/*', 'X-Requested-With': 'XMLHttpRequest'}, captured['headers'])
+
+    def test_mangitto_chapter_numbers_match_kotlin_float_formatting(self):
+        self.assertEqual('44', mangitto_chapter_number(44.0))
+        self.assertEqual('44', mangitto_chapter_number(44))
+        self.assertEqual('44.5', mangitto_chapter_number(44.5))
 
     def test_cdn_resolution_preserves_absolute_urls_and_normalizes_slashes(self):
         candidate = Candidate('test', 'Test', 'https://source.example', 'https://cdn.example/', '1.0')

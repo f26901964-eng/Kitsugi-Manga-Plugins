@@ -1,4 +1,4 @@
-name: UzayManga family live comparison
+name: Fourth manga source live comparison
 
 on:
   workflow_dispatch:
@@ -22,15 +22,23 @@ jobs:
         with:
           python-version: '3.12'
       - name: Install live probe dependencies
-        run: python -m pip install requests==2.32.5 pillow==11.3.0 playwright==1.56.0
+        run: python -m pip install requests==2.32.5 pillow==11.3.0 playwright==1.56.0 beautifulsoup4 cryptography
       - name: Install Chromium for non-interactive Cloudflare challenges
         run: python -m playwright install chromium
       - name: Check devalue parsing, chapter ordering and CDN rules
-        run: python -m unittest tests.test_uzaymanga_live_probe -v
+        run: python -m unittest tests.test_uzaymanga_live_probe tests.test_uzaymanga_active_overlap -v
       - name: Compare catalogs, chapters and real image decoding
         run: |
           mkdir -p reports
           python tools/uzaymanga_live_probe.py --output reports/uzaymanga-live-results.json
+      - name: Compare live titles with the enabled sources
+        if: always()
+        continue-on-error: true
+        run: |
+          python -m unittest tests.test_uzaymanga_active_overlap -v
+          python tools/uzaymanga_active_overlap.py \
+            --input reports/uzaymanga-live-results.json \
+            --output reports/active-title-overlap.json
       - name: Annotate candidate results
         if: always()
         run: |
@@ -43,14 +51,26 @@ jobs:
                   return str(value).replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
               message = escape(json.dumps(result, ensure_ascii=False, separators=(',', ':')))
               print(f'::notice title={escape(name)}::{message}')
+          overlap_path = Path('reports/active-title-overlap.json')
+          if overlap_path.exists():
+              overlap = json.loads(overlap_path.read_text())
+              for name, result in overlap['sources'].items():
+                  message = escape(json.dumps(result, ensure_ascii=False, separators=(',', ':')))
+                  print(f'::notice title=overlap-{escape(name)}::{message}')
           PY
       - name: Expose comparison in the check summary
         if: always()
-        run: cat reports/uzaymanga-live-results.json >> "$GITHUB_STEP_SUMMARY"
+        run: |
+          cat reports/uzaymanga-live-results.json >> "$GITHUB_STEP_SUMMARY"
+          if test -f reports/active-title-overlap.json; then
+            cat reports/active-title-overlap.json >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Upload sanitized comparison
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: uzaymanga-live-comparison
-          path: reports/uzaymanga-live-results.json
+          path: |
+            reports/uzaymanga-live-results.json
+            reports/active-title-overlap.json
           if-no-files-found: error
