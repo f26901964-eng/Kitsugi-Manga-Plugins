@@ -39,4 +39,6 @@ Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/y
 
 ## Dağıtım durumu
 
-`tachiyomi-tr.mangatr-v1.6.32.apk` ve kataloglar çalışma dalında üretildi. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti. Ana dal PR'ı ve kalıcı `builds` yayını bekleniyor.
+`tachiyomi-tr.mangatr-v1.6.32.apk` ve kataloglar çalışma dalında üretildi. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti.
+
+PR [#12](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/12) ana dala birleştirildi. `manga-yayin` run `42091010382` ve ana dal derleme run `42091010612` başarılı oldu. Kalıcı `builds` dalındaki iki APK kopyası aynı boyut/SHA-256 ile, beş kullanıcı kataloğu da `1.6.32 / 106032` ve yeni APK URL'si ile doğrulandı.

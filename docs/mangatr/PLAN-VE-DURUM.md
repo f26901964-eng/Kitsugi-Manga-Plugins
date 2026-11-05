@@ -12,9 +12,9 @@
 
 ## Yayın adımları
 
-- [ ] PR aç ve ana dala birleştir.
-- [ ] `manga-yayin` ve ana dal derleme workflow'larını kontrol et.
-- [ ] Kalıcı `builds` APK ve kullanıcı kataloglarının `1.6.32 / 106032` olduğunu doğrula.
+- [x] PR [#12](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/12) ana dala birleştirildi.
+- [x] `manga-yayin` run `42091010382` ve ana dal derleme run `42091010612` başarılı.
+- [x] Kalıcı `builds` APK kopyaları ve beş kullanıcı kataloğu `1.6.32 / 106032` için doğrulandı.
 
 ## Kullanıcı-doğrulama adımı
 
