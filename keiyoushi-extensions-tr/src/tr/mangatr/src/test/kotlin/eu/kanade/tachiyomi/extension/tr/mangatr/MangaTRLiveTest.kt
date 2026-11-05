@@ -6,8 +6,10 @@ import okhttp3.CookieJar
 import okhttp3.FormBody
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.jsoup.Jsoup
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -104,7 +106,28 @@ class MangaTRLiveTest {
                 assertEquals("Reader $readerId failed", 200, it.code)
                 it.body.string()
             }
-            val pages = MangaTRParser.parseReaderPages(Jsoup.parse(readerBody, readerUrl))
+            val readerDocument = Jsoup.parse(readerBody, readerUrl)
+            val gatePath = requireNotNull(GATE_PATH.find(readerBody)?.groupValues?.get(1)) {
+                "Reader $readerId did not expose its reader gate"
+            }
+            assertTrue("Reader $readerId exposed an unexpected gate path", gatePath.startsWith("/cek/f/"))
+            val gateHeaders = navigationHeaders.newBuilder()
+                .mangaTrAjaxHeaders(readerUrl)
+                .set("Origin", BASE_URL)
+                .build()
+            val gatePost = Request.Builder()
+                .url(BASE_URL + gatePath)
+                .headers(gateHeaders)
+                .post("{}".toRequestBody("application/json".toMediaType()))
+                .build()
+            var gateStatus = client.newCall(gatePost).execute().use { it.code }
+            if (gateStatus != 200) {
+                val gateGet = Request.Builder().url(BASE_URL + gatePath).headers(gateHeaders).get().build()
+                gateStatus = client.newCall(gateGet).execute().use { it.code }
+            }
+            assertEquals("Reader gate $readerId failed", 200, gateStatus)
+
+            val pages = MangaTRParser.parseReaderPages(readerDocument)
             assertTrue("Reader $readerId returned no pages", pages.isNotEmpty())
             assertEquals((pages.indices).toList(), pages.map { it.index })
             assertEquals(pages.size, pages.map { it.imageUrl }.distinct().size)
@@ -175,5 +198,6 @@ class MangaTRLiveTest {
         private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
         private val EXPECTED_READER_IDS = setOf("123931", "125989", "135286", "136245")
         private val READER_ID = Regex("""(?:^|/)id-(\d+)-read-""")
+        private val GATE_PATH = Regex("""_fpx\s*=\s*"([^"]+)"""")
     }
 }

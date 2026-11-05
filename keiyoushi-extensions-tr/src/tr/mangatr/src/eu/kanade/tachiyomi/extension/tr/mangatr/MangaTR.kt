@@ -1120,13 +1120,13 @@ abstract class MangaTR : KeiSource() {
         var document = response.asJsoup()
 
         suspend fun parsePages(doc: Document): List<Page> {
-            // Current readers carry everything needed in their randomized data attributes.
-            // Parse them before following the hidden group-selection modal.
+            // Run the site's reader gate before using its encrypted image URLs.
+            // The direct attribute parser remains a fallback for older gate responses.
+            val bentoPages = tryParseBentoPages(doc, response.request.url.toString())
+            if (!bentoPages.isNullOrEmpty()) return bentoPages
+
             val directBentoPages = MangaTRParser.parseReaderPages(doc)
             if (directBentoPages.isNotEmpty()) return directBentoPages
-
-            val bentoPages = tryParseBentoPages(doc)
-            if (!bentoPages.isNullOrEmpty()) return bentoPages
 
             val fmPages = tryParseFmPages(doc)
             if (fmPages.isNotEmpty()) return fmPages
@@ -1238,7 +1238,7 @@ abstract class MangaTR : KeiSource() {
         }
     }
 
-    private suspend fun tryParseBentoPages(document: Document): List<Page>? {
+    private suspend fun tryParseBentoPages(document: Document, readerUrl: String): List<Page>? {
         val configScript = document.selectFirst("script[type=application/json][id^=rdm-]")
             ?: document.selectFirst("script[id^=rdm-]")
             ?: document.selectFirst("[id^=rdm-]")
@@ -1261,12 +1261,22 @@ abstract class MangaTR : KeiSource() {
             val gateUrl = baseUrl.toHttpUrl().resolve(gatePath)
                 ?.takeIf { it.scheme == baseUrl.toHttpUrl().scheme && it.host == baseUrl.toHttpUrl().host }
             if (gateUrl != null) {
+                val gateHeaders = headers.newBuilder()
+                    .mangaTrAjaxHeaders(readerUrl)
+                    .set("Origin", baseUrl)
+                    .build()
                 val gateKey = try {
-                    client.post(gateUrl.toString(), "{}".toRequestBody(JSON_MEDIA_TYPE))
-                        .parseAs<ReaderGateDto>().k
+                    client.newCall(
+                        Request.Builder()
+                            .url(gateUrl)
+                            .headers(gateHeaders)
+                            .post("{}".toRequestBody(JSON_MEDIA_TYPE))
+                            .build(),
+                    ).execute().parseAs<ReaderGateDto>().k
                 } catch (e: Exception) {
                     try {
-                        client.get(gateUrl.toString()).parseAs<ReaderGateDto>().k
+                        client.newCall(Request.Builder().url(gateUrl).headers(gateHeaders).get().build())
+                            .execute().parseAs<ReaderGateDto>().k
                     } catch (_: Exception) {
                         null
                     }
