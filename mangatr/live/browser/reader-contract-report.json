@@ -220,9 +220,15 @@
       "int"
     ]
   },
-  "group_skip_visible": false,
   "extension_gate_format": "current-pointer",
   "extension_gate_decrypts": true,
+  "extension_source_page_count": 52,
+  "extension_expected_page_count": 104,
+  "chapter_two_gate_format": "current-pointer",
+  "chapter_two_gate_decrypts": true,
+  "chapter_two_source_page_count": 26,
+  "chapter_two_expected_page_count": 52,
+  "group_skip_visible": false,
   "grid": 2,
   "seed_count": 52,
   "page_count": 52,
@@ -439,22 +445,22 @@
       "status": 404
     },
     {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
+      "stage": "route",
+      "service": "weserv",
+      "status": 404
+    },
+    {
       "page": 27,
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
-      "service": "weserv",
-      "status": 404
-    },
-    {
-      "stage": "route",
       "service": "weserv",
       "status": 404
     },
@@ -544,12 +550,12 @@
       "status": 404
     },
     {
-      "page": 52,
+      "stage": "route",
       "service": "weserv",
       "status": 404
     },
     {
-      "stage": "route",
+      "page": 52,
       "service": "weserv",
       "status": 404
     },
