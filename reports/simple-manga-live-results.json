@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-11-05T12:43:34.635391+00:00",
+  "sources": {
+    "mangaportali": {
+      "name": "Manga Portalı",
+      "ok": false,
+      "error": "http=403"
+    },
+    "mangadiyari": {
+      "name": "Manga Diyarı",
+      "ok": true,
+      "title": "Ben Ölümsüzüm",
+      "seriesInListing": 24,
+      "chaptersReturned": 793,
+      "pages": 9,
+      "images": [
+        {
+          "bytes": 169513,
+          "contentType": "image/jpeg",
+          "format": "JPEG",
+          "width": 1000,
+          "height": 1329
+        },
+        {
+          "bytes": 83445,
+          "contentType": "image/jpeg",
+          "format": "JPEG",
+          "width": 1000,
+          "height": 563
+        }
+      ]
+    }
+  },
+  "ok": true
+}
