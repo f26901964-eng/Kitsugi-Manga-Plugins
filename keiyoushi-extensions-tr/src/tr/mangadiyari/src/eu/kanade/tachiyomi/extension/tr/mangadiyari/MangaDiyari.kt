@@ -91,13 +91,13 @@ abstract class MangaDiyari : KeiSource() {
         val details = client.get(seriesDetailsUrl(baseUrl, manga.url)).parseAs<SeriesDetailsResponse>()
         return SMangaUpdate(
             details.series.toSManga(baseUrl),
-            details.chapters.toSChapters(details.series.slug),
+            details.chapters.toEntries(details.series.slug).map { it.toSChapter() },
         )
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val response = client.get(chapterPagesUrl(baseUrl, chapter.url)).parseAs<ChapterPagesResponse>()
-        return response.pages.toPages(baseUrl, getChapterUrl(chapter))
+        return response.pages.toPageEntries(baseUrl).toPages(getChapterUrl(chapter))
     }
 
     override fun getFilterList(data: JsonElement?) = FilterList(

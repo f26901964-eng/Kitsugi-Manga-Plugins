@@ -42,16 +42,16 @@ class SeriesDto(
     private val genres: List<String> = emptyList(),
     @SerialName("alt_names") private val altNames: String? = null,
 ) {
-    fun toSManga(baseUrl: String) = SManga.create().apply {
-        url = slug
-        title = this@SeriesDto.title
-        thumbnail_url = coverUrl?.takeIf { it.isNotBlank() }?.let { baseUrl.resolveImage(it) }
-        author = this@SeriesDto.author
-        artist = this@SeriesDto.artist
+    fun toEntry(baseUrl: String) = SeriesEntry(
+        slug = slug,
+        title = title,
+        thumbnailUrl = coverUrl?.takeIf { it.isNotBlank() }?.let { baseUrl.resolveImage(it) },
+        author = author,
+        artist = artist,
         genre = buildList {
             type?.takeIf { it.isNotBlank() }?.let { add(it.replaceFirstChar(Char::uppercase)) }
             addAll(genres.filter { it.isNotBlank() })
-        }.joinToString().ifBlank { null }
+        }.joinToString().ifBlank { null },
         description = buildString {
             this@SeriesDto.description?.let {
                 append(Jsoup.parseBodyFragment(it).wholeText().replace(PARAGRAPH_GAP, "\n\n").trim())
@@ -61,14 +61,39 @@ class SeriesDto(
                 append("Alternatif isimler: ")
                 append(altNames)
             }
-        }.ifBlank { null }
+        }.ifBlank { null },
         status = when (this@SeriesDto.status) {
             "ongoing" -> SManga.ONGOING
             "completed" -> SManga.COMPLETED
             "hiatus" -> SManga.ON_HIATUS
             "cancelled" -> SManga.CANCELLED
             else -> SManga.UNKNOWN
-        }
+        },
+    )
+
+    fun toSManga(baseUrl: String): SManga = toEntry(baseUrl).toSManga()
+}
+
+/** The parts of a series the extension sends to the app; kept apart from [SManga] so it can be tested. */
+data class SeriesEntry(
+    val slug: String,
+    val title: String,
+    val thumbnailUrl: String?,
+    val author: String?,
+    val artist: String?,
+    val genre: String?,
+    val description: String?,
+    val status: Int,
+) {
+    fun toSManga() = SManga.create().apply {
+        url = slug
+        title = this@SeriesEntry.title
+        thumbnail_url = this@SeriesEntry.thumbnailUrl
+        author = this@SeriesEntry.author
+        artist = this@SeriesEntry.artist
+        genre = this@SeriesEntry.genre
+        description = this@SeriesEntry.description
+        status = this@SeriesEntry.status
     }
 }
 
@@ -82,18 +107,40 @@ class ChapterDto(
     @SerialName("publish_at") private val publishAt: String? = null,
     @SerialName("created_at") private val createdAt: String? = null,
 ) {
-    fun toSChapter(slug: String) = SChapter.create().apply {
+    fun toEntry(slug: String): ChapterEntry {
         val number = chapterNumber?.toChapterNumber()
+        return ChapterEntry(
+            slug = slug,
+            id = id,
+            number = number,
+            name = title?.takeIf { it.isNotBlank() } ?: "Bölüm ${number ?: id}",
+            chapterNumber = chapterNumber ?: -1f,
+            dateUpload = Instant.tryParse(publishAt ?: createdAt),
+        )
+    }
+}
 
+data class ChapterEntry(
+    val slug: String,
+    val id: Long,
+    val number: String?,
+    val name: String,
+    val chapterNumber: Float,
+    val dateUpload: Long,
+) {
+    fun toSChapter() = SChapter.create().apply {
         url = id.toString()
         memo = buildJsonObject {
             put("slug", slug)
             if (number != null) put("number", number)
         }
-        name = title?.takeIf { it.isNotBlank() } ?: "Bölüm ${number ?: id}"
-        chapter_number = chapterNumber ?: -1f
-        date_upload = Instant.tryParse(publishAt ?: createdAt)
+        name = this@ChapterEntry.name
+        chapter_number = this@ChapterEntry.chapterNumber
+        date_upload = this@ChapterEntry.dateUpload
     }
+
+    /** The reader route the site serves: it is keyed by the chapter number, not by the row id. */
+    fun readerUrl(baseUrl: String): String = readerUrl(baseUrl, slug, number ?: id.toString())
 }
 
 @Serializable
@@ -112,24 +159,29 @@ class PageDto(
         get() = displayImage?.takeIf { it.isNotBlank() } ?: imagePath?.takeIf { it.isNotBlank() }
 }
 
+data class PageEntry(val pageNumber: Int, val imageUrl: String, val resolvedUrl: String)
+
 /**
  * The API returns chapters unsorted and with gaps, and a series may repeat a number, so order by
  * number (newest first) and drop repeated ids.
  */
-internal fun List<ChapterDto>.toSChapters(slug: String) = distinctBy { it.id }
+internal fun List<ChapterDto>.toEntries(slug: String) = distinctBy { it.id }
     .sortedWith(
         compareByDescending<ChapterDto> { it.chapterNumber ?: -1f }
             .thenByDescending { it.id },
     )
-    .map { it.toSChapter(slug) }
+    .map { it.toEntry(slug) }
 
 /** Builds reader pages in page order, skipping pages without an image and repeated images. */
-internal fun List<PageDto>.toPages(baseUrl: String, chapterUrl: String) = mapNotNull { dto ->
-    dto.imageUrl?.let { dto.pageNumber to it }
+internal fun List<PageDto>.toPageEntries(baseUrl: String) = mapNotNull { dto ->
+    dto.imageUrl?.let { PageEntry(dto.pageNumber, it, baseUrl.resolveImage(it)) }
 }
-    .sortedBy { it.first }
-    .distinctBy { it.second }
-    .mapIndexed { index, (_, image) -> Page(index, chapterUrl, baseUrl.resolveImage(image)) }
+    .sortedBy { it.pageNumber }
+    .distinctBy { it.imageUrl }
+
+internal fun List<PageEntry>.toPages(chapterUrl: String) = mapIndexed { index, entry ->
+    Page(index, chapterUrl, entry.resolvedUrl)
+}
 
 internal fun Float.toChapterNumber(): String = toString().removeSuffix(".0")
 
