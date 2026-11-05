@@ -1,7 +1,7 @@
 """Optional offline checks for the user's private HTML snapshots.
 
-Set MANGATR_SNAPSHOT_DIR to a directory containing message (15).txt through
-message (19).txt. Do not commit the snapshots: they may contain session data.
+Set MANGATR_SNAPSHOT_DIR to a directory containing message (50).txt through
+message (54).txt. Do not commit the snapshots: they may contain session data.
 These tests validate captured HTML, not the Android/Kotlin runtime.
 """
 import base64
@@ -52,25 +52,36 @@ def decrypt(value, key):
 @unittest.skipUnless(os.environ.get('MANGATR_SNAPSHOT_DIR'), 'private HTML snapshots not provided')
 class MangaTrSnapshots(unittest.TestCase):
     def test_home_card_elements_are_articles(self):
-        document = Snapshot(snapshot(15))
+        document = Snapshot(snapshot(50))
         cards = [(tag, a) for tag, a in document.tags if 'media-card' in a.get('class', '').split()]
-        self.assertGreater(len(cards), 0)
+        self.assertEqual(len(cards), 18)
         self.assertTrue(all(tag == 'article' for tag, _ in cards))
-        self.assertTrue(any(a.get('class') == 'media-card__title' for _, a in document.tags))
+        self.assertTrue(any('media-card__title' in a.get('class', '').split() for _, a in document.tags))
+        self.assertTrue(any('index-sayfa-2.html' in a.get('href', '') for _, a in document.tags))
 
-    def test_details_have_expected_structure_but_no_chapter_key(self):
-        for number in (16, 19):
-            text = snapshot(number)
-            page = Snapshot(text)
-            classes = {c for _, a in page.tags for c in a.get('class', '').split()}
-            self.assertIn('bento-hero-title', classes)
-            self.assertIn('poster-card__image', classes)
-            self.assertTrue(any(a.get('id') == 'manga-desc-content' for _, a in page.tags))
-            self.assertIsNone(re.search(r"listKey:\s*'([^']+)'", text))
-            self.assertTrue(any(a.get('id') == 'results' and a.get('data-manga') for _, a in page.tags))
+    def test_search_cards(self):
+        document = Snapshot(snapshot(51))
+        cards = [a for _, a in document.tags if 'arama-card' in a.get('class', '').split()]
+        self.assertEqual(len(cards), 2)
+        self.assertEqual(sum('arama-card__title' in a.get('class', '').split() for _, a in document.tags), 2)
+        self.assertEqual(sum('arama-card__cover' in a.get('class', '').split() for _, a in document.tags), 2)
+
+    def test_details_have_expected_structure_but_no_static_chapters(self):
+        text = snapshot(52)
+        page = Snapshot(text)
+        classes = {c for _, a in page.tags for c in a.get('class', '').split()}
+        self.assertIn('bento-hero-title', classes)
+        self.assertIn('poster-card__image', classes)
+        self.assertTrue(any(a.get('id') == 'manga-desc-content' for _, a in page.tags))
+        self.assertIsNone(re.search(r"listKey:\s*'([^']+)'", text))
+        self.assertTrue(any(
+            a.get('id') == 'results' and a.get('data-manga') == 'chainsaw-man'
+            for _, a in page.tags
+        ))
+        self.assertFalse(any('bento-ep-card' in a.get('class', '').split() for _, a in page.tags))
 
     def test_reader_captures(self):
-        for number in (17, 18):
+        for number in (53, 54):
             text = snapshot(number)
             page = Snapshot(text)
             scripts = [(a, s) for a, s in page.scripts if a.get('id', '').startswith('rdm-')]
@@ -97,11 +108,14 @@ class MangaTrSnapshots(unittest.TestCase):
                         for index_name, index_value in a.items():
                             if index_name.startswith('data-') and index_value and index_value.isdigit():
                                 indices.setdefault(index_name, []).append(int(index_value))
-            self.assertEqual(list(images.values()), [17])
-            self.assertTrue(any(sorted(v) == list(range(17)) for v in indices.values()))
+            self.assertEqual(list(images.values()), [25])
+            self.assertTrue(any(sorted(v) == list(range(25)) for v in indices.values()))
             groups = [a for tag, a in page.tags if tag == 'a' and 'fansub-group-item' in a.get('class', '').split()]
-            self.assertEqual(len(groups), 2)
-            self.assertEqual(len({urlsplit(a['href']).path for a in groups}), 2)
+            self.assertEqual(len(groups), 4)
+            self.assertEqual(len({urlsplit(a['href']).path for a in groups}), 4)
+            current = [a for a in groups if 'is-current' in a.get('class', '').split()]
+            self.assertEqual(len(current), 1)
+            self.assertIn('id-123931-read-chainsaw-man-chapter-2.html', current[0]['href'])
 
 
 if __name__ == '__main__':

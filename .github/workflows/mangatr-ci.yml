@@ -1,0 +1,39 @@
+name: Manga-TR tests and APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/d305cc76-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/mangatr/**
+      - mangatr/live/browser/**
+      - tests/test_mangatr_snapshots.py
+      - .github/workflows/mangatr-ci.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Run fixture tests and build release APK
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:mangatr:testReleaseUnitTest :src:tr:mangatr:assembleRelease --stacktrace
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-test-results
+          path: keiyoushi-extensions-tr/src/tr/mangatr/build/test-results/
+          if-no-files-found: warn
+      - name: Upload release APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-release-apk
+          path: keiyoushi-extensions-tr/src/tr/mangatr/build/outputs/apk/release/*.apk
+          if-no-files-found: error
