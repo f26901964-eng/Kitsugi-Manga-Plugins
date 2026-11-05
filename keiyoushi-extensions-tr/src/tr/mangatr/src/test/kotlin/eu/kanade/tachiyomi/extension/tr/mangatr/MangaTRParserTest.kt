@@ -112,6 +112,27 @@ class MangaTRParserTest {
     }
 
     @Test
+    fun `image headers match a browser image request`() {
+        val headers = Headers.Builder()
+            .set("Accept", "text/html")
+            .set("Origin", BASE_URL)
+            .set("Referer", BASE_URL)
+            .set("X-Requested-With", "XMLHttpRequest")
+            .set("Sec-Fetch-Dest", "document")
+            .set("Sec-Fetch-Mode", "navigate")
+            .mangaTrImageHeaders("$BASE_URL/id-123931-read-chainsaw-man-chapter-2.html")
+            .build()
+
+        assertEquals("image/avif,image/webp,image/*,*/*;q=0.8", headers["Accept"])
+        assertEquals("$BASE_URL/id-123931-read-chainsaw-man-chapter-2.html", headers["Referer"])
+        assertEquals("image", headers["Sec-Fetch-Dest"])
+        assertEquals("no-cors", headers["Sec-Fetch-Mode"])
+        assertEquals("cross-site", headers["Sec-Fetch-Site"])
+        assertNull(headers["Origin"])
+        assertNull(headers["X-Requested-With"])
+    }
+
+    @Test
     fun `css seed and chapter signature match the site contract`() {
         val css = ":root{--mdx-white:111111;--mdx-black:000000;}"
         assertEquals(111111, MangaTRContract.seedFromCss(css))

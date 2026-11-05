@@ -37,6 +37,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.asResponseBody
@@ -1173,9 +1174,16 @@ abstract class MangaTR : KeiSource() {
             }
         }
 
-        if (pages.isNotEmpty()) return pages
+        if (pages.isNotEmpty()) {
+            val readerUrl = response.request.url.toString()
+            return pages.map { page -> Page(page.index, url = readerUrl, imageUrl = page.imageUrl) }
+        }
         throw IOException("Sayfa resimleri bulunamadı. Bölüm görüntüleri yüklenemedi.")
     }
+
+    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
+        .mangaTrImageHeaders(page.url.ifBlank { "$baseUrl/" })
+        .build()
 
     private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
         // Detect modal title

@@ -40,3 +40,15 @@ internal fun Headers.Builder.mangaTrAjaxHeaders(
     removeAll("Upgrade-Insecure-Requests")
     if (referer != null) set("Referer", referer)
 }
+
+internal fun Headers.Builder.mangaTrImageHeaders(referer: String): Headers.Builder = apply {
+    set("Accept", "image/avif,image/webp,image/*,*/*;q=0.8")
+    set("Referer", referer)
+    set("Sec-Fetch-Dest", "image")
+    set("Sec-Fetch-Mode", "no-cors")
+    set("Sec-Fetch-Site", "cross-site")
+    removeAll("Origin")
+    removeAll("X-Requested-With")
+    removeAll("Sec-Fetch-User")
+    removeAll("Upgrade-Insecure-Requests")
+}

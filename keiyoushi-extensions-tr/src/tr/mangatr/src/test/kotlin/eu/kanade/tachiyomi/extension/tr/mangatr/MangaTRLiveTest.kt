@@ -111,12 +111,7 @@ class MangaTRLiveTest {
 
             val imageRequest = Request.Builder()
                 .url(requireNotNull(pages.first().imageUrl))
-                .headers(
-                    navigationHeaders.newBuilder()
-                        .set("Referer", readerUrl)
-                        .set("Accept", "image/avif,image/webp,image/*,*/*;q=0.8")
-                        .build(),
-                )
+                .headers(navigationHeaders.newBuilder().mangaTrImageHeaders(readerUrl).build())
                 .get()
                 .build()
             client.newCall(imageRequest).execute().use { image ->
