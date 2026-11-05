@@ -27,8 +27,16 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - name: Probe the live API contract before publishing
+        run: |
+          python3 -m pip install requests pillow
+          python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary
+
       - name: Test and build the release APK
         working-directory: keiyoushi-extensions-tr
+        env:
+          MANGADIYARI_LIVE_TEST: '1'
+          MANGADIYARI_LIVE_REPORT: ${{ github.workspace }}/mangadiyari-probe.json
         run: ./gradlew :src:tr:mangadiyari:testDebugUnitTest :src:tr:mangadiyari:assembleRelease
 
       - name: Publish the APK and synchronize the catalogs

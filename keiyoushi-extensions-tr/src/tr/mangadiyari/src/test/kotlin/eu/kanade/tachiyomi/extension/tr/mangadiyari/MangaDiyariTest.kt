@@ -7,6 +7,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.io.File
 
 /**
  * Fixtures are the JSON shapes the live site returned while the extension was fixed
@@ -194,7 +195,23 @@ class MangaDiyariTest {
         assertFalse(joined.any { it.isBlank() })
     }
 
-    private companion object {
-        const val BASE = "https://mangadiyari.com"
+    /**
+     * Opt-in check against the live site: `MANGADIYARI_LIVE_TEST=1 ./gradlew :src:tr:mangadiyari:testDebugUnitTest`.
+     * It calls the same endpoints and query parameters as the source and fails on a contract change,
+     * so the extension cannot silently drift away from the site again.
+     */
+    @Test
+    fun `live site still answers the contract the source relies on`() {
+        org.junit.Assume.assumeTrue(System.getenv("MANGADIYARI_LIVE_TEST") == "1")
+        val report = File(requireNotNull(System.getenv("MANGADIYARI_LIVE_REPORT")) { "MANGADIYARI_LIVE_REPORT is required" })
+        val json = Json { ignoreUnknownKeys = true }
+        val probe = json.decodeFromString<ProbeReport>(report.readText())
+        assertEquals("probe failures: " + probe.failures.joinToString { it.check }, emptyList<String>(), probe.failures.map { it.check })
     }
+
+    @kotlinx.serialization.Serializable
+    private data class ProbeReport(val ok: Boolean, val failures: List<ProbeFailure> = emptyList())
+
+    @kotlinx.serialization.Serializable
+    private data class ProbeFailure(val check: String)
 }

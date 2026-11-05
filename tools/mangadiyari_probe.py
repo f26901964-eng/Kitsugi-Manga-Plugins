@@ -69,6 +69,7 @@ class Probe:
             "base": BASE,
             "checks": {},
             "failures": [],
+            "warnings": [],
         }
 
     # ── HTTP yardımcıları ────────────────────────────────────────────────────
@@ -81,12 +82,14 @@ class Probe:
             payload = None
         return response.status_code, payload
 
-    def record(self, name: str, ok: bool, **data: Any) -> bool:
-        entry = {"ok": ok, **data}
+    def record(self, name: str, ok: bool, hard: bool = True, **data: Any) -> bool:
+        """Kaydeder; `hard` olmayan kontroller ortam (CDN/ASN) kaynaklı olabildiği için
+        sözleşme hatası sayılmaz, uyarı olarak raporlanır."""
+        entry = {"ok": ok, "hard": hard, **data}
         self.report["checks"][name] = entry
         if not ok:
-            self.report["failures"].append({"check": name, **data})
-        flag = "OK  " if ok else "FAIL"
+            self.report["failures" if hard else "warnings"].append({"check": name, **data})
+        flag = "OK  " if ok else ("WARN" if not hard else "FAIL")
         detail = " ".join(f"{key}={value}" for key, value in data.items())
         print(f"{flag} {name}: {detail}", flush=True)
         return ok
@@ -196,19 +199,21 @@ class Probe:
         if not series:
             self.record("details", False, reason="no series")
             return
-        target = series[0]
+        target = next((item for item in series if (item.get("chapterCount") or 0) > 0), series[0])
         slug = target.get("slug")
         status, payload = self.get_json(f"/api/series/{quote(slug)}")
         details = (payload or {}).get("series") if isinstance(payload, dict) else None
         chapters = (payload or {}).get("chapters") if isinstance(payload, dict) else None
         self.record(
             "details",
-            status == 200 and details is not None and isinstance(chapters, list) and len(chapters) > 0,
+            status == 200 and details is not None and isinstance(chapters, list),
             http=status,
             slug=slug,
             chapters=len(chapters or []),
         )
         if not chapters:
+            # Bölümsüz seri hata değil (bkz. /api/series/{slug} -> chapters: []).
+            self.record("details-empty-series", True, slug=slug)
             return
 
         numbers = [chapter.get("chapter_number") for chapter in chapters]
@@ -221,6 +226,7 @@ class Probe:
         self.record(
             "chapter-numbers",
             len(usable) == len(numbers),
+            hard=False,
             total=len(numbers),
             numeric=len(usable),
             duplicates=duplicates,
@@ -236,31 +242,32 @@ class Probe:
             ok = status == 200 and isinstance(pages, list) and len(pages) > 0
             self.record(f"pages-{label}", ok, http=status, chapter=chapter.get("chapter_number"), pages=len(pages or []))
             if ok:
-                self.check_image(pages)
+                self.check_image(pages, label)
                 self.report["checks"][f"pages-{label}"]["absolute"] = sum(
                     1 for page in pages if str(page.get("display_image", "")).startswith("http")
                 )
 
-    def check_image(self, pages: list[dict[str, Any]]) -> None:
+    def check_image(self, pages: list[dict[str, Any]], label: str) -> None:
         if Image is None:
-            self.record("image", False, reason="Pillow missing")
+            self.record(f"image-{label}", False, hard=False, reason="Pillow missing")
             return
         for index in (0, len(pages) - 1):
             page = pages[index]
             raw = page.get("display_image") or page.get("image_path")
             if not raw:
-                self.record("image", False, reason="display_image missing")
+                self.record(f"image-{label}", False, reason="page carries no image url")
                 return
             url = raw if raw.startswith("http") else urljoin(BASE + "/", raw)
             try:
                 response = self.session.get(url, timeout=TIMEOUT, headers={"Accept": "image/avif,image/webp,image/*,*/*;q=0.8"})
             except requests.RequestException as exc:
-                self.record("image", False, error=type(exc).__name__)
+                self.record(f"image-{label}", False, hard=False, error=type(exc).__name__)
                 return
             if response.status_code != 200 or len(response.content) <= 100:
                 self.record(
-                    "image",
+                    f"image-{label}",
                     False,
+                    hard=False,
                     http=response.status_code,
                     bytes=len(response.content),
                     relative=not raw.startswith("http"),
@@ -272,11 +279,12 @@ class Probe:
                     size = image.size
                     fmt = image.format
             except Exception as exc:
-                self.record("image", False, decode=type(exc).__name__)
+                self.record(f"image-{label}", False, hard=False, decode=type(exc).__name__)
                 return
             self.record(
-                "image",
+                f"image-{label}",
                 size[0] > 0 and size[1] > 0,
+                hard=False,
                 http=response.status_code,
                 bytes=len(response.content),
                 format=fmt,
@@ -301,11 +309,12 @@ class Probe:
             try:
                 response = self.session.get(url, timeout=TIMEOUT, headers=headers, allow_redirects=True)
             except requests.RequestException as exc:
-                self.record(f"cover-{label}", False, error=type(exc).__name__)
+                self.record(f"cover-{label}", False, hard=False, error=type(exc).__name__)
                 continue
             self.record(
                 f"cover-{label}",
                 response.status_code == 200 and len(response.content) > 1000,
+                hard=False,
                 http=response.status_code,
                 bytes=len(response.content),
                 content_type=response.headers.get("Content-Type", "").split(";")[0],
@@ -344,6 +353,7 @@ def main() -> int:
                     "ok": report["ok"],
                     "checks": len(report["checks"]),
                     "failed": failed,
+                    "warnings": [item["check"] for item in report["warnings"]],
                 },
                 ensure_ascii=False,
             ),

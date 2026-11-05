@@ -6,6 +6,7 @@ on:
     branches: [arena/35de187e-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangadiyari/**
+      - tests/test_mangadiyari_release.py
       - tools/mangadiyari_probe.py
       - tools/prepare_mangadiyari_release.py
       - .github/workflows/mangadiyari-ci.yml
@@ -32,8 +33,7 @@ jobs:
         run: |
           python3 -m pip install requests pillow
           set -o pipefail
-          python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary 2>&1 | tee /tmp/probe.log
-        continue-on-error: true
+          python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary 2>&1 | tee /tmp/mangadiyari-probe.log
 
       - name: Apply the repository Kotlin formatter
         working-directory: keiyoushi-extensions-tr
@@ -53,6 +53,10 @@ jobs:
 
       - name: Run contract tests and build the release APK
         working-directory: keiyoushi-extensions-tr
+        env:
+          # Opt in to the live contract gate; the probe report is written by the step above.
+          MANGADIYARI_LIVE_TEST: '1'
+          MANGADIYARI_LIVE_REPORT: ${{ github.workspace }}/mangadiyari-probe.json
         run: |
           set -o pipefail
           ./gradlew :src:tr:mangadiyari:testDebugUnitTest :src:tr:mangadiyari:assembleRelease 2>&1 | tee /tmp/mangadiyari-gradle.log
