@@ -2,9 +2,9 @@ import unittest
 from datetime import datetime, timezone
 
 try:
-    from tools.uzaymanga_live_probe import Candidate, SvelteData, chapters, image_url
+    from tools.uzaymanga_live_probe import Candidate, SvelteData, chapters, get_svelte, image_url
 except ModuleNotFoundError:
-    Candidate = SvelteData = chapters = image_url = None
+    Candidate = SvelteData = chapters = get_svelte = image_url = None
 
 
 @unittest.skipIf(SvelteData is None, 'live probe dependencies are not installed')
@@ -32,6 +32,23 @@ class UzayMangaLiveProbeTests(unittest.TestCase):
             {'name': 'Public title', 'slug': 'public-slug'},
             data.series_summary(data.array[0]),
         )
+
+    def test_svelte_parser_skips_non_data_nodes(self):
+        class FakeResponse:
+            status_code = 200
+
+            @staticmethod
+            def json():
+                return {'nodes': [None, 'metadata', {'type': 'data', 'data': [{'root': 1}]}]}
+
+        class FakeSession:
+            @staticmethod
+            def get(*args, **kwargs):
+                return FakeResponse()
+
+        data, root = get_svelte(FakeSession(), 'https://source.example/__data.json')
+        self.assertEqual({'root': 1}, root)
+        self.assertEqual([{'root': 1}], data.array)
 
     def test_cdn_resolution_preserves_absolute_urls_and_normalizes_slashes(self):
         candidate = Candidate('test', 'Test', 'https://source.example', 'https://cdn.example/', '1.0')

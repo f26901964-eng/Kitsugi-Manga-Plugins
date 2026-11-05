@@ -137,7 +137,11 @@ def get_svelte(session: requests.Session, url: str) -> tuple[SvelteData, dict[st
     try:
         payload = response.json()
         nodes = payload["nodes"]
-        data = next(node["data"] for node in reversed(nodes) if node.get("type") == "data")
+        data = next(
+            node["data"]
+            for node in reversed(nodes)
+            if isinstance(node, dict) and node.get("type") == "data"
+        )
     except (ValueError, KeyError, TypeError, StopIteration):
         raise ProbeFailure("response=invalid-svelte-data") from None
     if not isinstance(data, list) or not data or not isinstance(data[0], dict):
@@ -302,8 +306,10 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         "Referer": candidate.base_url + "/",
         "Origin": candidate.base_url,
     })
+    stage = "catalog"
     try:
         catalog = catalog_sample(session, candidate)
+        stage = "latest"
         svelte, root = get_svelte(session, f"{candidate.base_url}/__data.json?page=1")
         latest = svelte.resolve_object(root, "lastEpisodes")
         latest_array = svelte.resolve_array(latest or {}, "data")
@@ -312,6 +318,7 @@ def probe(candidate: Candidate) -> dict[str, Any]:
         latest_series = svelte.series_list(latest_array)
         if not latest_series:
             raise ProbeFailure("latest=empty")
+        stage = "reader"
         reader = reader_probe(session, candidate, latest_series)
         return {
             "name": candidate.name,
@@ -327,7 +334,10 @@ def probe(candidate: Candidate) -> dict[str, Any]:
             "name": candidate.name,
             "extensionVersion": candidate.extension_version,
             "ok": False,
-            "error": str(exc) if isinstance(exc, ProbeFailure) else f"unexpected={type(exc).__name__}",
+            "error": (
+                f"{stage}:{exc}" if isinstance(exc, ProbeFailure)
+                else f"{stage}:unexpected={type(exc).__name__}"
+            ),
         }
     finally:
         session.close()
