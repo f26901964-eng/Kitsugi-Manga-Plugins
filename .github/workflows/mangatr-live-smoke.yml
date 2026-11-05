@@ -98,6 +98,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: Install live reader dependencies
         run: python3 -m pip install requests playwright beautifulsoup4 pillow
       - name: Install Chromium
