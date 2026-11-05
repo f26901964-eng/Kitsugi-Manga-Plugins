@@ -105,8 +105,12 @@ internal object MangaTRParser {
         val date = findDate(row, now).takeIf { it != 0L }
             ?: findDate(card, now)
 
+        val relativeUrl = href.toHttpUrlOrNull()?.let { url ->
+            url.encodedPath + url.encodedQuery?.let { query -> "?$query" }.orEmpty()
+        } ?: href
+
         return SChapter.create().apply {
-            setUrlWithoutDomain(href)
+            this.url = relativeUrl
             this.name = name
             this.chapter_number = chapterNumber
             this.date_upload = date
