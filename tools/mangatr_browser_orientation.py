@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import base64
+import hashlib
 import io
 import json
 import re
@@ -11,7 +12,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from bs4 import BeautifulSoup
-from PIL import Image
+from PIL import Image, ImageDraw
 from playwright.sync_api import expect, sync_playwright
 
 from mangatr_browser_probe import BASE, UA, clear_ddos_guard
@@ -74,6 +75,22 @@ def corrected_image(source: Image.Image, codes: list[int]) -> Image.Image:
     return output
 
 
+def synthetic_image(url: str) -> bytes:
+    digest = hashlib.sha256(url.encode()).hexdigest()
+    image = Image.new("RGB", (800, 1200), "white")
+    draw = ImageDraw.Draw(image)
+    for index in range(2):
+        top = index * 600
+        draw.rectangle((0, top, 800, top + 600), fill=(235 - index * 30, 245 - index * 20, 255))
+        draw.rectangle((20, top + 20, 780, top + 580), outline="black", width=5)
+        draw.text((55, top + 70), f"SCRAMBLED STRIP {index}", fill="black", font_size=42)
+        draw.text((55, top + 150), f"PAGE {digest[:8].upper()}", fill="black", font_size=36)
+        draw.text((55, top + 240), "LEFT RIGHT TOP BOTTOM 0123456789", fill="black", font_size=28)
+    output = io.BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
 def redact(value: object) -> str:
     return re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(value))[:1000]
 
@@ -118,6 +135,35 @@ def main() -> None:
         page = context.new_page()
         gates: list[dict[str, object]] = []
         image_bodies: dict[str, bytes] = {}
+        fetched_bodies: dict[str, bytes] = {}
+        image_sources: dict[str, str] = {}
+        image_response_statuses: list[int] = []
+
+        def serve_reader_image(route) -> None:
+            url = route.request.url
+            try:
+                fetched = route.fetch(timeout=45_000)
+                body = fetched.body()
+                image_response_statuses.append(fetched.status)
+                if fetched.status == 200:
+                    with Image.open(io.BytesIO(body)) as probe:
+                        image_format = probe.format
+                    mime = {"JPEG": "image/jpeg", "PNG": "image/png", "WEBP": "image/webp"}.get(image_format or "")
+                    if mime:
+                        fetched_bodies[url] = body
+                        image_sources[url] = "live"
+                        headers = dict(fetched.headers)
+                        headers["content-type"] = mime
+                        route.fulfill(response=fetched, body=body, headers=headers)
+                        return
+            except Exception:
+                image_response_statuses.append(0)
+            body = synthetic_image(url)
+            fetched_bodies[url] = body
+            image_sources[url] = "synthetic"
+            route.fulfill(status=200, content_type="image/png", body=body)
+
+        page.route("**/img_part.php*", serve_reader_image)
 
         def on_response(response) -> None:
             path = urlparse(response.url).path
@@ -222,6 +268,7 @@ def main() -> None:
         # rather than an invalid second attempt against a one-time key.
         extension_page = context.new_page()
         extension_page.route("**/cek/f/**", lambda route: route.abort())
+        extension_page.route("**/img_part.php*", lambda route: route.abort())
         extension_response = extension_page.goto(READER, wait_until="domcontentloaded", timeout=45_000)
         if extension_response is None or extension_response.status != 200:
             raise RuntimeError("Fresh extension reader could not be loaded")
@@ -300,6 +347,10 @@ def main() -> None:
         extension_page.close()
         page.bring_to_front()
         page.wait_for_timeout(1_000)
+        report["group_skip_visible"] = page.locator("#skipGroupBtn").is_visible()
+        if report["group_skip_visible"]:
+            page.locator("#skipGroupBtn").click()
+            page.wait_for_timeout(5_000)
         report["extension_gate_format"] = extension_gate_format
         report["extension_gate_decrypts"] = extension_gate_format is not None
         save_report()
@@ -330,7 +381,21 @@ def main() -> None:
             locator = page.locator(f"[{attributes['parts']}]").nth(position)
             locator.scroll_into_view_if_needed(timeout=30_000)
             slices = locator.locator("[data-reader-slice]")
-            expect(slices).to_have_count(grid, timeout=45_000)
+            try:
+                expect(slices).to_have_count(grid, timeout=45_000)
+            except Exception:
+                report["reader_debug"] = locator.evaluate(
+                    """el => ({
+                        loaded: el.getAttribute('data-loaded') || el.getAttribute('loaded') || '',
+                        children: el.children.length,
+                        className: el.className,
+                        display: getComputedStyle(el).display,
+                        text: el.textContent.slice(0, 120),
+                    })"""
+                )
+                report["image_response_statuses"] = image_response_statuses
+                save_report()
+                raise
             dom_slices = slices.evaluate_all(
                 """(nodes, grid) => nodes.map(node => ({
                     destination: Number(node.getAttribute('data-reader-slice')),
@@ -368,7 +433,7 @@ def main() -> None:
                 raise RuntimeError(f"Page {position + 1} seed/flip codes differ from the live DOM")
 
             locator.screenshot(path=str(SITE_OUT / f"page-{position + 1}.png"), timeout=30_000)
-            body = image_bodies.get(image_url)
+            body = fetched_bodies.get(image_url) or image_bodies.get(image_url)
             if body is None:
                 image_response = context.request.get(
                     image_url,
@@ -378,6 +443,8 @@ def main() -> None:
                 if image_response.status != 200:
                     raise RuntimeError(f"Page {position + 1} image returned {image_response.status}")
                 body = image_response.body()
+            sample["image_source"] = image_sources.get(image_url, "live")
+            save_report()
             with Image.open(io.BytesIO(body)) as raw:
                 source = raw.convert("RGB")
                 source.load()
@@ -385,13 +452,18 @@ def main() -> None:
             corrected.save(CORRECTED_OUT / f"page-{position + 1}.png", format="PNG")
             print(
                 f"Reader {READER_ID} page {position + 1}: live DOM matches generated order/flips; "
-                f"corrected {corrected.width}x{corrected.height}"
+                f"corrected {corrected.width}x{corrected.height}; source={sample['image_source']}"
             )
 
         browser.close()
 
     report["dom_verification_passed"] = True
-    report["passed"] = bool(report["extension_gate_decrypts"])
+    report["image_response_statuses"] = image_response_statuses
+    report["real_images_verified"] = (
+        len(report["samples"]) == len(SAMPLE_PAGES)
+        and all(sample.get("image_source") == "live" for sample in report["samples"])
+    )
+    report["passed"] = bool(report["extension_gate_decrypts"] and report["real_images_verified"])
     save_report()
     print(json.dumps({key: value for key, value in report.items() if key != "samples"}, ensure_ascii=False))
 

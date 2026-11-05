@@ -54,7 +54,8 @@ jobs:
           from pathlib import Path
           report = json.loads(Path('mangatr/live/browser/reader-contract-report.json').read_text())
           if not report.get('passed'):
-              print('::error title=Extension gate contract::The extension gate did not decrypt the fresh live config; see sanitized reader diagnostics.')
+              print('::error title=Live reader acceptance::Gate, live DOM and real-image requirements were not all met; see sanitized reader diagnostics.')
+              print(json.dumps({key: value for key, value in report.items() if key != 'samples'}, ensure_ascii=False))
               raise SystemExit(1)
           PY
       - name: Expose live result in the check summary
