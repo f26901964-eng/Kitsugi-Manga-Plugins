@@ -3,7 +3,7 @@
   "pl": 5,
   "gl": "ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)",
   "n": "<redacted>",
-  "cv": "20,200,201|90,255,255",
+  "cv": "88,126,170|120,186,239",
   "ow": 412,
   "oh": 915,
   "cr": false,
@@ -11,7 +11,7 @@
   "ln": 1,
   "pm": true,
   "ct": true,
-  "t": 3217,
+  "t": 3265,
   "dp": 2.625,
   "hf": 1,
   "ts": 1

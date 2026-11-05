@@ -1,9 +1,5 @@
 package eu.kanade.tachiyomi.extension.tr.mangatr
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Canvas
-import android.graphics.Rect
 import android.util.Base64
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
@@ -33,12 +29,9 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import okhttp3.ResponseBody.Companion.asResponseBody
-import okio.Buffer
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import java.io.IOException
@@ -1178,9 +1171,7 @@ abstract class MangaTR : KeiSource() {
         throw IOException("Sayfa resimleri bulunamadı. Bölüm görüntüleri yüklenemedi.")
     }
 
-    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
-        .headers(headers.newBuilder().mangaTrImageHeaders("$baseUrl/").build())
-        .build()
+    override fun imageRequest(page: Page): Request = MangaTRImagePipeline.imageRequest(page, headers, baseUrl)
 
     private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {
         // Detect modal title
@@ -1298,8 +1289,15 @@ abstract class MangaTR : KeiSource() {
             }
         }
 
-        config?.let { readerConfig ->
-            MangaTRReaderContract.parseConfiguredPages(document, readerConfig, pageKey)?.let { return it }
+        if (config != null) {
+            return requireNotNull(MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)) {
+                "Manga-TR okuyucu config'i çözüldü ancak ayrı görsel sayfaları üretilemedi."
+            }
+        }
+        if (gatePath != null) {
+            // Never silently serve the site's raw, scrambled composite image
+            // when the current gate/config contract failed.
+            throw IOException("Manga-TR okuyucu anahtarı/config'i çözülemedi. Bölümü yeniden açmayı deneyin.")
         }
 
         // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)
@@ -1508,95 +1506,7 @@ abstract class MangaTR : KeiSource() {
 
     // ============================= Utilities =============================
 
-    private fun scrambledImageInterceptor(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val response = chain.proceed(request)
-        if (!response.isSuccessful) return response
-        val fragment = request.url.fragment ?: return response
-        val selectedDestination: Int?
-        val orderText: String
-        if (fragment.startsWith(MangaTRReaderContract.CACHE_VERSION_PREFIX)) {
-            val parts = fragment.removePrefix(MangaTRReaderContract.CACHE_VERSION_PREFIX).split('-', limit = 2)
-            if (parts.size != 2) return response
-            selectedDestination = parts[0].toIntOrNull() ?: return response
-            orderText = parts[1]
-        } else {
-            // v2 and unprefixed fragments reconstruct one combined bitmap for
-            // older reader sessions and legacy encrypted order attributes.
-            selectedDestination = null
-            orderText = fragment.removePrefix("v2-")
-        }
-        val order = orderText
-            .takeIf { it.isNotEmpty() && it.all { c -> c.isDigit() || c == ',' } }
-            ?.split(',')
-            ?.mapNotNull { it.toIntOrNull() }
-            ?: return response
-        if (order.isEmpty()) return response
-
-        // Keep the original bytes so every failure path can return a readable response.
-        val contentType = response.body.contentType()
-        val imageBytes = response.use { it.body.bytes() }
-        fun originalResponse() = response.newBuilder()
-            .body(Buffer().write(imageBytes).asResponseBody(contentType))
-            .build()
-
-        val source = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-            ?: return originalResponse()
-        if (source.width <= 0 || source.height <= 0) {
-            source.recycle()
-            return originalResponse()
-        }
-
-        if (
-            order.size > source.height ||
-            order.any { it / 100 !in 0..3 || it % 100 !in order.indices } ||
-            order.map { it % 100 }.distinct().size != order.size ||
-            (selectedDestination != null && selectedDestination !in order.indices)
-        ) {
-            source.recycle()
-            return originalResponse()
-        }
-        val stripHeight = source.height / order.size
-        if (stripHeight <= 0) {
-            source.recycle()
-            return originalResponse()
-        }
-        val outputHeight = if (selectedDestination == null) stripHeight * order.size else stripHeight
-        val output = Bitmap.createBitmap(source.width, outputHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(output)
-        val sourceIndexes = if (selectedDestination == null) {
-            order.indices.toList()
-        } else {
-            listOf(order.indexOfFirst { it % 100 == selectedDestination })
-        }
-
-        sourceIndexes.forEach { sourceIndex ->
-            val code = order[sourceIndex]
-            val src = Rect(0, sourceIndex * stripHeight, source.width, (sourceIndex + 1) * stripHeight)
-            val top = if (selectedDestination == null) (code % 100) * stripHeight else 0
-            val dst = Rect(0, top, source.width, top + stripHeight)
-
-            canvas.save()
-            canvas.scale(
-                if (MangaTRReaderContract.flipHorizontally(code)) -1f else 1f,
-                if (MangaTRReaderContract.flipVertically(code)) -1f else 1f,
-                source.width / 2f,
-                top + stripHeight / 2f,
-            )
-            canvas.drawBitmap(source, src, dst, null)
-            canvas.restore()
-        }
-        source.recycle()
-
-        val buffer = Buffer().apply {
-            output.compress(Bitmap.CompressFormat.JPEG, 95, outputStream())
-        }
-        output.recycle()
-
-        return response.newBuilder()
-            .body(buffer.asResponseBody("image/jpeg".toMediaType()))
-            .build()
-    }
+    internal fun scrambledImageInterceptor(chain: Interceptor.Chain): Response = MangaTRImagePipeline.intercept(chain)
 
     private fun verifyChallengeInterceptor(chain: Interceptor.Chain): Response {
         val request = chain.request()
