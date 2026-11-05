@@ -27,6 +27,10 @@ tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin")
 
 tasks.withType<Test>().configureEach {
     systemProperty("mangatr.fixtureDir", rootDir.parentFile.resolve("mangatr/live/browser").absolutePath)
+    testLogging {
+        events("passed", "skipped", "failed")
+        showStandardStreams = System.getenv("MANGATR_LIVE_TEST") == "1"
+    }
 }
 
 keiyoushi {

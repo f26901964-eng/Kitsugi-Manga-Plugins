@@ -127,7 +127,7 @@ def main() -> None:
 
         def on_request_failed(request) -> None:
             hostname = urlparse(request.url).hostname or ""
-            if "mngtr" not in hostname:
+            if "mngtr" not in hostname or len(report["image_request_failures"]) >= 12:
                 return
             report["image_request_failures"].append(
                 {"host": hostname, "type": request.resource_type, "error": request.failure}
