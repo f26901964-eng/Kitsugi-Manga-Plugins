@@ -60,25 +60,19 @@ class MangaTRLiveTest {
             val pointerInputs = json.decodeFromString<LiveFixturePointerDto>(
                 File(fixtureDir, "pointer-input.json").readText(),
             )
+            val browserPointer = File(fixtureDir, "pointer.txt").readText().trim()
             assertEquals(
-                "Reader ${metadata.reader} ease mismatch",
-                pointerInputs.ease,
-                MangaTRReaderContract.readerEase(readerBody),
+                "Reader ${metadata.reader} browser/Kotlin pointer algorithm mismatch",
+                browserPointer,
+                MangaTRReaderContract.pointerDelta(nonce, pointerInputs.ease, pointerInputs.flow),
             )
-            assertEquals(
-                "Reader ${metadata.reader} flow mismatch",
-                pointerInputs.flow,
-                MangaTRReaderContract.readerFlow(readerBody),
-            )
-            val pointer = MangaTRReaderContract.pointerDelta(
-                nonce,
-                pointerInputs.ease,
-                pointerInputs.flow,
-            )
-            assertEquals(
-                "Reader ${metadata.reader} browser/Kotlin pointer mismatch",
-                File(fixtureDir, "pointer.txt").readText().trim(),
-                pointer,
+            val ease = MangaTRReaderContract.readerEase(readerBody)
+            val flow = MangaTRReaderContract.readerFlow(readerBody)
+            val pointer = MangaTRReaderContract.pointerDelta(nonce, ease, flow)
+            val pointerCandidates = MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, flow)
+            assertTrue(
+                "Reader ${metadata.reader} browser pointer is outside production candidates",
+                browserPointer in pointerCandidates,
             )
 
             val configScript = requireNotNull(
@@ -98,6 +92,7 @@ class MangaTRLiveTest {
                     gateKey,
                     pageKey,
                     pointer,
+                    pointerCandidates,
                 ),
             ) { "Reader ${metadata.reader} production Kotlin config decrypt failed" }
             val pages = requireNotNull(MangaTRReaderContract.parseConfiguredPages(readerDocument, config, pageKey)) {
@@ -223,16 +218,15 @@ class MangaTRLiveTest {
                 } ?: HEX_KEY_REGEX.find(readerBody)?.value,
             ) { "Reader $readerId did not expose its page key" }
             val gateKey = json.decodeFromString<ReaderGateDto>(gateBody).k
+            val ease = MangaTRReaderContract.readerEase(readerBody)
+            val flow = MangaTRReaderContract.readerFlow(readerBody)
             val config = requireNotNull(
                 MangaTRReaderContract.decryptConfig(
                     configScript.data().ifBlank { configScript.html() },
                     gateKey,
                     pageKey,
-                    MangaTRReaderContract.pointerDelta(
-                        nonce,
-                        MangaTRReaderContract.readerEase(readerBody),
-                        MangaTRReaderContract.readerFlow(readerBody),
-                    ),
+                    MangaTRReaderContract.pointerDelta(nonce, ease, flow),
+                    MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, flow),
                 ),
             ) { "Reader $readerId config did not match the current or legacy gate key" }
             assertTrue("Reader $readerId did not expose current seeds", config.seeds.isNotEmpty())

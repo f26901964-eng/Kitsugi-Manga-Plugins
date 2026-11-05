@@ -1277,15 +1277,15 @@ abstract class MangaTR : KeiSource() {
             }?.takeIf { it.isNotBlank() }
                 ?: throw IOException("Manga-TR okuyucu gate anahtarı alınamadı. KTS-SRC-9102")
 
+            val ease = MangaTRReaderContract.readerEase(rawHtml)
+            val flow = MangaTRReaderContract.readerFlow(rawHtml)
+            val pointer = MangaTRReaderContract.pointerDelta(nonce, ease, flow)
             val config = MangaTRReaderContract.decryptConfig(
                 configScript.data().ifBlank { configScript.html() },
                 gateKey,
                 pageKey,
-                MangaTRReaderContract.pointerDelta(
-                    nonce,
-                    MangaTRReaderContract.readerEase(rawHtml),
-                    MangaTRReaderContract.readerFlow(rawHtml),
-                ),
+                pointer,
+                MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, flow),
             ) ?: throw IOException("Manga-TR okuyucu config'i çözülemedi. KTS-SRC-9103")
 
             return MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)

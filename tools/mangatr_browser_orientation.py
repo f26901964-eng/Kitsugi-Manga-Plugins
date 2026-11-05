@@ -134,19 +134,25 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
         gate_url = BASE.rstrip("/") + gate_match.group(1)
         query = parse_qs(urlparse(gate_url).query)
         nonce = query.get("n", [""])[0]
-        pointer = fixture_page.evaluate(
-            "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
+        pointer_result = fixture_page.evaluate(
+            """nonce => {
+                const inputs = () => {
+                    const body = document.body || document.documentElement;
+                    return {
+                        ease: String((window._mouseCurve || {}).ease || ''),
+                        flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
+                    };
+                };
+                const before = inputs();
+                const pointer = typeof window._calcPointerDelta === 'function'
+                    ? (window._calcPointerDelta(nonce || '') || '') : '';
+                return {pointer, before, after: inputs()};
+            }""",
             nonce,
         )
-        pointer_inputs = fixture_page.evaluate(
-            """() => {
-                const body = document.body || document.documentElement;
-                return {
-                    ease: String((window._mouseCurve || {}).ease || ''),
-                    flow: String(window.getComputedStyle(body).getPropertyValue('--ui-flow') || '').trim(),
-                };
-            }"""
-        )
+        pointer = pointer_result["pointer"]
+        pointer_inputs = pointer_result["before"]
+        pointer_inputs_after = pointer_result["after"]
         gate = fixture_page.evaluate(
             """async gateUrl => {
                 const url = new URL(gateUrl);
@@ -205,6 +211,7 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
         (fixture_dir / "request.json").write_text(json.dumps(gate["request"]), encoding="utf-8")
         (fixture_dir / "pointer.txt").write_text(str(pointer), encoding="utf-8")
         (fixture_dir / "pointer-input.json").write_text(json.dumps(pointer_inputs), encoding="utf-8")
+        (fixture_dir / "pointer-input-after.json").write_text(json.dumps(pointer_inputs_after), encoding="utf-8")
         metadata = {
             "reader": reader_id,
             "chapter": chapter,
@@ -222,6 +229,7 @@ def capture_kotlin_fixture(context, reader_id: str, chapter: int, reader_url: st
             "canvas_length": len(query.get("c", [""])[0]),
             "pointer_delta_length": len(str(pointer)),
             "pointer_inputs": pointer_inputs,
+            "pointer_inputs_after": pointer_inputs_after,
             "config_types": {
                 "grid": type(candidate.get("grid")).__name__,
                 "seeds": type(seeds).__name__,
@@ -468,7 +476,9 @@ def main() -> None:
         report["extension_gate_canvas_length"] = chapter_one_fixture["canvas_length"]
         report["extension_pointer_delta_length"] = chapter_one_fixture["pointer_delta_length"]
         report["extension_pointer_inputs"] = chapter_one_fixture["pointer_inputs"]
+        report["extension_pointer_inputs_after"] = chapter_one_fixture["pointer_inputs_after"]
         report["chapter_two_pointer_inputs"] = chapter_two_fixture["pointer_inputs"]
+        report["chapter_two_pointer_inputs_after"] = chapter_two_fixture["pointer_inputs_after"]
         report["extension_gate_request"] = "n-cv"
         report["extension_config_types"] = chapter_one_fixture["config_types"]
         report["extension_gate_format"] = chapter_one_metadata["gateFormat"]

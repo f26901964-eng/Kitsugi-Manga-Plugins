@@ -68,12 +68,26 @@ internal object MangaTRReaderContract {
         return hash.toUInt().toString(16).padStart(8, '0')
     }
 
+    /** CSS/ease can still be empty when cap.js calculates its one-time pointer. */
+    fun pointerDeltaCandidates(nonce: String, ease: String, flow: String): List<String> = listOf(
+        pointerDelta(nonce, ease, flow),
+        pointerDelta(nonce, ease, ""),
+        pointerDelta(nonce, "", flow),
+        pointerDelta(nonce, "", ""),
+        "",
+    ).distinct()
+
     /** Current cap.js includes a pointer-delta segment; old readers omit it. */
-    fun decryptConfig(encrypted: String, gateKey: String, pageKey: String, pointerDelta: String = ""): ReaderConfigDto? = listOf(
-        "gate|$gateKey|$pointerDelta|reader",
-        "gate|$gateKey||reader",
-        "gate|$gateKey|reader",
-    ).distinct().firstNotNullOfOrNull { key ->
+    fun decryptConfig(
+        encrypted: String,
+        gateKey: String,
+        pageKey: String,
+        pointerDelta: String = "",
+        additionalPointerDeltas: List<String> = emptyList(),
+    ): ReaderConfigDto? = (
+        (listOf(pointerDelta) + additionalPointerDeltas).map { "gate|$gateKey|$it|reader" } +
+            listOf("gate|$gateKey||reader", "gate|$gateKey|reader")
+        ).distinct().firstNotNullOfOrNull { key ->
         try {
             json.decodeFromString<ReaderConfigDto>(
                 decrypt(decrypt(encrypted, key), "boot|$pageKey|reader"),

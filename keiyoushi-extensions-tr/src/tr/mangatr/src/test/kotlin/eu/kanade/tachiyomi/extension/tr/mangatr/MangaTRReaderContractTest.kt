@@ -188,6 +188,30 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `config accepts pointer calculated before CSS flow loads`() {
+        val nonce = "0123456789abcdef"
+        val ease = "mTr_v4"
+        val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
+        val earlyPointer = MangaTRReaderContract.pointerDelta(nonce, ease, "")
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate|$earlyPointer|reader",
+        )
+        val candidates = MangaTRReaderContract.pointerDeltaCandidates(nonce, ease, "20")
+
+        assertTrue(earlyPointer in candidates)
+        val config = MangaTRReaderContract.decryptConfig(
+            encrypted,
+            "test-gate",
+            PAGE_KEY,
+            MangaTRReaderContract.pointerDelta(nonce, ease, "20"),
+            candidates,
+        )
+        assertEquals(2, config?.grid)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
+    }
+
+    @Test
     fun `encrypted script config accepts leading newline and indentation`() {
         val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
         val encrypted = encrypt(
