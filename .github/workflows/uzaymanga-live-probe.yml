@@ -29,6 +29,19 @@ jobs:
         run: |
           mkdir -p reports
           python tools/uzaymanga_live_probe.py --output reports/uzaymanga-live-results.json
+      - name: Annotate candidate results
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          report = json.loads(Path('reports/uzaymanga-live-results.json').read_text())
+          for name, result in report['sources'].items():
+              def escape(value):
+                  return str(value).replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              message = escape(json.dumps(result, ensure_ascii=False, separators=(',', ':')))
+              print(f'::notice title={escape(name)}::{message}')
+          PY
       - name: Expose comparison in the check summary
         if: always()
         run: cat reports/uzaymanga-live-results.json >> "$GITHUB_STEP_SUMMARY"
