@@ -23,6 +23,7 @@ MODULE_BUILD = Path("keiyoushi-extensions-tr/src/tr/mangatr/build")
 CORRECTED_OUT = MODULE_BUILD / "mangatr-live" / f"reader-{READER_ID}"
 SITE_OUT = MODULE_BUILD / "mangatr-browser-site" / f"reader-{READER_ID}"
 REPORT_OUT = MODULE_BUILD / "mangatr-orientation"
+PUBLIC_OUT = Path("mangatr/live/browser")
 HEX_KEY = re.compile(r"^[0-9a-f]{32}$")
 
 
@@ -81,7 +82,14 @@ def main() -> None:
     CORRECTED_OUT.mkdir(parents=True, exist_ok=True)
     SITE_OUT.mkdir(parents=True, exist_ok=True)
     REPORT_OUT.mkdir(parents=True, exist_ok=True)
+    PUBLIC_OUT.mkdir(parents=True, exist_ok=True)
     report: dict[str, object] = {"reader": READER_ID, "samples": []}
+
+    def save_report() -> None:
+        body = json.dumps(report, ensure_ascii=False, indent=2) + "\n"
+        (REPORT_OUT / "browser-contract-report.json").write_text(body, encoding="utf-8")
+        (PUBLIC_OUT / "reader-contract-report.json").write_text(body, encoding="utf-8")
+
     session = clear_ddos_guard()
     chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
     if not chrome:
@@ -151,6 +159,19 @@ def main() -> None:
             "nonce => typeof window._calcPointerDelta === 'function' ? (window._calcPointerDelta(nonce || '') || '') : ''",
             nonce,
         )
+        pointer_source = page.evaluate(
+            "() => typeof window._calcPointerDelta === 'function' ? window._calcPointerDelta.toString() : ''"
+        )
+        (PUBLIC_OUT / "pointer-delta.js").write_text(pointer_source + "\n", encoding="utf-8")
+        safe_gate_request = dict(post_data)
+        for token_name in ("n", "c"):
+            if token_name in safe_gate_request:
+                safe_gate_request[token_name] = "<redacted>"
+        (PUBLIC_OUT / "reader-gate-request.json").write_text(
+            json.dumps(safe_gate_request, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+        )
+        report["pointer_delta_length"] = len(str(pointer))
+        save_report()
 
         soup = BeautifulSoup(raw_html, "html.parser")
         config_script = next((node for node in soup.select("script[id^='rdm-']") if node.get("id")), None)
@@ -232,12 +253,9 @@ def main() -> None:
             except (ValueError, UnicodeError, KeyError):
                 continue
         extension_page.close()
-        if extension_gate_format is None:
-            raise RuntimeError(
-                "The extension's first empty-body gate could not decrypt its fresh config; "
-                f"normal browser used {used_gate_format}"
-            )
         report["extension_gate_format"] = extension_gate_format
+        report["extension_gate_decrypts"] = extension_gate_format is not None
+        save_report()
 
         attributes = config["data"]
         seeds = {str(key): int(value) for key, value in (config.get("seeds") or {}).items()}
@@ -296,6 +314,7 @@ def main() -> None:
                 "matches_live_dom": matches,
             }
             report["samples"].append(sample)
+            save_report()
             if not matches:
                 raise RuntimeError(f"Page {position + 1} seed/flip codes differ from the live DOM")
 
@@ -322,10 +341,9 @@ def main() -> None:
 
         browser.close()
 
-    report["passed"] = True
-    (REPORT_OUT / "browser-contract-report.json").write_text(
-        json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
-    )
+    report["dom_verification_passed"] = True
+    report["passed"] = bool(report["extension_gate_decrypts"])
+    save_report()
     print(json.dumps({key: value for key, value in report.items() if key != "samples"}, ensure_ascii=False))
 
 
