@@ -3,7 +3,7 @@ name: Manga-TR public chapter probe
 on:
   workflow_dispatch:
   push:
-    branches: [arena/d305cc76-kitsugi-manga-plugins]
+    branches: [arena/b636bb7e-kitsugi-manga-plugins]
     paths:
       - tools/mangatr_browser_probe.py
       - .github/workflows/mangatr-probe.yml
@@ -36,4 +36,4 @@ jobs:
           git add mangatr/live/browser/*.html mangatr/live/browser/*.json mangatr/live/browser/*.js
           git diff --cached --quiet && exit 0
           git commit -m 'test(mangatr): capture public chapter and fansub fixtures [skip ci]'
-          git push origin HEAD:arena/d305cc76-kitsugi-manga-plugins
+          git push origin HEAD:arena/b636bb7e-kitsugi-manga-plugins

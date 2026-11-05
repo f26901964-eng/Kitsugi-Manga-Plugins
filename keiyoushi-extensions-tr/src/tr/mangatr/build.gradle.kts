@@ -35,7 +35,8 @@ tasks.withType<Test>().configureEach {
 
 keiyoushi {
     name = "Manga-TR"
-    versionCode = 29
+    // Reader contract 30: cap.js seed ordering and per-strip orientation.
+    versionCode = 30
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 
