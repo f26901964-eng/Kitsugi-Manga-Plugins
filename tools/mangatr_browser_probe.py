@@ -87,6 +87,8 @@ def main() -> None:
         "reader_script_responses": [],
         "reader_gate_responses": [],
         "reader_errors": [],
+        "reader_console_errors": [],
+        "image_request_failures": [],
     }
 
     with sync_playwright() as playwright:
@@ -105,6 +107,22 @@ def main() -> None:
                 re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", str(error))[:500]
             ),
         )
+        page.on(
+            "console",
+            lambda message: report["reader_console_errors"].append(
+                re.sub(r"[A-Za-z0-9_\-+/=]{24,}", "<redacted>", message.text)[:500]
+            ) if message.type == "error" else None,
+        )
+
+        def on_request_failed(request) -> None:
+            hostname = urlparse(request.url).hostname or ""
+            if "mngtr" not in hostname:
+                return
+            report["image_request_failures"].append(
+                {"host": hostname, "type": request.resource_type, "error": request.failure}
+            )
+
+        page.on("requestfailed", on_request_failed)
 
         def on_response(response) -> None:
             parsed = urlparse(response.url)
@@ -133,7 +151,7 @@ def main() -> None:
                     gate_result["body_read"] = "failed"
                 report["reader_gate_responses"].append(gate_result)
                 return
-            if "mngtr" in hostname and response.request.resource_type == "image":
+            if "mngtr" in hostname:
                 if len(report["image_requests"]) >= 12:
                     return
                 headers = response.request.headers
@@ -153,6 +171,7 @@ def main() -> None:
                     {
                         "host": hostname,
                         "status": response.status,
+                        "type": response.request.resource_type,
                         "headers": safe_headers,
                         "response": {
                             key: response_headers.get(key, "")
@@ -251,8 +270,16 @@ def main() -> None:
             if probe_image_url:
                 page.evaluate(
                     """url => {
-                        window.__mangatrProbeImage = new Image();
-                        window.__mangatrProbeImage.src = url;
+                        const frame = document.createElement('iframe');
+                        frame.id = 'mangatr-probe-frame';
+                        frame.srcdoc = '<!doctype html><html><body></body></html>';
+                        frame.onload = () => {
+                            const image = frame.contentDocument.createElement('img');
+                            image.id = 'mangatr-probe-image';
+                            image.src = url;
+                            frame.contentDocument.body.appendChild(image);
+                        };
+                        document.body.appendChild(frame);
                     }""",
                     probe_image_url,
                 )
@@ -275,6 +302,13 @@ def main() -> None:
                     naturalWidth: image.naturalWidth,
                 })),
             })"""
+        )
+        report["manual_image_state"] = page.evaluate(
+            """() => {
+                const frame = document.getElementById('mangatr-probe-frame');
+                const image = frame?.contentDocument?.getElementById('mangatr-probe-image');
+                return image ? {complete: image.complete, naturalWidth: image.naturalWidth} : null;
+            }"""
         )
 
         browser.close()
