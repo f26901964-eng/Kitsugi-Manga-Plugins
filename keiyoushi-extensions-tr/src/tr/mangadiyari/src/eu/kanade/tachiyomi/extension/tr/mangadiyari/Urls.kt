@@ -30,11 +30,10 @@ internal fun seriesListUrl(
     addQueryParameter("page", page.toString())
 }.build()
 
-internal fun latestUpdatesUrl(baseUrl: String, page: Int): HttpUrl =
-    "$baseUrl/api/series/latest-updates".toHttpUrl().newBuilder()
-        .addQueryParameter("limit", MANGADIYARI_PAGE_SIZE.toString())
-        .addQueryParameter("page", page.toString())
-        .build()
+internal fun latestUpdatesUrl(baseUrl: String, page: Int): HttpUrl = "$baseUrl/api/series/latest-updates".toHttpUrl().newBuilder()
+    .addQueryParameter("limit", MANGADIYARI_PAGE_SIZE.toString())
+    .addQueryParameter("page", page.toString())
+    .build()
 
 internal fun seriesDetailsUrl(baseUrl: String, slug: String): String = "$baseUrl/api/series/$slug"
 
