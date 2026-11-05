@@ -1,11 +1,134 @@
 {
   "reader": "125451",
-  "samples": [],
+  "samples": [
+    {
+      "page": 1,
+      "page_index": "0",
+      "generated_codes": [
+        200,
+        1
+      ],
+      "dom_codes": [
+        200,
+        1
+      ],
+      "matches_live_dom": true,
+      "image_source": "synthetic"
+    },
+    {
+      "page": 2,
+      "page_index": "1",
+      "generated_codes": [
+        1,
+        0
+      ],
+      "dom_codes": [
+        1,
+        0
+      ],
+      "matches_live_dom": true,
+      "image_source": "synthetic"
+    },
+    {
+      "page": 3,
+      "page_index": "2",
+      "generated_codes": [
+        301,
+        200
+      ],
+      "dom_codes": [
+        301,
+        200
+      ],
+      "matches_live_dom": true,
+      "image_source": "synthetic"
+    },
+    {
+      "page": 27,
+      "page_index": "26",
+      "generated_codes": [
+        100,
+        301
+      ],
+      "dom_codes": [
+        100,
+        301
+      ],
+      "matches_live_dom": true,
+      "image_source": "synthetic"
+    },
+    {
+      "page": 52,
+      "page_index": "51",
+      "generated_codes": [
+        201,
+        100
+      ],
+      "dom_codes": [
+        201,
+        100
+      ],
+      "matches_live_dom": true,
+      "image_source": "synthetic"
+    }
+  ],
   "reader_status": 200,
   "pointer_delta_length": 8,
   "gate_format": "browser-pointer",
   "extension_pointer_delta_length": 8,
   "extension_gate_request": "n-cv",
+  "group_skip_visible": false,
   "extension_gate_format": "current-pointer",
-  "extension_gate_decrypts": true
+  "extension_gate_decrypts": true,
+  "grid": 2,
+  "seed_count": 52,
+  "page_count": 52,
+  "dom_verification_passed": true,
+  "image_response_statuses": [
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403,
+    403
+  ],
+  "real_images_verified": false,
+  "passed": false
 }
