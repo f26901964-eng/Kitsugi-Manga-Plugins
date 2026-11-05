@@ -2,43 +2,41 @@
 
 ## Kapsam ve sürüm
 
-Bu çalışma Chainsaw Man Bölüm 1'deki ters/birleşik görüntü sorununu hedefler. Kullanıcı ekran görüntüleri tek Android okuyucu sayfasında iki farklı yöndeki görsel parçasının birlikte gösterildiğini ortaya koydu. Yeni kaynak sürümü `1.6.31`, katalog sürüm kodu `106031`, eklenti `versionCode` değeri `31`'dir.
+Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Bu nedenle yalnız site DOM'u ile flip kodlarını karşılaştırmak yeterli kabul edilmedi. Yeni kaynak sürümü `1.6.32`, katalog kodu `106032`, eklenti `versionCode` değeri `32`'dir.
 
-## Canlı reader'da belirlenen yapı
+## Canlı reader yapısı
 
-Canlı Chromium run `42082228450` ve önceki DOM tanılaması şunları gösterdi:
-
-- Her reader elemanının şifreli `parts` listesinde bu bölüm için **bir URL** bulunuyor; dolayısıyla `.first()` bu bölümde ikinci bir URL'yi kaybetmiyor.
-- Site aynı URL'yi `background-size: 100% 200%` ile **iki ayrı CSS slice** olarak sunuyor.
-- Slice sırası ve `scaleX` / `scaleY` / iki eksen flip değerleri sayfa seed'inden üretiliyor.
-- Önceki eklenti bu iki slice'ı yeniden birleştirip tek `Page` veriyordu. Yeni sürüm sitenin sunumuna uygun olarak her slice'ı ayrı `Page` ve ayrı JPEG çıktısı yapıyor.
+- Chainsaw Man Bölüm 1 reader elemanları tek URL taşıyor; site bu URL'yi `background-size: 100% 200%` ile iki CSS slice olarak sunuyor.
+- `1.6.31` her hedef slice için ayrı `v3-{destination}-{codes}` fragment'ı üretiyordu ancak kullanıcı cihazında birleşik kaynak görsel gelmeye devam etti.
+- `1.6.32` artık request üretimini açıkça yapıyor, current `v3` isteğinde `FORCE_NETWORK` kullanıyor ve current config veya slice decode başarısızsa ham birleşik bitmap'i başarılı cevap olarak döndürmüyor.
 
 ## Uygulanan düzeltme
 
-- Mevcut seed/grid okuyucusunda her hedef slice için `v3-{destination}-{codes}` fragment'ı üretilir.
-- Bitmap interceptor yalnız istenen hedefin kaynak strip'ini seçer, gerekli flip'i uygular ve **tek strip yüksekliğinde** görsel döndürür.
-- İki slice kullanan 52 reader elemanı uygulamaya 104 bağımsız sayfa olarak gider.
-- `v3-` öneki eski birleştirilmiş bitmap önbelleğini ayırır. Eski `v2-` ve legacy şifreli order birleştirme yolu geriye dönük olarak korunur.
-- Gate nonce+canvas fingerprint, pointer-delta, config/page-list ve flip üretimi korunur.
+- `MangaTRImagePipeline` production request ve bitmap yolunu `HttpSource` Android stub'ından bağımsız, doğrudan test edilebilir hâle getirir.
+- `imageRequest` seçilen slice fragment'ını açık `Request.Builder` ile korur; current `v3` için `Cache-Control: no-cache` / `FORCE_NETWORK` uygular.
+- İki slice kullanan 52 reader elemanı 104 ayrı sayfa üretir; her cevap yalnız seçilen source strip'in crop+flip sonucudur.
+- Current gate/config çözülemezse eski encrypted-attribute fallback ile ham scramble görsel kullanılmaz; açık hata verilir.
+- Current `v3` fragment/order/decode geçersizse orijinal birleşik görsel döndürülmez.
+- Eski `v2-` ve legacy encrypted-order birleştirme davranışı yalnız eski okuyucular için korunur.
 
-## Otomatik test sonuçları
+## Gerçek production pipeline testleri
 
-- Kotlin CI run `42082228411`: formatter, JVM sözleşme/fixture testleri ve release derlemesi başarılı.
-- Release run `42082228514`: testleri yeniden çalıştırıp `1.6.31 / 106031` APK ve kataloglarını üretti.
-- Canlı run `42082228450`: gate+DOM sözleşmesi başarılı; sayfa 1, 2, 3, 27 ve 52'nin her biri için site iki slice, yeni hat iki ayrı çıktı üretti.
-- Sentetik dönüşüm örneklerinde her çıktı `800×600`; önceki birleştirilmiş çıktı `800×1200` idi.
-- JVM canlı test sözleşmesi chapter-one için 104 ayrı sayfa ve tek-slice decode yolu bekleyecek şekilde güncellendi.
-- APK `classes.dex` içinde yeni `v3-` sözleşmesinin bulunduğu doğrulandı.
-- Python katalog testleri: 15 test başarılı, özel snapshot gerektiren 4 test skip.
+Kotlin CI run `42089413923` ve release run `42090052071` başarılıdır:
+
+- `Page → imageRequest` fragment'ı ve imzalı query hedefini korur; `no-cache` header'ı doğrulanır.
+- Gerçek production interceptor'ına `20×40`, iki parçalı sentetik PNG verilir.
+- `v3-0-0,1` ve `v3-1-0,1` isteklerinin her biri **`20×20`** ayrı bitmap döndürür; orijinal `20×40` bitmap dönmez.
+- Geçersiz current destination (`v3-2-0,1`) ham birleşik kaynağa dönmek yerine `IOException` üretir.
+- Gate DTO'sunun `n` ve `cv` alanları doğru serialize edilir; crypto/seed/order/flip sözleşme testleri geçer.
+- Robolectric gerçek Canvas piksel render'ı yapmadığından renk/piksel iddiası test edilmez; boyut ve fallback yasağı gerçek production kodunda test edilir.
+- Canlı gate+DOM run `42090052016` başarılıdır; gerçek CDN piksel doğrulaması hâlâ yoktur.
+- Python katalog testleri: 15 başarılı, özel snapshot gerektiren 4 skip.
+- Release DEX içinde `v3-`, `no-cache` ve current-slice hata korumaları doğrulandı.
 
 ## Bilinen doğrulama sınırı
 
-GitHub Actions runner'ı `image.mngtr.site` isteklerinde CDN `403` alıyor; test proxy'leri de gerçek sayfaları sağlamadı. Bu nedenle gerçek pikseller üzerinde OCR/180° kabulü ve Android cihaz testi tamamlanmış değildir. Sentetik görseller yön kanıtı sayılmaz; raporda `real_images_verified=false` kalır.
-
-Kullanıcı cihazında yeni sürümün her okuyucu sayfasında yalnız bir görsel gösterdiği ve metinlerin düz olduğu ayrıca kontrol edilmelidir.
+Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/yön kontrolü tamamlanamadı. Sentetik görseller gerçek manga sayfası veya cihaz kanıtı değildir. Kullanıcının `1.6.32` ile her sayfada tek görsel ve doğru sıra/yön kontrolü yapması gerekir.
 
 ## Dağıtım durumu
 
-Release run `42082228514`, `tachiyomi-tr.mangatr-v1.6.31.apk` dosyasını ve katalogları çalışma dalına yazdı. `prebuilt/apk`, `apk` ve `builds/apk` kopyaları **100.011 bayt** ve SHA-256 **`e319220ce96d93f9a7799e613426f4fa71e72deb4a9e75aed32c1b5b6ac5bab7`** olarak eşleşti.
-
-Ana dal PR'ı ve kalıcı `builds` yayını bu aşamada bekleniyor.
+`tachiyomi-tr.mangatr-v1.6.32.apk` ve kataloglar çalışma dalında üretildi. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti. Ana dal PR'ı ve kalıcı `builds` yayını bekleniyor.
