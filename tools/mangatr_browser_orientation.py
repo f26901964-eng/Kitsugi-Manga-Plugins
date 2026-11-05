@@ -109,12 +109,11 @@ def main() -> None:
 
     session = clear_ddos_guard()
     chrome = shutil.which("google-chrome") or shutil.which("chromium") or shutil.which("chromium-browser")
-    if not chrome:
-        raise RuntimeError("Chrome/Chromium is required for the live reader verification")
+    launch_options = {"executable_path": chrome} if chrome else {}
 
     with sync_playwright() as playwright:
         browser = playwright.chromium.launch(
-            executable_path=chrome,
+            **launch_options,
             headless=False,
             args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
         )
