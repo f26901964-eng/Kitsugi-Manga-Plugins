@@ -14,8 +14,9 @@
 - Gate hataları aşamalı `KTS-SRC-9101`–`9104` kodlarına ayrıldı. Ham birleşik görsel fallback'i açık değil.
 - Canlı browser run `42093595643`, `n/c` query'sini, 16 karakterlik nonce/canvas token'ını ve sayısal grid/seed tiplerini doğruladı; `current-pointer` config'i çözüyor.
 - Production Kotlin canlı testi aynı `n/cv` gate isteği ve pointer delta ile Bölüm 1/2 reader'larını çalıştıracak şekilde güncellendi.
-- Trim öncesi canlı Kotlin run `42095819785` başarısız olurken fixture/APK run `42095819801` başarılı oldu; browser/Android davranış farkı yeniden üretildi.
-- Browser `.strip()` kullanırken Android Base64 decoder'ının script whitespace'ini reddetmesi kök neden adayı olarak düzeltildi. Decoder öncesi `trim()` ve whitespace'li script fixture testi eklendi; trim sonrası canlı sonuç beklenecek.
+- Trim sonrası fixture/APK run `42096850038` başarılı oldu. Canlı run `42098534354` ise reader/gate öncesindeki gereksiz detay isteğinde HTTP 403 aldı; trim veya gate/config sonucu olarak yorumlanamaz.
+- Browser `.strip()` kullanırken Android Base64 decoder'ının script whitespace'ini reddetmesi kök neden adayı olarak düzeltildi. Decoder öncesi `trim()` ve whitespace'li script fixture testi eklendi.
+- Detay isteği kaldırıldı; canlı test artık doğrudan reader→gate→config→page-list yolunu çalıştırıyor ve CDN görsel indirmeyi ayrı opt-in tutuyor.
 
 ## Kontrol adımları
 

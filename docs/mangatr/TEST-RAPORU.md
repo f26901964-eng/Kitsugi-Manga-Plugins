@@ -10,7 +10,7 @@ Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümleri
 - Gate path, `n`/`c` query değerleri, fallback page key ve pointer girdileri Jsoup'un yeniden serialize ettiği HTML yerine ham cevaptan çıkarılıyor.
 - Gate URL, gate anahtarı, config decrypt ve sayfa üretimi hataları `KTS-SRC-9101`–`9104` ile ayrılıyor; gizli anahtar/nonce kullanıcı mesajına yazılmıyor.
 - Browser referansı encrypted config'i `.strip()` ile okurken Android temel Base64 decoder'ına script'in newline/girintisini temizlemeden veriyordu. `decrypt` artık decoder öncesinde `trim()` uyguluyor; whitespace'li gerçek `<script type="application/json">` fixture testi eklendi.
-- Trim öncesi production Kotlin canlı run `42095819785` başarısız, aynı commit'in fixture/APK CI run `42095819801` başarılı oldu. Böylece browser ile Kotlin canlı yolu arasındaki fark CI'da yeniden üretildi; trim sonrası canlı sonuç ayrıca doğrulanacak.
+- Trim sonrası fixture/APK CI run `42096850038` başarılı oldu. Canlı run `42098534354` ise `MangaTRLiveTest.kt:51` üzerindeki gereksiz manga detay isteğinin HTTP 403 vermesiyle reader/gate öncesinde durdu; gate/config veya trim başarısızlığı kanıtı değildir. Detay isteği kaldırıldı, CDN görselleri ayrı opt-in yapıldı ve gerçek reader→gate→config canlı sonucu yeniden beklenecek.
 - Canlı browser run `42093595643`: gate query alanları `c,n`, nonce 16, canvas token 16; config `grid=int`, `seeds=list<int>` ve `current-pointer` ile çözülüyor. String-DTO esnekliği yalnız savunma amaçlı eklendi, canlı sitenin mevcut tipi string değil.
 - Bu bulgular browser/Android eşdeğerliği veya cihaz başarısı kanıtı değildir. Production Kotlin canlı gate testi ve kullanıcı cihazı doğrulaması ayrı tutulur.
 
