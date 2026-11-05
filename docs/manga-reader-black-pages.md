@@ -61,6 +61,7 @@ MangaTR'nin AVIF içeren `Accept` başlığı eski Android decoder'ları için a
 Patch: `tools/kitsugi-beta-manga-reader-black-pages.patch`
 
 - Telephoto `zoomable-image-coil3:0.14.0` ve `me.saket.telephoto.zoomable.coil3` import'u.
+- Reader dışındaki mevcut Coil 2 `AsyncImage` ekranları için `coil-compose:2.7.0` bağımlılığını açıkça koruma; böylece yalnız reader Coil 3'e taşınır ve geniş kapsamlı UI migrasyonu bu patch'e karışmaz.
 - Coil request `listener(onError/onSuccess)` ile display/decode hatasını görünür kırık sayfa ve Retry UI'sına bağlama.
 - Retry'de Telephoto composition'ını yeniden oluşturup aynı dosyayı gerçekten yeniden decode etme.
 - Decode loglarına URL, response body, cache anahtarı, jeton veya exception mesajı yazmama; yalnız sayfa numarası ve exception sınıfını kaydetme.
@@ -69,9 +70,9 @@ Patch: `tools/kitsugi-beta-manga-reader-black-pages.patch`
 
 Patch tabanı: Kitsugi-Beta `ab81c9ef889e9246a5bceca22f2d2a8da6144f53`.
 
-Patch commit'i: `1197a436cac30b033533cd98e62ee5eb60b1c89a`.
+Patch commit'i: `8d7e548965a9cd0176412c4b4005d3cb3cd298ba`.
 
-Patch SHA-256: `6169af11ab969434ece9e58e4bba0d3bac2579d98a6b82465b95babcae2c7f0d`.
+Patch SHA-256: `0384d264088d9e2fbbb18ddffdcc2c4be8ee32363fce1a8b25fe89fb001d35fd`.
 
 Kitsugi-Beta deposuna push 403 döndürdüğü için patch bu depoda saklandı; app PR'ı açılamadı. GitHub bağlantısı/yetkisi düzeltildikten sonra patch app deposunda `git am` ile uygulanabilir.
 
@@ -79,7 +80,8 @@ Kitsugi-Beta deposuna push 403 döndürdüğü için patch bu depoda saklandı; 
 
 - Coil 3.5.0 `ImageRequest.Builder.listener` imzası ve Telephoto 0.14.0 Coil 3 API'si kaynak kodundan kontrol edildi.
 - Patch `git diff --check` benzeri whitespace kontrolünden ve yerel commit kontrolünden geçti.
-- App Gradle derlemesi çalıştırılamadı: Kitsugi-Beta push ve GitHub Actions dispatch istekleri 403 döndürdü.
+- Kitsugi-Beta'ya doğrudan push ve Actions dispatch 403 döndürdüğü için bağımsız checkout/patch workflow'u kullanıldı.
+- İlk gerçek Gradle derlemesi, reader dışındaki ekranların eski Telephoto'dan gelen transitive Coil 2 bağımlılığına ihtiyaç duyduğunu gösterdi. Güncel patch bu mevcut ekranlar için Coil 2 Compose'u açıkça koruyor; reader yine Coil 3 Telephoto kullanıyor.
 - Gerçek cihazda görsel decode/çizim doğrulaması yapılmadı. Bu nedenle “uçtan uca düzeldi” denilemez.
 - MangaTR canlı testindeki eski `first image OK` ölçütü yalnız HTTP 200 ve 100 bayttan büyük veri kontrol eder; gerçek Android decode kanıtı değildir.
 

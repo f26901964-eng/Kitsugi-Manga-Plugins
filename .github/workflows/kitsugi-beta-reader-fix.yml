@@ -5,7 +5,6 @@ on:
     branches: [arena/cd3fbd27-kitsugi-manga-plugins]
     paths:
       - tools/kitsugi-beta-manga-reader-black-pages.patch
-      - docs/manga-reader-black-pages.md
       - .github/workflows/kitsugi-beta-reader-fix.yml
   workflow_dispatch:
 
@@ -110,7 +109,7 @@ jobs:
             echo '## Kitsugi-Beta reader patch verification'
             echo
             echo '- Base: `ab81c9ef889e9246a5bceca22f2d2a8da6144f53`'
-            echo '- Patch: `1197a436cac30b033533cd98e62ee5eb60b1c89a`'
+            echo '- Patch: `8d7e548965a9cd0176412c4b4005d3cb3cd298ba`'
             echo '- This workflow verifies dependency resolution, unit tests, compilation and DEX bytecode.'
             echo '- It does not prove on-device image decoding or rendering; MangaTR and Mangacix still require a device check.'
           } >> "$GITHUB_STEP_SUMMARY"

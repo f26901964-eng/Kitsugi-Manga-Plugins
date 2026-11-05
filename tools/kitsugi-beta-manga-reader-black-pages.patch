@@ -1,4 +1,4 @@
-From 1197a436cac30b033533cd98e62ee5eb60b1c89a Mon Sep 17 00:00:00 2001
+From 8d7e548965a9cd0176412c4b4005d3cb3cd298ba Mon Sep 17 00:00:00 2001
 From: arena-agent <297053741+arena-agent@users.noreply.github.com>
 Date: Thu, 5 Nov 2026 11:31:38 +0000
 Subject: [PATCH] =?UTF-8?q?fix(manga):=20Coil=203=20reader=20uyumu=20ve=20?=
@@ -7,21 +7,21 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Telephoto'nun Coil 2 artefaktı, Coil 3 ImageRequest nesnesini request olarak tanımayıp null painter ile sessiz siyah sayfaya düşürüyordu. Coil 3 destekli 0.14.0 artefaktına ve coil3 paketine geçirildi. Decode/çizim hatası artık listener ile görünür ve sayfa yeniden açılabilir. Eski/bozuk sıfır parlaklık değerinin tam opak siyah katman üretmesi de DataStore sınırlarıyla engellendi.
+Telephoto'nun Coil 2 artefaktı, Coil 3 ImageRequest nesnesini request olarak tanımayıp null painter ile sessiz siyah sayfaya düşürüyordu. Coil 3 destekli 0.14.0 artefaktına ve coil3 paketine geçirildi. Reader dışındaki mevcut Coil 2 ekranları için compose bağımlılığı açıkça korundu. Decode/çizim hatası artık listener ile görünür ve sayfa yeniden açılabilir. Eski/bozuk sıfır parlaklık değerinin tam opak siyah katman üretmesi de DataStore sınırlarıyla engellendi.
 ---
- app/build.gradle.kts                          |  5 +-
+ app/build.gradle.kts                          |  8 ++-
  .../animelist/data/settings/AppSettings.kt    |  8 +++
  .../data/settings/SettingsDataStore.kt        |  6 +-
  .../screens/manga/components/MangaPageItem.kt | 65 +++++++++++++++----
  .../data/settings/MangaBrightnessTest.kt      | 26 ++++++++
- 5 files changed, 95 insertions(+), 15 deletions(-)
+ 5 files changed, 98 insertions(+), 15 deletions(-)
  create mode 100644 app/src/test/java/com/kitsugi/animelist/data/settings/MangaBrightnessTest.kt
 
 diff --git a/app/build.gradle.kts b/app/build.gradle.kts
-index c0e8fd7f..1872d701 100644
+index c0e8fd7f..de360913 100644
 --- a/app/build.gradle.kts
 +++ b/app/build.gradle.kts
-@@ -358,7 +358,10 @@ dependencies {
+@@ -358,7 +358,13 @@ dependencies {
      implementation("androidx.preference:preference-ktx:1.2.1")
  
      // Subsampling and zoomable image support for manga pages
@@ -30,6 +30,9 @@ index c0e8fd7f..1872d701 100644
 +    // Any, fails to recognize it as a request and silently renders a null painter (black page).
 +    // 0.14.0 is the first Coil 3-compatible release and remains compatible with Kotlin 2.0.21.
 +    implementation("me.saket.telephoto:zoomable-image-coil3:0.14.0")
++    // Non-reader screens still import coil.compose.AsyncImage (Coil 2). They previously received
++    // it transitively from Telephoto 0.8.0; keep that legacy path explicit until migrated separately.
++    implementation("io.coil-kt:coil-compose:2.7.0")
  
      // Kotlinx Serialization is part of the runtime ABI for dynamically loaded CS3 plugins too:
      // their DEX references KSerializer by its original FQCN through the host classloader.
