@@ -40,16 +40,18 @@ jobs:
           git log -2 --oneline
 
       - name: Set up JDK and Gradle
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
+      - uses: android-actions/setup-android@v3
 
       - name: Install Android SDK packages
         run: |
+          set -o pipefail
           yes | sdkmanager --licenses > /dev/null 2>&1 || true
-          sdkmanager --install "cmake;3.22.1" "platforms;android-36" "build-tools;36.0.0"
+          sdkmanager --install "cmake;3.22.1" "platforms;android-36" "build-tools;36.0.0" 2>&1 | tee "$RUNNER_TEMP/kitsugi-sdk-install.log" | tail -n 20
 
       - name: Configure CI memory
         run: |
@@ -99,6 +101,9 @@ jobs:
             echo '- This workflow verifies dependency resolution, unit tests, compilation and DEX bytecode.'
             echo '- It does not prove on-device image decoding or rendering; MangaTR and Mangacix still require a device check.'
           } >> "$GITHUB_STEP_SUMMARY"
+          if [ -f "$RUNNER_TEMP/kitsugi-sdk-install.log" ]; then
+            tail -n 20 "$RUNNER_TEMP/kitsugi-sdk-install.log" >> "$GITHUB_STEP_SUMMARY"
+          fi
           if [ -f "$RUNNER_TEMP/kitsugi-reader-build.log" ]; then
             tail -n 60 "$RUNNER_TEMP/kitsugi-reader-build.log" >> "$GITHUB_STEP_SUMMARY"
           fi
