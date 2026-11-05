@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import eu.kanade.tachiyomi.source.model.Page
+import okhttp3.CacheControl
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.lang.reflect.Proxy
 
 @RunWith(RobolectricTestRunner::class)
@@ -35,12 +37,13 @@ class MangaTRImagePipelineTest {
         )
         assertEquals("v3-1-300,1", request.url.fragment)
         assertEquals("key=test", request.url.query)
+        assertEquals(CacheControl.FORCE_NETWORK, request.cacheControl)
     }
 
     @Test
     fun `interceptor returns two separate bitmaps instead of the combined source`() {
-        val first = decodeSlice("v3-0-300,1")
-        val second = decodeSlice("v3-1-300,1")
+        val first = decodeSlice("v3-0-0,1")
+        val second = decodeSlice("v3-1-0,1")
 
         assertEquals(20, first.width)
         assertEquals(20, first.height)
@@ -48,7 +51,7 @@ class MangaTRImagePipelineTest {
         assertEquals(20, second.height)
 
         val firstPixel = first.getPixel(10, 10)
-        assertTrue(Color.red(firstPixel) > 180)
+        assertTrue("first pixel=${Integer.toHexString(firstPixel)}", Color.red(firstPixel) > 180)
         assertTrue(Color.green(firstPixel) < 80)
         assertTrue(Color.blue(firstPixel) < 80)
 
@@ -56,6 +59,11 @@ class MangaTRImagePipelineTest {
         assertTrue(Color.red(secondPixel) < 80)
         assertTrue(Color.green(secondPixel) < 80)
         assertTrue(Color.blue(secondPixel) > 180)
+    }
+
+    @Test(expected = IOException::class)
+    fun `invalid current slice never returns the combined source bitmap`() {
+        decodeSlice("v3-2-0,1")
     }
 
     private fun decodeSlice(fragment: String): Bitmap {

@@ -1289,8 +1289,15 @@ abstract class MangaTR : KeiSource() {
             }
         }
 
-        config?.let { readerConfig ->
-            MangaTRReaderContract.parseConfiguredPages(document, readerConfig, pageKey)?.let { return it }
+        if (config != null) {
+            return requireNotNull(MangaTRReaderContract.parseConfiguredPages(document, config, pageKey)) {
+                "Manga-TR okuyucu config'i çözüldü ancak ayrı görsel sayfaları üretilemedi."
+            }
+        }
+        if (gatePath != null) {
+            // Never silently serve the site's raw, scrambled composite image
+            // when the current gate/config contract failed.
+            throw IOException("Manga-TR okuyucu anahtarı/config'i çözülemedi. Bölümü yeniden açmayı deneyin.")
         }
 
         // Fallback: direct per-page decrypt without gate/config (pageKey yeterli)
