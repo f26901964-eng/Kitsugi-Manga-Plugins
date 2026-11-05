@@ -1,25 +1,35 @@
 # Manga-TR görev planı ve güncel durum — 5 Kasım 2026
 
-## Tamamlananlar
+## Kullanıcı kanıtı ve mevcut sonuç
 
-- Kullanıcının `1.6.31` sonrası da birleşik görsel alması nedeniyle yalnız DOM testleri yeterli sayılmadı.
-- Production request/bitmap yolu bağımsız `MangaTRImagePipeline` nesnesine ayrıldı ve Robolectric ile doğrudan test edildi.
-- İki ayrı `20×20` çıktı, fragment korunması, `FORCE_NETWORK` ve geçersiz current slice için ham fallback yasağı doğrulandı.
-- Current gate/config başarısızken ham encrypted-attribute görsel fallback'i kapatıldı.
-- `1.6.32 / 106032` APK ve katalogları üretildi.
-- CI `42089413923`, release `42090052071`, canlı gate+DOM `42090052016` başarılı.
-- Üç APK kopyası 100.343 bayt ve SHA-256 `4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730` olarak eşleşti.
+- `1.6.30` ve `1.6.31` kullanıcı ekranında birleşik/ters/bozuk görseller üretti.
+- `1.6.32 / 106032` PR #12 ile kalıcı yayınlandı; CI, release, APK hash ve DEX kontrolleri başarılı oldu.
+- Buna rağmen kullanıcı `image-11.png` ve `image-12.png` ile Chainsaw Man Bölüm 1 ve 2'nin açılmadığını bildirdi: `Manga-TR okuyucu anahtarı/config'i çözülemedi` / `KTS-SRC-9008`.
+- Dolayısıyla `1.6.32` ürün sorununu çözmedi. Derleme veya dağıtım başarısı cihaz başarısı olarak sunulmayacak.
 
-## Yayın adımları
+## Aktif teknik çalışma
 
-- [ ] PR aç ve ana dala birleştir.
-- [ ] `manga-yayin` ve ana dal derleme workflow'larını kontrol et.
-- [ ] Kalıcı `builds` APK ve kullanıcı kataloglarının `1.6.32 / 106032` olduğunu doğrula.
+- Aktif dal `arena/f3fadc72-kitsugi-manga-plugins`; eski Arena dalına işlem yapılmıyor.
+- Reader cevabının ham HTML'i artık Jsoup parse öncesinde korunuyor. Gate URL/query, fallback page key ve pointer girdileri ham gövdeden çıkarılıyor; grup seçimi sonrası yeni cevap da aynı yolu kullanıyor.
+- Gate hataları aşamalı `KTS-SRC-9101`–`9104` kodlarına ayrıldı. Ham birleşik görsel fallback'i açık değil.
+- Canlı browser run `42093595643`, `n/c` query'sini, 16 karakterlik nonce/canvas token'ını ve sayısal grid/seed tiplerini doğruladı; `current-pointer` config'i çözüyor.
+- Production Kotlin canlı testi aynı `n/cv` gate isteği ve pointer delta ile Bölüm 1/2 reader'larını çalıştıracak şekilde güncellendi.
+- Trim öncesi canlı Kotlin run `42095819785` başarısız olurken fixture/APK run `42095819801` başarılı oldu; browser/Android davranış farkı yeniden üretildi.
+- Browser `.strip()` kullanırken Android Base64 decoder'ının script whitespace'ini reddetmesi kök neden adayı olarak düzeltildi. Decoder öncesi `trim()` ve whitespace'li script fixture testi eklendi; trim sonrası canlı sonuç beklenecek.
 
-## Kullanıcı-doğrulama adımı
+## Kontrol adımları
 
-- [ ] Manga-TR'yi `1.6.32` sürümüne güncelle ve Chainsaw Man Bölüm 1'i yeniden aç.
-- [ ] Her sayfada yalnız tek görsel bulunduğunu, sıranın ve yönün düz olduğunu kontrol et.
-- [ ] Gate/config hatası görülürse hatayı aynen bildir; artık bozuk ham görsel sessiz fallback olarak gösterilmeyecek.
+- [ ] Production Kotlin fixture/unit testleri ve release derlemesi başarılı olmalı.
+- [ ] Gerçek OkHttp + DDoSGuardInterceptor + production DTO/config canlı testi gate/config aşamalarını geçmeli.
+- [ ] Yeni sürüm numarasıyla APK ve kataloglar üretilmeli; eski `1.6.32` APK'sının üzerine yazılmamalı.
+- [ ] PR, ana dal ve kalıcı `builds` yayını doğrulanmalı.
+- [ ] Kullanıcı yeni sürümde Chainsaw Man Bölüm 1 ve 2'yi açmalı.
 
-Gerçek CDN görselleri runner'da alınamadığı için cihaz/piksel doğrulaması tamamlanmış değildir.
+## Kullanıcı kabul ölçütleri
+
+- [ ] Bölüm 1 ve 2 gate/config hatası olmadan açılmalı.
+- [ ] Her gerçek görsel parçası ayrı sayfa olmalı; bir okuyucu sayfasında iki parça birleşmemeli.
+- [ ] Sıra ve yön doğru olmalı.
+- [ ] Gate/config hatası ham birleşik görselle sessizce geçiştirilmemeli.
+
+Runner gerçek CDN görsellerini alamadığında `real_images_verified=false` kalır. Browser DOM, sentetik crop, DEX string'i veya release başarısı tek başına kullanıcı kabulü değildir.

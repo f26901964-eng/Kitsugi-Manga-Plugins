@@ -2,7 +2,17 @@
 
 ## Kapsam ve sürüm
 
-Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Bu nedenle yalnız site DOM'u ile flip kodlarını karşılaştırmak yeterli kabul edilmedi. Yeni kaynak sürümü `1.6.32`, katalog kodu `106032`, eklenti `versionCode` değeri `32`'dir.
+Kullanıcının ardışık ekran görüntüleri `1.6.30` ve `1.6.31` sürümlerinde hâlâ birleşik, ters ve sırası bozuk görseller geldiğini gösterdi. Kalıcı yayınlanan `1.6.32 / 106032` de cihazda başarılı olmadı: Chainsaw Man Bölüm 1 ve 2, `KTS-SRC-9008` gate/config hatasıyla açılmadı. Bu nedenle `1.6.32` ürün düzeltmesi olarak kabul edilmiyor; yeni ham-HTML gate düzeltmesi henüz kullanıcı cihazında doğrulanmadı.
+
+## Aktif gate/config düzeltmesi
+
+- `getPageList` artık HTTP cevabının ham gövdesini `asJsoup()` öncesinde alıyor; grup seçimi sonrasındaki cevap için de aynısını yapıyor.
+- Gate path, `n`/`c` query değerleri, fallback page key ve pointer girdileri Jsoup'un yeniden serialize ettiği HTML yerine ham cevaptan çıkarılıyor.
+- Gate URL, gate anahtarı, config decrypt ve sayfa üretimi hataları `KTS-SRC-9101`–`9104` ile ayrılıyor; gizli anahtar/nonce kullanıcı mesajına yazılmıyor.
+- Browser referansı encrypted config'i `.strip()` ile okurken Android temel Base64 decoder'ına script'in newline/girintisini temizlemeden veriyordu. `decrypt` artık decoder öncesinde `trim()` uyguluyor; whitespace'li gerçek `<script type="application/json">` fixture testi eklendi.
+- Trim öncesi production Kotlin canlı run `42095819785` başarısız, aynı commit'in fixture/APK CI run `42095819801` başarılı oldu. Böylece browser ile Kotlin canlı yolu arasındaki fark CI'da yeniden üretildi; trim sonrası canlı sonuç ayrıca doğrulanacak.
+- Canlı browser run `42093595643`: gate query alanları `c,n`, nonce 16, canvas token 16; config `grid=int`, `seeds=list<int>` ve `current-pointer` ile çözülüyor. String-DTO esnekliği yalnız savunma amaçlı eklendi, canlı sitenin mevcut tipi string değil.
+- Bu bulgular browser/Android eşdeğerliği veya cihaz başarısı kanıtı değildir. Production Kotlin canlı gate testi ve kullanıcı cihazı doğrulaması ayrı tutulur.
 
 ## Canlı reader yapısı
 
@@ -35,8 +45,8 @@ Kotlin CI run `42089413923` ve release run `42090052071` başarılıdır:
 
 ## Bilinen doğrulama sınırı
 
-Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/yön kontrolü tamamlanamadı. Sentetik görseller gerçek manga sayfası veya cihaz kanıtı değildir. Kullanıcının `1.6.32` ile her sayfada tek görsel ve doğru sıra/yön kontrolü yapması gerekir.
+Runner CDN/proxy engelleri nedeniyle gerçek sayfaların Android cihazdaki OCR/yön kontrolü tamamlanamadı. Sentetik görseller gerçek manga sayfası veya cihaz kanıtı değildir. Kullanıcının yeni sürümde Bölüm 1 ve 2'yi açması, her sayfada tek görsel ve doğru sıra/yön görmesi gerekir; bu doğrulama yapılmadan düzeltme başarılı sayılmaz.
 
 ## Dağıtım durumu
 
-`tachiyomi-tr.mangatr-v1.6.32.apk` ve kataloglar çalışma dalında üretildi. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti. Ana dal PR'ı ve kalıcı `builds` yayını bekleniyor.
+`tachiyomi-tr.mangatr-v1.6.32.apk` PR #12 ile ana dala ve kalıcı `builds` dalına yayınlandı. Üç APK kopyası **100.343 bayt** ve SHA-256 **`4a91353da786d18efbef3615216c826834aafc865f4958b3846378a56f570730`** olarak eşleşti; kalıcı yayın run `42091010382` başarılı oldu. Ancak kullanıcının `image-11.png` ve `image-12.png` kanıtları bu sürümün Bölüm 1 ve 2'de gate/config hatası verdiğini gösterir. Dağıtım başarısı ürün başarısı değildir.

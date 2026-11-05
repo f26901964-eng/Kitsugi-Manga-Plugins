@@ -188,6 +188,29 @@ class MangaTRReaderContractTest {
     }
 
     @Test
+    fun `encrypted script config accepts leading newline and indentation`() {
+        val plainConfig = """{"data":{"parts":"data-payload","pageIndex":"data-page"},"seeds":{"0":2},"grid":2}"""
+        val encrypted = encrypt(
+            encrypt(plainConfig, "boot|$PAGE_KEY|reader"),
+            "gate|test-gate||reader",
+        )
+        val script = requireNotNull(
+            Jsoup.parse(
+                """
+                <script id="rdm-test" type="application/json" data-key="$PAGE_KEY">
+                    $encrypted
+                </script>
+                """.trimIndent(),
+            ).selectFirst("script#rdm-test"),
+        )
+
+        assertTrue(script.data().any(Char::isWhitespace))
+        val config = MangaTRReaderContract.decryptConfig(script.data(), "test-gate", PAGE_KEY)
+        assertEquals(2, config?.grid)
+        assertEquals(mapOf("0" to 2L), config?.seeds)
+    }
+
+    @Test
     fun `configured pages expose one corrected image per generated slice`() {
         fun payload(page: Int) = encrypt(
             """["https://image.mngtr.site/img_part.php?key=test&p=$page"]""",

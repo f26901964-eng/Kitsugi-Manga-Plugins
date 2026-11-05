@@ -78,8 +78,8 @@ jobs:
       - name: Expose live result in the check summary
         if: always()
         run: |
-          cat /tmp/mangatr-browser.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           cat /tmp/mangatr-kotlin-live.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+          tail -n 250 /tmp/mangatr-browser.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           cat /tmp/mangatr-orientation.log >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
           if [ "${{ job.status }}" = "failure" ]; then
             python3 - <<'PY'
@@ -89,7 +89,7 @@ jobs:
           if error_path.exists():
               text = error_path.read_text(errors='replace')
           else:
-              paths = [Path('/tmp/mangatr-browser.log'), Path('/tmp/mangatr-orientation.log')]
+              paths = [Path('/tmp/mangatr-browser.log'), Path('/tmp/mangatr-orientation.log'), Path('/tmp/mangatr-kotlin-live.log')]
               text = '\n'.join(path.read_text(errors='replace') for path in paths if path.exists())[-12000:]
           text = re.sub(r'[A-Za-z0-9_\-+/=]{32,}', '<redacted>', text)
           text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')

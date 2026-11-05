@@ -18,7 +18,10 @@ internal object MangaTRReaderContract {
     private val READER_FLOW_REGEX = Regex("""--ui-flow\s*:\s*([^\s;"']+)""")
 
     fun decrypt(value: String, key: String): String {
-        val normalized = value.replace('-', '+').replace('_', '/')
+        // Script data normally contains a leading newline and indentation.
+        // java.util.Base64's basic decoder rejects those bytes; the browser
+        // reference explicitly strips them before decoding the same config.
+        val normalized = value.trim().replace('-', '+').replace('_', '/')
         val padded = normalized + "=".repeat((4 - normalized.length % 4) % 4)
         val bytes = Base64.getDecoder().decode(padded)
         val keyBytes = key.toByteArray(StandardCharsets.UTF_8)
