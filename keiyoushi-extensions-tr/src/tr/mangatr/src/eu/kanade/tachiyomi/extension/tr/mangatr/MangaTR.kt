@@ -1182,7 +1182,7 @@ abstract class MangaTR : KeiSource() {
     }
 
     override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
-        .mangaTrImageHeaders(page.url.ifBlank { "$baseUrl/" })
+        .headers(headers.newBuilder().mangaTrImageHeaders(page.url.ifBlank { "$baseUrl/" }).build())
         .build()
 
     private suspend fun handleGroupSelectionIfNeeded(document: Document, response: Response): Pair<Response, Document>? {

@@ -5,6 +5,10 @@ on:
   push:
     branches: [arena/d305cc76-kitsugi-manga-plugins]
     paths:
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTR.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRContract.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRParser.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/DDoSGuardInterceptor.kt
       - keiyoushi-extensions-tr/src/tr/mangatr/src/test/kotlin/**/MangaTRLiveTest.kt
       - .github/workflows/mangatr-live-smoke.yml
 
