@@ -34,6 +34,25 @@ jobs:
           python3 -m pip install requests pillow
           set -o pipefail
           python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary 2>&1 | tee /tmp/mangadiyari-probe.log
+          # Surface the probe result in the step summary and as a check annotation, so the
+          # evidence is readable without downloading the artifact.
+          python3 - <<'PY'
+          import json, os, pathlib
+          report = json.loads(pathlib.Path("mangadiyari-probe.json").read_text(encoding="utf-8"))
+          checks = report["checks"]
+          passed = [name for name, data in checks.items() if data["ok"]]
+          warned = [name for name, data in checks.items() if not data["ok"] and not data["hard"]]
+          lines = [
+              f"probe ok: {report['ok']}",
+              f"checks passed: {len(passed)}",
+              f"warnings: {len(warned)}",
+              f"failures: {len(report['failures'])}",
+          ]
+          print("\n".join(lines))
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
+              summary.write("### Manga Diyarı live probe\n\n" + "\n".join(f"- {l}" for l in lines) + "\n")
+          print("::notice title=MangaDiyari live probe::" + " | ".join(lines))
+          PY
 
       - name: Apply the repository Kotlin formatter
         working-directory: keiyoushi-extensions-tr
