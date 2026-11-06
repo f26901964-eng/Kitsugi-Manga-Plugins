@@ -561,7 +561,9 @@ class MangaTRLiveTest {
     companion object {
         private const val BASE_URL = "https://manga-tr.com"
         private const val DETAIL_URL = "$BASE_URL/manga-chainsaw-man.html"
-        private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+        // Match the reduced Chromium UA used by the successful public clearance probe.
+        // This test verifies parser/access contracts, not the production device UA policy.
+        private const val USER_AGENT = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
         private val EXPECTED_READER_IDS = setOf("123931", "125989", "135286", "136245")
         private val EXPECTED_CHAPTER_ONE_READER_IDS = setOf("122230", "125451", "135285", "136286")
         private val PRIMARY_READER_IDS = setOf("125451", "125989")
