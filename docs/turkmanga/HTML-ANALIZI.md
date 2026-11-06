@@ -15,4 +15,4 @@ Turkmanga eklentisinin ilk parser sözleşmesi, kullanıcı tarafından paylaş�
 
 Paylaşılan kayıtlar ana sayfa, arama, seri detayı ve bir bölüm okuyucusunu içeriyor. Seri/bölüm detaylarında yapılandırılmış JSON-LD, sayfada kullanıcı arayüzü değişse bile açıklama, yazar, çevirmen ve görselleri alabilmek için birincil kaynak; Next.js state ve DOM kartları ise liste ekranlarında ve yedek ayrıştırmada kullanılıyor.
 
-`TurkmangaParserTest` bu sözleşmenin liste, arama, metadata, durum, bölüm numarası/tarihi/çevirmeni, kapak, reader görselleri, URL doğrulaması ve HTML yedek yollarını sınar. Canlı ağ ve Android APK testi ayrı CI adımında yapılmalıdır; bu çalışma ortamında Java/Android SDK kurulu değil.
+`TurkmangaParserTest` bu sözleşmenin liste, arama, metadata, durum, bölüm numarası/tarihi/çevirmeni, kapak, reader görselleri, URL doğrulaması ve HTML yedek yollarını sınar. GitHub Actions'ta bu parser testleri geçti ve Android release APK'sı derlenip kataloglarla eşitlendi. Bu CI işi canlı ağ ya da gerçek uygulama/cihaz kurulumu testi yapmaz; bunlar ayrı doğrulama adımlarıdır.

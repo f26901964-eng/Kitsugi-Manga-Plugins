@@ -15,7 +15,7 @@ Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
 
 ## Etkin eklentiler
 
-Yayımlanmış `builds` kataloğunda hâlen dört eklenti var. Bu dalda `enabled_plugins.txt` listesine `tr/turkmanga` da eklendi; Turkmanga'nın APK'sı doğrulanıp derlenince katalogda beşinci kaynak olarak görünür. APK bu çalışma ortamında henüz üretilmedi (Java/Android SDK kurulu değil).
+Mevcut genel `builds` dağıtım dalında hâlen dört eklenti var; bu özellik dalında beşinci kaynak olan Turkmanga etkinleştirildi. GitHub Actions `1.6.1` (`106001`) APK'sını derleyip parser testlerini ve katalog senkronizasyonunu başarıyla tamamladı. APK ile güncel katalog dosyaları bu dala kaydedildi; genel `builds` dağıtımı için değişikliklerin `main` dalına alınması ve ana katalog iş akışının çalışması gerekir.
 
 | Eklenti | Site | Sürüm | Kod |
 |---|---|---|---|
@@ -23,7 +23,11 @@ Yayımlanmış `builds` kataloğunda hâlen dört eklenti var. Bu dalda `enabled
 | MangaciX | https://mangacix.com | 1.6.2 | 106002 |
 | Mangitto | https://mangtto.com | 1.6.3 | 106003 |
 | OkuToon | https://okutoon.com | 1.6.11 | 106011 |
-| Turkmanga | https://turkmanga.org | 1.6.1 (APK beklemede) | 106001 (planlanan) |
+| Turkmanga | https://turkmanga.org | 1.6.1 (CI doğrulandı) | 106001 |
+
+## Turkmanga CI doğrulaması
+
+[Turkmanga parser verification and APK release](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42239309902) çalışması başarılı oldu: parser birim testleri ve APK derlemesi geçti; katalog senkronizasyonu ve depo testleri de tamamlandı. APK `prebuilt/apk/tachiyomi-tr.turkmanga-v1.6.1.apk` yolunda bulunur (SHA-256 `b3d36ea77bc7c0efed116539d66db04dde30be10773ba5d4b64192221df4a9c3`). Testler paylaşılan HTML biçimlerinden alınan fixtures üzerindedir; canlı siteye veya uygulama cihazına uçtan uca istek yapılmadı.
 
 ## Canlı doğrulama
 
