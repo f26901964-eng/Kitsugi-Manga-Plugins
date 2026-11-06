@@ -1,18 +1,49 @@
 
-### chapter status 403 bytes 5801
+===== pagination block (pagination) index=54512 =====
+                      <span class="dot-sep">·</span>
+                    <span>52 bölüm</span>
+                            </p>
+            </div>
+</a>
+                    </div>
 
-===== readerPages (readerPages) index=-1 =====
+        <nav class="pagination" aria-label="Sayfalama">
+                <span class="pagination-btn pagination-btn--disabled">&laquo; Önceki</span>
+    
+        <div class="pagination-numbers">
+                
+        
+                                    <span class="pagination-num pagination-num--active">1</span>
+                                                <a href="/tur?sayfa=2" class="pagination-num">2</a>
+                                                <a href="/tur?sayfa=3" class="pagination-num">3</a>
+                    
+                                    <span class="pagination-ellipsis">…</span>
+                        <a href="/tur?sayfa=44" class="pagination-num">44</a>
+            </div>
 
-===== reader-page (reader-page) index=-1 =====
+                <a href="/tur?sayfa=2" class="pagination-btn" rel="next">Sonraki &raquo;</a>
+    </nav>
+        
+    </div>
+    </main>
 
-===== pages payload (pages) index=-1 =====
+    <footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo" aria-label="OkuToon ana sayfa">
+                    <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+                </a>
+                <p class="footer-tagline">Türkçe webtoon, manga ve manhwa oku. Ücretsiz, sınırsız.</p>
+                <div class="footer-app-links" role="group" aria-label="OkuToon mobil uygulamaları">
+                    <a href="https://play.google.com/store/apps/details?id=app.abimobile.o
 
-### listing page1 cards 24 page2 cards 24 same? false
-page1: Reiko: Mutluluğun Kayıp Yolu | Bleach One-Shot | Dirt Cheap | Save the Sunfish Princess!
-page2: My Father Is the Enemy of My Past Life? | Salute for Laurel | Infinite Titles | Hanlim Gym
-listing contains "Sonraki": index=55280
-listing contains "pagination": index=54512
-listing contains "load-more": index=-1
-listing contains "Daha fazla": index=-1
-listing contains "data-page": index=-1
-listing contains "data-has-more": index=-1
+### reader plain: 403 bytes 5801
+server: cloudflare cf-ray: a563a27d0bf692d0-DFW content-type: text/html; charset=UTF-8
+--- first 700 chars ---
+<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="content-security-policy" content="default-src &#39;none&#39;; script-src &#39;nonce-nLOYexjt0Wo13n1HKN4SQP&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-src-attr &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src &#39;self&#39; https://challenges.cloudflare.com; connect-src &#39;self&#39; https://challenges.cloudflare.com; frame-src &#39;self&#
+
+### reader browser-ish: 403 bytes 6015
+<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="content-security-policy" content="default-src &#39;none&#39;; script-src &#39;nonce-xVxVdNhnqKDvxfaQ03Ap1E&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-s
+
+### chapter 1: 403 bytes 5838
