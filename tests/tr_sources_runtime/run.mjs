@@ -41,8 +41,13 @@ async function get(url, extra = {}) {
 // --- tiny HTML helpers (no parser dependency) ---------------------------------
 const countMatches = (html, re) => (html.match(re) ?? []).length;
 const links = (html, re) => {
+  // Return the first capture group when the pattern has one (so card/parent patterns can
+  // capture just the href), otherwise the whole match.
   const out = [];
-  for (const m of html.matchAll(re)) if (!out.includes(m[0])) out.push(m[0]);
+  for (const m of html.matchAll(re)) {
+    const value = m.length > 1 ? m[1] : m[0];
+    if (value && !out.includes(value)) out.push(value);
+  }
   return out;
 };
 const attrs = (html, attrsRe, attr) => {
