@@ -37,6 +37,14 @@ jobs:
               line=${line//'%'/'%25'}
               echo "::error title=Gradle diagnostic::${line}"
             done < <(grep -E '^e: |error:|What went wrong|Execution failed|Caused by:|FAILED|Could not|Exception' /tmp/gradle.log | head -50)
+            python3 - <<'PYCODE'
+          import glob, xml.etree.ElementTree as ET
+          for f in glob.glob('src/tr/merlinscans/build/test-results/testDebugUnitTest/TEST-*.xml'):
+              for case in ET.parse(f).iter('testcase'):
+                  for failure in case.findall('failure'):
+                      text = ' '.join((failure.get('message', '') + ' ' + (failure.text or '')).split())[:3000]
+                      print('::error title=Parser test::' + case.get('name', '') + ': ' + text.replace('%', '%25'))
+          PYCODE
             exit "$result"
           fi
       - name: Prepare catalog
