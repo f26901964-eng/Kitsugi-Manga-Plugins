@@ -43,7 +43,7 @@ jobs:
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             cp /tmp/build-sadscans.log "$GITHUB_WORKSPACE/build-sadscans.log"
-            git add build-sadscans.log
+            git add "$GITHUB_WORKSPACE/build-sadscans.log"
             git commit -m 'ci: sadscans build log [skip ci]' || true
             git push origin "HEAD:${GITHUB_REF_NAME}" || true
             exit 1
