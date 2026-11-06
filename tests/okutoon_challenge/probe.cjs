@@ -10,13 +10,8 @@ const image = 'https://om-cdn.okutoon.com/chapters/503/56171/chainsaw-man_bolum-
 const ua = 'Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
 const candidates = [
   '/api/v1/series/chainsaw-man/chapters/bolum-1',
-  '/api/v1/series/chainsaw-man/chapter/bolum-1',
-  '/api/v1/reader/chainsaw-man/bolum-1',
-  '/api/v1/reader/56171',
-  '/api/v1/chapters/chainsaw-man/bolum-1',
-  '/api/v1/chapter/chainsaw-man/bolum-1',
-  '/api/v1/chapter/56171',
-  '/api/v1/series/503/chapters/56171',
+  '/api/v1/series/chainsaw-man/chapters/bolum-2',
+  '/api/v1/series/one-piece/chapters/bolum-1197',
 ];
 const report = { date: new Date().toISOString(), note: 'Hosted CI IP; desktop Chromium is not Android WebView. No cookies captured.', http: [], browser: {} };
 async function request(url, headers) {
@@ -49,7 +44,26 @@ async function request(url, headers) {
   const headers = { 'user-agent': ua, 'accept-language': 'tr-TR,tr;q=0.9' };
   report.http.push({ path: '/chainsaw-man/bolum-1', ...await request(chapter, headers) });
   report.http.push({ path: 'first CDN image', ...await request(image, { ...headers, referer: chapter }) });
-  for (const path of candidates) report.http.push({ path, ...await request(origin + path, headers) });
+  for (const path of candidates) {
+    const detail = { path, ...await request(origin + path, headers) };
+    if (detail.status === 200 && detail.json) {
+      try {
+        const api = await fetch(origin + path, { headers, signal: AbortSignal.timeout(10000) });
+        const data = (await api.json()).data;
+        const pages = data.pages;
+        detail.pageCount = pages.length;
+        detail.images = [];
+        for (const i of [...new Set([0, Math.floor(pages.length / 2), pages.length - 1])]) {
+          const raw = pages[i].image_url;
+          const url = new URL(raw, origin);
+          const imageResult = await request(url.toString(), { ...headers, referer: chapter });
+          detail.images.push({ index: i, pageNumber: pages[i].page_number, scheme: url.protocol, host: url.hostname,
+            extension: url.pathname.split('.').pop(), ...imageResult });
+        }
+      } catch (e) { detail.sampleError = e.name; }
+    }
+    report.http.push(detail);
+  }
   let browser;
   try {
     // Real installed browser identity, headed under Xvfb; no challenge manipulation.
