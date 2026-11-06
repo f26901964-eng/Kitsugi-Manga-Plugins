@@ -80,8 +80,36 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertEqual(script.count('return """'), 3)
         self.assertIn("if (typeof fetch !== 'function')", script)
         self.assertIn('credentials: \'same-origin\'', script)
-        self.assertIn('/api/trpc/_s4d7g2k9m0.getSeries', script)
-        self.assertIn('/api/trpc/_n3p6q1v8x5.getSeriesData', script)
+        # Yönlendirici adı sabit koda gömülü metin değil, sabit + sayfadan keşifle kurulur.
+        self.assertIn("var DEFAULT_ROUTER = '_s4d7g2k9m0'", script)
+        self.assertIn("var DEFAULT_DETAIL_ROUTER = '_n3p6q1v8x5'", script)
+        self.assertIn("'/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input='", script)
+        self.assertIn("'/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input='", script)
+
+    def test_list_search_does_not_depend_on_the_search_box(self):
+        """1.6.11'de arama, kutu bulunamayınca tRPC kademesine hiç ulaşmadan ölüyordu.""" 
+        script = FRONTEND.read_text(encoding='utf-8')
+        listing = script.split('fun listScript(', 1)[1].split('function normalize(', 1)[0]
+        self.assertNotIn('if (!input) return null;', listing, 'kutu yoksa betik ölmemeli')
+        self.assertIn('function searchInput()', listing)
+        self.assertIn("candidate.getAttribute('type')", listing)
+
+    def test_router_names_are_discovered_from_the_page(self):
+        script = FRONTEND.read_text(encoding='utf-8')
+        self.assertEqual(script.count('function discoverRouters()'), 2, 'liste ve detay keşif yapmalı')
+        self.assertIn("script[src*=\"/_next/static/\"]", script)
+        self.assertIn('getSeriesData|getSeries', script)
+
+    def test_browser_challenge_is_reported_separately(self):
+        script = FRONTEND.read_text(encoding='utf-8')
+        self.assertIn('Just a moment', script)
+        self.assertIn('tarayıcı doğrulaması', script)
+
+    def test_requests_look_like_a_mobile_browser(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('override fun Headers.Builder.configureHeaders()', source)
+        self.assertIn('Sec-Ch-Ua-Mobile', source)
+        self.assertIn('Accept-Language', source)
 
     def test_reader_tolerates_cdn_hosts(self):
         script = FRONTEND.read_text(encoding='utf-8')
@@ -91,7 +119,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 11', gradle)
+        self.assertIn('versionCode = 12', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

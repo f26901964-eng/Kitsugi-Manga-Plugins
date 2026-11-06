@@ -312,4 +312,59 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   console.log('PASS: sayfalama sınırı — eksik sayfada hasMore false');
 }
 
+
+// ---------------------------------------------------------------------------
+// 9. Arama kutusunun adı değişse de arama çalışır
+// ---------------------------------------------------------------------------
+{
+  const env = environment(`<html><body><input type="text" placeholder="Seri ara...">
+    <a href="https://sadscans.net/seriler/bleach"><h3>Bleach</h3></a>
+    </body></html>`, {fetchImpl: () => Promise.reject(new Error('blocked'))});
+  env.window.document.querySelector('input').__reactPropsFixture = {onChange: () => {}};
+  const raw = await drive(env, listScript({query: 'bleach', sort: 'views', type: null, status: null, page: 1}), 80);
+  const result = JSON.parse(raw);
+  assert.equal(result.source, 'dom');
+  assert.equal(result.items[0].href, '/seriler/bleach');
+  console.log('PASS: eski placeholder yoksa da kutu bulunuyor');
+}
+
+// ---------------------------------------------------------------------------
+// 10. tRPC yönlendirici adı değişirse sayfadan öğrenilip yeniden denenir
+// ---------------------------------------------------------------------------
+{
+  const seen = [];
+  const env = environment(`<html><head><script src="/_next/static/chunks/abc.js"></script></head>
+    <body><input placeholder="Aramak istediğiniz seriyi yazın"></body></html>`, {
+    fetchImpl: url => {
+      seen.push(url);
+      if (url.includes('/_next/static/')) {
+        return Promise.resolve({ok: true, text: () => Promise.resolve('f.x9y8z7w6.getSeries.useQuery({page:1})')});
+      }
+      if (url.includes('_s4d7g2k9m0.getSeries')) {
+        return Promise.resolve({ok: false, status: 404, text: () => Promise.resolve('not found')});
+      }
+      if (url.includes('x9y8z7w6.getSeries')) {
+        return jsonResponse(trpc([{href: '/seriler/kagurabachi', name: 'Kagurabachi', thumb: null}]));
+      }
+      return Promise.resolve({ok: false, status: 404, text: () => Promise.resolve('')});
+    },
+  });
+  const raw = await drive(env, listScript({query: '', sort: '-views', type: null, status: null, page: 1}), 60);
+  const result = JSON.parse(raw);
+  assert.equal(result.source, 'api', 'keşfedilen yönlendiriciyle sonuç dönmeli');
+  assert.equal(result.items[0].href, '/seriler/kagurabachi');
+  assert.ok(seen.some(u => u.includes('x9y8z7w6.getSeries')), 'yeni ad denenmeli');
+  console.log('PASS: yönlendirici adı sayfadan öğreniliyor');
+}
+
+// ---------------------------------------------------------------------------
+// 11. Tarayıcı doğrulaması (challenge) ayrı ve anlaşılır hata verir
+// ---------------------------------------------------------------------------
+{
+  const env = environment('<html><body>Just a moment... Checking your browser</body></html>');
+  const raw = await drive(env, listScript({query: 'a', sort: 'name', type: null, status: null, page: 1}), 3);
+  assert.match(JSON.parse(raw).error, /doğrulama/);
+  console.log('PASS: tarayıcı doğrulaması ayrı ele alınıyor');
+}
+
 console.log('Tüm SadScans frontend sözleşme testleri geçti.');

@@ -6,9 +6,9 @@ plugins {
 
 keiyoushi {
     name = "SadScans"
-    // 11: arama/filtre/detay/okuyucu düzeltmeleri (1.6.8-1.6.10) + okuyucu CDN toleransı.
-    //     Uygulamadaki mağaza güncellemesi bu sürümle 1.6.7 -> 1.6.11 yükseltmesini görür.
-    versionCode = 11
+    // 12: arama kutusunun adı ve tRPC yönlendirici adı (build hash) değişse de çalışan sürüm.
+    //     İstekler gerçek Android Chrome başlıklarıyla gider; 1.6.11'de arama boş dönüyordu.
+    versionCode = 12
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 
