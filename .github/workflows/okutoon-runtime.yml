@@ -1,0 +1,50 @@
+name: OkuToon runtime contract (live)
+
+on:
+  push:
+    branches: [arena/777ee838-kitsugi-manga-plugins, main]
+    paths:
+      - tests/okutoon_runtime/**
+      - keiyoushi-extensions-tr/src/tr/okutoon/**
+      - .github/workflows/okutoon-runtime.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe okutoon.com the way the extension does
+        env:
+          REPORT: reports/okutoon-runtime.json
+        run: |
+          set -o pipefail
+          node tests/okutoon_runtime/run.mjs 2>&1 | tee /tmp/okutoon-runtime.log
+      - name: Keep the evidence in the repository
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p reports
+          if [ ! -s reports/okutoon-runtime.json ]; then
+            printf '{"passed":0,"total":0,"error":"runtime-script-failed"}\n' > reports/okutoon-runtime.json
+          fi
+          git config user.name kitsugi-tr-runtime
+          git config user.email kitsugi-tr-runtime@users.noreply.github.com
+          git add reports/okutoon-runtime.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "ci: record the OkuToon runtime probe [skip ci]"
+          for attempt in 1 2 3; do
+            git pull --rebase -q origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+            sleep 5
+          done
+          exit 1
