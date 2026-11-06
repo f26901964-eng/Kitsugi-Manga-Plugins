@@ -6,6 +6,7 @@ on:
     branches: [arena/777ee838-kitsugi-manga-plugins]
     paths:
       - tests/okutoon_runtime/probe.mjs
+      - .github/workflows/okutoon-dump.yml
 
 permissions:
   contents: write
