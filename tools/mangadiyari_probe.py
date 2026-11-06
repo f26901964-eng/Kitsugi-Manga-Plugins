@@ -322,6 +322,58 @@ class Probe:
             empty=empty,
         )
 
+    def check_genre_aliases(self) -> None:
+        """Eski seriler İngilizce, yeni seriler Türkçe tür etiketi taşıyor.
+
+        Eklenti filtrede hem Türkçe hem İngilizce etiketi göndereceği için hangi İngilizce
+        etiketlerin gerçekten var olduğunu ve birleşik sorgunun iki listeyi de kapsadığını ölçer.
+        """
+        candidates = [
+            "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Historical", "Horror",
+            "Isekai", "Martial Arts", "Mystery", "Reincarnation", "Romance", "Romantic",
+            "School Life", "Sci-Fi", "Science Fiction", "Shounen", "Shoujo", "Seinen", "Josei",
+            "Slice of Life", "Sports", "Supernatural", "Thriller", "Tragedy", "Mecha",
+            "Psychological", "Mature", "Webtoon", "System", "Demon", "Murim", "Reverse Harem",
+            "Harem", "Ecchi", "Adult", "Drama/Romance",
+        ]
+        found: dict[str, int] = {}
+        empty: list[str] = []
+        for label in candidates:
+            status, payload = self.get_json(f"/api/series?genre={quote(label)}&limit=1&page=1")
+            series = (payload or {}).get("series") if isinstance(payload, dict) else None
+            if status != 200:
+                continue
+            total = (payload or {}).get("total")
+            count = total if isinstance(total, int) else len(series or [])
+            if count:
+                found[label] = count
+            else:
+                empty.append(label)
+        self.record(
+            "genre-english-labels",
+            len(found) > 0,
+            hard=False,
+            found=found,
+            empty=len(empty),
+        )
+
+        # Türkçe etiket + İngilizce karşılığı tek sorguda geliyor mu (birleşim sayısı)?
+        for turkish, english in (("Dram", "Drama"), ("Fantezi", "Fantasy"), ("Aksiyon", "Action")):
+            _, single_tr = self.get_json(f"/api/series?genre={quote(turkish)}&limit=1&page=1")
+            _, single_en = self.get_json(f"/api/series?genre={quote(english)}&limit=1&page=1")
+            _, both = self.get_json(f"/api/series?genre={quote(turkish + ',' + english)}&limit=1&page=1")
+            tr_total = (single_tr or {}).get("total") or 0
+            en_total = (single_en or {}).get("total") or 0
+            both_total = (both or {}).get("total") or 0
+            self.record(
+                f"genre-union-{turkish}",
+                both_total >= max(tr_total, en_total),
+                hard=False,
+                tr=tr_total,
+                en=en_total,
+                union=both_total,
+            )
+
     def check_web_routes(self, series: list[dict[str, Any]]) -> None:
         """Eklentinin ürettiği web adresleri gerçekten açılıyor mu (tarayıcıda açılan sayfa)."""
         slug = next(
@@ -387,6 +439,7 @@ class Probe:
             self.check_search("Ben Ölümsüzüm")
         self.check_filters()
         self.check_genre_catalog()
+        self.check_genre_aliases()
         self.check_details_and_pages(series)
         self.check_cdn_headers(series)
         self.check_web_routes(series)

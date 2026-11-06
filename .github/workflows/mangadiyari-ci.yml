@@ -67,6 +67,22 @@ jobs:
           report_line = report_line.replace("%", "%25").replace("\r", " ").replace("\n", " ")
           print(report_line)
           print(f"::notice title=probe report::{report_line[:60000]}")
+          groups = {"core": [], "filters": [], "genres": [], "web": []}
+          for name, data in checks.items():
+              if name.startswith("genre-"):
+                  bucket = "genres"
+              elif name.startswith(("filter-", "search-", "latest", "popular")):
+                  bucket = "filters"
+              elif name.startswith(("web-", "cover", "image", "pages")):
+                  bucket = "web"
+              else:
+                  bucket = "core"
+              groups[bucket].append(render(name, data))
+          for bucket, items in groups.items():
+              if not items:
+                  continue
+              text = " || ".join(items).replace("%", "%25").replace("\r", " ").replace("\n", " ")
+              print(f"::notice title=probe {bucket}::{text[:60000]}")
           PY
 
       - name: Apply the repository Kotlin formatter
