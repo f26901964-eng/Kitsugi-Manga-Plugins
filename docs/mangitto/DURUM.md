@@ -32,18 +32,25 @@ Ana sayfa Nuxt referans tablosunda 93 farklı seri bulunur. Okuyucuda aynı
 Python katalog testleri: 38 test, 12 atlandı; kalan 26 başarılı.
 Snapshot incelemesi: 93 farklı seri, Solo Leveling alternatif adı ve Berserk
 0.01'in 92 görseli doğrulandı. Kotlin JUnit testleri aynı ham dosyaları kullanır.
-Bu çalışma ortamında Java/Android SDK yok; Kotlin testleri ve yeni APK burada
-çalıştırılmadı. Canlı manga/CDN alanlarına ağ erişimi de bulunmuyor; HTTP
-başarısı, API sözleşmeleri, Cloudflare ve cihaz içi okuma doğrulanmadı.
 
-Eski 1.6.1 APK yeni kodu içermez. Bu yüzden eski APK'yı etkinleştirip düzeltme
-bitmiş gibi göstermiyoruz. `.github/workflows/mangitto-release.yml`, ilgili
-Arena dalına push olduğunda (veya workflow_dispatch ile) modülü seçer, Kotlin
-testlerini çalıştırır, imzalı 1.6.2 APK'yı derler; ancak başarılı olduktan sonra
-katalogları yeni APK'dan üretip aynı dala kaydeder. Derleme başarısızsa eski
-APK'nın etkinleştirildiği bir commit gönderilmez. Otomasyon henüz çalışmadan
-`enabled_plugins.txt` içindeki yorum gerçek etkinleştirme değildir.
+## GitHub derlemesi tamamlandı
 
-Kullanıcıya ulaşan `builds` kataloğuna yayın ayrı aşamadır: doğrulanmış APK ve
-katalog değişiklikleri main'e alındıktan sonra mevcut yayın iş akışı devreye
-girer. Bu dalın kendisi main/builds'e otomatik birleştirilmez.
+- Başarılı çalışma: https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42211663263
+- Kotlin fixture testleri ve imzalı release APK derlemesi başarılı.
+- Sürüm: 1.6.2 / 106002; APK: `tachiyomi-tr.mangitto-v1.6.2.apk`.
+- `enabled_plugins.txt` içinde `tr/mangitto` etkin.
+- Yeni APK, arşiv ve yayın dizinlerine kopyalandı; registry ve kataloglar
+  APK manifestinden okunan sürümle güncellendi.
+- Derleme sonrası yerel Python testleri tekrar başarılı (26 geçti, 12 atlandı).
+- PR: https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/pull/27
+
+Bu çalışma ortamında Java/Android SDK yok; Kotlin testleri GitHub Actions'ta
+çalıştırıldı. Canlı manga/CDN alanlarına yerel ağ erişimi bulunmuyor; canlı
+HTTP başarısı, API sözleşmeleri, Cloudflare ve cihaz içi okuma doğrulanmadı.
+İlk Actions denemesindeki Android SDK kurulum adımı başarısız oldu; Ubuntu
+22.04 imajının hazır SDK'sı kullanılarak ikinci çalışmada derleme tamamlandı.
+
+Kullanıcıya ulaşan `builds` kataloğuna yayın ayrı aşamadır: PR main'e
+birleştirildikten sonra mevcut yayın iş akışı devreye girer. Bu dalın kendisi
+main/builds'e otomatik birleştirilmez. Uygulamadaki güncelleme, PR birleşip
+main → builds yayın işi başarıyla bittikten sonra katalog yenilenince görünür.
