@@ -43,3 +43,24 @@ SadScans `@Broken` değil ve `lang="tr"`, bu yüzden aktif. Sorun sitenin eskime
 - Kilitli bölümler (`isLocked`/`isAccessible=false`) liste dışı bırakılıyor.
 - Cloudflare: `ConfigKey.InterceptCloudflare(defaultValue = true)` eklendi.
 - Bu dalda derleme yapılmadı (sandbox'ta JDK/Android SDK yok); Kotlin kaynaklari yerel `kotatsu-parsers-tr` API'lerine göre elle doğrulandı.
+
+## 2026-11-06 — tRPC'ye geçiş (v1.6.2 / 106002)
+
+Eski REST `/api/query|post|chapters|chapter|genres` uçları artık yok; site Next.js + tRPC.
+Canlı JS chunk'larından çıkarılan API yüzeyi (taban `/api/trpc/`, batch GET
+`?batch=1&input={"0":{"json":{...}}}`, yanıt `[{result:{data:{json:...}}}]`):
+
+- Liste/arama: `_s4d7g2k9m0.getSeries` input `{search,type,status,sortBy,turIds,page,limit:15}`
+  → `[{id,href,thumb,name,status,views,ratingAverage,ratingCount,type}]` (href `/seriler/{slug}`)
+  - sortBy: `name`/`-name`/`views`/`-views`/`rating`/`-rating`; type: `Manga`/`Webtoon`/`One Shot`;
+    status: `devam-ediyor`/`tamamlandi`/`birakildi`
+- Türler: `tur.getAll` → `[{id,name,slug}]`
+- Detay + bölümler: `_n3p6q1v8x5.getSeriesData` input `{sef:<slug>,page,limit}`
+  → `{series:{...}, chapters:[{chap_id,name,no,...}], pagination:{totalPages,...}}`
+- Okuyucu: `/reader/{seriesSlug}/{chapterSlug}/{chapterId}` (kısa `/reader/{chapterId}` de çalışır)
+- Görseller: `/api/uploads/assets/series/{seriesId}/{chapterId}/images/...`
+- Bölüm görselleri için chapter router/proc adı obfuscated chunk içinde; parser birden fazla
+  adayı sırayla dener (`chapterImageProcedures`) + okuyucu HTML/RSC yedeği.
+
+Değişiklikler: `kotatsu-parsers-tr .../site/iken/IkenParser.kt` ve `site/tr/SadScans.kt` ile
+`keiyoushi-extensions-tr/src/tr/sadscans/` tRPC'ye yeniden yazıldı; `versionCode` 1 → 2.
