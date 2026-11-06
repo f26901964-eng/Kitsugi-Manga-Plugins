@@ -85,6 +85,17 @@ GENRE_GROUPS: list[tuple[str, str, tuple[str, ...]]] = [
 ]
 
 
+def strip_diacritics(value: str) -> str:
+    """Türkçe metni aksansız/ASCII hâle getirir (ı -> i, ş -> s, ...).
+
+    Arama karşılaştırmalarında kullanılır: site hem aksanlı hem aksansız sorguda aynı seriyi
+    buluyor, eklenti de kullanıcının yazdığı metni olduğu gibi gönderiyor.
+    """
+    lowered = value.replace("ı", "i").replace("İ", "i").lower()
+    folded = unicodedata.normalize("NFKD", lowered)
+    return "".join(ch for ch in folded if not unicodedata.combining(ch))
+
+
 class Probe:
     def __init__(self) -> None:
         self.session = requests.Session()
@@ -363,14 +374,22 @@ class Probe:
                 else:
                     dead.append(name)
             self.report["genres"][name] = {"chosen": chosen, "totals": totals}
+        # Eklentinin gönderdiği etiket boş dönüyor ama sitede karşılığı olan başka bir ad varsa bu
+        # bizim hatamızdır (filtre sessizce sonuçsuz kalır) ve derleme durmalı.
+        self.record(
+            "genre-label-mismatch",
+            not better,
+            better_label_available=better,
+            groups=len(GENRE_GROUPS),
+        )
+        # Hiçbir adı olmayan grup ise katalogda henüz seri olmadığı anlamına gelir; bilgi amaçlı.
         self.record(
             "genre-labels",
-            not better,
+            True,
             hard=False,
             groups=len(GENRE_GROUPS),
             with_results=sum(1 for total in chosen_totals.values() if total > 0),
             empty_labels=dead,
-            better_label_available=better,
         )
 
         # Virgüllü liste AND demek: tek etiket her zaman tercih edilmeli (kanıt).
