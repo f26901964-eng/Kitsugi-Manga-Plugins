@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-06T10:15:31Z",
-  "passed": 14,
-  "total": 15,
+  "generatedAt": "2026-11-06T10:17:07Z",
+  "passed": 19,
+  "total": 19,
   "checks": [
     {
       "name": "hayalistic: archive listing answers 200",
@@ -22,14 +22,50 @@
       "ok": true,
       "detail": {
         "cardLinks": 16,
-        "first": "class=\"page-item-detail manga  \">\n\t\t\t\t                <div id=\"manga-item-122\" class=\"item-thumb  c-image-hover\" data-post-id=\"122\">\n\t\t\t\t\t                            <a href=\"https://hayalistic.site/manga/bir-hizmetciden-fazlasi/\""
+        "first": "https://hayalistic.site/manga/bir-hizmetciden-fazlasi/"
       }
     },
     {
-      "name": "hayalistic: live run completed",
-      "ok": false,
+      "name": "hayalistic: chapter list uses li.wp-manga-chapter",
+      "ok": true,
       "detail": {
-        "error": "Failed to parse URL from class=\"page-item-detail manga  \">\n\t\t\t\t                <div id=\"manga-item-122\" class=\"item-thumb  c-image-hover\" data-post-id=\"122\">\n\t\t"
+        "seriesUrl": "https://hayalistic.site/manga/bir-hizmetciden-fazlasi/",
+        "bytes": 181316,
+        "hasChapterWord": true,
+        "bolumRefs": 165,
+        "items": 124,
+        "links": 145,
+        "source": "html"
+      }
+    },
+    {
+      "name": "hayalistic: chapter dates use span.chapter-release-date",
+      "ok": true,
+      "detail": {
+        "source": "html"
+      }
+    },
+    {
+      "name": "hayalistic: reader page exposes div.page-break + wp-manga-chapter-img",
+      "ok": true,
+      "detail": {
+        "pageBreaks": 29,
+        "images": 29
+      }
+    },
+    {
+      "name": "hayalistic: no chapter protector on a normal chapter",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "hayalistic: first page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 68656,
+        "host": "cdn.hayalistic.site"
       }
     },
     {
@@ -115,8 +151,8 @@
       "ok": true,
       "detail": {
         "status": 200,
-        "kind": "webp",
-        "bytes": 8964
+        "kind": "jpeg",
+        "bytes": 8876
       }
     }
   ]
