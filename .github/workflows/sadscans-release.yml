@@ -74,5 +74,15 @@ jobs:
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/sadscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'sadscans: save compiled APK candidate [skip ci]'
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          # Aynı dala başka bir iş (ör. elle atılan sürüm yükseltmesi) aynı anda yazabilir;
+          # bu yüzden rebase+push birkaç kez denenir.
+          for attempt in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            echo "push denemesi ${attempt} başarısız, tekrar deneniyor" >&2
+            sleep $((attempt * 5))
+          done
+          echo 'derlenen APK dala yazılamadı' >&2
+          exit 1
