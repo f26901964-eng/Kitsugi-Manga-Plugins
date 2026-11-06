@@ -26,7 +26,19 @@ jobs:
         run: echo tr/merlinscans >> enabled_plugins.txt
       - name: Test and build
         working-directory: keiyoushi-extensions-tr
-        run: ./gradlew :src:tr:merlinscans:testDebugUnitTest :src:tr:merlinscans:assembleRelease --stacktrace
+        shell: bash
+        run: |
+          set +e
+          ./gradlew :src:tr:merlinscans:testDebugUnitTest :src:tr:merlinscans:assembleRelease --stacktrace > /tmp/gradle.log 2>&1
+          result=$?
+          tail -100 /tmp/gradle.log
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r line; do
+              line=${line//'%'/'%25'}
+              echo "::error title=Gradle diagnostic::${line}"
+            done < <(grep -E '^e: |error:|What went wrong|Execution failed|Caused by:|FAILED|Could not|Exception' /tmp/gradle.log | head -50)
+            exit "$result"
+          fi
       - name: Prepare catalog
         run: |
           python3 tools/prepare_extension_release.py merlinscans
