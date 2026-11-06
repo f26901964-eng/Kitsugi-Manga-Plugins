@@ -38,5 +38,29 @@
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
+  },
+  {
+    "fixture_image_index": 0,
+    "url": "https://cdn.zukrein.com/manga/berserk/0.01/1-cm58p7pcl0008yg3gvq7jp47t.webp",
+    "status": 200,
+    "bytes": 413860,
+    "content_type": "image/webp",
+    "magic": "524946469c50060057454250"
+  },
+  {
+    "fixture_image_index": 45,
+    "url": "https://cdn.zukrein.com/manga/berserk/0.01/46-cm58p7pcl0008yg3gvq7jp47t.webp",
+    "status": 200,
+    "bytes": 901926,
+    "content_type": "image/webp",
+    "magic": "524946461ec30d0057454250"
+  },
+  {
+    "fixture_image_index": 91,
+    "url": "https://cdn.zukrein.com/manga/berserk/0.01/92-cm58p7pcl0008yg3gvq7jp47t.webp",
+    "status": 200,
+    "bytes": 1040986,
+    "content_type": "image/webp",
+    "magic": "5249464652e20f0057454250"
   }
 ]
