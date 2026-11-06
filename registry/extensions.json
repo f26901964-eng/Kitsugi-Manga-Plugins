@@ -508,12 +508,12 @@
   {
     "name": "OkuToon",
     "pkg": "eu.kanade.tachiyomi.extension.tr.okutoon",
-    "apk": "tachiyomi-tr.okutoon-v1.6.10.apk",
+    "apk": "tachiyomi-tr.okutoon-v1.6.11.apk",
     "lang": "tr",
-    "code": 106010,
-    "version": "1.6.10",
+    "code": 106011,
+    "version": "1.6.11",
     "nsfw": 0,
-    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.okutoon-v1.6.10.apk",
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.okutoon-v1.6.11.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.okutoon.png"
   },
   {
