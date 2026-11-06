@@ -1,35 +1,46 @@
-// Diagnostic: prints the markup around the hooks OkuToon.kt depends on.
+// Diagnostic: reader access + pagination markup.
 const UA = 'Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
-async function get(u) {
-  const r = await fetch(u, { headers: { 'User-Agent': UA, 'Accept-Language': 'tr-TR,tr;q=0.9' } });
-  return { status: r.status, text: await r.text() };
+const BASE_HEADERS = { 'User-Agent': UA, 'Accept-Language': 'tr-TR,tr;q=0.9' };
+async function get(u, headers = {}) {
+  const r = await fetch(u, { headers: { ...BASE_HEADERS, ...headers }, redirect: 'follow' });
+  return { status: r.status, text: await r.text(), headers: Object.fromEntries(r.headers) };
 }
-const show = (label, text, needle, before = 300, after = 1400) => {
+const show = (label, text, needle, before = 300, after = 1200) => {
   const i = text.indexOf(needle);
   console.log(`\n===== ${label} (${needle}) index=${i} =====`);
   if (i < 0) return;
   console.log(text.slice(Math.max(0, i - before), i + after));
 };
 
-// Reader: the one selector we have not seen yet.
-const chapter = await get('https://okutoon.com/solo-leveling/bolum-200');
-console.log('\n### chapter status', chapter.status, 'bytes', chapter.text.length);
-show('readerPages', chapter.text, 'readerPages', 400, 1600);
-show('reader-page', chapter.text, 'reader-page', 200, 1200);
-show('pages payload', chapter.text, 'pages', 200, 800);
+// 1) Listing pagination markup
+const list = await get('https://okutoon.com/tur');
+show('pagination block', list.text, 'pagination', 200, 1500);
 
-// Listing pagination: does the server answer page 2 with different cards?
-const p1 = await get('https://okutoon.com/tur');
-const p2 = await get('https://okutoon.com/tur?sayfa=2');
-const titles = (t) => [...t.matchAll(/class="series-card-title">([^<]+)</g)].map((m) => m[1]);
-const t1 = titles(p1.text);
-const t2 = titles(p2.text);
-console.log('\n### listing page1 cards', t1.length, 'page2 cards', t2.length, 'same?', JSON.stringify(t1) === JSON.stringify(t2));
-console.log('page1:', t1.slice(0, 4).join(' | '));
-console.log('page2:', t2.slice(0, 4).join(' | '));
-const more = ['Sonraki', 'pagination', 'load-more', 'Daha fazla', 'data-page', 'data-has-more'];
-for (const needle of more) {
-  const i = p1.text.indexOf(needle);
-  console.log(`listing contains "${needle}": index=${i}`);
+// 2) Reader: plain request, then with browser-ish headers
+const url = 'https://okutoon.com/solo-leveling/bolum-200';
+const plain = await get(url);
+console.log('\n### reader plain:', plain.status, 'bytes', plain.text.length);
+console.log('server:', plain.headers['server'], 'cf-ray:', plain.headers['cf-ray'], 'content-type:', plain.headers['content-type']);
+console.log('--- first 700 chars ---');
+console.log(plain.text.slice(0, 700));
+
+const browserish = await get(url, {
+  Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+  Referer: 'https://okutoon.com/solo-leveling',
+  'Upgrade-Insecure-Requests': '1',
+  'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124"',
+  'sec-ch-ua-mobile': '?1',
+  'sec-ch-ua-platform': '"Android"',
+});
+console.log('\n### reader browser-ish:', browserish.status, 'bytes', browserish.text.length);
+if (browserish.status === 200) {
+  show('readerPages', browserish.text, 'readerPages');
+  show('reader-page', browserish.text, 'reader-page');
+} else {
+  console.log(browserish.text.slice(0, 500));
 }
-if (p1.text.includes('data-page')) show('listing data-page', p1.text, 'data-page', 200, 400);
+
+// 3) Older chapter, in case the newest is restricted
+const old = await get('https://okutoon.com/solo-leveling/bolum-1', { Referer: 'https://okutoon.com/solo-leveling' });
+console.log('\n### chapter 1:', old.status, 'bytes', old.text.length);
+if (old.status === 200) show('readerPages (bolum-1)', old.text, 'readerPages');
