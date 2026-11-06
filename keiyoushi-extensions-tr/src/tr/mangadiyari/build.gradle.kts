@@ -36,7 +36,8 @@ tasks.withType<Test>().configureEach {
 keiyoushi {
     name = "Manga Diyarı"
     // 2: chapter and reader fixes for the current site (number based reader route, optional fields).
-    versionCode = 2
+    // 3: live-verified against the 2026-11 API contract (empty chapter lists, CDN covers, TR genres).
+    versionCode = 3
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
 
