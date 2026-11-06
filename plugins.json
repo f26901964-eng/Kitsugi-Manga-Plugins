@@ -20,5 +20,27 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangacix-v1.6.2.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangacix.png"
+  },
+  {
+    "name": "MangaDenizi",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.mangadenizi",
+    "apk": "tachiyomi-tr.mangadenizi-v1.6.8.apk",
+    "lang": "tr",
+    "code": 106008,
+    "version": "1.6.8",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadenizi-v1.6.8.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadenizi.png"
+  },
+  {
+    "name": "Hayalistic",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.hayalistic",
+    "apk": "tachiyomi-tr.hayalistic-v1.6.61.apk",
+    "lang": "tr",
+    "code": 106061,
+    "version": "1.6.61",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.hayalistic-v1.6.61.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.hayalistic.png"
   }
 ]

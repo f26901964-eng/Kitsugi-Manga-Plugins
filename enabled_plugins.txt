@@ -3,4 +3,6 @@
 # main dalındaki değişiklikler GitHub Actions ile builds kataloğuna yayınlanır.
 tr/mangatr
 tr/mangacix
+tr/mangadenizi
+tr/hayalistic
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
