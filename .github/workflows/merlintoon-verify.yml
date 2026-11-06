@@ -29,7 +29,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          ./gradlew :src:tr:merlinscans:testDebugUnitTest :src:tr:merlinscans:assembleRelease --stacktrace > /tmp/gradle.log 2>&1
+          ./gradlew :src:tr:merlinscans:spotlessApply :src:tr:merlinscans:testDebugUnitTest :src:tr:merlinscans:assembleRelease --stacktrace > /tmp/gradle.log 2>&1
           result=$?
           tail -100 /tmp/gradle.log
           if [ "$result" -ne 0 ]; then
