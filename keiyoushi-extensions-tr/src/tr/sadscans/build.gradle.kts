@@ -6,7 +6,9 @@ plugins {
 
 keiyoushi {
     name = "SadScans"
-    versionCode = 7
+    // 11: arama/filtre/detay/okuyucu düzeltmeleri (1.6.8-1.6.10) + okuyucu CDN toleransı.
+    //     Uygulamadaki mağaza güncellemesi bu sürümle 1.6.7 -> 1.6.11 yükseltmesini görür.
+    versionCode = 11
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

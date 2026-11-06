@@ -3,7 +3,7 @@ name: SadScans APK build (live verification separate)
 on:
   workflow_dispatch:
   push:
-    branches: [arena/9e5cc01a-kitsugi-manga-plugins, main]
+    branches: [arena/9e5cc01a-kitsugi-manga-plugins, arena/e222c71c-kitsugi-manga-plugins, main]
     paths:
       - keiyoushi-extensions-tr/src/tr/sadscans/**
       - enabled_plugins.txt
@@ -39,7 +39,25 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build signed release APK
         working-directory: keiyoushi-extensions-tr
-        run: ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease
+        run: |
+          set +e
+          ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease 2>&1 | tee /tmp/build.log
+          status=${PIPESTATUS[0]}
+          grep -E "(^e: |error:|Caused by:|FAILURE:)" /tmp/build.log | head -40 | while IFS= read -r line; do
+            echo "::error::$(printf '%s' "$line" | tr '\n' ' ' | cut -c1-900)"
+          done
+          exit "$status"
+      - name: Publish compiler output on failure
+        if: failure()
+        run: |
+          mkdir -p docs/build-logs
+          tail -c 60000 /tmp/build.log > docs/build-logs/sadscans-build.log 2>/dev/null || echo "build log yok" > docs/build-logs/sadscans-build.log
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/build-logs/sadscans-build.log
+          git commit -m 'sadscans: derleme günlüğü [skip ci]' || exit 0
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
       - name: Prepare and verify the new catalogs
         run: |
           python3 tools/prepare_extension_release.py sadscans
@@ -56,5 +74,15 @@ jobs:
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/sadscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'sadscans: save compiled APK candidate [skip ci]'
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          # Aynı dala başka bir iş (ör. elle atılan sürüm yükseltmesi) aynı anda yazabilir;
+          # bu yüzden rebase+push birkaç kez denenir.
+          for attempt in 1 2 3; do
+            git pull --rebase origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then
+              exit 0
+            fi
+            echo "push denemesi ${attempt} başarısız, tekrar deneniyor" >&2
+            sleep $((attempt * 5))
+          done
+          echo 'derlenen APK dala yazılamadı' >&2
+          exit 1

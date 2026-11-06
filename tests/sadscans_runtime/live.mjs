@@ -25,7 +25,7 @@ try {
     throw new Error(stage+': frontend timeout');
   }
   const base='https://sadscans.net';
-  const listing=query=>templates[0].replace('$options',JSON.stringify({query,sort:'-views',page:1}));
+  const listing=(query,page=1)=>templates[0].replace('$options',JSON.stringify({query,sort:'views',type:null,status:null,page}));
   const popular=await read('popular',base+'/seriler',listing(''));
   report.steps.at(-1).count=popular.items.length;
   const item=popular.items[0];if(!item)throw new Error('No popular series');

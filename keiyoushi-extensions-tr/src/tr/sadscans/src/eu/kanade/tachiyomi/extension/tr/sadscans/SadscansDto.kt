@@ -5,12 +5,12 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
-import kotlinx.serialization.json.jsonPrimitive
 
-/** tRPC batch envelope: `[{result:{data:{json:<payload>}}}]`. */
+/** tRPC batch zarfı: `[{result:{data:{json:<payload>}}}]` veya `[{error:{json:{...}}}]`. */
 @Serializable
 class TrpcBatchItem(
     val result: TrpcResult? = null,
+    val error: TrpcError? = null,
 )
 
 @Serializable
@@ -23,7 +23,20 @@ class TrpcData(
     val json: JsonElement? = null,
 )
 
-/** Series item returned by `<searchRouter>.getSeries`. */
+@Serializable
+class TrpcError(
+    val json: JsonObject? = null,
+) {
+    fun message(): String {
+        val payload = json ?: return "bilinmeyen hata"
+        return listOf("message", "data", "code", "httpStatus")
+            .firstNotNullOfOrNull { key ->
+                (payload[key] as? JsonPrimitive)?.contentOrNull?.takeIf { it.isNotBlank() }
+            } ?: "bilinmeyen hata"
+    }
+}
+
+/** `<searchRouter>.getSeries` öğesi. */
 @Serializable
 class SeriesItemDto(
     val id: JsonPrimitive? = null,
@@ -41,7 +54,7 @@ class SeriesItemDto(
         get() = id?.contentOrNull
 }
 
-/** `{series:{...}, chapters:[...], pagination:{totalPages}}` from `<detailRouter>.getSeriesData`. */
+/** `<detailRouter>.getSeriesData` yanıtı: `{series, chapters, pagination}`. */
 @Serializable
 class SeriesDataDto(
     val series: JsonObject? = null,
@@ -71,15 +84,5 @@ class ChapterItemDto(
         get() = (chap_id ?: id)?.contentOrNull
 
     val numberValue: Float?
-        get() = no?.contentOrNull?.toFloatOrNull()
-}
-
-@Serializable
-class GenreDto(
-    val id: JsonPrimitive? = null,
-    val name: String? = null,
-    val slug: String? = null,
-) {
-    val idString: String?
-        get() = id?.contentOrNull
+        get() = no?.contentOrNull?.replace(',', '.')?.toFloatOrNull()
 }
