@@ -38,6 +38,7 @@ jobs:
       - name: Build signed release APK
         working-directory: keiyoushi-extensions-tr
         run: |
+          set -o pipefail
           if ! ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease 2>&1 | tee /tmp/build-sadscans.log; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
