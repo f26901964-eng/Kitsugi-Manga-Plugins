@@ -1,0 +1,214 @@
+{
+  "generatedAt": "2026-11-06T14:00:28Z",
+  "passed": 22,
+  "total": 22,
+  "checks": [
+    {
+      "name": "okutoon: catalogue answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "okutoon: series cards are anchors with a title and a cover",
+      "ok": true,
+      "detail": {
+        "cards": 24,
+        "titles": 24,
+        "covers": 24,
+        "first": "/one-piece"
+      }
+    },
+    {
+      "name": "okutoon: covers come from the image CDN",
+      "ok": true,
+      "detail": {
+        "host": "om-cdn.okutoon.com"
+      }
+    },
+    {
+      "name": "okutoon: ?sayfa=2 returns a different page of the catalogue",
+      "ok": true,
+      "detail": {
+        "page1": 24,
+        "page2": 24,
+        "firstOfEach": [
+          "One Piece",
+          "The Youngest Has Much to Hide"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: paging exposes a rel=next link",
+      "ok": true,
+      "detail": {
+        "nextLink": 1
+      }
+    },
+    {
+      "name": "okutoon: search by Turkish/English title works",
+      "ok": true,
+      "detail": {
+        "hits": [
+          "Chainsaw Man"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: series details expose every hook the extension reads",
+      "ok": true,
+      "detail": {
+        "url": "https://okutoon.com/one-piece",
+        "title": 1,
+        "author": 1,
+        "cover": 1,
+        "genres": 1,
+        "status": 1,
+        "description": 1
+      }
+    },
+    {
+      "name": "okutoon: genres are .tag-link anchors",
+      "ok": true,
+      "detail": {
+        "genres": [
+          "Aksiyon",
+          "Doğaüstü",
+          "Dövüş Sanatları",
+          "Dram",
+          "Fantezi"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: chapter rows parse into links, names and dates",
+      "ok": true,
+      "detail": {
+        "rows": 1225,
+        "links": 1225,
+        "titles": 1225,
+        "dates": [
+          "30 Ekim 2026",
+          "18 Ekim 2026",
+          "11 Ekim 2026"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: chapter dates use Turkish month names",
+      "ok": true,
+      "detail": {
+        "sample": "30 Ekim 2026"
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 API returns validated pages",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "mitigated": null,
+        "count": 53
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 393396
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 27 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 565898
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 53 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 555076
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 API returns validated pages",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "mitigated": null,
+        "count": 26
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 393396
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 14 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 492924
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 26 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 507470
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 API returns validated pages",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "mitigated": null,
+        "count": 16
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 310970
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 9 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 433794
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 16 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 331206
+      }
+    }
+  ]
+}

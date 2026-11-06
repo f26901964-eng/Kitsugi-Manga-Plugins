@@ -2,7 +2,7 @@ name: Capture shared HTML dumps
 
 on:
   push:
-    branches: [arena/5be02cb8-kitsugi-manga-plugins]
+    branches: [main]
     paths:
       - tools/capture_html_dumps.py
       - .github/workflows/capture-html-dumps.yml
@@ -25,7 +25,6 @@ jobs:
         run: python tools/capture_html_dumps.py
       - name: Commit the dumps
         run: |
-          set -euo pipefail
           git config user.name kitsugi-html-dump
           git config user.email kitsugi-html-dump@users.noreply.github.com
           git add docs/html-dumps
@@ -34,4 +33,9 @@ jobs:
             exit 0
           fi
           git commit -m "chore(evidence): capture the shared HTML dumps [skip ci]"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          for i in 1 2 3; do
+            git pull --rebase -q origin "${GITHUB_REF_NAME}" || true
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+            sleep 4
+          done
+          exit 1

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark" data-theme-pref="dark" data-accent="green">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <script>
+(function () {
+    var root = document.documentElement;
+    var query = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+    function apply() {
+        if (root.getAttribute('data-theme-pref') !== 'system' || root.hasAttribute('data-theme-locked')) return;
+        var theme = query && query.matches ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#ffffff' : '#000000');
+    }
+    apply();
+    if (query) {
+        if (query.addEventListener) query.addEventListener('change', apply); else if (query.addListener) query.addListener(apply);
+    }
+    // Bazı tarayıcılar arka plandaki sekmeye değişim olayı göndermez; sekmeye dönünce yeniden bak.
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) apply(); });
+    window.okutoonApplyThemePref = apply;
+})();
+</script>
+                                                <title>Türkçe Manga, Webtoon ve Manhwa Oku — OkuToon</title>
+    <meta name="robots" content="noindex,follow">
+    <meta name="description" content="Tüm manga, webtoon ve manhwa serilerini türe göre filtrele. OkuToon'da yüzlerce seriyi ücretsiz türkçe oku.">
+        <meta property="og:site_name" content="OkuToon">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Türler ve Seriler — OkuToon">
+    <meta property="og:description" content="Tüm manga, webtoon ve manhwa serilerini türe göre filtrele. OkuToon'da yüzlerce seriyi ücretsiz türkçe oku.">
+    <meta property="og:image" content="https://okutoon.com/images/og-default.png">
+    <meta property="og:image:alt" content="Türler ve Seriler — OkuToon">
+            <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:url" content="https://okutoon.com/tur">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Türler ve Seriler — OkuToon">
+    <meta name="twitter:description" content="Tüm manga, webtoon ve manhwa serilerini türe göre filtrele. OkuToon'da yüzlerce seriyi ücretsiz türkçe oku.">
+    <meta name="twitter:image" content="https://okutoon.com/images/og-default.png">
+                <link rel="icon" type="image/png" href="/images/favicon.png?v=1790414538">
+    <link rel="apple-touch-icon" href="/images/favicon.png?v=1790414538">
+        <link rel="preconnect" href="https://om-cdn.okutoon.com">
+    <link rel="dns-prefetch" href="https://om-cdn.okutoon.com">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <script>document.documentElement.classList.add('js-spoilers');</script>
+    <link rel="stylesheet" href="/build/assets/css/variables.3e445e2c71c8746e.css">
+    <link rel="stylesheet" href="/build/assets/css/style.c388c02ee4904391.css">
+                <meta name="csrf-token" content="ea4e78ada9ca5d0875be37a9b48de8cc51bce7e76bb6791716ec34723918a78e">
+        <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" defer></script>
+</head>
+<body class="page-browse"
+      data-user-id=""
+      data-content-policy-accepted="0"
+      data-content-policy-version=""
+      data-can-upload-images="0"
+      data-current-username="">
+    <header class="site-header" data-site-header>
+    <div class="container site-header-inner">
+        <a href="/" class="site-logo" aria-label="OkuToon ana sayfa">
+            <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+        </a>
+
+        <nav class="site-nav" aria-label="Ana menü">
+            <a href="/" class="site-nav-link">Ana Sayfa</a>
+            <a href="/tur" class="site-nav-link is-active" aria-current="page">Keşfet</a>
+                            <div class="navbar-categories">
+                    <button type="button"
+                            class="site-nav-link navbar-categories-toggle"
+                            id="categoryDropdownToggle"
+                            aria-haspopup="true"
+                            aria-controls="categoryDropdownMenu"
+                            aria-expanded="false">
+                        <span>Türler</span>
+                        <i data-lucide="chevron-down" class="dropdown-caret"></i>
+                    </button>
+                    <div class="navbar-categories-menu" id="categoryDropdownMenu">
+                        <div class="navbar-categories-head">
+                            <span>Kategoriler</span>
+                            <a href="/tur" class="navbar-categories-all">Tümünü keşfet <i data-lucide="chevron-right"></i></a>
+                        </div>
+                                                                                                                            <p class="navbar-categories-subtitle">Okuyucu kitlesi</p>
+                            <div class="navbar-categories-audience">
+                                                                    <a href="/tur/shounen" class="chip navbar-audience-link">Shounen</a>
+                                                                    <a href="/tur/seinen" class="chip navbar-audience-link">Seinen</a>
+                                                                    <a href="/tur/shoujo" class="chip navbar-audience-link">Shoujo</a>
+                                                                    <a href="/tur/josei" class="chip navbar-audience-link">Josei</a>
+                                                            </div>
+                            <p class="navbar-categories-subtitle">Türler</p>
+                                                <div class="navbar-categories-grid">
+                                                                                                <a href="/tur/aile" class="navbar-category-link">Aile</a>
+                                                                                                                                <a href="/tur/aksiyon" class="navbar-category-link">Aksiyon</a>
+                                                                                                                                <a href="/tur/askeri" class="navbar-category-link">Askeri</a>
+                                                                                                                                <a href="/tur/bilim-kurgu" class="navbar-category-link">Bilim Kurgu</a>
+                                                                                                                                <a href="/tur/dogaustu" class="navbar-category-link">Doğaüstü</a>
+                                                                                                                                <a href="/tur/dovus-sanatlari" class="navbar-category-link">Dövüş Sanatları</a>
+                                                                                                                                <a href="/tur/dram" class="navbar-category-link">Dram</a>
+                                                                                                                                <a href="/tur/ecchi" class="navbar-category-link">Ecchi</a>
+                                                                                                                                <a href="/tur/fantezi" class="navbar-category-link">Fantezi</a>
+                                                                                                                                <a href="/tur/gerilim" class="navbar-category-link">Gerilim</a>
+                                                                                                                                <a href="/tur/gizem" class="navbar-category-link">Gizem</a>
+                                                                                                                                <a href="/tur/gunluk-hayat" class="navbar-category-link">Günlük Hayat</a>
+                                                                                                                                <a href="/tur/harem" class="navbar-category-link">Harem</a>
+                                                                                                                                <a href="/tur/hayatta-kalma" class="navbar-category-link">Hayatta Kalma</a>
+                                                                                                                                <a href="/tur/isekai" class="navbar-category-link">Isekai</a>
+                                                                                                                                                                                            <a href="/tur/kiyamet" class="navbar-category-link">Kıyamet</a>
+                                                                                                                                <a href="/tur/komedi" class="navbar-category-link">Komedi</a>
+                                                                                                                                <a href="/tur/korku" class="navbar-category-link">Korku</a>
+                                                                                                                                <a href="/tur/macera" class="navbar-category-link">Macera</a>
+                                                                                                                                <a href="/tur/murim" class="navbar-category-link">Murim</a>
+                                                                                                                                <a href="/tur/okul-hayati" class="navbar-category-link">Okul Hayatı</a>
+                                                                                                                                <a href="/tur/oyun" class="navbar-category-link">Oyun</a>
+                                                                                                                                <a href="/tur/psikolojik" class="navbar-category-link">Psikolojik</a>
+                                                                                                                                <a href="/tur/reenkarnasyon" class="navbar-category-link">Reenkarnasyon</a>
+                                                                                                                                <a href="/tur/romantizm" class="navbar-category-link">Romantizm</a>
+                                                                                                                                                                                                                                                                                                                    <a href="/tur/sihir" class="navbar-category-link">Sihir</a>
+                                                                                                                                <a href="/tur/sistem" class="navbar-category-link">Sistem</a>
+                                                                                                                                <a href="/tur/spor" class="navbar-category-link">Spor</a>
+                                                                                                                                <a href="/tur/suc" class="navbar-category-link">Suç</a>
+                                                                                                                                <a href="/tur/super-kahraman" class="navbar-category-link">Süper Kahraman</a>
+                                                                                                                                <a href="/tur/tarihi" class="navbar-category-link">Tarihi</a>
+                                                                                                                                <a href="/tur/vampir" class="navbar-category-link">Vampir</a>
+                                                                                                                                <a href="/tur/zamanda-yolculuk" class="navbar-category-link">Zamanda Yolculuk</a>
+                                                                                                                                <a href="/tur/zindan" class="navbar-category-link">Zindan</a>
+                                                                                                                                <a href="/tur/zombi" class="navbar-category-link">Zombi</a>
+                                                                                    </div>
+                    </div>
+                </div>
+                        <a href="/forum" class="site-nav-link">Forum</a>
+                                            </nav>
+
+        <div class="site-actions">
+            <form action="/tur" method="get" class="navbar-search" role="search" data-header-search>
+                <i data-lucide="search" class="navbar-search-icon" aria-hidden="true"></i>
+                <input type="search"
+                       name="q"
+                       placeholder="Seri, yazar ara"
+                       value="chainsaw man"
+                       class="navbar-search-input"
+                       autocomplete="off"
+                       enterkeyhint="search"
+                       data-search-input
+                       aria-label="Seri ara">
+                <button type="button" class="navbar-search-cancel" data-header-search-close>Vazgeç</button>
+                <div class="navbar-search-suggest" id="navbarSearchSuggest" data-search-suggest hidden>
+                    <div class="navbar-search-suggest-list" data-search-suggest-list></div>
+                </div>
+            </form>
+
+            
+            <button type="button" class="icon-btn site-search-toggle" data-header-search-open aria-label="Ara">
+                <i data-lucide="search"></i>
+            </button>
+
+                            <a href="/login" class="site-login-link">Giriş</a>
+                <a href="/register" class="btn btn-invert btn-sm btn-pill site-register-btn">Kayıt ol</a>
+                    </div>
+    </div>
+</header>
+
+    
+    <main class="container">
+                <div class="browse-page">
+            <header class="browse-head">
+        <div class="browse-head-copy">
+            <h1 class="section-title section-title--lg browse-content-title">
+                                    “chainsaw man”
+                            </h1>
+                            <p class="browse-result-count">1 seri</p>
+                    </div>
+                    </header>
+
+    
+    
+    <form action="/tur" method="get" id="browseForm" class="browse-bar">
+        <div class="browse-bar-top">
+            <div class="browse-search-wrap">
+                <i data-lucide="search" class="browse-search-icon"></i>
+                <input type="search" id="browseSearch" name="q" value="chainsaw man" placeholder="Seri adı veya yazar ara" class="browse-search-input" enterkeyhint="search" aria-label="Seri ara">
+            </div>
+            <label class="browse-select">
+                <span class="sr-only">Sıralama</span>
+                <select name="sira" id="browseSort" class="select select--sm browse-sort-select">
+                    <option value="newest"  selected>En yeni</option>
+                    <option value="updated" >Son güncellenen</option>
+                    <option value="popular" >En popüler</option>
+                    <option value="rating"  >En yüksek puan</option>
+                    <option value="az"      >A-Z</option>
+                </select>
+            </label>
+            <label class="browse-select browse-period-group is-hidden" data-browse-period-group>
+                <span class="sr-only">Dönem</span>
+                <select name="donem" id="browsePeriod" class="select select--sm browse-sort-select" disabled>
+                    <option value="daily" selected>Bugün</option>
+                    <option value="weekly" >Haftalık</option>
+                    <option value="monthly" >Aylık</option>
+                    <option value="all_time" >Tüm zamanlar</option>
+                </select>
+            </label>
+            <button type="button" class="browse-cats-toggle" data-browse-cats-toggle aria-expanded="false" aria-controls="browseCatsPanel">
+                <i data-lucide="sliders-horizontal"></i>
+                <span>Filtreler</span>
+                                <i data-lucide="chevron-down" class="browse-cats-caret"></i>
+            </button>
+        </div>
+
+        <div class="browse-bar-row">
+            <div class="browse-status-list" data-browse-radio-group role="radiogroup" aria-label="Seri türü">
+                <label class="browse-status-item is-checked">
+                    <input type="radio" name="tip" value="" checked class="browse-status-radio" data-browse-autosubmit>
+                    <span>Tümü</span>
+                </label>
+                                    <label class="browse-status-item">
+                        <input type="radio" name="tip" value="webtoon"  class="browse-status-radio" data-browse-autosubmit>
+                        <span>Webtoon</span>
+                    </label>
+                                    <label class="browse-status-item">
+                        <input type="radio" name="tip" value="manga"  class="browse-status-radio" data-browse-autosubmit>
+                        <span>Manga</span>
+                    </label>
+                            </div>
+            <span class="browse-bar-divider" aria-hidden="true"></span>
+            <div class="browse-status-list" data-browse-radio-group role="radiogroup" aria-label="Durum">
+                                    <label class="browse-status-item is-checked">
+                        <input type="radio" name="durum" value="" checked class="browse-status-radio" data-browse-autosubmit>
+                        <span>Her durum</span>
+                    </label>
+                                    <label class="browse-status-item">
+                        <input type="radio" name="durum" value="ongoing"  class="browse-status-radio" data-browse-autosubmit>
+                        <span>Devam ediyor</span>
+                    </label>
+                                    <label class="browse-status-item">
+                        <input type="radio" name="durum" value="completed"  class="browse-status-radio" data-browse-autosubmit>
+                        <span>Tamamlandı</span>
+                    </label>
+                                    <label class="browse-status-item">
+                        <input type="radio" name="durum" value="hiatus"  class="browse-status-radio" data-browse-autosubmit>
+                        <span>Ara verildi</span>
+                    </label>
+                            </div>
+            <span class="browse-bar-divider" aria-hidden="true"></span>
+            <label class="browse-status-item browse-ai-toggle" title="Tamamı yapay zekâ ile çevrilmiş serileri listeden çıkarır">
+                <input type="checkbox" name="ai" value="gizle"  data-browse-togglesubmit>
+                <span class="browse-ai-mark"><svg class="ai-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.94 15.5a2 2 0 0 0-1.44-1.44l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+</span>
+                <span>AI çevirileri gizle</span>
+            </label>
+        </div>
+
+        <div class="browse-cats-panel" id="browseCatsPanel" data-browse-cats-panel hidden>
+            <div class="browse-cats-group" data-browse-chapter-range>
+                <p class="browse-cats-title">Bölüm sayısı</p>
+                <div class="browse-cats">
+                                                                    <button type="button" class="browse-cat-item" data-chapter-preset data-min="" data-max="50" aria-pressed="false">50 ve altı</button>
+                                                                    <button type="button" class="browse-cat-item" data-chapter-preset data-min="50" data-max="150" aria-pressed="false">50–150</button>
+                                                                    <button type="button" class="browse-cat-item" data-chapter-preset data-min="150" data-max="300" aria-pressed="false">150–300</button>
+                                                                    <button type="button" class="browse-cat-item" data-chapter-preset data-min="300" data-max="" aria-pressed="false">300+</button>
+                                    </div>
+                <div class="browse-range">
+                    <label class="browse-range-field">
+                        <span>En az</span>
+                        <input type="number" name="bolum_min" value="" min="0" max="100000" step="1" inputmode="numeric" placeholder="0" data-chapter-bound>
+                    </label>
+                    <span class="browse-range-sep" aria-hidden="true">–</span>
+                    <label class="browse-range-field">
+                        <span>En çok</span>
+                        <input type="number" name="bolum_max" value="" min="0" max="100000" step="1" inputmode="numeric" placeholder="Sınırsız" data-chapter-bound>
+                    </label>
+                </div>
+            </div>
+                            <div class="browse-cats-group">
+                    <p class="browse-cats-title">Okuyucu kitlesi</p>
+                    <div class="browse-cats">
+                                                                                <label class="browse-cat-item">
+                                <input type="checkbox" name="k[]" value="shounen"  class="browse-cat-check">
+                                <span>Shounen</span>
+                            </label>
+                                                                                <label class="browse-cat-item">
+                                <input type="checkbox" name="k[]" value="seinen"  class="browse-cat-check">
+                                <span>Seinen</span>
+                            </label>
+                                                                                <label class="browse-cat-item">
+                                <input type="checkbox" name="k[]" value="shoujo"  class="browse-cat-check">
+                                <span>Shoujo</span>
+                            </label>
+                                                                                <label class="browse-cat-item">
+                                <input type="checkbox" name="k[]" value="josei"  class="browse-cat-check">
+                                <span>Josei</span>
+                            </label>
+                                            </div>
+                </div>
+                        <div class="browse-cats-group">
+                <p class="browse-cats-title">Türler</p>
+                <div class="browse-cats">
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="aile"  class="browse-cat-check">
+                            <span>Aile</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="aksiyon"  class="browse-cat-check">
+                            <span>Aksiyon</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="askeri"  class="browse-cat-check">
+                            <span>Askeri</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="bilim-kurgu"  class="browse-cat-check">
+                            <span>Bilim Kurgu</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="dogaustu"  class="browse-cat-check">
+                            <span>Doğaüstü</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="dovus-sanatlari"  class="browse-cat-check">
+                            <span>Dövüş Sanatları</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="dram"  class="browse-cat-check">
+                            <span>Dram</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="ecchi"  class="browse-cat-check">
+                            <span>Ecchi</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="fantezi"  class="browse-cat-check">
+                            <span>Fantezi</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="gerilim"  class="browse-cat-check">
+                            <span>Gerilim</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="gizem"  class="browse-cat-check">
+                            <span>Gizem</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="gunluk-hayat"  class="browse-cat-check">
+                            <span>Günlük Hayat</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="harem"  class="browse-cat-check">
+                            <span>Harem</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="hayatta-kalma"  class="browse-cat-check">
+                            <span>Hayatta Kalma</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="isekai"  class="browse-cat-check">
+                            <span>Isekai</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="kiyamet"  class="browse-cat-check">
+                            <span>Kıyamet</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="komedi"  class="browse-cat-check">
+                            <span>Komedi</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="korku"  class="browse-cat-check">
+                            <span>Korku</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="macera"  class="browse-cat-check">
+                            <span>Macera</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="murim"  class="browse-cat-check">
+                            <span>Murim</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="okul-hayati"  class="browse-cat-check">
+                            <span>Okul Hayatı</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="oyun"  class="browse-cat-check">
+                            <span>Oyun</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="psikolojik"  class="browse-cat-check">
+                            <span>Psikolojik</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="reenkarnasyon"  class="browse-cat-check">
+                            <span>Reenkarnasyon</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="romantizm"  class="browse-cat-check">
+                            <span>Romantizm</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="sihir"  class="browse-cat-check">
+                            <span>Sihir</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="sistem"  class="browse-cat-check">
+                            <span>Sistem</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="spor"  class="browse-cat-check">
+                            <span>Spor</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="suc"  class="browse-cat-check">
+                            <span>Suç</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="super-kahraman"  class="browse-cat-check">
+                            <span>Süper Kahraman</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="tarihi"  class="browse-cat-check">
+                            <span>Tarihi</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="vampir"  class="browse-cat-check">
+                            <span>Vampir</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="zamanda-yolculuk"  class="browse-cat-check">
+                            <span>Zamanda Yolculuk</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="zindan"  class="browse-cat-check">
+                            <span>Zindan</span>
+                        </label>
+                                                                    <label class="browse-cat-item">
+                            <input type="checkbox" name="k[]" value="zombi"  class="browse-cat-check">
+                            <span>Zombi</span>
+                        </label>
+                                    </div>
+            </div>
+            <div class="browse-cats-actions">
+                <button type="button" class="btn btn-ghost btn-sm" id="clearCategories">Temizle</button>
+                <button type="submit" class="btn btn-primary btn-sm">Uygula</button>
+            </div>
+        </div>
+    </form>
+
+            <div class="chip-row browse-chips">
+                            <a href="/tur" class="chip is-active browse-chip">“chainsaw man” <i data-lucide="x" class="browse-chip-x"></i></a>
+                                                                                    <a href="/tur" class="chip browse-chip browse-chip--reset">Tümünü temizle</a>
+        </div>
+    
+            <div class="series-grid">
+                            <a href="/chainsaw-man" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1779831145_3282f0f7.webp" alt="Chainsaw Man" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Chainsaw Man</h3>
+        <p class="series-card-author">Tatsuki Fujimoto</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.8</span>
+                                    <span class="dot-sep">·</span>
+                    <span>234 bölüm</span>
+                            </p>
+            </div>
+</a>
+                    </div>
+
+                
+    </div>
+    </main>
+
+    <footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo" aria-label="OkuToon ana sayfa">
+                    <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+                </a>
+                <p class="footer-tagline">Türkçe webtoon, manga ve manhwa oku. Ücretsiz, sınırsız.</p>
+                <div class="footer-app-links" role="group" aria-label="OkuToon mobil uygulamaları">
+                    <a href="https://play.google.com/store/apps/details?id=app.abimobile.okutoon&hl=tr"
+                       class="footer-app-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="OkuToon Android uygulamasını Google Play'den indir">
+                        <svg class="footer-app-link-icon" viewBox="0 0 512 512" focusable="false" aria-hidden="true">
+                            <path fill="currentColor" d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                        </svg>
+                        <span class="footer-app-link-copy">
+                            <span class="footer-app-link-kicker">Android</span>
+                            <span class="footer-app-link-title">Google Play</span>
+                        </span>
+                    </a>
+                    <a href="https://apps.apple.com/us/app/okutoon/id6800834700"
+                       class="footer-app-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="OkuToon iOS uygulamasını App Store'dan indir">
+                        <svg class="footer-app-link-icon" viewBox="0 0 384 512" focusable="false" aria-hidden="true">
+                            <path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-72.6-19.7C63.3 141.2 0 184.6 0 273.5c0 26.3 4.8 53.5 14.4 81.7 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.7-17.9 31.8 0 48.3 17.9 76.3 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.8-90-57.5-92.4zm-34.9-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                        </svg>
+                        <span class="footer-app-link-copy">
+                            <span class="footer-app-link-kicker">iPhone ve iPad</span>
+                            <span class="footer-app-link-title">App Store</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-cols">
+                                    <div class="footer-col footer-col--wide">
+                        <h4 class="footer-col-title">Türler</h4>
+                        <ul class="footer-links footer-links--grid">
+                                                            <li><a href="/tur/aile">Aile</a></li>
+                                                            <li><a href="/tur/aksiyon">Aksiyon</a></li>
+                                                            <li><a href="/tur/askeri">Askeri</a></li>
+                                                            <li><a href="/tur/bilim-kurgu">Bilim Kurgu</a></li>
+                                                            <li><a href="/tur/dogaustu">Doğaüstü</a></li>
+                                                            <li><a href="/tur/dovus-sanatlari">Dövüş Sanatları</a></li>
+                                                            <li><a href="/tur/dram">Dram</a></li>
+                                                            <li><a href="/tur/ecchi">Ecchi</a></li>
+                                                            <li><a href="/tur/fantezi">Fantezi</a></li>
+                                                            <li><a href="/tur/gerilim">Gerilim</a></li>
+                                                            <li><a href="/tur/gizem">Gizem</a></li>
+                                                            <li><a href="/tur/gunluk-hayat">Günlük Hayat</a></li>
+                                                            <li><a href="/tur/harem">Harem</a></li>
+                                                            <li><a href="/tur/hayatta-kalma">Hayatta Kalma</a></li>
+                                                            <li><a href="/tur/isekai">Isekai</a></li>
+                                                            <li><a href="/tur/josei">Josei</a></li>
+                                                            <li><a href="/tur/kiyamet">Kıyamet</a></li>
+                                                            <li><a href="/tur/komedi">Komedi</a></li>
+                                                            <li><a href="/tur/korku">Korku</a></li>
+                                                            <li><a href="/tur/macera">Macera</a></li>
+                                                            <li><a href="/tur/murim">Murim</a></li>
+                                                            <li><a href="/tur/okul-hayati">Okul Hayatı</a></li>
+                                                            <li><a href="/tur/oyun">Oyun</a></li>
+                                                            <li><a href="/tur/psikolojik">Psikolojik</a></li>
+                                                            <li><a href="/tur/reenkarnasyon">Reenkarnasyon</a></li>
+                                                            <li><a href="/tur/romantizm">Romantizm</a></li>
+                                                            <li><a href="/tur/seinen">Seinen</a></li>
+                                                            <li><a href="/tur/shoujo">Shoujo</a></li>
+                                                            <li><a href="/tur/shounen">Shounen</a></li>
+                                                            <li><a href="/tur/sihir">Sihir</a></li>
+                                                            <li><a href="/tur/sistem">Sistem</a></li>
+                                                            <li><a href="/tur/spor">Spor</a></li>
+                                                            <li><a href="/tur/suc">Suç</a></li>
+                                                            <li><a href="/tur/super-kahraman">Süper Kahraman</a></li>
+                                                            <li><a href="/tur/tarihi">Tarihi</a></li>
+                                                            <li><a href="/tur/vampir">Vampir</a></li>
+                                                            <li><a href="/tur/zamanda-yolculuk">Zamanda Yolculuk</a></li>
+                                                            <li><a href="/tur/zindan">Zindan</a></li>
+                                                            <li><a href="/tur/zombi">Zombi</a></li>
+                                                    </ul>
+                    </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Keşfet</h4>
+                    <ul class="footer-links">
+                        <li><a href="/tur?sira=popular&amp;donem=weekly">Popüler</a></li>
+                        <li><a href="/tur?sira=updated">Yeni bölümler</a></li>
+                        <li><a href="/tur?sira=newest">Yeni seriler</a></li>
+                        <li><a href="/forum">Forum</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Hesap</h4>
+                    <ul class="footer-links">
+                                                    <li><a href="/login">Giriş yap</a></li>
+                            <li><a href="/register">Kayıt ol</a></li>
+                                                <li><a href="/sayfa/iletisim">İletişim</a></li>
+                    </ul>
+                </div>
+
+                                    <div class="footer-col">
+                        <h4 class="footer-col-title">Bilgi</h4>
+                        <ul class="footer-links">
+                                                            <li><a href="/sayfa/hakkimizda">Hakkımızda</a></li>
+                                                            <li><a href="/sayfa/iletisim">İletişim</a></li>
+                                                            <li><a href="/sayfa/hesap-silme-yardimi">Hesap Silme Yardımı</a></li>
+                                                            <li><a href="/sayfa/gizlilik-politikasi">Gizlilik Politikası</a></li>
+                                                            <li><a href="/sayfa/kullanim-kosullari">Kullanım Koşulları</a></li>
+                                                            <li><a href="/sayfa/cerez-politikasi">Çerez Politikası</a></li>
+                                                            <li><a href="/sayfa/topluluk-kurallari">Topluluk Kuralları</a></li>
+                                                    </ul>
+                    </div>
+                            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copy">
+                &copy; 2026 OkuToon — Türkiye'nin ücretsiz manga ve webtoon okuma sitesi.
+            </p>
+            <p class="footer-legal">
+                <a href="/sayfa/gizlilik-politikasi">Gizlilik</a>
+                <a href="/sayfa/kullanim-kosullari">Kullanım Koşulları</a>
+                <a href="/sayfa/cerez-politikasi">Çerezler</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+        <script src="/build/assets/js/mobile-app-promo.10aea0d87bbd717a.js" defer></script>
+        <script src="/build/assets/js/app.5e1e6dec7633008a.js" defer></script>
+                <script>document.addEventListener('DOMContentLoaded', function() { if (window.lucide) lucide.createIcons(); });</script>
+    <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=110130175', 'ym');
+
+    ym(110130175, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110130175" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"0db46d72a0f14356990f60ea3063196c","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>

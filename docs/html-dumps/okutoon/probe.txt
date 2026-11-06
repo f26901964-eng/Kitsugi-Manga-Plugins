@@ -1,0 +1,49 @@
+
+===== pagination block (pagination) index=54512 =====
+                      <span class="dot-sep">·</span>
+                    <span>52 bölüm</span>
+                            </p>
+            </div>
+</a>
+                    </div>
+
+        <nav class="pagination" aria-label="Sayfalama">
+                <span class="pagination-btn pagination-btn--disabled">&laquo; Önceki</span>
+    
+        <div class="pagination-numbers">
+                
+        
+                                    <span class="pagination-num pagination-num--active">1</span>
+                                                <a href="/tur?sayfa=2" class="pagination-num">2</a>
+                                                <a href="/tur?sayfa=3" class="pagination-num">3</a>
+                    
+                                    <span class="pagination-ellipsis">…</span>
+                        <a href="/tur?sayfa=44" class="pagination-num">44</a>
+            </div>
+
+                <a href="/tur?sayfa=2" class="pagination-btn" rel="next">Sonraki &raquo;</a>
+    </nav>
+        
+    </div>
+    </main>
+
+    <footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo" aria-label="OkuToon ana sayfa">
+                    <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+                </a>
+                <p class="footer-tagline">Türkçe webtoon, manga ve manhwa oku. Ücretsiz, sınırsız.</p>
+                <div class="footer-app-links" role="group" aria-label="OkuToon mobil uygulamaları">
+                    <a href="https://play.google.com/store/apps/details?id=app.abimobile.o
+
+### reader plain: 403 bytes 5801
+server: cloudflare cf-ray: a563a27d0bf692d0-DFW content-type: text/html; charset=UTF-8
+--- first 700 chars ---
+<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="content-security-policy" content="default-src &#39;none&#39;; script-src &#39;nonce-nLOYexjt0Wo13n1HKN4SQP&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-src-attr &#39;none&#39;; style-src &#39;unsafe-inline&#39;; img-src &#39;self&#39; https://challenges.cloudflare.com; connect-src &#39;self&#39; https://challenges.cloudflare.com; frame-src &#39;self&#
+
+### reader browser-ish: 403 bytes 6015
+<!DOCTYPE html><html lang="en-US"><head><title>Just a moment...</title><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=Edge"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="content-security-policy" content="default-src &#39;none&#39;; script-src &#39;nonce-xVxVdNhnqKDvxfaQ03Ap1E&#39; &#39;unsafe-eval&#39; https://challenges.cloudflare.com; script-s
+
+### chapter 1: 403 bytes 5838
