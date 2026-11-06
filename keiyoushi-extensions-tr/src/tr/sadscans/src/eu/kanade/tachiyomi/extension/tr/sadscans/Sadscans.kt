@@ -202,7 +202,7 @@ abstract class Sadscans : KeiSource() {
 
     private fun JsonElement.imageUrl(): String? = when (this) {
         is JsonObject -> (this["url"] ?: this["src"] ?: this["image"])?.jsonPrimitive?.contentOrNull
-        is JsonPrimitive -> contentOrNull.takeIf { it.startsWith("http") || it.startsWith("/") }
+        is JsonPrimitive -> contentOrNull?.takeIf { it.startsWith("http") || it.startsWith("/") }
         else -> null
     }
 
