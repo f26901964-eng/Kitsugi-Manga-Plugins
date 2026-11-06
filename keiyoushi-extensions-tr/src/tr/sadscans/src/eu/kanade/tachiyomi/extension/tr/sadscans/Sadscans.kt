@@ -11,10 +11,10 @@ import keiyoushi.annotation.Source
 import keiyoushi.network.get
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.WebViewTimeoutException
-import keiyoushi.utils.runWebView
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
+import keiyoushi.utils.runWebView
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -33,10 +33,10 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import java.io.IOException
-import java.util.concurrent.TimeUnit
-import kotlin.time.Duration.Companion.seconds
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 /**
@@ -115,9 +115,12 @@ abstract class Sadscans : KeiSource() {
                 val body = response.body.string()
                 when {
                     response.header("cf-mitigated") == "challenge" -> null
+
                     response.code in listOf(403, 429, 503) &&
                         (body.contains("cloudflare", ignoreCase = true) || body.contains("cf-chl-")) -> null
+
                     !response.isSuccessful -> throw IOException("SadScans API HTTP ${response.code}: $procedure")
+
                     else -> body
                 }
             }
