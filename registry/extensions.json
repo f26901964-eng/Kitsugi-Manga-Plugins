@@ -156,12 +156,12 @@
   {
     "name": "Hayalistic",
     "pkg": "eu.kanade.tachiyomi.extension.tr.hayalistic",
-    "apk": "tachiyomi-tr.hayalistic-v1.6.7.apk",
+    "apk": "tachiyomi-tr.hayalistic-v1.6.62.apk",
     "lang": "tr",
-    "code": 106007,
-    "version": "1.6.7",
+    "code": 106062,
+    "version": "1.6.62",
     "nsfw": 0,
-    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.hayalistic-v1.6.7.apk",
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.hayalistic-v1.6.62.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.hayalistic.png"
   },
   {
