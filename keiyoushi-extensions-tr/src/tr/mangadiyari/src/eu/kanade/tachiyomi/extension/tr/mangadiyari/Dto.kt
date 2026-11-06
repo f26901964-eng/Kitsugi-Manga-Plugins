@@ -76,7 +76,9 @@ class SeriesDto(
     fun toSManga(baseUrl: String): SManga = toEntry(baseUrl).toSManga()
 
     /** Rows without a slug or a title cannot be opened, so the list drops them instead of failing. */
-    fun toSMangaOrNull(baseUrl: String): SManga? = if (slug.isBlank() || title.isBlank()) null else toSManga(baseUrl)
+    fun toEntryOrNull(baseUrl: String): SeriesEntry? = if (slug.isBlank() || title.isBlank()) null else toEntry(baseUrl)
+
+    fun toSMangaOrNull(baseUrl: String): SManga? = toEntryOrNull(baseUrl)?.toSManga()
 }
 
 /** The parts of a series the extension sends to the app; kept apart from [SManga] so it can be tested. */

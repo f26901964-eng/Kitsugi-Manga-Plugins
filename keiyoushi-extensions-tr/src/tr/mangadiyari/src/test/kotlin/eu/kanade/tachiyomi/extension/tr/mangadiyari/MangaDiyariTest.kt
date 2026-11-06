@@ -68,9 +68,9 @@ class MangaDiyariTest {
 
         // Parsing must not throw for a row missing a field; the row is simply not openable.
         assertEquals(3, response.series.size)
-        assertNull(response.series[0].toSMangaOrNull(BASE))
-        assertNull(response.series[1].toSMangaOrNull(BASE))
-        assertEquals("saglam", response.series[2].toSMangaOrNull(BASE)?.url)
+        assertNull(response.series[0].toEntryOrNull(BASE))
+        assertNull(response.series[1].toEntryOrNull(BASE))
+        assertEquals("saglam", response.series[2].toEntryOrNull(BASE)?.slug)
     }
 
     @Test
