@@ -80,8 +80,7 @@ abstract class Sadscans : KeiSource() {
     /**
      * CloudflareInterceptor **kaldırılmaz**: `/api/trpc` engellendiğinde WebView tabanlı çözümün
      * ürettiği `cf_clearance` çerezini kullanabilmek için istemcide kalması gerekir.
-     */
-    /**
+     *
      * Kitsugi (ve Mihon) her kaynak aramasını **25 saniyede** kesiyor
      * (`MangaSourceRepository` → `withTimeoutOrNull(25_000)`, keşfet ekranında 30 s).
      * Bu yüzden API denemesi kısa tutulur: API engelliyse vakit WebView kademesine kalır.
