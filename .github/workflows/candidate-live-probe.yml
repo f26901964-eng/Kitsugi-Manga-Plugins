@@ -25,7 +25,9 @@ jobs:
       - name: Probe candidate sources end to end
         run: |
           set -o pipefail
-          python tools/candidate_live_probe.py --output reports/candidate-live-probe.json 2>&1 | tee /tmp/candidate-probe.log
+          python tools/candidate_live_probe.py \
+            --output reports/candidate-live-probe.json \
+            --workers 6 2>&1 | tee /tmp/candidate-probe.log
       - name: Record probe report on the branch
         if: always()
         env:

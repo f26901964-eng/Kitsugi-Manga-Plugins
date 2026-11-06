@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Live contract probe for candidate Turkish manga sources.
+"""Live readability sweep across every Turkish source shipped in this repo.
 
-For every candidate the probe walks the same path the extension walks
-(listing -> series -> chapter -> page images) and records only sanitized facts:
-counts, HTTP status/content type, decoded image metadata and whether the
-chapter is locked behind a login wall. Full image URLs and HTML are never
-written to the report.
+The sweep does not trust the extension code: for each source it starts at the
+site root, finds a series page, a chapter page and finally the page images, then
+decodes the first images to prove they are real pictures. Only counts, status
+codes and public titles are stored, never full image URLs or HTML.
 """
 from __future__ import annotations
 
@@ -14,324 +13,331 @@ import io
 import json
 import re
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timezone
+from pathlib import Path
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
 
+ROOT = Path(__file__).resolve().parents[1]
+SRC = ROOT / "keiyoushi-extensions-tr" / "src" / "tr"
+
 UA = (
     "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
 )
-TIMEOUT = 40
+TIMEOUT = 25
 
+SERIES_PATTERNS = (
+    r"/manga/([a-z0-9][a-z0-9-]{1,80})/?$",
+    r"/seri/([a-z0-9][a-z0-9-]{1,80})/?$",
+    r"/serie/([a-z0-9][a-z0-9-]{1,80})/?$",
+    r"/mangas?/([a-z0-9][a-z0-9-]{1,80})/?$",
+)
+CHAPTER_HINTS = ("/bolum-", "-bolum-", "/chapter-", "-chapter-", "/cilt-", "/episode-")
 LOCK_MARKERS = (
     "kilitli bölüm",
     "giriş yapınız",
     "üye olmalısınız",
-    "siteye giriş",
+    "siteye giriş yap",
+    "login to read",
     "members only",
 )
-
-MADARA_PAGE_IMAGES = "div#chapter-content img, div.reading-content img, div.entry-content img"
-THEMESIA_PAGE_IMAGES = "div#readerarea img, div.entry-content img, div#chapter-content img"
-INIT_MANGA_PAGE_IMAGES = (
-    "div#chapter-content img, div.chapter-content img, div.reader-area img, "
-    "div.entry-content img, div#readerarea img"
-)
+BAD_IMAGE_HINTS = ("logo", "banner", "avatar", "icon", "favicon", "placeholder", "spinner")
 
 
 @dataclass
-class Candidate:
+class Source:
     key: str
     name: str
-    base_url: str
+    base_url: str | None
     theme: str
-    listing_path: str
-    series_pattern: str
-    chapter_pattern: str
-    page_selector: str
-    api: bool = False
 
 
-CANDIDATES = (
-    Candidate(
-        key="mangadenizi",
-        name="MangaDenizi",
-        base_url="https://mangadenizi.net",
-        theme="json-api",
-        listing_path="/api/v1/web/manga?sort=popular&page=1",
-        series_pattern="",
-        chapter_pattern="",
-        page_selector="",
-        api=True,
-    ),
-    Candidate(
-        key="hayalistic",
-        name="Hayalistic",
-        base_url="https://hayalistic.online",
-        theme="madara",
-        listing_path="/manga/?m_orderby=trending",
-        series_pattern=r"/manga/([^/\"']+)/",
-        chapter_pattern=r"/manga/[^/\"']+/bolum-[^/\"']+/",
-        page_selector=MADARA_PAGE_IMAGES,
-    ),
-    Candidate(
-        key="shijiescans",
-        name="Shijie Scans",
-        base_url="https://shijiescans.com",
-        theme="mangathemesia",
-        listing_path="/seri/",
-        series_pattern=r"/seri/([^/\"']+)/",
-        chapter_pattern=r"/[^/\"']+-bolum-[^/\"']+/",
-        page_selector=THEMESIA_PAGE_IMAGES,
-    ),
-    Candidate(
-        key="mangaruhu",
-        name="MangaRuhu",
-        base_url="https://mangaruhu.com",
-        theme="initmanga",
-        listing_path="/manga/",
-        series_pattern=r"/manga/([^/\"']+)/",
-        chapter_pattern=r"/manga/[^/\"']+/bolum-[^/\"']+/",
-        page_selector=INIT_MANGA_PAGE_IMAGES,
-    ),
-)
+def read_sources() -> list[Source]:
+    out = []
+    for module in sorted(SRC.iterdir()):
+        gradle = module / "build.gradle.kts"
+        if not gradle.is_file():
+            continue
+        text = gradle.read_text(encoding="utf-8", errors="replace")
+        name = re.search(r'name = "([^"]+)"', text)
+        base = re.search(r'baseUrl = "([^"]+)"', text)
+        theme = re.search(r'theme = "([^"]+)"', text)
+        out.append(
+            Source(
+                key=module.name,
+                name=name.group(1) if name else module.name,
+                base_url=base.group(1) if base else None,
+                theme=theme.group(1) if theme else "custom",
+            )
+        )
+    return out
 
 
-def session() -> requests.Session:
+def make_session() -> requests.Session:
     s = requests.Session()
-    s.headers.update({"User-Agent": UA, "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8"})
+    s.headers.update(
+        {
+            "User-Agent": UA,
+            "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.8",
+            "Accept": "text/html,application/xhtml+xml,image/avif,image/webp,*/*;q=0.8",
+        }
+    )
     return s
 
 
-def image_facts(s: requests.Session, url: str, referer: str, with_referer: bool):
-    headers = {}
-    if with_referer:
-        headers["Referer"] = referer
+def get(s: requests.Session, url: str, referer: str | None = None):
+    headers = {"Referer": referer} if referer else {}
+    return s.get(url, headers=headers, timeout=TIMEOUT)
+
+
+def decode_image(s: requests.Session, url: str, referer: str) -> dict:
     try:
-        r = s.get(url, headers=headers, timeout=TIMEOUT)
-    except requests.RequestException as exc:  # pragma: no cover - network dependent
+        r = get(s, url, referer)
+    except requests.RequestException as exc:
         return {"ok": False, "error": type(exc).__name__}
-    out = {
-        "ok": r.status_code == 200,
+    info = {
+        "ok": False,
         "status": r.status_code,
-        "contentType": r.headers.get("content-type", "")[:40],
+        "contentType": r.headers.get("content-type", "")[:30],
         "bytes": len(r.content),
     }
     if r.ok:
         try:
             with Image.open(io.BytesIO(r.content)) as im:
-                out["size"] = f"{im.width}x{im.height}"
-                out["format"] = im.format
-                out["ok"] = True
+                info["size"] = f"{im.width}x{im.height}"
+                info["format"] = im.format
+                info["ok"] = min(im.width, im.height) >= 120
         except Exception:
-            out["ok"] = False
-            out["size"] = None
+            info["error"] = "not-an-image"
+    return info
+
+
+def same_host(base: str, url: str) -> bool:
+    b = urlparse(base).netloc.replace("www.", "")
+    u = urlparse(url).netloc.replace("www.", "")
+    return b == u or u.endswith("." + b)
+
+
+def find_series(soup: BeautifulSoup, base: str) -> list[tuple[str, str]]:
+    seen, found = set(), []
+    for a in soup.select("a[href]"):
+        href = a.get("href", "")
+        if not href or href.startswith(("#", "javascript:", "mailto:")):
+            continue
+        full = urljoin(base, href)
+        if not same_host(base, full):
+            continue
+        path = urlparse(full).path
+        if any(h in path for h in CHAPTER_HINTS):
+            continue
+        for pattern in SERIES_PATTERNS:
+            m = re.search(pattern, path)
+            if m and m.group(1) not in seen:
+                seen.add(m.group(1))
+                found.append((full, m.group(1)))
+    return found
+
+
+def find_chapters(soup: BeautifulSoup, base: str) -> list[str]:
+    out = []
+    for a in soup.select("a[href]"):
+        href = a.get("href", "")
+        if not any(h in href for h in CHAPTER_HINTS):
+            continue
+        full = urljoin(base, href)
+        if same_host(base, full) and full not in out:
+            out.append(full)
     return out
 
 
-def summarize_images(s: requests.Session, urls, referer):
-    picked = urls[:3]
-    results = []
-    for index, url in enumerate(picked, start=1):
-        host = urlparse(url).netloc
-        plain = image_facts(s, url, referer, with_referer=False)
-        plain["host"] = host
-        plain["name"] = f"page{index}"
-        results.append(plain)
-    referer_result = None
-    if picked:
-        referer_result = image_facts(s, picked[0], referer, with_referer=True)
-        referer_result["name"] = "page1+referer"
-    return results, referer_result
-
-
-def probe_html_candidate(s: requests.Session, cand: Candidate) -> dict:
-    report: dict = {"name": cand.name, "theme": cand.theme, "baseUrl": cand.base_url}
-    try:
-        listing = s.get(urljoin(cand.base_url, cand.listing_path), timeout=TIMEOUT)
-        report["listing"] = {
-            "status": listing.status_code,
-            "bytes": len(listing.content),
-            "contentType": listing.headers.get("content-type", "")[:40],
-        }
-        if not listing.ok:
-            report["ok"] = False
-            return report
-        soup = BeautifulSoup(listing.text, "html.parser")
-        series = []
-        for a in soup.select("a[href]"):
-            href = a.get("href", "")
-            match = re.search(cand.series_pattern, href)
-            if match:
-                full = urljoin(cand.base_url, href)
-                slug = match.group(1)
-                if slug not in [x[1] for x in series]:
-                    series.append((full, slug))
-        report["listing"]["seriesFound"] = len(series)
-        if not series:
-            report["ok"] = False
-            return report
-
-        series_url, slug = series[0]
-        detail = s.get(series_url, timeout=TIMEOUT)
-        dsoup = BeautifulSoup(detail.text, "html.parser")
-        title = (dsoup.select_one("h1") or dsoup.select_one("title"))
-        report["series"] = {
-            "status": detail.status_code,
-            "slug": slug,
-            "title": (title.get_text(strip=True)[:80] if title else None),
-        }
-        chapters = []
-        for a in dsoup.select("a[href]"):
-            href = a.get("href", "")
-            if re.search(cand.chapter_pattern, href):
-                full = urljoin(cand.base_url, href)
-                if full not in chapters:
-                    chapters.append(full)
-        report["series"]["chapterLinksFound"] = len(chapters)
-        if not chapters:
-            report["ok"] = False
-            return report
-
-        chapter_url = chapters[0]
-        chapter = s.get(chapter_url, timeout=TIMEOUT)
-        csoup = BeautifulSoup(chapter.text, "html.parser")
-        text = csoup.get_text(" ", strip=True).lower()
-        locked = [m for m in LOCK_MARKERS if m in text]
-        images = []
-        for img in csoup.select(cand.page_selector):
-            src = img.get("src") or img.get("data-src") or img.get("data-lazy-src") or ""
+def find_page_images(soup: BeautifulSoup, chapter_url: str) -> list[str]:
+    urls = []
+    candidates = soup.select(
+        "div#chapter-content img, div.reading-content img, div.entry-content img, "
+        "div#readerarea img, div.chapter-content img, div.reader-area img, "
+        "div#readerarea p img, .reading-content .page-break img, div#images img, "
+        "section#chapterbody img, div.chapter-images img, p img"
+    )
+    for img in candidates:
+        for attr in ("src", "data-src", "data-lazy-src", "data-original", "data-url"):
+            src = (img.get(attr) or "").strip()
             if not src or src.startswith("data:"):
                 continue
-            images.append(urljoin(chapter_url, src))
-        report["chapter"] = {
-            "status": chapter.status_code,
-            "bytes": len(chapter.content),
-            "lockMarkers": locked,
-            "imagesInDom": len(images),
-            "lazyPlaceholders": len(csoup.select(cand.page_selector)) - len(images),
-        }
-        if images:
-            plain, with_referer = summarize_images(s, images, chapter_url)
-            report["chapter"]["imageProbe"] = plain
-            report["chapter"]["imageProbeWithReferer"] = with_referer
-        report["ok"] = bool(images) and not locked
-    except requests.RequestException as exc:
-        report["ok"] = False
-        report["error"] = type(exc).__name__
-    return report
+            low = src.lower()
+            if any(b in low for b in BAD_IMAGE_HINTS):
+                continue
+            urls.append(urljoin(chapter_url, src))
+            break
+    # de-duplicate, keep order
+    seen, ordered = set(), []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            ordered.append(u)
+    return ordered
 
 
-def probe_api_candidate(s: requests.Session, cand: Candidate) -> dict:
-    report: dict = {"name": cand.name, "theme": cand.theme, "baseUrl": cand.base_url}
-    api_headers = {"Accept": "application/json", "Referer": f"{cand.base_url}/manga"}
+def probe(source: Source, nav_only: bool = False) -> dict:
+    report: dict = {
+        "name": source.name,
+        "theme": source.theme,
+        "baseUrl": source.base_url,
+        "ok": False,
+    }
+    if not source.base_url:
+        report["error"] = "no-base-url"
+        return report
+
+    s = make_session()
     try:
-        listing = s.get(urljoin(cand.base_url, cand.listing_path), headers=api_headers, timeout=TIMEOUT)
-        report["listing"] = {
-            "status": listing.status_code,
-            "bytes": len(listing.content),
-            "contentType": listing.headers.get("content-type", "")[:40],
-        }
-        if not listing.ok:
-            report["ok"] = False
-            return report
-        data = listing.json()["data"]["manga"]
-        rows = data["data"]
-        report["listing"]["seriesFound"] = len(rows)
-        report["listing"]["lastPage"] = data.get("last_page")
-        first = rows[0]
-        report["series"] = {
-            "status": 200,
-            "slug": first["slug"],
-            "title": first.get("title"),
-            "chapters": len(first.get("chapters") or []),
-            "chaptersCount": first.get("chapters_count"),
-        }
-        detail = s.get(
-            f"{cand.base_url}/api/v1/web/manga/{first['slug']}",
-            headers=api_headers,
-            timeout=TIMEOUT,
-        )
-        djson = detail.json()["data"]["manga"]
-        chapters = djson.get("chapters") or []
-        report["series"]["detailStatus"] = detail.status_code
-        report["series"]["detailChapters"] = len(chapters)
-        if not chapters:
-            report["ok"] = False
-            return report
-        chapter = chapters[0]
-        reader = s.get(
-            f"{cand.base_url}/api/v1/reader/{djson['slug']}/{chapter['slug']}",
-            headers=api_headers,
-            timeout=TIMEOUT,
-        )
-        rjson = reader.json()
-        pages = rjson.get("pages") or []
-        scrambled = sum(1 for p in pages if (p.get("scramble") or {}).get("method"))
-        report["chapter"] = {
-            "status": reader.status_code,
-            "pagesInApi": len(pages),
-            "scrambledPages": scrambled,
-            "lockMarkers": [],
-            "imagesInDom": len(pages),
-        }
-        urls = [p["image_url"] for p in pages if p.get("image_url")]
-        if urls:
-            plain, with_referer = summarize_images(s, urls, f"{cand.base_url}/manga")
-            report["chapter"]["imageProbe"] = plain
-            report["chapter"]["imageProbeWithReferer"] = with_referer
-        report["ok"] = bool(urls)
-    except (requests.RequestException, KeyError, ValueError) as exc:
-        report["ok"] = False
+        home = get(s, source.base_url)
+    except requests.RequestException as exc:
         report["error"] = type(exc).__name__
+        return report
+    report["home"] = {
+        "status": home.status_code,
+        "bytes": len(home.content),
+        "contentType": home.headers.get("content-type", "")[:30],
+    }
+    if not home.ok:
+        report["error"] = f"home-{home.status_code}"
+        return report
+    report["ok"] = True
+    if nav_only:
+        return report
+
+    soup = BeautifulSoup(home.text, "html.parser")
+    series = find_series(soup, source.base_url)
+    if not series:
+        # try the common listing paths, cheapest first
+        for path in ("/manga/", "/seri/", "/manga/?order=update", "/mangas/"):
+            try:
+                listing = get(s, urljoin(source.base_url, path))
+            except requests.RequestException:
+                continue
+            if listing.ok:
+                series = find_series(BeautifulSoup(listing.text, "html.parser"), source.base_url)
+                if series:
+                    report["listingPath"] = path
+                    break
+    report["seriesFound"] = len(series)
+    if not series:
+        report["ok"] = False
+        report["error"] = "no-series-links"
+        return report
+
+    series_url, slug = series[0]
+    try:
+        detail = get(s, series_url)
+    except requests.RequestException as exc:
+        report["error"] = type(exc).__name__
+        report["ok"] = False
+        return report
+    dsoup = BeautifulSoup(detail.text, "html.parser")
+    heading = dsoup.select_one("h1") or dsoup.select_one("title")
+    chapters = find_chapters(dsoup, source.base_url)
+    report["series"] = {
+        "status": detail.status_code,
+        "slug": slug,
+        "title": heading.get_text(strip=True)[:70] if heading else None,
+        "chapters": len(chapters),
+    }
+    if not chapters:
+        report["ok"] = False
+        report["error"] = "no-chapter-links"
+        return report
+
+    chapter_url = chapters[0]
+    try:
+        chapter = get(s, chapter_url)
+    except requests.RequestException as exc:
+        report["error"] = type(exc).__name__
+        report["ok"] = False
+        return report
+    csoup = BeautifulSoup(chapter.text, "html.parser")
+    text = csoup.get_text(" ", strip=True).lower()
+    locked = [m for m in LOCK_MARKERS if m in text]
+    total_imgs = len(csoup.select("img"))
+    images = find_page_images(csoup, chapter_url)
+    report["chapter"] = {
+        "status": chapter.status_code,
+        "bytes": len(chapter.content),
+        "imgTags": total_imgs,
+        "pageImages": len(images),
+        "lockMarkers": locked,
+    }
+    if images:
+        probes = [decode_image(s, u, chapter_url) for u in images[:3]]
+        report["chapter"]["decoded"] = sum(1 for p in probes if p.get("ok"))
+        report["chapter"]["imageProbe"] = probes
+        report["ok"] = report["chapter"]["decoded"] > 0 and not locked
+        if locked:
+            report["error"] = "login-wall"
+        elif not report["chapter"]["decoded"]:
+            report["error"] = "images-not-real"
+    else:
+        report["ok"] = False
+        report["error"] = "no-page-images"
     return report
+
+
+def summarize(report: dict) -> str:
+    chapter = report.get("chapter") or {}
+    return (
+        f"{report.get('name')}: ok={report.get('ok')} home={report.get('home', {}).get('status')} "
+        f"series={report.get('seriesFound')} chapters={(report.get('series') or {}).get('chapters')} "
+        f"pages={chapter.get('pageImages')} decoded={chapter.get('decoded')} "
+        f"locked={bool(chapter.get('lockMarkers'))} err={report.get('error') or '-'}"
+    )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--output", default="reports/candidate-live-probe.json")
     parser.add_argument("--only", nargs="*", default=None)
+    parser.add_argument("--workers", type=int, default=6)
     args = parser.parse_args()
 
-    s = session()
-    results = {}
-    for cand in CANDIDATES:
-        if args.only and cand.key not in args.only:
-            continue
-        print(f"probing {cand.key} ...", flush=True)
-        if cand.api:
-            results[cand.key] = probe_api_candidate(s, cand)
-        else:
-            results[cand.key] = probe_html_candidate(s, cand)
-        report = results[cand.key]
-        print(f"  ok={report.get('ok')} chapter={json.dumps(report.get('chapter', {}), ensure_ascii=False)[:400]}", flush=True)
+    sources = read_sources()
+    if args.only:
+        sources = [s for s in sources if s.key in args.only]
+
+    results: dict[str, dict] = {}
+
+    def run(source: Source) -> tuple[str, dict]:
+        try:
+            return source.key, probe(source)
+        except Exception as exc:  # pragma: no cover - defensive
+            return source.key, {"name": source.name, "ok": False, "error": type(exc).__name__}
+
+    with ThreadPoolExecutor(max_workers=args.workers) as pool:
+        for key, report in pool.map(run, sources):
+            results[key] = report
+            print(summarize(report), flush=True)
 
     payload = {
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),
-        "candidates": results,
+        "sources": results,
     }
-    from pathlib import Path
-
     out = Path(args.output)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    for key, report in results.items():
-        chapter = report.get("chapter") or {}
-        images = chapter.get("imageProbe") or []
-        good = sum(1 for i in images if i.get("ok"))
-        line = (
-            f"{key}: ok={report.get('ok')} listing={report.get('listing', {}).get('status')} "
-            f"images={chapter.get('imagesInDom')} decodable={good}/{len(images)} "
-            f"locked={bool(chapter.get('lockMarkers'))}"
-        )
-        print(line)
-        print(f"::notice title=probe {key}::{line}")
+    working = [k for k, r in results.items() if r.get("ok")]
+    blocked = [k for k, r in results.items() if str(r.get("error", "")).startswith("home-4")]
+    print(f"\nreadable sources: {len(working)}/{len(results)} -> {', '.join(sorted(working))}")
+    print(f"blocked/forbidden: {len(blocked)} -> {', '.join(sorted(blocked))}")
+    print(
+        "::notice title=candidate sweep::"
+        f"readable={len(working)}/{len(results)} blocked={len(blocked)} "
+        f"ok={','.join(sorted(working))[:400]}"
+    )
     return 0
 
 
