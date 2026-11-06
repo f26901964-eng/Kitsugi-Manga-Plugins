@@ -1,0 +1,31 @@
+name: Turkmanga live search diagnosis
+on:
+  push:
+    branches: [arena/cef77245-kitsugi-manga-plugins]
+    paths:
+      - tests/turkmanga_runtime/**
+      - .github/workflows/turkmanga-diagnostic.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 beautifulsoup4==4.13.4
+      - name: Diagnose site search
+        run: python tests/turkmanga_runtime/diagnose.py
+      - name: Save diagnostics on this branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/turkmanga-diagnostic.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'turkmanga: record live search diagnostic [skip ci]'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
