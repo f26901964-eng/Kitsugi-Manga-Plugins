@@ -72,6 +72,60 @@
             "type": "manga"
           }
         ]
+      },
+      {
+        "name": "Koreli Manga",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.korelimanga",
+        "versionName": "1.6.3",
+        "versionCode": "106003",
+        "contentWarning": "CONTENT_WARNING_SAFE",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.korelimanga-v1.6.3.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.korelimanga.png"
+        },
+        "sources": [
+          {
+            "name": "Koreli Manga",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
+      },
+      {
+        "name": "Türkçe Manga Oku",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.turkcemangaoku",
+        "versionName": "1.6.56",
+        "versionCode": "106056",
+        "contentWarning": "CONTENT_WARNING_SAFE",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.turkcemangaoku-v1.6.56.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.turkcemangaoku.png"
+        },
+        "sources": [
+          {
+            "name": "Türkçe Manga Oku",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
+      },
+      {
+        "name": "Amanga Planet",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.amangaplanet",
+        "versionName": "1.6.1",
+        "versionCode": "106001",
+        "contentWarning": "CONTENT_WARNING_SAFE",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.amangaplanet-v1.6.1.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.amangaplanet.png"
+        },
+        "sources": [
+          {
+            "name": "Amanga Planet",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
       }
     ]
   }
