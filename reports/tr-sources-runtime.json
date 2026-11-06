@@ -1,0 +1,159 @@
+{
+  "generatedAt": "2026-11-06T10:17:07Z",
+  "passed": 19,
+  "total": 19,
+  "checks": [
+    {
+      "name": "hayalistic: archive listing answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "hayalistic: archive cards found (div.page-item-detail)",
+      "ok": true,
+      "detail": {
+        "cards": 16
+      }
+    },
+    {
+      "name": "hayalistic: series links found inside the archive cards",
+      "ok": true,
+      "detail": {
+        "cardLinks": 16,
+        "first": "https://hayalistic.site/manga/bir-hizmetciden-fazlasi/"
+      }
+    },
+    {
+      "name": "hayalistic: chapter list uses li.wp-manga-chapter",
+      "ok": true,
+      "detail": {
+        "seriesUrl": "https://hayalistic.site/manga/bir-hizmetciden-fazlasi/",
+        "bytes": 181316,
+        "hasChapterWord": true,
+        "bolumRefs": 165,
+        "items": 124,
+        "links": 145,
+        "source": "html"
+      }
+    },
+    {
+      "name": "hayalistic: chapter dates use span.chapter-release-date",
+      "ok": true,
+      "detail": {
+        "source": "html"
+      }
+    },
+    {
+      "name": "hayalistic: reader page exposes div.page-break + wp-manga-chapter-img",
+      "ok": true,
+      "detail": {
+        "pageBreaks": 29,
+        "images": 29
+      }
+    },
+    {
+      "name": "hayalistic: no chapter protector on a normal chapter",
+      "ok": true,
+      "detail": {}
+    },
+    {
+      "name": "hayalistic: first page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 68656,
+        "host": "cdn.hayalistic.site"
+      }
+    },
+    {
+      "name": "korelimanga: home answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "korelimanga: series links on the home page",
+      "ok": true,
+      "detail": {
+        "count": 47
+      }
+    },
+    {
+      "name": "korelimanga: chapter rows use div.chapter-item > a.uk-link-toggle",
+      "ok": true,
+      "detail": {
+        "rows": 24,
+        "links": 24
+      }
+    },
+    {
+      "name": "korelimanga: reader serves plain <img> pages in #chapter-content",
+      "ok": true,
+      "detail": {
+        "images": 23,
+        "encryptedPayload": false,
+        "hasWrapper": true
+      }
+    },
+    {
+      "name": "korelimanga: first page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "png",
+        "bytes": 73281,
+        "host": "korelimanga.com"
+      }
+    },
+    {
+      "name": "trmangaoku: home answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "trmangaoku: series links on the home page",
+      "ok": true,
+      "detail": {
+        "count": 24
+      }
+    },
+    {
+      "name": "trmangaoku: chapterMode=MangaAjax endpoint returns chapters",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "chapters": 92,
+        "slug": "barbarin-oyun-rehberi"
+      }
+    },
+    {
+      "name": "trmangaoku: chapter list is served by the AJAX endpoint",
+      "ok": true,
+      "detail": {
+        "itemsInInitialHtml": 0
+      }
+    },
+    {
+      "name": "trmangaoku: reader page exposes page images",
+      "ok": true,
+      "detail": {
+        "images": 10
+      }
+    },
+    {
+      "name": "trmangaoku: page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "jpeg",
+        "bytes": 8876
+      }
+    }
+  ]
+}

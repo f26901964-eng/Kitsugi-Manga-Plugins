@@ -1,0 +1,37 @@
+name: Capture shared HTML dumps
+
+on:
+  push:
+    branches: [arena/5be02cb8-kitsugi-manga-plugins]
+    paths:
+      - tools/capture_html_dumps.py
+      - .github/workflows/capture-html-dumps.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests==2.32.5
+      - name: Download the dumps
+        run: python tools/capture_html_dumps.py
+      - name: Commit the dumps
+        run: |
+          set -euo pipefail
+          git config user.name kitsugi-html-dump
+          git config user.email kitsugi-html-dump@users.noreply.github.com
+          git add docs/html-dumps
+          if git diff --cached --quiet; then
+            echo 'dump yok'
+            exit 0
+          fi
+          git commit -m "chore(evidence): capture the shared HTML dumps [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
