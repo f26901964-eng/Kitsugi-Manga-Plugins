@@ -647,7 +647,8 @@
             "language": "tr",
             "type": "manga"
           }
-        ]
+        ],
+        "nsfw": 0
       },
       {
         "name": "Merlin Scans",
