@@ -1,68 +1,65 @@
 {
-  "generatedAt": "2026-11-06T11:51:26Z",
-  "passed": 7,
-  "total": 10,
+  "generatedAt": "2026-11-06T12:37:08Z",
+  "passed": 11,
+  "total": 11,
   "checks": [
     {
-      "name": "okutoon: search page answers 200",
+      "name": "okutoon: catalogue answers 200",
       "ok": true,
       "detail": {
-        "status": 200,
-        "url": "https://okutoon.com/tur?q=solo+leveling&sayfa=1"
+        "status": 200
       }
     },
     {
-      "name": "okutoon: listing uses .series-grid .series-card",
+      "name": "okutoon: series cards are anchors with a title and a cover",
       "ok": true,
       "detail": {
-        "grid": 1,
-        "cards": 12
+        "cards": 24,
+        "titles": 24,
+        "covers": 24,
+        "first": "/one-piece"
       }
     },
     {
-      "name": "okutoon: .series-card-title yields manga names",
+      "name": "okutoon: covers come from the image CDN",
       "ok": true,
       "detail": {
-        "titles": [
-          "Solo Leveling: Ragnarok",
-          "Solo Leveling"
+        "host": "om-cdn.okutoon.com"
+      }
+    },
+    {
+      "name": "okutoon: ?sayfa=2 returns a different page of the catalogue",
+      "ok": true,
+      "detail": {
+        "page1": 24,
+        "page2": 24,
+        "firstOfEach": [
+          "One Piece",
+          "I Married the Dragon I Killed"
         ]
       }
     },
     {
-      "name": "okutoon: searching \"solo leveling\" finds the series",
+      "name": "okutoon: paging exposes a rel=next link",
       "ok": true,
       "detail": {
-        "soloMentions": 8
+        "nextLink": 1
       }
     },
     {
-      "name": "okutoon: series links are readable from the cards",
-      "ok": false,
-      "detail": {
-        "first": null
-      }
-    },
-    {
-      "name": "okutoon: pagination markup exists (nav.pagination + Sonraki)",
-      "ok": false,
-      "detail": {
-        "pager": 0,
-        "sonraki": 0
-      }
-    },
-    {
-      "name": "okutoon: series page answers 200",
+      "name": "okutoon: search by Turkish/English title works",
       "ok": true,
       "detail": {
-        "status": 200,
-        "url": "https://okutoon.com/solo-leveling"
+        "hits": [
+          "Chainsaw Man"
+        ]
       }
     },
     {
-      "name": "okutoon: series detail selectors are present",
+      "name": "okutoon: series details expose every hook the extension reads",
       "ok": true,
       "detail": {
+        "url": "https://okutoon.com/one-piece",
         "title": 1,
         "author": 1,
         "cover": 1,
@@ -72,27 +69,47 @@
       }
     },
     {
-      "name": "okutoon: chapter rows use .chapter-item > a.chapter-item-link",
-      "ok": false,
+      "name": "okutoon: genres are .tag-link anchors",
+      "ok": true,
       "detail": {
-        "rows": 402,
-        "links": 0,
-        "firstTitle": "Bölüm 200",
-        "firstDate": "26 Mart 2026"
+        "genres": [
+          "Aksiyon",
+          "Doğaüstü",
+          "Dövüş Sanatları",
+          "Dram",
+          "Fantezi"
+        ]
       }
     },
     {
-      "name": "okutoon: .chapter-title / .chapter-date are usable",
+      "name": "okutoon: chapter rows parse into links, names and dates",
       "ok": true,
       "detail": {
-        "titles": [
-          "Bölüm 200",
-          "Bölüm 199",
-          "Bölüm 198"
-        ],
+        "rows": 1225,
+        "links": 1225,
+        "titles": 1225,
         "dates": [
-          "26 Mart 2026"
+          "30 Ekim 2026",
+          "18 Ekim 2026",
+          "11 Ekim 2026"
         ]
+      }
+    },
+    {
+      "name": "okutoon: chapter dates use Turkish month names",
+      "ok": true,
+      "detail": {
+        "sample": "30 Ekim 2026"
+      }
+    },
+    {
+      "name": "okutoon: reader is behind a Cloudflare challenge for bots (known limitation)",
+      "ok": true,
+      "detail": {
+        "url": "https://okutoon.com/one-piece/bolum-1197",
+        "status": 403,
+        "mitigated": "challenge",
+        "dumpsCoverTheMarkup": "docs/html-dumps/okutoon/message-73.txt"
       }
     }
   ]
