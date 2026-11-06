@@ -80,5 +80,18 @@ jobs:
             exit 0
           fi
           git commit -m 'okutoon: publish the fixed APK and catalogs [skip ci]'
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          # The build-log step pushes to the same branch, so retry instead of giving up on
+          # the first non-fast-forward rejection.
+          for i in 1 2 3 4 5; do
+            git fetch -q origin "${GITHUB_REF_NAME}"
+            if ! git rebase -q "origin/${GITHUB_REF_NAME}"; then
+              echo 'rebase çakıştı, uzak sürüm korunuyor'
+              git rebase --abort || true
+              git reset -q --hard "origin/${GITHUB_REF_NAME}"
+              exit 0
+            fi
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
+            sleep 5
+          done
+          echo 'yayın commit yapılamadı: push reddedildi' >&2
+          exit 1
