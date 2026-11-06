@@ -7,14 +7,33 @@ Tahmin yok: her satır ya canlı istek/ölçüm ya da geçmiş bir GitHub Action
 
 | | |
 | --- | --- |
-| Eklenti sürümü | **1.6.4** (`libVersion 1.6` + kaynak `versionCode 4`) |
-| Katalog kodu | **106004** |
-| APK | `apk/` ve `builds/apk/` → `tachiyomi-tr.mangadiyari-v1.6.4.apk` (154.551 bayt) |
-| Katalog kayıtları | `index.json`, `plugins.json`, `registry/extensions.json`, `registry/extensions.v2.json`, `builds/*` — hepsi 1.6.4 / 106004 |
-| Yayın koşusu | `mangadiyari-release.yml` ✓ (APK derleme + katalog commit) |
+| Eklenti sürümü | **1.6.5** (`libVersion 1.6` + kaynak `versionCode 5`) |
+| Katalog kodu | **106005** (önceki: 106004 → 106001) |
+| APK | `apk/`, `builds/apk/`, `prebuilt/apk/` → `tachiyomi-tr.mangadiyari-v1.6.5.apk` (154.551 bayt) |
+| Katalog kayıtları | `index.json`, `plugins.json`, `registry/extensions.json`, `registry/extensions.v2.json`, `builds/*` — hepsi 1.6.5 / 106005 |
+| Yayın koşusu | `mangadiyari-release.yml` ✓ (imza kontrolü + APK derleme + katalog commit) |
 | Test koşusu | `mangadiyari-ci.yml` ✓ — unit testler + APK + canlı sonda |
 
-Doğrulanan koşular: CI `42189756034`, release `42189755663` (branch `arena/35de187e-kitsugi-manga-plugins`).
+Doğrulanan koşular: CI `42191961013`, release `42191960745` (main), öncesinde `42191531184` / `42191531253`.
+
+## İmza (güncellemenin çalışması için kritik)
+
+Android, kurulu bir eklentinin üzerine **yalnız aynı anahtarla imzalanmış** APK'yı kurar. Ölçüm:
+
+| Dosya | Sertifika sha256 (ilk 32) |
+| --- | --- |
+| Yayındaki eski 1.6.1 | `a53115764ff5e259e0e5acec3c58a851` |
+| CI'da üretilen 1.6.4 | `ee44a50b2de270fdfde82bc8d41e8f3a` |
+
+İki dosya farklı anahtarlarla imzalıydı; bu yüzden katalog güncellemesi kurulamıyordu. Düzeltme:
+imza anahtarı `tools/signing/mangadiyari.p12` olarak repoda tutuluyor (alias `kitsugi`, parola
+`kitsugi-manga-plugins` — herkese açık bir kimlik doğrulama anahtarı, sır değil) ve
+`ExtensionPlugin.kt` release derlemesinde bu anahtarı kullanıyor. `tools/verify_mangadiyari_signature.py`
+yayından önce APK sertifikasını keystore ile karşılaştırır; uyuşmazsa iş **durur**.
+
+1.6.5 doğrulaması: yayındaki APK sertifikası keystore ile **eşleşiyor** (`İmza keystore ile eşleşiyor`).
+1.6.1 farklı anahtarla imzalı olduğu için son geçişte eski eklentiyi kaldırıp 1.6.5'i kurmak gerekir;
+sonraki sürümler normal güncelleme olarak kurulur.
 
 ## Canlı sonda (CI'da her koşuda çalışır)
 
@@ -92,4 +111,6 @@ python3 tools/mangadiyari_probe.py --output mangadiyari-probe.json --summary
 MANGADIYARI_LIVE_TEST=1 MANGADIYARI_LIVE_REPORT=$PWD/mangadiyari-probe.json \
   ./gradlew :src:tr:mangadiyari:testDebugUnitTest :src:tr:mangadiyari:assembleRelease
 python3 tools/prepare_mangadiyari_release.py   # APK + katalog senkronu (release işiyle aynı)
+python3 tools/verify_mangadiyari_signature.py \
+  apk/tachiyomi-tr.mangadiyari-v1.6.5.apk tools/signing/mangadiyari.p12
 ```
