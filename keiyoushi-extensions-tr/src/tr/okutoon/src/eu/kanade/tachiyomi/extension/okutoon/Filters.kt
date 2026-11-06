@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.tr.okutoon
+package eu.kanade.tachiyomi.extension.okutoon
 
 import eu.kanade.tachiyomi.source.model.Filter
 
@@ -33,16 +33,34 @@ class StatusFilter :
         ),
     )
 
+class TypeFilter :
+    UriPartFilter(
+        "Tür",
+        arrayOf(
+            Pair("Tümü", ""),
+            Pair("Webtoon", "webtoon"),
+            Pair("Manga", "manga"),
+        ),
+    )
+
 class Genre(name: String, val id: String) : Filter.CheckBox(name)
+
 class GenreFilter(genres: List<Genre>) : Filter.Group<Genre>("Türler", genres)
 
+// The site groups its checkboxes into "Okuyucu kitlesi" and "Türler"; keep that order.
 fun getGenreList() = listOf(
+    Genre("Shounen", "shounen"),
+    Genre("Seinen", "seinen"),
+    Genre("Shoujo", "shoujo"),
+    Genre("Josei", "josei"),
+    Genre("Aile", "aile"),
     Genre("Aksiyon", "aksiyon"),
     Genre("Askeri", "askeri"),
     Genre("Bilim Kurgu", "bilim-kurgu"),
     Genre("Doğaüstü", "dogaustu"),
     Genre("Dövüş Sanatları", "dovus-sanatlari"),
     Genre("Dram", "dram"),
+    Genre("Ecchi", "ecchi"),
     Genre("Fantezi", "fantezi"),
     Genre("Gerilim", "gerilim"),
     Genre("Gizem", "gizem"),
@@ -50,21 +68,24 @@ fun getGenreList() = listOf(
     Genre("Harem", "harem"),
     Genre("Hayatta Kalma", "hayatta-kalma"),
     Genre("Isekai", "isekai"),
-    Genre("Josei", "josei"),
     Genre("Kıyamet", "kiyamet"),
     Genre("Komedi", "komedi"),
     Genre("Korku", "korku"),
     Genre("Macera", "macera"),
+    Genre("Murim", "murim"),
     Genre("Okul Hayatı", "okul-hayati"),
     Genre("Oyun", "oyun"),
     Genre("Psikolojik", "psikolojik"),
     Genre("Reenkarnasyon", "reenkarnasyon"),
     Genre("Romantizm", "romantizm"),
-    Genre("Shoujo", "shoujo"),
-    Genre("Shounen", "shounen"),
     Genre("Sihir", "sihir"),
+    Genre("Sistem", "sistem"),
+    Genre("Spor", "spor"),
     Genre("Suç", "suc"),
-    Genre("Süperkahraman", "superkahraman"),
+    Genre("Süper Kahraman", "super-kahraman"),
     Genre("Tarihi", "tarihi"),
-    Genre("Yaoi", "yaoi"),
+    Genre("Vampir", "vampir"),
+    Genre("Zamanda Yolculuk", "zamanda-yolculuk"),
+    Genre("Zindan", "zindan"),
+    Genre("Zombi", "zombi"),
 )
