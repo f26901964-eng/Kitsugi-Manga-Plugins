@@ -5,7 +5,7 @@ import kotlinx.serialization.json.JsonPrimitive
 /**
  * sadscans.net üzerinde çalışan JavaScript köprüleri.
  *
- * Site Next.js + tRPC kullanıyor ve `/api/trpc/*` yolu Cloudflare tarafından korunuyor. Bu yüzden
+ * Site Next.js + tRPC kullanıyor ve `/api/trpc` yolu Cloudflare tarafından korunuyor. Bu yüzden
  * her sorgu iki aşamalı yürütülür:
  *
  *  1. **Aynı kaynaklı API denemesi** — sayfanın içinde `fetch` ile. Tarayıcı kimliği, TLS parmak

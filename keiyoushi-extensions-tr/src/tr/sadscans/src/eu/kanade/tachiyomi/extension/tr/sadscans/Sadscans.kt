@@ -52,7 +52,7 @@ import kotlin.time.Instant
  *  - sortBy değerleri: `name`, `-name`, `views`, `-views`, `rating`, `-rating`
  *  - status değerleri: `devam-ediyor`, `tamamlandi`, `birakildi`
  *
- * `/api/trpc/*` yolu Cloudflare tarafından korunuyor (düz HTTP istemcilerine 403 "Attention
+ * `/api/trpc` yolu Cloudflare tarafından korunuyor (düz HTTP istemcilerine 403 "Attention
  * Required"). Bu yüzden doğrudan API yalnızca **fırsat** olarak denenir; başarısız olursa ya da
  * boş dönerse sorgu, sitenin kendi tarayıcı oturumunda (WebView) aynı kaynaklı `fetch` ile ve son
  * olarak sitenin gerçek arayüzü sürülerek yürütülür. Hata hiçbir zaman sessizce yutulmaz.
