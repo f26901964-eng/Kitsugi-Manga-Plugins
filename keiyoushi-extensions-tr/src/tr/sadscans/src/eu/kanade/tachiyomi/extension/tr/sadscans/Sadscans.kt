@@ -22,10 +22,10 @@ import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Headers
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.time.Instant
@@ -58,11 +58,9 @@ abstract class Sadscans : KeiSource() {
 
     // ============================== Popular / Latest / Search ==============================
 
-    override suspend fun getPopularManga(page: Int): MangasPage =
-        fetchQuery(page, "totalViews", "desc", null)
+    override suspend fun getPopularManga(page: Int): MangasPage = fetchQuery(page, "totalViews", "desc", null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage =
-        fetchQuery(page, "updatedAt", "desc", null)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchQuery(page, "updatedAt", "desc", null)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val (orderBy, orderDirection) = filters.firstInstanceOrNull<SortFilter>()?.selected
@@ -257,8 +255,7 @@ abstract class Sadscans : KeiSource() {
         } ?: 0L
     }
 
-    private fun Float.trimNumber(): String =
-        if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
+    private fun Float.trimNumber(): String = if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
 
     private class CommonHeadersInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {

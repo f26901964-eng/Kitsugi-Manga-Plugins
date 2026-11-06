@@ -54,6 +54,24 @@
             "type": "manga"
           }
         ]
+      },
+      {
+        "name": "SadScans",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.sadscans",
+        "versionName": "1.6.1",
+        "versionCode": "106001",
+        "contentWarning": "CONTENT_WARNING_MIXED",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.sadscans-v1.6.1.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.sadscans.png"
+        },
+        "sources": [
+          {
+            "name": "SadScans",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
       }
     ]
   }
