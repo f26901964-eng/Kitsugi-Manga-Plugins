@@ -1,0 +1,156 @@
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
+..............10%..............20%...............30%..............40%...............50%..............60%...............70%..............80%...............90%..............100%
+
+Welcome to Gradle 9.8.2!
+
+Here are the highlights of this release:
+ - Java 27 support
+ - Maven mirror settings reuse
+ - Linked problem locations in build output
+
+For more details see https://docs.gradle.org/9.8.2/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+Calculating task graph as no cached configuration is available for tasks: :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+> Task :src:tr:sadscans:spotlessGradle
+> Task :src:tr:sadscans:spotlessXml
+> Task :src:tr:sadscans:spotlessGradleApply
+> Task :src:tr:sadscans:spotlessXmlApply
+> Task :src:tr:sadscans:spotlessJava
+> Task :src:tr:sadscans:spotlessJavaApply
+> Task :src:tr:sadscans:generateSourceInfo
+> Task :core:spotlessJava
+> Task :core:spotlessJavaCheck
+> Task :core:spotlessGradle FROM-CACHE
+> Task :core:spotlessGradleCheck UP-TO-DATE
+> Task :src:tr:sadscans:spotlessGradleCheck
+> Task :src:tr:sadscans:spotlessJavaCheck
+> Task :src:tr:sadscans:spotlessXmlCheck
+> Task :core:spotlessXml
+> Task :core:spotlessXmlCheck
+> Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :compiler:processResources
+> Task :src:tr:sadscans:generateExtensionManifest
+> Task :core:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:sadscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:sadscans:spotlessKotlin
+> Task :src:tr:sadscans:spotlessKotlinApply
+> Task :src:tr:sadscans:spotlessApply
+> Task :src:tr:sadscans:spotlessKotlinCheck UP-TO-DATE
+> Task :src:tr:sadscans:spotlessCheck
+> Task :src:tr:sadscans:preBuild
+> Task :src:tr:sadscans:preReleaseBuild
+> Task :src:tr:sadscans:extractProguardFiles
+> Task :src:tr:sadscans:checkReleaseDuplicateClasses
+> Task :src:tr:sadscans:mergeReleaseJniLibFolders
+> Task :src:tr:sadscans:generateReleaseBuildConfig
+> Task :src:tr:sadscans:generateReleaseResources
+> Task :src:tr:sadscans:mapReleaseSourceSetPaths
+> Task :src:tr:sadscans:createReleaseCompatibleScreenManifests
+> Task :src:tr:sadscans:extractDeepLinksRelease
+> Task :src:tr:sadscans:mergeReleaseStartupProfile
+> Task :src:tr:sadscans:validateSigningRelease
+> Task :src:tr:sadscans:writeReleaseAppMetadata
+> Task :src:tr:sadscans:writeReleaseSigningConfigVersions
+> Task :src:tr:sadscans:packageReleaseResources
+> Task :core:spotlessKotlin
+> Task :core:spotlessKotlinCheck
+> Task :core:spotlessCheck
+> Task :core:preBuild
+> Task :core:preReleaseBuild
+> Task :core:processReleaseNavigationResources
+> Task :core:mergeReleaseJniLibFolders
+> Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :core:generateReleaseResources
+> Task :core:copyReleaseJniLibsProjectOnly
+> Task :core:javaPreCompileRelease
+> Task :src:tr:sadscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:sadscans:processReleaseNavigationResources
+> Task :src:tr:sadscans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:sadscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :core:packageReleaseResources
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:sadscans:javaPreCompileRelease
+> Task :src:tr:sadscans:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :core:prepareReleaseArtProfile
+> Task :core:mapReleaseSourceSetPaths
+> Task :src:tr:sadscans:mergeReleaseArtProfile
+> Task :core:writeReleaseAarMetadata
+> Task :src:tr:sadscans:checkReleaseAarMetadata
+> Task :src:tr:sadscans:compileReleaseNavigationResources
+> Task :src:tr:sadscans:mergeReleaseResources
+> Task :core:extractDeepLinksRelease
+> Task :core:compileReleaseLibraryResources
+> Task :core:mergeReleaseAssets
+> Task :src:tr:sadscans:mergeReleaseAssets
+> Task :src:tr:sadscans:compressReleaseAssets
+> Task :core:processReleaseManifest
+> Task :src:tr:sadscans:processReleaseMainManifest
+> Task :src:tr:sadscans:processReleaseManifest
+> Task :src:tr:sadscans:processReleaseManifestForPackage
+> Task :core:parseReleaseLocalResources
+> Task :src:tr:sadscans:parseReleaseLocalResources
+> Task :src:tr:sadscans:generateReleaseRFile
+> Task :core:generateReleaseRFile
+> Task :src:tr:sadscans:processReleaseResources
+> Task :src:tr:sadscans:optimizeReleaseResources
+> Task :core:compileReleaseKotlin
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:processReleaseJavaRes
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:bundleLibCompileToJarRelease
+> Task :core:bundleLibRuntimeToJarRelease
+> Task :src:tr:sadscans:kspReleaseKotlin
+
+> Task :src:tr:sadscans:compileReleaseKotlin FAILED
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:201:88 Unresolved reference 'contentOrNull'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:202:31 Unresolved reference 'contentOrNull'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:202:45 Cannot infer type for type parameter 'T'. Specify it explicitly.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:202:52 Cannot infer type for type parameter 'T'. Specify it explicitly.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:227:27 Unresolved label.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:227:55 Unresolved label.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:229:17 Unresolved label.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:230:17 Unresolved label.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:232:30 Unresolved label.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:232:72 Unresolved reference 'name'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/Sadscans.kt:234:28 Unresolved label.
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run-1793971964306.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':src:tr:sadscans:compileReleaseKotlin' (registered by plugin 'com.android.internal.application').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m 29s
+80 actionable tasks: 77 executed, 1 from cache, 2 up-to-date
+Configuration cache entry stored.
