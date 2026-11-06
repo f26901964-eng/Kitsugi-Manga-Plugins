@@ -26,3 +26,13 @@ Okuyucu HTML'sinde görünen `/api/uploads/.../images/thumb_1780281234413.png` U
 ## Durum
 
 Bu inceleme bir çalışma doğrulaması değildir. Canlı API yanıtı veya uygulama hata kaydı olmadan kök neden kesinleşmedi. Sürüm artırılmadı, APK üretilmedi ve yeni sürüm yayımlanmadı.
+
+## Sonraki doğrulama ve v1.6.4 değişiklikleri
+
+- İlk düzeltme v1.6.3 olarak derlendi; canlı Python HTTP testi GitHub runner üzerinde Cloudflare 403 blok sayfası aldı (`reports/sadscans-live.json`). Önceki "sürüm artırılmadı" bölümü ilk inceleme anını anlatır.
+- v1.6.4: JSON URL'sini host Cloudflare interceptor'una tekrar tekrar açtırmak yerine, önce kısıtlı süreli doğrudan API isteği yapılır. Açık Cloudflare challenge/blok yanıtında `/seriler` WebView'de açılır; API çağrısı aynı browser identity ve same-origin cookie oturumunda `fetch` ile yapılır. Cookie'yi farklı TLS istemcisine taşıyarak çözülmüş sayılmaz.
+- WebView fetch kodu doğrudan Kotlin kaynak string'inden Node VM içinde test edildi: tek istek, bekleyen sonuç, site hazır değilken bekleme, HTTP 403 ve ağ hatası davranışları geçti. Bu bir Android entegrasyon testi değildir.
+- v1.6.4 APK ve katalog derlemesi geçti: Actions run `42250260141`.
+- Chromium canlı testi çalıştı (kurulum hatası değil): run `42251356158`, `reports/sadscans-browser-live.json`. `/seriler` HTML isteği bile Cloudflare'ın `Attention Required!` / `Sorry, you have been blocked` sayfasına düştü; API aşamasına ulaşılamadı.
+- Bu kanıt yalnızca GitHub runner erişimini gösterir. Telefonda aynı sonucu varsaymak da, telefonda sorunsuz çalıştığını iddia etmek de doğru değildir. Runner üzerindeki hard block için sadece parser/header değişikliğiyle başarılı erişim sağlandığı kanıtlanmadı.
+- Yeni APK test amacıyla çalışma dalında hazırdır. Main/builds kanalına başarılı çalışma iddiasıyla yayımlanmadı. Reader'ın tahmini API adayları henüz canlı doğrulanmış değildir; tüm okuma akışının tamamlandığı iddia edilmez.
