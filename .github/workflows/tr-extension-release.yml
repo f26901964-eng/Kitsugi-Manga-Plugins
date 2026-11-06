@@ -62,7 +62,7 @@ jobs:
             set -euo pipefail
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add -f prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+            git add -f prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json reports/okutoon-runtime.json
             echo '--- staged ---'
             git status --porcelain
             if git diff --cached --quiet; then
@@ -71,6 +71,7 @@ jobs:
             fi
             git commit -m 'okutoon: publish the fixed APK and catalogs [skip ci]'
             # The build-log step pushes to the same branch; retry on rejection.
+            git checkout -- . 2>/dev/null || true
             for i in 1 2 3 4 5; do
               git fetch -q origin "${GITHUB_REF_NAME}"
               git rebase -q "origin/${GITHUB_REF_NAME}" && git push origin "HEAD:${GITHUB_REF_NAME}" && exit 0
