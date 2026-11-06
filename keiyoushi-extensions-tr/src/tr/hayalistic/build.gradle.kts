@@ -6,13 +6,13 @@ plugins {
 
 keiyoushi {
     name = "Hayalistic"
-    versionCode = 6
+    versionCode = 7
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
     theme = "madara"
 
     source {
         lang = "tr"
-        baseUrl = "https://hayalistic.online"
+        baseUrl = "https://hayalistic.site"
     }
 }

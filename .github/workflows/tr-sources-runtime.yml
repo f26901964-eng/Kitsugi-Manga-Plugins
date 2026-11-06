@@ -1,0 +1,47 @@
+name: TR sources runtime contract (live)
+
+on:
+  push:
+    branches: [arena/5be02cb8-kitsugi-manga-plugins, main]
+    paths:
+      - tests/tr_sources_runtime/**
+      - keiyoushi-extensions-tr/src/tr/hayalistic/**
+      - keiyoushi-extensions-tr/src/tr/korelimanga/**
+      - keiyoushi-extensions-tr/src/tr/turkcemangaoku/**
+      - .github/workflows/tr-sources-runtime.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe the three sources the way the extensions do
+        env:
+          REPORT: reports/tr-sources-runtime.json
+        run: |
+          set -o pipefail
+          node tests/tr_sources_runtime/run.mjs 2>&1 | tee /tmp/tr-sources-runtime.log
+      - name: Keep the evidence in the repository
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p reports
+          if [ ! -s reports/tr-sources-runtime.json ]; then
+            printf '{"passed":0,"total":0,"error":"runtime-script-failed"}\n' > reports/tr-sources-runtime.json
+          fi
+          git config user.name kitsugi-tr-runtime
+          git config user.email kitsugi-tr-runtime@users.noreply.github.com
+          git add reports/tr-sources-runtime.json
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "ci: record the TR sources runtime probe [skip ci]"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
