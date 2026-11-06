@@ -56,6 +56,12 @@ def prepare_release(root: Path = ROOT) -> tuple[str, int, str]:
     prebuilt.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(built_apk, prebuilt)
 
+    # Yalnız güncel APK arşivde kalır: eski sürümler farklı anahtarlarla imzalanmış olabilir ve
+    # katalog yalnız tek sürümü duyurur (tests/test_catalog.py yayın dizinlerinde tek dosya bekler).
+    for stale in (root / "prebuilt/apk").glob("tachiyomi-tr.mangadiyari-v*.apk"):
+        if stale.name != apk_name:
+            stale.unlink()
+
     registry_path = root / "registry/extensions.json"
     registry = json.loads(registry_path.read_text(encoding="utf-8"))
     entry = next((item for item in registry if item.get("pkg") == PACKAGE), None)

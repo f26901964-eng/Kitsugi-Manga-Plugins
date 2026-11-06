@@ -6,6 +6,8 @@ build/
 .idea/
 *.iml
 local.properties
+# İmza anahtarı (kalıcı): eklenti APK'sının güncellemeyle kurulabilmesi için gerekli.
+!tools/signing/*.p12
 .DS_Store
 Thumbs.db
 

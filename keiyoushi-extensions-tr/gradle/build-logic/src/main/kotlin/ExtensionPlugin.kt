@@ -76,16 +76,26 @@ class ExtensionPlugin : Plugin<Project> {
 
             signingConfigs {
                 create("release") {
-                    storeFile = rootProject.file("signingkey.jks")
+                    // A keystore committed under tools/signing/ keeps the extension id stable across
+                    // CI runs: Android refuses to update an installed app that was signed by a
+                    // different key. Falls back to the historical signingkey.jks, then to debug.
+                    // The Gradle root project is keiyoushi-extensions-tr/, the keystore lives in the
+                    // repository root under tools/signing/.
+                    val committedKeystore = rootProject.file("../tools/signing/mangadiyari.p12")
+                    storeFile = if (committedKeystore.exists()) committedKeystore else rootProject.file("signingkey.jks")
+                    storeType = if (committedKeystore.exists()) "PKCS12" else "JKS"
                     storePassword = providers.environmentVariable("KEY_STORE_PASSWORD").orNull
+                        ?: if (committedKeystore.exists()) "kitsugi-manga-plugins" else null
                     keyAlias = providers.environmentVariable("ALIAS").orNull
+                        ?: if (committedKeystore.exists()) "kitsugi" else null
                     keyPassword = providers.environmentVariable("KEY_PASSWORD").orNull
+                        ?: if (committedKeystore.exists()) "kitsugi-manga-plugins" else null
                 }
             }
 
             buildTypes {
                 named("release") {
-                    signingConfig = if (rootProject.file("signingkey.jks").exists()) {
+                    signingConfig = if (rootProject.file("signingkey.jks").exists() || rootProject.file("../tools/signing/mangadiyari.p12").exists()) {
                         signingConfigs.getByName("release")
                     } else {
                         signingConfigs.getByName("debug")
@@ -174,8 +184,11 @@ class ExtensionPlugin : Plugin<Project> {
             extendsFrom(configurations.getByName("compileOnly"))
         }
 
+        // Same choice as the release build type above: prefer the committed keystore so the
+        // signed extension jar and the APK always share one key.
+        val committedKeystore = rootProject.file("../tools/signing/mangadiyari.p12")
         val signingConfig = extensions.getByType(ApplicationExtension::class.java).signingConfigs
-            .getByName(if (rootProject.file("signingkey.jks").exists()) "release" else "debug")
+            .getByName(if (rootProject.file("signingkey.jks").exists() || committedKeystore.exists()) "release" else "debug")
 
         androidComponents {
             val bootClasspath = sdkComponents.bootClasspath
