@@ -52,6 +52,13 @@ jobs:
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as summary:
               summary.write("### Manga Diyarı live probe\n\n" + "\n".join(f"- {l}" for l in lines) + "\n")
           print("::notice title=MangaDiyari live probe::" + " | ".join(lines))
+          # One notice per check: annotations are readable from the API even when the log
+          # artifacts cannot be downloaded, so the evidence travels with the run.
+          for name, data in checks.items():
+              flag = "OK" if data["ok"] else ("WARN" if not data["hard"] else "FAIL")
+              detail = " ".join(f"{k}={v}" for k, v in data.items() if k not in ("ok", "hard"))
+              message = f"{flag} {detail}"[:4000].replace("%", "%25").replace("\r", " ").replace("\n", " ")
+              print(f"::notice title=probe {name}::{message}")
           PY
 
       - name: Apply the repository Kotlin formatter
