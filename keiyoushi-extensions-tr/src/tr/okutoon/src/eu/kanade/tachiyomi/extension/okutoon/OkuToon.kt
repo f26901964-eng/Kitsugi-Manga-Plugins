@@ -16,6 +16,7 @@ import kotlinx.serialization.json.JsonElement
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -24,52 +25,53 @@ abstract class OkuToon : KeiSource() {
 
     private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("tr"))
 
-    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList(listingUrl(page, "popular").build())
+    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList(
+        "$baseUrl/tur?sira=popular".toHttpUrl().withPage(page),
+    )
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList(listingUrl(page, "updated").build())
+    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList(
+        "$baseUrl/tur?sira=updated".toHttpUrl().withPage(page),
+    )
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
-        val url = listingUrl(page, "updated")
+        val sort = filters.firstInstanceOrNull<SortFilter>()?.toUriPart() ?: "updated"
+        val url = "$baseUrl/tur".toHttpUrl().newBuilder()
+            .addQueryParameter("sira", sort)
+            .apply {
+                if (page > 1) addQueryParameter("sayfa", page.toString())
+                if (query.isNotEmpty()) addQueryParameter("q", query)
+            }
 
-        if (query.isNotEmpty()) {
-            url.addQueryParameter("q", query)
+        val status = filters.firstInstanceOrNull<StatusFilter>()?.toUriPart().orEmpty()
+        if (status.isNotEmpty()) {
+            url.addQueryParameter("durum", status)
         }
 
-        val sortFilter = filters.firstInstanceOrNull<SortFilter>()
-        if (sortFilter != null) {
-            url.setQueryParameter("sira", sortFilter.toUriPart())
-        }
-
-        val statusFilter = filters.firstInstanceOrNull<StatusFilter>()
-        if (statusFilter != null && statusFilter.toUriPart().isNotEmpty()) {
-            url.addQueryParameter("durum", statusFilter.toUriPart())
-        }
-
-        val genreFilter = filters.firstInstanceOrNull<GenreFilter>()
-        genreFilter?.state?.filter { it.state }?.forEach {
+        filters.firstInstanceOrNull<GenreFilter>()?.state?.filter { it.state }?.forEach {
             url.addQueryParameter("k[]", it.id)
         }
 
         return parseMangaList(url.build())
     }
 
-    // The site splits listings with "/tur?sayfa=N"; there is no path-based paging.
-    private fun listingUrl(page: Int, sort: String): HttpUrl.Builder =
-        "$baseUrl/tur".toHttpUrl().newBuilder()
-            .addQueryParameter("sira", sort)
-            .apply { if (page > 1) addQueryParameter("sayfa", page.toString()) }
+    // The site pages listings with the "sayfa" query parameter; there is no path based paging.
+    private fun HttpUrl.withPage(page: Int): HttpUrl = if (page <= 1) {
+        this
+    } else {
+        newBuilder().addQueryParameter("sayfa", page.toString()).build()
+    }
 
     private suspend fun parseMangaList(url: HttpUrl): MangasPage {
         val document = client.get(url).asJsoup()
         val mangas = document.select(".series-grid .series-card").map { element ->
             SManga.create().apply {
-                // The card itself is the <a>; selectFirst("a") would look for a nested link.
+                // The card itself is the <a>, so a nested "a" lookup would find nothing.
                 setUrlWithoutDomain(element.attr("abs:href"))
                 title = element.selectFirst(".series-card-title")!!.text()
                 thumbnail_url = element.selectFirst(".series-card-cover img")?.attr("abs:src")
             }
         }
-        // Only an active "Sonraki" link means another page exists; the disabled state is a <span>.
+        // Only an active "Sonraki" link means another page; its disabled state is a <span>.
         val hasNextPage = document.selectFirst("nav.pagination a.pagination-btn[rel=next]") != null
         return MangasPage(mangas, hasNextPage)
     }
@@ -109,20 +111,19 @@ abstract class OkuToon : KeiSource() {
         }
     }
 
-    // The reader is Cloudflare-protected and the pages are lazy-loaded, so the image list has to
-    // be read from the lazy attributes too, not only from src.
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val document = client.get(getChapterUrl(chapter)).asJsoup()
         val images = document.select("#readerPages img.reader-page")
             .ifEmpty { document.select("img.reader-page") }
-        return images.mapIndexedNotNull { index, img ->
-            listOf("data-src", "data-lazy-src", "data-original", "src")
-                .asSequence()
-                .map { img.attr("abs:$it").trim() }
-                .firstOrNull { it.startsWith("http") && !it.startsWith("data:") }
-                ?.let { Page(index, imageUrl = it) }
+        return images.mapIndexedNotNull { index, image ->
+            pageImageUrl(image)?.let { Page(index, imageUrl = it) }
         }
     }
+
+    // The reader loads lazily, so the address can sit in a data attribute instead of src.
+    private fun pageImageUrl(image: Element): String? = listOf("data-src", "data-lazy-src", "data-original", "src")
+        .map { image.attr("abs:$it").trim() }
+        .firstOrNull { it.startsWith("http") && !it.startsWith("data:") }
 
     override fun getFilterList(data: JsonElement?) = FilterList(
         SortFilter(),
