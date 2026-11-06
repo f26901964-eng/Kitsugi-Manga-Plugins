@@ -352,7 +352,7 @@ abstract class Sadscans : KeiSource() {
 
     private fun Float.trimNumber(): String = if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
 
-    private class SortFilter(state: Int = 0) : Filter.Sort(
+    private class SortFilter(state: Int = 0) : Filter.Select<String>(
         "Sırala",
         arrayOf("Popüler", "Güncel", "Yeni", "İsim (A-Z)", "İsim (Z-A)"),
         state,
