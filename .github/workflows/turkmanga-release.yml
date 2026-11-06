@@ -43,7 +43,8 @@ jobs:
           set -e
           tail -n 80 /tmp/turkmanga-gradle.log
           if [ "$result" -ne 0 ]; then
-            mapfile -t diagnostics < <(tail -n 30 /tmp/turkmanga-gradle.log)
+            mapfile -t diagnostics < <(grep -E '(^\\* What went wrong:|^Execution failed|^> |^Caused by:|^e: |^.*(Exception|Error|error|ktlint|Ktlint|spotless|FAILED).*)' /tmp/turkmanga-gradle.log | tail -n 30)
+            if [ "${#diagnostics[@]}" -eq 0 ]; then mapfile -t diagnostics < <(tail -n 30 /tmp/turkmanga-gradle.log); fi
             for line in "${diagnostics[@]}"; do
               line=${line//'%'/'%25'}
               line=${line//$'\r'/'%0D'}
