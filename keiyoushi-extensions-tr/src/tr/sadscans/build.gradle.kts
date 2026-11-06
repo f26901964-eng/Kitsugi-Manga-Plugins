@@ -6,9 +6,9 @@ plugins {
 
 keiyoushi {
     name = "SadScans"
-    // 12: arama kutusunun adı ve tRPC yönlendirici adı (build hash) değişse de çalışan sürüm.
-    //     İstekler gerçek Android Chrome başlıklarıyla gider; 1.6.11'de arama boş dönüyordu.
-    versionCode = 12
+    // 13: kart başlığı h3 olmasa ve /seriler alt yola yönlense de arama/liste çalışır.
+    // 12: arama kutusunun adı ve tRPC yönlendirici adı (build hash) değişse de çalışır.
+    versionCode = 13
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 
