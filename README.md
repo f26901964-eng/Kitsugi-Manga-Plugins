@@ -40,11 +40,11 @@ aradığında sonuç dönmediği için eklenti pratikte kullanılamıyordu. Site
 Tekrar açmak için `enabled_plugins.txt` dosyasına `tr/mangadiyari` satırını ekleyin; katalog yayını
 onu yeniden listeler. Teknik ayrıntılar: `docs/mangadiyari/DURUM-VE-KANIT.md`.
 
-## SadScans (sadscans.net) — 1.6.8 (106008)
+## SadScans (sadscans.net) — 1.6.9 (106009)
 
 - Arama, tür/durum/sıralama filtreleri, seri detayı ve okuyucu, sitenin güncel HTML/JS sözleşmesine
   göre yeniden yazıldı; üç kademeli taşıma (tRPC → arayüz → WebView) ve Cloudflare davranışı
   belgelendi.
 - Kök nedenler, yapılan düzeltmeler, testler ve dürüst sınırlar: `docs/sadscans/COZUM-2026-11-06.md`.
-- Derleme CI'da yeşil; APK `prebuilt/apk/tachiyomi-tr.sadscans-v1.6.8.apk` (60.115 bayt),
-  katalog kayıtları `1.6.8` / `106008`.
+- Derleme CI'da yeşil; APK `prebuilt/apk/tachiyomi-tr.sadscans-v1.6.9.apk` (60.235 bayt),
+  katalog kayıtları `1.6.9` / `106009`.
