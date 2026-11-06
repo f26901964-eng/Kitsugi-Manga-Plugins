@@ -3,15 +3,17 @@ name: TR extension APK release
 on:
   workflow_dispatch:
     inputs:
-      module:
-        description: 'Extension module under src/tr (e.g. hayalistic)'
+      modules:
+        description: 'Comma separated modules under src/tr (e.g. hayalistic,korelimanga)'
         required: true
         default: 'hayalistic'
   push:
-    branches: [arena/5be02cb8-kitsugi-manga-plugins]
+    branches: [arena/58af4423-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/hayalistic/build.gradle.kts
       - tools/prepare_extension_release.py
+      - tools/release_version.py
+      - tools/apk_manifest.py
       - .github/workflows/tr-extension-release.yml
 
 permissions:
@@ -24,20 +26,24 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: 17
-      - name: Build the release APK for the changed extension
+      - name: Build the release APKs for the changed extensions
         working-directory: keiyoushi-extensions-tr
-        run: ./gradlew :src:tr:hayalistic:assembleRelease
-      - name: Publish the APK and synchronize the catalogs
         run: |
           set -o pipefail
-          python3 tools/prepare_extension_release.py hayalistic
+          ./gradlew :src:tr:hayalistic:assembleRelease :src:tr:korelimanga:assembleRelease 2>&1 | tail -40
+      - name: Publish the APKs and synchronize the catalogs
+        run: |
+          set -o pipefail
+          # The catalog entry is taken from each built APK's manifest, and a version code
+          # that would go backwards is refused instead of being published.
+          python3 tools/prepare_extension_release.py hayalistic korelimanga
           python3 -m unittest discover -s tests
       - name: Commit the published artifacts
         run: |
@@ -49,6 +55,6 @@ jobs:
             echo 'Yayın zaten güncel.'
             exit 0
           fi
-          git commit -m 'hayalistic: publish the fixed APK and catalogs [skip ci]'
+          git commit -m 'hayalistic, korelimanga: publish the fixed APKs and catalogs [skip ci]'
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
