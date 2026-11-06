@@ -10,3 +10,4 @@ tr/mangacix
 # tr/amangaplanet — kullanıcı isteğiyle devre dışı.
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
 tr/mangitto
+tr/sadscans
