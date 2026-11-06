@@ -9,3 +9,4 @@ tr/mangitto
 # (bilinen mangaları kapsamıyor ve Türkçe adlar uygulama içi aramayla uyuşmuyordu).
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
 tr/okutoon
+tr/sadscans
