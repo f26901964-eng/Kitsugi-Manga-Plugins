@@ -1,4 +1,4 @@
-commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
+commit: 25020d831b084c3bebdbd7318d2a812373dd173f
 > Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :build-logic:pluginDescriptors
 > Task :build-logic:processResources
@@ -7,12 +7,12 @@ commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
 > Task :build-logic:classes
 > Task :build-logic:jar
 > Task :src:tr:okutoon:generateSourceInfo
-> Task :core:spotlessGradle
-> Task :core:spotlessGradleCheck
 > Task :core:spotlessJava
-> Task :core:spotlessJavaCheck
+> Task :core:spotlessGradle
 > Task :core:spotlessXml
+> Task :core:spotlessJavaCheck
 > Task :core:spotlessXmlCheck
+> Task :core:spotlessGradleCheck
 > Task :src:tr:okutoon:spotlessJava
 > Task :src:tr:okutoon:spotlessJavaCheck
 > Task :src:tr:okutoon:spotlessGradle FROM-CACHE
@@ -30,9 +30,9 @@ commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
 > Task :src:tr:okutoon:preBuild
 > Task :src:tr:okutoon:preReleaseBuild
 > Task :src:tr:okutoon:checkReleaseDuplicateClasses
-> Task :src:tr:okutoon:generateReleaseBuildConfig
-> Task :src:tr:okutoon:generateReleaseResources
 > Task :src:tr:okutoon:mergeReleaseJniLibFolders
+> Task :src:tr:okutoon:generateReleaseResources
+> Task :src:tr:okutoon:generateReleaseBuildConfig
 > Task :src:tr:okutoon:mapReleaseSourceSetPaths
 > Task :src:tr:okutoon:createReleaseCompatibleScreenManifests
 > Task :src:tr:okutoon:extractDeepLinksRelease
@@ -47,52 +47,52 @@ commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
 > Task :core:spotlessCheck
 > Task :core:preBuild
 > Task :core:preReleaseBuild
-> Task :core:mergeReleaseJniLibFolders
 > Task :core:generateReleaseResources
 > Task :core:processReleaseNavigationResources
+> Task :core:mergeReleaseJniLibFolders
 > Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :core:packageReleaseResources
 > Task :core:copyReleaseJniLibsProjectOnly
 > Task :src:tr:okutoon:mergeReleaseNativeLibs NO-SOURCE
 > Task :core:javaPreCompileRelease
 > Task :src:tr:okutoon:stripReleaseDebugSymbols NO-SOURCE
 > Task :src:tr:okutoon:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:okutoon:processReleaseNavigationResources
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:okutoon:javaPreCompileRelease
 > Task :src:tr:okutoon:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :core:prepareReleaseArtProfile
-> Task :src:tr:okutoon:processReleaseNavigationResources
-> Task :core:packageReleaseResources
-> Task :src:tr:okutoon:mergeReleaseArtProfile
 > Task :core:mapReleaseSourceSetPaths
-> Task :core:compileReleaseLibraryResources
+> Task :src:tr:okutoon:mergeReleaseArtProfile
 > Task :core:writeReleaseAarMetadata
 > Task :src:tr:okutoon:checkReleaseAarMetadata
 > Task :src:tr:okutoon:compileReleaseNavigationResources
 > Task :src:tr:okutoon:mergeReleaseResources
 > Task :core:extractDeepLinksRelease
-> Task :core:processReleaseManifest
-> Task :src:tr:okutoon:processReleaseMainManifest
-> Task :src:tr:okutoon:processReleaseManifest
-> Task :src:tr:okutoon:processReleaseManifestForPackage
+> Task :core:compileReleaseLibraryResources
 > Task :core:mergeReleaseAssets
 > Task :src:tr:okutoon:mergeReleaseAssets
 > Task :src:tr:okutoon:compressReleaseAssets
-> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :core:processReleaseManifest
+> Task :src:tr:okutoon:processReleaseMainManifest
 > Task :core:parseReleaseLocalResources
+> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :src:tr:okutoon:processReleaseManifest
 > Task :core:generateReleaseRFile
 > Task :src:tr:okutoon:generateReleaseRFile
-> Task :compiler:compileKotlin
-> Task :compiler:compileJava NO-SOURCE
-> Task :compiler:classes
-> Task :compiler:jar
+> Task :src:tr:okutoon:processReleaseManifestForPackage
 > Task :src:tr:okutoon:processReleaseResources
-> Task :src:tr:okutoon:javaPreCompileRelease
 > Task :src:tr:okutoon:optimizeReleaseResources
 > Task :core:compileReleaseKotlin
 > Task :core:compileReleaseJavaWithJavac NO-SOURCE
 > Task :core:mergeReleaseGeneratedProguardFiles
 > Task :core:processReleaseJavaRes
 > Task :core:exportReleaseConsumerProguardFiles
-> Task :core:bundleLibCompileToJarRelease
 > Task :core:bundleLibRuntimeToJarRelease
+> Task :core:bundleLibCompileToJarRelease
 > Task :src:tr:okutoon:kspReleaseKotlin
 > Task :src:tr:okutoon:compileReleaseKotlin
 > Task :src:tr:okutoon:processReleaseJavaRes
@@ -108,27 +108,27 @@ commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
 > Task :src:tr:okutoon:signReleaseExtensionJar
 > Task :src:tr:okutoon:assembleRelease
 --- tail ---
+> Task :core:compileReleaseLibraryResources
 > Task :core:mergeReleaseAssets
 > Task :src:tr:okutoon:mergeReleaseAssets
 > Task :src:tr:okutoon:compressReleaseAssets
-> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :core:processReleaseManifest
+> Task :src:tr:okutoon:processReleaseMainManifest
 > Task :core:parseReleaseLocalResources
+> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :src:tr:okutoon:processReleaseManifest
 > Task :core:generateReleaseRFile
 > Task :src:tr:okutoon:generateReleaseRFile
-> Task :compiler:compileKotlin
-> Task :compiler:compileJava NO-SOURCE
-> Task :compiler:classes
-> Task :compiler:jar
+> Task :src:tr:okutoon:processReleaseManifestForPackage
 > Task :src:tr:okutoon:processReleaseResources
-> Task :src:tr:okutoon:javaPreCompileRelease
 > Task :src:tr:okutoon:optimizeReleaseResources
 > Task :core:compileReleaseKotlin
 > Task :core:compileReleaseJavaWithJavac NO-SOURCE
 > Task :core:mergeReleaseGeneratedProguardFiles
 > Task :core:processReleaseJavaRes
 > Task :core:exportReleaseConsumerProguardFiles
-> Task :core:bundleLibCompileToJarRelease
 > Task :core:bundleLibRuntimeToJarRelease
+> Task :core:bundleLibCompileToJarRelease
 > Task :src:tr:okutoon:kspReleaseKotlin
 > Task :src:tr:okutoon:compileReleaseKotlin
 > Task :src:tr:okutoon:processReleaseJavaRes
@@ -155,6 +155,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 1m 57s
+BUILD SUCCESSFUL in 2m 18s
 87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
 Configuration cache entry stored.
