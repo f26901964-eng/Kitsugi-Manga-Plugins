@@ -15,12 +15,13 @@ Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
 
 ## Etkin eklentiler
 
-Yalnızca üç eklenti yayında; diğer tüm TR kaynakları kapatıldı (`enabled_plugins.txt`).
+Yayında dört eklenti var; diğer tüm TR kaynakları kapatıldı (`enabled_plugins.txt`).
 
 | Eklenti | Site | Sürüm | Kod |
 |---|---|---|---|
 | Manga-TR | https://mangatr.net | 1.6.35 | 106035 |
 | MangaciX | https://mangacix.com | 1.6.2 | 106002 |
+| Mangitto | https://mangtto.com | 1.6.3 | 106003 |
 | OkuToon | https://okutoon.com | 1.6.9 | 106009 |
 
 ## Canlı doğrulama
