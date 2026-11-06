@@ -90,7 +90,10 @@ class MangttoChapterPageData(
 class MangttoChapter(
     private val chapter: Float,
 ) {
-    fun toSChapter(mangaSlug: String) = SChapter.create().apply {
+    fun toSChapter(mangaSlug: String) = populateChapter(mangaSlug, SChapter.create())
+
+    // Exercise the production mapping with the same interface used by the host.
+    internal fun populateChapter(mangaSlug: String, target: SChapter) = target.apply {
         val chapterStr = chapter.toString().removeSuffix(".0")
         name = "Bölüm $chapterStr"
         chapter_number = chapter

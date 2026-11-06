@@ -59,6 +59,17 @@ def main():
         except Exception as e:
             row['error'] = str(e)
         out.append(row)
+    fixture = Images()
+    fixture.feed(Path('docs/mangitto/reader.html').read_text())
+    urls = [u for u in fixture.images if '/manga/berserk/0.01/' in u]
+    for index in (0, 45, 91):
+        row = {'fixture_image_index': index, 'url': urls[index]}
+        try:
+            status, body, headers = get(urls[index])
+            row.update(status=status, bytes=len(body), content_type=headers.get('Content-Type'), magic=body[:12].hex())
+        except Exception as e:
+            row['error'] = str(e)
+        out.append(row)
     target = Path('reports/mangitto/live-diagnosis.json')
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text(json.dumps(out, indent=2, ensure_ascii=False) + '\n')

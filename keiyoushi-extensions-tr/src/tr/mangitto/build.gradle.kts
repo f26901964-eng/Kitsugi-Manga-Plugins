@@ -9,6 +9,9 @@ android {
         java.setSrcDirs(listOf("src/eu"))
         kotlin.setSrcDirs(listOf("src/eu"))
     }
+    sourceSets.named("test") {
+        java.srcDir(rootDir.parentFile.resolve("tools/kitsugi-mangitto-bridge/src"))
+    }
     testOptions { unitTests.isReturnDefaultValues = true }
 }
 

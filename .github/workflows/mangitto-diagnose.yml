@@ -3,6 +3,8 @@ on:
   push:
     branches: [arena/e091ade0-kitsugi-manga-plugins]
     paths:
+      - tools/kitsugi-beta-mangitto-chapter-identity.patch
+      - tools/kitsugi-mangitto-bridge/**
       - tools/mangitto_diagnose.py
       - .github/workflows/mangitto-diagnose.yml
       - keiyoushi-extensions-tr/src/tr/mangitto/**
@@ -19,6 +21,16 @@ jobs:
           distribution: temurin
           java-version: 17
       - uses: gradle/actions/setup-gradle@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: f26901964-eng/Kitsugi-Beta
+          ref: b78cbc4cdc39808cb0ec475026edef6b464b71ed
+          path: kitsugi-beta-check
+      - name: Verify patch against actual application wrapper
+        run: |
+          git -C kitsugi-beta-check apply --check "$GITHUB_WORKSPACE/tools/kitsugi-beta-mangitto-chapter-identity.patch"
+          git -C kitsugi-beta-check apply "$GITHUB_WORKSPACE/tools/kitsugi-beta-mangitto-chapter-identity.patch"
+          cmp tools/kitsugi-mangitto-bridge/src/com/kitsugi/animelist/data/manga/MihonChapterIdentity.kt kitsugi-beta-check/app/src/main/java/com/kitsugi/animelist/data/manga/MihonChapterIdentity.kt
       - name: Live API HTML and first image
         run: python3 tools/mangitto_diagnose.py
       - name: Actual DTO plus URL-only host contract
@@ -40,3 +52,5 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'mangitto: save live and DTO diagnosis [skip ci]'
           git push origin "HEAD:${GITHUB_REF_NAME}"
+      - name: Fail if contract tests failed
+        run: grep -q '^EXIT_CODE=0$' reports/mangitto/dto-tests.txt
