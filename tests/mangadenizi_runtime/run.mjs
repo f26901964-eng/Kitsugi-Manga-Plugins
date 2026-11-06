@@ -5,7 +5,8 @@
 // Dto.kt (payload shapes) and UnscramblerInterceptor.kt (tiled-v1 decoder). If a shape
 // or the scrambling scheme changes on the site, this test fails loudly.
 import { spawnSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname } from 'node:path';
 import { encodePng, syntheticPage, blit, tileStats, pngToRgba } from './images.mjs';
 
 const BASE = 'https://mangadenizi.net';
@@ -278,6 +279,24 @@ if (process.env.SKIP_LIVE === '1') {
 }
 
 const failed = results.filter((r) => !r.ok);
+const reportPath = process.env.REPORT;
+if (reportPath) {
+  mkdirSync(dirname(reportPath), { recursive: true });
+  writeFileSync(
+    reportPath,
+    JSON.stringify(
+      {
+        generatedAt: new Date().toISOString().replace(/\.\d+Z$/, 'Z'),
+        baseUrl: BASE,
+        passed: results.length - failed.length,
+        total: results.length,
+        checks: results,
+      },
+      null,
+      2,
+    ) + '\n',
+  );
+}
 console.log(`\n${results.length - failed.length}/${results.length} checks passed`);
 if (failed.length) {
   console.log('::error title=MangaDenizi runtime::' + failed.map((f) => f.name).join(' | '));

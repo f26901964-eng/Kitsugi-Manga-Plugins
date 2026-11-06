@@ -1,0 +1,20 @@
+{
+  "generatedAt": "2026-11-06T09:41:23Z",
+  "baseUrl": "https://mangadenizi.net",
+  "passed": 3,
+  "total": 3,
+  "checks": [
+    {
+      "name": "descrambler inverts the tiled-v1 scheme",
+      "ok": true
+    },
+    {
+      "name": "a wrong seed stays scrambled",
+      "ok": true
+    },
+    {
+      "name": "restored page survives the pipeline",
+      "ok": true
+    }
+  ]
+}
