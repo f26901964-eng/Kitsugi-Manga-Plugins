@@ -24,9 +24,9 @@ abstract class OkuToon : KeiSource() {
 
     private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("tr"))
 
-    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList(listingUrl(page, "popular"))
+    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList(listingUrl(page, "popular").build())
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList(listingUrl(page, "updated"))
+    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList(listingUrl(page, "updated").build())
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val url = listingUrl(page, "updated")
@@ -115,12 +115,12 @@ abstract class OkuToon : KeiSource() {
         val document = client.get(getChapterUrl(chapter)).asJsoup()
         val images = document.select("#readerPages img.reader-page")
             .ifEmpty { document.select("img.reader-page") }
-        return images.mapNotNull { img ->
-            val url = listOf("data-src", "data-lazy-src", "data-original", "src")
+        return images.mapIndexedNotNull { index, img ->
+            listOf("data-src", "data-lazy-src", "data-original", "src")
                 .asSequence()
                 .map { img.attr("abs:$it").trim() }
                 .firstOrNull { it.startsWith("http") && !it.startsWith("data:") }
-            url?.let { Page(images.indexOf(img), imageUrl = it) }
+                ?.let { Page(index, imageUrl = it) }
         }
     }
 
