@@ -29,7 +29,9 @@ Python 3 ile `python3 -m unittest discover -s tests` komutunu çalıştırın. T
 ## Manga Diyarı (mangadiyari.com)
 
 Manga Diyarı eklentisi sitenin JSON API'sini kullanır (HTML kazımaz) ve 2026-11 itibarıyla canlı
-siteye karşı doğrulanmıştır: **1.6.4 / katalog 106004**. Popüler, son güncellemeler, arama, filtreler,
+siteye karşı doğrulanmıştır: **1.6.5 / katalog 106005**. APK'lar repodaki kalıcı anahtarla
+(`tools/signing/mangadiyari.p12`) imzalanır; böylece yeni sürüm kurulu eklentinin üzerine
+güncelleme olarak kurulabilir. Popüler, son güncellemeler, arama, filtreler,
 seri detayı, bölüm listesi ve sayfa görselleri her CI koşusunda canlı olarak ölçülür
 (`tools/mangadiyari_probe.py`). Ölçüm sonuçları, tür filtrelerinin neden tek etiket gönderdiği ve
 bilinen sınırlar: `docs/mangadiyari/DURUM-VE-KANIT.md`.
