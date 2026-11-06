@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-06T12:03:43.543Z" hostname="runnervmlby3q" time="0.037">
+  <properties/>
+  <testcase name="chapterSurvivesUrlOnlyPersistenceWithoutMemo" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.027"/>
+  <testcase name="fractionalChapterKeepsLeadingZeros" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.0"/>
+  <testcase name="acceptsAbsoluteAndShortAddresses" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.002"/>
+  <testcase name="rejectsInvalidChapterNumber" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.0"/>
+  <testcase name="oldNumberWithoutMemoRequestsChapterRefresh" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.005"/>
+  <testcase name="legacyMemoStillWorksAndNeverOverridesUrl" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoChapterAddressTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoDtoContractTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-06T12:03:43.582Z" hostname="runnervmlby3q" time="0.008">
+  <properties/>
+  <testcase name="actualDtoRetainsSeriesWhenHostDropsMemo" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoDtoContractTest" time="0.008"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtmlTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-06T12:03:43.701Z" hostname="runnervmlby3q" time="0.11">
+  <properties/>
+  <testcase name="homepageResolvesReferencesAndAliases" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtmlTest" time="0.094"/>
+  <testcase name="readerUsesAll92RealImagesInOrder" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtmlTest" time="0.014"/>
+  <testcase name="excludesUnrelatedImagesAndDeduplicatesLazyImages" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtmlTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-06T12:03:43.593Z" hostname="runnervmlby3q" time="0.106">
+  <properties/>
+  <testcase name="doesNotTouchOtherExtensionsOrCompleteUrls" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" time="0.0"/>
+  <testcase name="urlOnlyLegacyRecordReachesAll92FixtureImages" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" time="0.104"/>
+  <testcase name="oldChapterTwoIsRepairedWithoutMemoOrRefresh" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" time="0.0"/>
+  <testcase name="usesEachChaptersOwnParentNotLastOpenedManga" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" time="0.001"/>
+  <testcase name="doesNotGuessWhenParentIsMissingOrInvalid" classname="eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHostBridgeTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -2,7 +2,7 @@
   {
     "path": "/api/manga/chainsaw-man",
     "status": 403,
-    "bytes": 4913,
+    "bytes": 4912,
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
@@ -10,7 +10,7 @@
   {
     "path": "/api/manga/chainsaw-man/chapters?skip=0&take=50",
     "status": 403,
-    "bytes": 4913,
+    "bytes": 4912,
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
@@ -18,7 +18,7 @@
   {
     "path": "/api/manga/chainsaw-man/2",
     "status": 403,
-    "bytes": 4913,
+    "bytes": 4912,
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
@@ -26,7 +26,7 @@
   {
     "path": "/manga/chainsaw-man/2",
     "status": 403,
-    "bytes": 4913,
+    "bytes": 4912,
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
@@ -34,7 +34,7 @@
   {
     "path": "/manga/berserk/0.01",
     "status": 403,
-    "bytes": 4913,
+    "bytes": 4912,
     "content_type": "text/html; charset=UTF-8",
     "reader_image_count": 0,
     "first_image": null
