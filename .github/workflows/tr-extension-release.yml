@@ -40,6 +40,15 @@ jobs:
           ./gradlew :src:tr:okutoon:assembleRelease --stacktrace > /tmp/gradle.log 2>&1 || echo "GRADLE_FAILED" >> /tmp/gradle.log
           tail -60 /tmp/gradle.log
           if grep -q GRADLE_FAILED /tmp/gradle.log; then exit 1; fi
+      - name: Publish the APK and synchronize the catalogs
+        run: |
+          # The catalog numbers come from the built APK's manifest; a version code that
+          # would go backwards is refused instead of being published.
+          set -o pipefail
+          {
+            python3 tools/prepare_extension_release.py okutoon
+            python3 -m unittest discover -s tests
+          } 2>&1 | tee /tmp/publish.log
       - name: Record the build log no matter what
         if: always()
         run: |
@@ -54,15 +63,6 @@ jobs:
             if git push origin "HEAD:${GITHUB_REF_NAME}"; then exit 0; fi
             sleep 4
           done
-      - name: Publish the APK and synchronize the catalogs
-        run: |
-          # The catalog numbers come from the built APK's manifest; a version code that
-          # would go backwards is refused instead of being published.
-          set -o pipefail
-          {
-            python3 tools/prepare_extension_release.py okutoon
-            python3 -m unittest discover -s tests
-          } 2>&1 | tee /tmp/publish.log
       - name: Commit the published artifacts
         run: |
           set -euo pipefail
