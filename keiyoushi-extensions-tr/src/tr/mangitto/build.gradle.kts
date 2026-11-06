@@ -27,7 +27,7 @@ tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
 
 keiyoushi {
     name = "Mangitto"
-    versionCode = 2
+    versionCode = 3
     contentWarning = ContentWarning.NSFW // or MIXED, please confirm
     libVersion = "1.6"
 

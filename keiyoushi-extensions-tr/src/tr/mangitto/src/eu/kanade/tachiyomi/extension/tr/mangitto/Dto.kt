@@ -94,7 +94,7 @@ class MangttoChapter(
         val chapterStr = chapter.toString().removeSuffix(".0")
         name = "Bölüm $chapterStr"
         chapter_number = chapter
-        url = chapterStr
+        url = MangittoChapterAddress(mangaSlug, chapterStr).path
         memo = buildJsonObject {
             put("mangaSlug", mangaSlug)
         }
