@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-06T13:45:52.825Z",
+  "note": "Hosted CI IP; desktop Chromium is not Android WebView. No cookies captured.",
+  "http": [
+    {
+      "path": "/chainsaw-man/bolum-1",
+      "status": 403,
+      "challenge": "challenge",
+      "type": "text/html; charset=UTF-8",
+      "bytes": 5771,
+      "webp": false,
+      "json": false,
+      "generic404": false
+    },
+    {
+      "path": "first CDN image",
+      "status": 200,
+      "challenge": null,
+      "type": "image/webp",
+      "bytes": 393396,
+      "webp": true,
+      "json": false,
+      "generic404": false
+    },
+    {
+      "path": "/api/v1/series/chainsaw-man",
+      "status": 200,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 127055,
+      "webp": false,
+      "json": true,
+      "generic404": false
+    },
+    {
+      "path": "/api/v1/series/chainsaw-man/chapters",
+      "status": 200,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 5136,
+      "webp": false,
+      "json": true,
+      "generic404": false
+    },
+    {
+      "path": "/api/v1/chapters/56171",
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/chapters/56171/pages",
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/series/chainsaw-man/chapters/1",
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 63,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    }
+  ],
+  "browser": {
+    "initialStatus": 403,
+    "initialChallenge": "challenge",
+    "pageCount": 0,
+    "title": "Just a moment...",
+    "finalHost": "okutoon.com",
+    "challengeOptionsPresent": true
+  }
+}
