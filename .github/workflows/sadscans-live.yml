@@ -1,0 +1,26 @@
+name: SadScans live request verification
+on:
+  push:
+    branches: [arena/f1c29b94-kitsugi-manga-plugins]
+    paths:
+      - tools/probe_sadscans.py
+      - .github/workflows/sadscans-live.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify live list search and chapters
+        run: python tools/probe_sadscans.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sadscans-live-evidence
+          path: reports/sadscans-live.json
