@@ -319,6 +319,11 @@ def main() -> int:
         type=Path,
         help="Write sanitized live chapter/login DOM fragments for the production Kotlin parser tests.",
     )
+    parser.add_argument(
+        "--require-live",
+        action="store_true",
+        help="Fail unless every requested live chapter and login-wall fixture was captured.",
+    )
     args = parser.parse_args()
     # Use the same public DDoS-Guard exchange as the production/browser probes.
     session = clear_ddos_guard()
@@ -336,6 +341,19 @@ def main() -> int:
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=2))
+    if args.require_live:
+        complete = len(report["targets"]) == len(TARGETS) and all(
+            target.get("fixtureWritten") is True
+            and (
+                all(reader.get("fixtureWritten") is True for reader in target.get("readers", []))
+                if target.get("chapterLinkCount", 0) > 0
+                else not target.get("readers")
+            )
+            for target in report["targets"]
+        )
+        if not complete:
+            print("Live fixture capture incomplete; no Kotlin result will be inferred from blocked responses.")
+            return 2
     return 0
 
 
