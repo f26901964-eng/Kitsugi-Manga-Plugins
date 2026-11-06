@@ -1,0 +1,58 @@
+{
+  "popular": {
+    "url": "https://turkmanga.org/mangalar?sort=popular",
+    "status": 403,
+    "content_type": "text/html; charset=UTF-8",
+    "length": 4548,
+    "title": "Attention Required! | Cloudflare",
+    "next_page": null,
+    "next_pageprops_keys": [],
+    "next_candidates_count": 0,
+    "next_candidates": [],
+    "manga_anchors": [],
+    "has_chainsaw_text": false,
+    "scripts": []
+  },
+  "search": {
+    "url": "https://turkmanga.org/search?input=Chainsaw+Man",
+    "status": 403,
+    "content_type": "text/html; charset=UTF-8",
+    "length": 4548,
+    "title": "Attention Required! | Cloudflare",
+    "next_page": null,
+    "next_pageprops_keys": [],
+    "next_candidates_count": 0,
+    "next_candidates": [],
+    "manga_anchors": [],
+    "has_chainsaw_text": false,
+    "scripts": []
+  },
+  "search_lower": {
+    "url": "https://turkmanga.org/search?input=chainsaw+man",
+    "status": 403,
+    "content_type": "text/html; charset=UTF-8",
+    "length": 4548,
+    "title": "Attention Required! | Cloudflare",
+    "next_page": null,
+    "next_pageprops_keys": [],
+    "next_candidates_count": 0,
+    "next_candidates": [],
+    "manga_anchors": [],
+    "has_chainsaw_text": false,
+    "scripts": []
+  },
+  "detail": {
+    "url": "https://turkmanga.org/manga/chainsaw-man",
+    "status": 403,
+    "content_type": "text/html; charset=UTF-8",
+    "length": 4548,
+    "title": "Attention Required! | Cloudflare",
+    "next_page": null,
+    "next_pageprops_keys": [],
+    "next_candidates_count": 0,
+    "next_candidates": [],
+    "manga_anchors": [],
+    "has_chainsaw_text": false,
+    "scripts": []
+  }
+}
