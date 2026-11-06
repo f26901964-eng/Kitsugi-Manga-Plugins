@@ -8,7 +8,7 @@ on:
         required: true
         default: 'okutoon'
   push:
-    branches: [main]
+    branches: [main, arena/777ee838-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/okutoon/build.gradle.kts
       - keiyoushi-extensions-tr/src/tr/okutoon/src/**
