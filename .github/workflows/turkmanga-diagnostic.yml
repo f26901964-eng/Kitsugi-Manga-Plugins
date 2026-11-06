@@ -29,3 +29,31 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'turkmanga: record live search diagnostic [skip ci]'
           git push origin "HEAD:${GITHUB_REF_NAME}"
+
+  snapshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5
+      - name: Download provided HTML into temporary storage
+        run: python tests/turkmanga_runtime/download_snapshots.py
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Run actual parser against supplied HTML
+        env:
+          TURKMANGA_SNAPSHOT_DIR: ${{ runner.temp }}/turkmanga-snapshots
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:turkmanga:testDebugUnitTest --tests '*TurkmangaSnapshotDiagnosticTest*' --stacktrace --console=plain
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: turkmanga-snapshot-test-results
+          path: keiyoushi-extensions-tr/src/tr/turkmanga/build/test-results/testDebugUnitTest/
+          if-no-files-found: warn
