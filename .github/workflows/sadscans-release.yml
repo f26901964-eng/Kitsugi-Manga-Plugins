@@ -43,12 +43,21 @@ jobs:
           set +e
           ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease 2>&1 | tee /tmp/build.log
           status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            grep -E "(^e: |error:|Caused by:)" /tmp/build.log | head -30 | while IFS= read -r line; do
-              echo "::error::$(printf '%s' "$line" | tr '\n' ' ' | cut -c1-900)"
-            done
-            exit "$status"
-          fi
+          grep -E "(^e: |error:|Caused by:|FAILURE:)" /tmp/build.log | head -40 | while IFS= read -r line; do
+            echo "::error::$(printf '%s' "$line" | tr '\n' ' ' | cut -c1-900)"
+          done
+          exit "$status"
+      - name: Publish compiler output on failure
+        if: failure()
+        run: |
+          mkdir -p docs/build-logs
+          tail -c 60000 /tmp/build.log > docs/build-logs/sadscans-build.log 2>/dev/null || echo "build log yok" > docs/build-logs/sadscans-build.log
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/build-logs/sadscans-build.log
+          git commit -m 'sadscans: derleme günlüğü [skip ci]' || exit 0
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
       - name: Prepare and verify the new catalogs
         run: |
           python3 tools/prepare_extension_release.py sadscans
