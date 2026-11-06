@@ -42,7 +42,7 @@ jobs:
           mkdir -p ../reports/mangitto
           tail -150 /tmp/mangitto-tests.log > ../reports/mangitto/dto-tests.txt
           echo "EXIT_CODE=$status" >> ../reports/mangitto/dto-tests.txt
-          find src/tr/mangitto/build/test-results -name '*.xml' -exec cat {} \; > ../reports/mangitto/junit.xml || true
+          python3 -c "import pathlib, xml.etree.ElementTree as E; root = E.Element('testsuites'); [root.append(E.parse(p).getroot()) for p in pathlib.Path('src/tr/mangitto/build/test-results').rglob('*.xml')]; E.ElementTree(root).write('../reports/mangitto/junit.xml', encoding='utf-8', xml_declaration=True)"
       - name: Preserve diagnostic evidence
         if: always()
         run: |
