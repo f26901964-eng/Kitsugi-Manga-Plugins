@@ -697,7 +697,7 @@ abstract class Sadscans : KeiSource() {
         private const val SERIES_ROUTER = "_s4d7g2k9m0"
         private const val DETAIL_ROUTER = "_n3p6q1v8x5"
         private const val PAGE_SIZE = 15
-    private const val SITEMAP_TTL_MS = 6 * 60 * 60 * 1000L
+        private const val SITEMAP_TTL_MS = 6 * 60 * 60 * 1000L
         private const val CHAPTER_PAGE_LIMIT = 10
         private const val MAX_CHAPTER_PAGES = 200
         private const val MAX_DOM_CHAPTER_PAGES = 10
