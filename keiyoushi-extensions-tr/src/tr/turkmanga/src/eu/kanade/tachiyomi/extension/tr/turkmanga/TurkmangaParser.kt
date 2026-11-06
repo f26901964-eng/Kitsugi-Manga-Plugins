@@ -1,9 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.turkmanga
 
-import eu.kanade.tachiyomi.source.model.MangasPage
-import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
-import eu.kanade.tachiyomi.source.model.SMangaUpdate
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -34,8 +31,32 @@ internal object TurkmangaParser {
     private val pageImageHosts = setOf("cdnapi.turkmanga.org", "api.turkmanga.org")
 
     internal data class MangaSummary(
-        val manga: SManga,
+        val url: String,
+        val title: String,
+        val thumbnailUrl: String?,
+        val description: String? = null,
+        val author: String? = null,
+        val genre: String? = null,
+        val status: Int = SManga.UNKNOWN,
         val updatedAt: Long = 0L,
+    )
+
+    internal data class ChapterSummary(
+        val url: String,
+        val name: String,
+        val chapterNumber: Float,
+        val dateUpload: Long,
+        val scanlator: String?,
+    )
+
+    internal data class MangaList(
+        val mangas: List<MangaSummary>,
+        val hasNextPage: Boolean,
+    )
+
+    internal data class MangaDetails(
+        val manga: MangaSummary,
+        val chapters: List<ChapterSummary>,
     )
 
     internal fun listingUrl(baseUrl: String, page: Int, sort: String? = null): HttpUrl =
@@ -53,21 +74,21 @@ internal object TurkmangaParser {
         }.build()
     }
 
-    internal fun parseMangaList(document: Document, baseUrl: String, page: Int, newestFirst: Boolean = false): MangasPage {
+    internal fun parseMangaList(document: Document, baseUrl: String, page: Int, newestFirst: Boolean = false): MangaList {
         val state = nextData(document)
         val parsed = collectObjects(state)
             .mapNotNull { parseSummary(it, baseUrl) }
-            .distinctBy { it.manga.url }
+            .distinctBy { it.url }
             .ifEmpty { parseSummaryCards(document, baseUrl) }
             .let { summaries ->
                 if (newestFirst) summaries.sortedWith(compareByDescending<MangaSummary> { it.updatedAt }) else summaries
             }
 
         val hasNext = hasNextPage(document, state, page, parsed.size)
-        return MangasPage(parsed.map { it.manga }, hasNext)
+        return MangaList(parsed, hasNext)
     }
 
-    internal fun parseMangaDetails(document: Document, baseUrl: String, requestedUrl: String): SMangaUpdate {
+    internal fun parseMangaDetails(document: Document, baseUrl: String, requestedUrl: String): MangaDetails {
         val mangaPath = mangaPath(requestedUrl, baseUrl)
             ?: mangaPath(document.selectFirst("link[rel=canonical]")?.attr("href").orEmpty(), baseUrl)
             ?: "/manga/${requestedUrl.trim('/').substringAfterLast('/')}"
@@ -78,21 +99,21 @@ internal object TurkmangaParser {
                 it.string("slug") == mangaSlug && it.string("name") != null
             }
 
-        val manga = SManga.create().apply {
-            url = mangaPath
+        val manga = MangaSummary(
+            url = mangaPath,
             title = series?.string("name")
                 ?: document.selectFirst("h1")?.text()?.trim()?.takeIf { it.isNotBlank() }
                 ?: document.selectFirst("meta[property=og:title]")?.attr("content")?.cleanSiteSuffix()
-                ?: document.title().cleanSiteSuffix()
+                ?: document.title().cleanSiteSuffix(),
             description = series?.string("description")
-                ?: document.selectFirst("meta[name=description]")?.attr("content")?.takeIf { it.isNotBlank() }
-            author = series?.let { names(it["author"] ?: it["creator"]).joinToString(", ").takeIf(String::isNotBlank) }
-            genre = series?.let { names(it["genre"]).distinct().joinToString(", ").takeIf(String::isNotBlank) }
-            status = series?.let { parseStatus(it) } ?: SManga.UNKNOWN
-            thumbnail_url = series?.let { imageUrl(it["image"], document.location()) }
+                ?: document.selectFirst("meta[name=description]")?.attr("content")?.takeIf { it.isNotBlank() },
+            author = series?.let { names(it["author"] ?: it["creator"]).joinToString(", ").takeIf(String::isNotBlank) },
+            genre = series?.let { names(it["genre"]).distinct().joinToString(", ").takeIf(String::isNotBlank) },
+            status = series?.let { parseStatus(it) } ?: SManga.UNKNOWN,
+            thumbnailUrl = series?.let { imageUrl(it["image"], document.location()) }
                 ?: resolveImage(document.selectFirst("meta[property=og:image]")?.attr("content"), document.location())
-                ?: coverUrl(mangaSlug)
-        }
+                ?: coverUrl(mangaSlug),
+        )
 
         val seriesTranslator = series?.let { names(it["translator"]).joinToString(", ").takeIf(String::isNotBlank) }
         val structuredChapters = series?.get("hasPart")?.asList().orEmpty()
@@ -104,7 +125,7 @@ internal object TurkmangaParser {
             parseChapterLinks(document, baseUrl, mangaSlug, seriesTranslator)
         }
 
-        return SMangaUpdate(manga, chapters)
+        return MangaDetails(manga, chapters)
     }
 
     internal fun parseImageUrls(document: Document, baseUrl: String, chapterUrl: String): List<String> {
@@ -168,19 +189,6 @@ internal object TurkmangaParser {
         // Episodes also have slug/name (and sometimes _id); require a series-only field.
         if (listOf("type", "finished", "nsfw", "description", "manga_type").none(obj::containsKey)) return null
 
-        val manga = SManga.create().apply {
-            url = "/manga/$slug"
-            this.title = title
-            thumbnail_url = firstImage(
-                obj,
-                listOf("cover", "coverUrl", "cover_url", "thumbnail", "thumbnailUrl", "poster", "image"),
-                baseUrl,
-            ) ?: coverUrl(slug)
-            description = obj.string("description")?.takeIf { it.isNotBlank() }
-            genre = names(obj["genre"] ?: obj["genres"]).distinct().joinToString(", ").takeIf(String::isNotBlank)
-            status = parseStatus(obj)
-        }
-
         val episode = obj["episode"] as? JsonObject
         val updatedAt = parseTimestamp(
             episode?.string("date"),
@@ -189,7 +197,19 @@ internal object TurkmangaParser {
             obj.string("lastUpdated"),
             obj.string("last_update"),
         )
-        return MangaSummary(manga, updatedAt)
+        return MangaSummary(
+            url = "/manga/$slug",
+            title = title,
+            thumbnailUrl = firstImage(
+                obj,
+                listOf("cover", "coverUrl", "cover_url", "thumbnail", "thumbnailUrl", "poster", "image"),
+                baseUrl,
+            ) ?: coverUrl(slug),
+            description = obj.string("description")?.takeIf { it.isNotBlank() },
+            genre = names(obj["genre"] ?: obj["genres"]).distinct().joinToString(", ").takeIf(String::isNotBlank),
+            status = parseStatus(obj),
+            updatedAt = updatedAt,
+        )
     }
 
     private fun parseSummaryCards(document: Document, baseUrl: String): List<MangaSummary> =
@@ -210,13 +230,11 @@ internal object TurkmangaParser {
                 }
             }
             MangaSummary(
-                SManga.create().apply {
-                    url = path
-                    this.title = title
-                    thumbnail_url = thumb ?: coverUrl(slug)
-                },
+                url = path,
+                title = title,
+                thumbnailUrl = thumb ?: coverUrl(slug),
             )
-        }.distinctBy { it.manga.url }
+        }.distinctBy { it.url }
 
     private fun parseChapter(
         element: JsonElement,
@@ -236,20 +254,20 @@ internal object TurkmangaParser {
             ?: obj["chapterNumber"].primitiveText()?.toFloatOrNull()
             ?: chapterNumberPattern.find(name)?.value?.toFloatOrNull()
             ?: -1f
-        return SChapter.create().apply {
-            url = path
-            this.name = name.ifBlank {
+        return ChapterSummary(
+            url = path,
+            name = name.ifBlank {
                 if (number >= 0f) "Bölüm ${number.toDisplayNumber()}" else "Bölüm"
-            }
-            chapter_number = number
-            date_upload = parseTimestamp(
+            },
+            chapterNumber = number,
+            dateUpload = parseTimestamp(
                 obj.string("datePublished"),
                 obj.string("dateModified"),
                 obj.string("uploadDate"),
                 obj.string("date"),
-            )
-            scanlator = names(obj["translator"]).joinToString(", ").takeIf(String::isNotBlank) ?: defaultTranslator
-        }
+            ),
+            scanlator = names(obj["translator"]).joinToString(", ").takeIf(String::isNotBlank) ?: defaultTranslator,
+        )
     }
 
     private fun parseChapterLinks(
@@ -257,7 +275,7 @@ internal object TurkmangaParser {
         baseUrl: String,
         mangaSlug: String,
         defaultTranslator: String?,
-    ): List<SChapter> = document.select("a[href]").mapNotNull { link ->
+    ): List<ChapterSummary> = document.select("a[href]").mapNotNull { link ->
         val path = chapterPath(link.attr("abs:href").ifBlank { link.attr("href") }, baseUrl) ?: return@mapNotNull null
         if (mangaSlug.isNotBlank() && path.split('/').getOrNull(2) != mangaSlug) return@mapNotNull null
         val title = link.selectFirst("[class*=chapter], [class*=episode]")?.text()?.trim()
@@ -265,17 +283,17 @@ internal object TurkmangaParser {
             ?: link.text().trim().takeIf(String::isNotBlank)
             ?: return@mapNotNull null
         val number = chapterNumberPattern.find(title)?.value?.toFloatOrNull() ?: -1f
-        SChapter.create().apply {
-            url = path
-            name = title
-            chapter_number = number
-            scanlator = defaultTranslator
-            date_upload = parseTimestamp(
+        ChapterSummary(
+            url = path,
+            name = title,
+            chapterNumber = number,
+            dateUpload = parseTimestamp(
                 link.attr("data-date"),
                 link.parent()?.selectFirst("time")?.attr("datetime"),
                 link.parent()?.selectFirst("time")?.text(),
-            )
-        }
+            ),
+            scanlator = defaultTranslator,
+        )
     }.distinctBy { it.url }
 
     private fun hasNextPage(document: Document, state: JsonElement?, page: Int, resultCount: Int): Boolean {

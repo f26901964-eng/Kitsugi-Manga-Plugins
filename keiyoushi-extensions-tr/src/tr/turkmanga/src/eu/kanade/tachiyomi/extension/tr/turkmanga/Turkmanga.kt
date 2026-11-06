@@ -38,8 +38,21 @@ abstract class Turkmanga : KeiSource() {
         return parseList(url, page)
     }
 
-    private suspend fun parseList(url: HttpUrl, page: Int, newestFirst: Boolean = false): MangasPage =
-        TurkmangaParser.parseMangaList(client.get(url).asJsoup(), baseUrl, page, newestFirst)
+    private suspend fun parseList(url: HttpUrl, page: Int, newestFirst: Boolean = false): MangasPage {
+        val parsed = TurkmangaParser.parseMangaList(client.get(url).asJsoup(), baseUrl, page, newestFirst)
+        val mangas = parsed.mangas.map { summary ->
+            SManga.create().apply {
+                url = summary.url
+                title = summary.title
+                thumbnail_url = summary.thumbnailUrl
+                description = summary.description
+                author = summary.author
+                genre = summary.genre
+                status = summary.status
+            }
+        }
+        return MangasPage(mangas, parsed.hasNextPage)
+    }
 
     override fun getFilterList(data: JsonElement?): FilterList = FilterList(GenreFilter())
 
@@ -60,7 +73,27 @@ abstract class Turkmanga : KeiSource() {
         fetchChapters: Boolean,
     ): SMangaUpdate {
         val document = client.get(getMangaUrl(manga)).asJsoup()
-        return TurkmangaParser.parseMangaDetails(document, baseUrl, manga.url)
+        val parsed = TurkmangaParser.parseMangaDetails(document, baseUrl, manga.url)
+        val details = parsed.manga
+        val updatedManga = SManga.create().apply {
+            url = details.url
+            title = details.title
+            thumbnail_url = details.thumbnailUrl
+            description = details.description
+            author = details.author
+            genre = details.genre
+            status = details.status
+        }
+        val chapters = parsed.chapters.map { chapter ->
+            SChapter.create().apply {
+                url = chapter.url
+                name = chapter.name
+                chapter_number = chapter.chapterNumber
+                date_upload = chapter.dateUpload
+                scanlator = chapter.scanlator
+            }
+        }
+        return SMangaUpdate(updatedManga, chapters)
     }
 
     override fun getChapterUrl(chapter: SChapter): String = TurkmangaParser.chapterUrl(chapter.url, baseUrl)

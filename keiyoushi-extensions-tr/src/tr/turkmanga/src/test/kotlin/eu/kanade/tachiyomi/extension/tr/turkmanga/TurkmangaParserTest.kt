@@ -31,7 +31,7 @@ class TurkmangaParserTest {
 
         assertEquals(listOf("Chainsaw Man", "Berserk"), page.mangas.map { it.title })
         assertEquals("/manga/chainsaw-man", page.mangas.first().url)
-        assertEquals("https://api.turkmanga.org/api/media/manga/chainsaw-man?width=600&height=900", page.mangas.first().thumbnail_url)
+        assertEquals("https://api.turkmanga.org/api/media/manga/chainsaw-man?width=600&height=900", page.mangas.first().thumbnailUrl)
         assertTrue(page.hasNextPage)
     }
 
@@ -64,13 +64,13 @@ class TurkmangaParserTest {
         assertEquals("Denji ve Pochita'nın hikâyesi.", update.manga.description)
         assertEquals("Tatsuki Fujimoto", update.manga.author)
         assertEquals("Aksiyon, Dram", update.manga.genre)
-        assertEquals("https://api.turkmanga.org/api/media/manga/chainsaw-man?width=600&height=900", update.manga.thumbnail_url)
+        assertEquals("https://api.turkmanga.org/api/media/manga/chainsaw-man?width=600&height=900", update.manga.thumbnailUrl)
         assertEquals(SManga.ONGOING, update.manga.status)
         assertEquals(2, update.chapters.size)
         assertEquals("/manga/chainsaw-man/bolum-1", update.chapters.first().url)
-        assertEquals(1f, update.chapters.first().chapter_number)
+        assertEquals(1f, update.chapters.first().chapterNumber)
         assertEquals("Manga Şehri", update.chapters.first().scanlator)
-        assertTrue(update.chapters.first().date_upload > 0L)
+        assertTrue(update.chapters.first().dateUpload > 0L)
         assertEquals("Başka Çeviri", update.chapters.last().scanlator)
     }
 
