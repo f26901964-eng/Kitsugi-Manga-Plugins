@@ -1,0 +1,28 @@
+name: MerlinToon live probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/513348c3-kitsugi-manga-plugins]
+    paths:
+      - tools/merlintoon_live_probe.py
+      - .github/workflows/merlintoon-live.yml
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Public pages, chapter API and image
+        shell: bash
+        run: |
+          set +e
+          python3 tools/merlintoon_live_probe.py > /tmp/probe.log 2>&1
+          result=$?
+          cat /tmp/probe.log
+          while IFS= read -r line; do
+            line=${line//'%'/'%25'}
+            echo "::notice title=MerlinToon live probe::$line"
+          done < /tmp/probe.log
+          exit "$result"

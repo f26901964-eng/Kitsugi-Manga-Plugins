@@ -4,7 +4,7 @@
 tr/mangatr
 tr/mangacix
 tr/mangitto
-# Manga-TR, MangaciX, Mangitto, OkuToon, SadScans, Turkmanga ve Tortuga Çeviri etkindir.
+# Etkin kaynakların güncel listesi aşağıdaki yorum olmayan satırlardır.
 # Kaldırılanlar: hayalistic, korelimanga, turkcemangaoku, amangaplanet
 # (bilinen mangaları kapsamıyor ve Türkçe adlar uygulama içi aramayla uyuşmuyordu).
 # tr/mangadenizi — yeniden etkin: mangadenizi.net (Nuxt arayüzü, /api/v1/web/* uçları) için güncellendi.
@@ -14,3 +14,4 @@ tr/sadscans
 tr/turkmanga
 tr/tortugaceviri
 tr/mangadenizi
+tr/merlinscans
