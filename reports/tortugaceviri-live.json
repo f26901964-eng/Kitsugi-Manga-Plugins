@@ -1,0 +1,178 @@
+{
+  "popular": {
+    "status": 200,
+    "cards": 25,
+    "usable_with_id": 25,
+    "with_cover": 25,
+    "ids": [
+      "40",
+      "81",
+      "72",
+      "88",
+      "311",
+      "54",
+      "450",
+      "434",
+      "193",
+      "337",
+      "70",
+      "71",
+      "454",
+      "343",
+      "85",
+      "66",
+      "320",
+      "80",
+      "120",
+      "57",
+      "97",
+      "59",
+      "125",
+      "55",
+      "53"
+    ],
+    "titles": [
+      "Berserk",
+      "One Piece",
+      "Hajime no Ippo",
+      "Vagabond",
+      "Kingdom",
+      "20th Century Boys",
+      "Kagurabachi",
+      "Usogui"
+    ]
+  },
+  "latest": {
+    "status": 200,
+    "cards": 25,
+    "usable_with_id": 25,
+    "with_cover": 25,
+    "ids": [
+      "81",
+      "311",
+      "40",
+      "321",
+      "450",
+      "638",
+      "619",
+      "593",
+      "434",
+      "66",
+      "61",
+      "538",
+      "599",
+      "72",
+      "193",
+      "467",
+      "337",
+      "454",
+      "475",
+      "353",
+      "462",
+      "86",
+      "85",
+      "62",
+      "320"
+    ],
+    "titles": [
+      "One Piece",
+      "Kingdom",
+      "Berserk",
+      "İssak",
+      "Kagurabachi",
+      "Son Manga Sınıfı",
+      "Doom: Satsujin Keisatsukan no Danzairoku",
+      "Record of Ragnarok"
+    ]
+  },
+  "search": {
+    "status": 200,
+    "cards": 1,
+    "usable_with_id": 1,
+    "with_cover": 1,
+    "ids": [
+      "619"
+    ],
+    "titles": [
+      "Doom: Satsujin Keisatsukan no Danzairoku"
+    ]
+  },
+  "popular_page_2": {
+    "status": 200,
+    "cards": 25,
+    "usable_with_id": 25,
+    "with_cover": 25,
+    "ids": [
+      "105",
+      "76",
+      "593",
+      "69",
+      "353",
+      "462",
+      "321",
+      "100",
+      "90",
+      "68",
+      "113",
+      "61",
+      "102",
+      "187",
+      "122",
+      "89",
+      "86",
+      "103",
+      "104",
+      "467",
+      "159",
+      "342",
+      "126",
+      "114",
+      "79"
+    ],
+    "titles": [
+      "Green Blood",
+      "Liar Game",
+      "Record of Ragnarok",
+      "Battle Royale",
+      "Bokko",
+      "Old Boy",
+      "İssak",
+      "Crows"
+    ]
+  },
+  "details": {
+    "title": "Doom: Satsujin Keisatsukan no Danzairoku",
+    "description": "Tokyo Büyükşehir Polis Teşkilatı Birinci Soruşturma Şubesi Müdürü Dan Hiroki, parlak kariyeriyle seçkinler arasında bir numaradır. Bu adamın gizli yüzü ise günahkâr suçluları kendi adaletiyle cezalandıran bir seri katil olmasıdır. Brutal: Satsujin Keisatsukan no Kokuhaku serisinin devamıdır.",
+    "chapters": 14
+  },
+  "reader": {
+    "images": 48,
+    "probed": [
+      {
+        "content_type": "image/jpeg",
+        "format": "JPEG",
+        "size": [
+          900,
+          500
+        ]
+      },
+      {
+        "content_type": "image/png",
+        "format": "PNG",
+        "size": [
+          1129,
+          1600
+        ]
+      },
+      {
+        "content_type": "image/png",
+        "format": "PNG",
+        "size": [
+          1110,
+          1600
+        ]
+      }
+    ]
+  },
+  "ok": true
+}

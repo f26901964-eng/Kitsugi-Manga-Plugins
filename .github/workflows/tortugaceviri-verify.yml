@@ -1,0 +1,66 @@
+name: Tortuga Ceviri verification
+on:
+  push:
+    branches: [arena/a905f0e8-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/tortugaceviri/**
+      - tests/tortugaceviri_runtime/**
+      - .github/workflows/tortugaceviri-verify.yml
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 beautifulsoup4==4.13.4 pillow==11.3.0
+      - name: Verify live endpoints
+        run: |
+          set -o pipefail
+          python tests/tortugaceviri_runtime/probe.py | tee reports/tortugaceviri-live.json
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Check Turkish chapter dates
+        run: java tests/tortugaceviri_runtime/TurkishDateCheck.java
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Enable source and build APK
+        run: |
+          grep -qx 'tr/tortugaceviri' enabled_plugins.txt || echo 'tr/tortugaceviri' >> enabled_plugins.txt
+          cd keiyoushi-extensions-tr
+          ./gradlew :src:tr:tortugaceviri:assembleRelease --stacktrace --console=plain
+      - name: Record certificate fingerprints
+        run: |
+          APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          OLD_APK=$(python3 -c 'import json; print(next(x["apk"] for x in json.load(open("registry/extensions.json")) if x["pkg"].endswith(".tortugaceviri")))')
+          "$APKSIGNER" verify --print-certs "prebuilt/apk/$OLD_APK" | grep 'certificate SHA-256 digest' > /tmp/old-cert
+          "$APKSIGNER" verify --print-certs keiyoushi-extensions-tr/src/tr/tortugaceviri/build/outputs/apk/release/*.apk | grep 'certificate SHA-256 digest' > /tmp/new-cert
+          echo 'Archive certificate:'; cat /tmp/old-cert
+          echo 'New certificate:'; cat /tmp/new-cert
+          if cmp -s /tmp/old-cert /tmp/new-cert; then echo 'Same signing key'; else echo 'Different signing keys: installed archive APK requires uninstall before installing this build.'; fi
+      - name: Register built APK and verify catalogs
+        run: |
+          python3 tools/prepare_extension_release.py tortugaceviri
+          python3 -m unittest discover -s tests -v
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tortugaceviri-apk-and-live-report
+          path: |
+            keiyoushi-extensions-tr/src/tr/tortugaceviri/build/outputs/apk/release/*.apk
+            reports/tortugaceviri-live.json
+          if-no-files-found: error
+      - name: Save verified artifacts on this branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A enabled_plugins.txt prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json reports/tortugaceviri-live.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'tortugaceviri: activate verified APK and catalogs [skip ci]'
+          git push origin "HEAD:${GITHUB_REF_NAME}"
