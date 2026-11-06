@@ -1,0 +1,2 @@
+keiyoushi.source.Generated
+keiyoushi.source.Generated: Generated()

@@ -59,11 +59,10 @@ internal object TurkmangaParser {
         val chapters: List<ChapterSummary>,
     )
 
-    internal fun listingUrl(baseUrl: String, page: Int, sort: String? = null): HttpUrl =
-        "$baseUrl/mangalar".toHttpUrl().newBuilder().apply {
-            if (page > 1) addQueryParameter("page", page.toString())
-            if (!sort.isNullOrBlank()) addQueryParameter("sort", sort)
-        }.build()
+    internal fun listingUrl(baseUrl: String, page: Int, sort: String? = null): HttpUrl = "$baseUrl/mangalar".toHttpUrl().newBuilder().apply {
+        if (page > 1) addQueryParameter("page", page.toString())
+        if (!sort.isNullOrBlank()) addQueryParameter("sort", sort)
+    }.build()
 
     internal fun searchUrl(baseUrl: String, page: Int, query: String, genre: String = ""): HttpUrl {
         val route = if (query.isBlank()) "$baseUrl/mangalar" else "$baseUrl/search"
@@ -212,29 +211,28 @@ internal object TurkmangaParser {
         )
     }
 
-    private fun parseSummaryCards(document: Document, baseUrl: String): List<MangaSummary> =
-        document.select("a[href]").mapNotNull { link ->
-            val path = mangaPath(link.attr("abs:href").ifBlank { link.attr("href") }, baseUrl) ?: return@mapNotNull null
-            val slug = path.substringAfterLast('/')
-            val image = link.selectFirst("img")
-            val title = link.selectFirst("h1, h2, h3, [class*=title]")?.text()?.trim()
-                ?.takeIf(String::isNotBlank)
-                ?: image?.attr("alt")?.trim()?.takeIf(String::isNotBlank)
-                ?: link.attr("title").trim().takeIf(String::isNotBlank)
-                ?: link.text().trim().takeIf(String::isNotBlank)
-                ?: return@mapNotNull null
+    private fun parseSummaryCards(document: Document, baseUrl: String): List<MangaSummary> = document.select("a[href]").mapNotNull { link ->
+        val path = mangaPath(link.attr("abs:href").ifBlank { link.attr("href") }, baseUrl) ?: return@mapNotNull null
+        val slug = path.substringAfterLast('/')
+        val image = link.selectFirst("img")
+        val title = link.selectFirst("h1, h2, h3, [class*=title]")?.text()?.trim()
+            ?.takeIf(String::isNotBlank)
+            ?: image?.attr("alt")?.trim()?.takeIf(String::isNotBlank)
+            ?: link.attr("title").trim().takeIf(String::isNotBlank)
+            ?: link.text().trim().takeIf(String::isNotBlank)
+            ?: return@mapNotNull null
 
-            val thumb = image?.let {
-                listOf("data-original", "data-src", "data-lazy-src", "src").firstNotNullOfOrNull { attr ->
-                    it.attr(attr).takeIf(String::isNotBlank)?.let { raw -> resolveImage(raw, document.location()) }
-                }
+        val thumb = image?.let {
+            listOf("data-original", "data-src", "data-lazy-src", "src").firstNotNullOfOrNull { attr ->
+                it.attr(attr).takeIf(String::isNotBlank)?.let { raw -> resolveImage(raw, document.location()) }
             }
-            MangaSummary(
-                url = path,
-                title = title,
-                thumbnailUrl = thumb ?: coverUrl(slug),
-            )
-        }.distinctBy { it.url }
+        }
+        MangaSummary(
+            url = path,
+            title = title,
+            thumbnailUrl = thumb ?: coverUrl(slug),
+        )
+    }.distinctBy { it.url }
 
     private fun parseChapter(
         element: JsonElement,
@@ -331,8 +329,7 @@ internal object TurkmangaParser {
         .select("script[type=application/ld+json]")
         .flatMap { script -> parseJson(script)?.let(::collectObjects).orEmpty() }
 
-    private fun nextData(document: Document): JsonElement? =
-        document.selectFirst("script#__NEXT_DATA__")?.let(::parseJson)
+    private fun nextData(document: Document): JsonElement? = document.selectFirst("script#__NEXT_DATA__")?.let(::parseJson)
 
     private fun parseJson(script: Element): JsonElement? {
         val data = script.data().ifBlank { script.html() }.trim()
@@ -351,7 +348,9 @@ internal object TurkmangaParser {
                     found += current
                     current.values.forEach(pending::addLast)
                 }
+
                 is JsonArray -> current.forEach(pending::addLast)
+
                 else -> Unit
             }
         }
@@ -387,31 +386,39 @@ internal object TurkmangaParser {
 
     private fun names(element: JsonElement?): List<String> = when (element) {
         is JsonPrimitive -> element.contentOrNull?.cleanText()?.takeIf(String::isNotBlank)?.let(::listOf).orEmpty()
+
         is JsonArray -> element.flatMap(::names)
+
         is JsonObject -> listOfNotNull(
             element.string("name"),
             element.string("displayName"),
             element.string("display_name"),
         ).distinct()
+
         else -> emptyList()
     }
 
-    private fun firstImage(obj: JsonObject, keys: List<String>, baseUrl: String): String? =
-        keys.firstNotNullOfOrNull { key -> imageUrl(obj[key], baseUrl) }
+    private fun firstImage(obj: JsonObject, keys: List<String>, baseUrl: String): String? = keys.firstNotNullOfOrNull { key -> imageUrl(obj[key], baseUrl) }
 
     private fun imageUrl(element: JsonElement?, baseUrl: String): String? = when (element) {
         is JsonPrimitive -> element.contentOrNull?.let { resolveImage(it, baseUrl) }
+
         is JsonArray -> element.firstNotNullOfOrNull { imageUrl(it, baseUrl) }
+
         is JsonObject -> listOf("contentUrl", "url", "src", "image", "thumbnail", "thumbnailUrl")
             .firstNotNullOfOrNull { imageUrl(element[it], baseUrl) }
+
         else -> null
     }
 
     private fun imageUrls(element: JsonElement?, baseUrl: String): List<String> = when (element) {
         is JsonPrimitive -> element.contentOrNull?.let { resolveImage(it, baseUrl) }?.let(::listOf).orEmpty()
+
         is JsonArray -> element.flatMap { imageUrls(it, baseUrl) }
+
         is JsonObject -> listOf("contentUrl", "url", "src", "image", "thumbnail", "thumbnailUrl")
             .flatMap { imageUrls(element[it], baseUrl) }
+
         else -> emptyList()
     }
 
@@ -420,7 +427,9 @@ internal object TurkmangaParser {
         if (value.startsWith("data:", ignoreCase = true) || value.startsWith("javascript:", ignoreCase = true)) return null
         if (!value.startsWith("http://", true) && !value.startsWith("https://", true) &&
             !value.startsWith("//") && !value.startsWith('/') && !value.contains('/') && !value.contains('.')
-        ) return null
+        ) {
+            return null
+        }
         val base = baseUrl.toHttpUrlOrNull() ?: "https://turkmanga.org/".toHttpUrl()
         val resolved = base.resolve(value) ?: value.toHttpUrlOrNull() ?: return null
         return resolved.takeIf { it.scheme == "https" || it.scheme == "http" }?.toString()
@@ -439,8 +448,7 @@ internal object TurkmangaParser {
         return url.takeIf { acceptedHost && (it.scheme == "http" || it.scheme == "https") }
     }
 
-    private fun coverUrl(slug: String): String =
-        "$API_BASE_URL/api/media/manga/$slug?width=600&height=900"
+    private fun coverUrl(slug: String): String = "$API_BASE_URL/api/media/manga/$slug?width=600&height=900"
 
     private fun parseTimestamp(vararg values: String?): Long = values.firstNotNullOfOrNull { value ->
         val candidate = value?.trim()?.takeIf(String::isNotBlank) ?: return@firstNotNullOfOrNull null

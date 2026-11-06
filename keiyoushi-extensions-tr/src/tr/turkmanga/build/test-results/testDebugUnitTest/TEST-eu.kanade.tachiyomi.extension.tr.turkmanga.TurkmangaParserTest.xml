@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-06T15:00:45.956Z" hostname="runnervm7aw5e" time="0.455">
+  <properties/>
+  <testcase name="detailJsonLdProvidesMetadataChaptersAndTranslators" classname="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" time="0.386"/>
+  <testcase name="htmlCardFallbackAndReaderLazyImageFallbackAreSupported" classname="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" time="0.036"/>
+  <testcase name="urlsAreNormalizedAndOffSiteMangaLinksAreRejected" classname="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" time="0.006"/>
+  <testcase name="readerUsesOnlyTheMatchingComicIssueImageListInOrder" classname="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" time="0.006"/>
+  <testcase name="nextDataSearchCardsKeepTitlesCoversAndPagination" classname="eu.kanade.tachiyomi.extension.tr.turkmanga.TurkmangaParserTest" time="0.013"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

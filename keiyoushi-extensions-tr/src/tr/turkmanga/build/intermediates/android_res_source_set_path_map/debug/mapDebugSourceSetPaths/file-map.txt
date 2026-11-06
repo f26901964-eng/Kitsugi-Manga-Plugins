@@ -1,0 +1,8 @@
+eu.kanade.tachiyomi.extension.turkmanga-pngs-0 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/build/generated/res/pngs/debug
+eu.kanade.tachiyomi.extension.turkmanga-updated_navigation_xml-1 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/build/generated/updated_navigation_xml/debug
+eu.kanade.tachiyomi.extension.turkmanga-packageDebugResources-2 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+eu.kanade.tachiyomi.extension.turkmanga-packageDebugResources-3 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+eu.kanade.tachiyomi.extension.turkmanga-debug-4 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/build/intermediates/merged_res/debug/mergeDebugResources
+eu.kanade.tachiyomi.extension.turkmanga-turkmanga-5 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/res
+eu.kanade.tachiyomi.extension.turkmanga-debug-6 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/turkmanga/src/debug/res
+gradleHome-0 /home/runner/.gradle

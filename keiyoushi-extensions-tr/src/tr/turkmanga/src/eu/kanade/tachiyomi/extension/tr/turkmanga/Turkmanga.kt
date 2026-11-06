@@ -26,11 +26,9 @@ abstract class Turkmanga : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient() = rateLimit(permits = 2, period = 1.seconds)
 
-    override suspend fun getPopularManga(page: Int): MangasPage =
-        parseList(TurkmangaParser.listingUrl(baseUrl, page, "popular"), page)
+    override suspend fun getPopularManga(page: Int): MangasPage = parseList(TurkmangaParser.listingUrl(baseUrl, page, "popular"), page)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage =
-        parseList(TurkmangaParser.listingUrl(baseUrl, page, "latest"), page, newestFirst = true)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = parseList(TurkmangaParser.listingUrl(baseUrl, page, "latest"), page, newestFirst = true)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val genre = filters.firstInstanceOrNull<GenreFilter>()?.selectedGenre.orEmpty()

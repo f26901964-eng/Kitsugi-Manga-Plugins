@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "eu.kanade.tachiyomi.extension.tr.turkmanga",
+  "variantName": "release",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 106001,
+      "versionName": "1.6.1",
+      "outputFile": "tachiyomi-tr.turkmanga-v1.6.1.apk"
+    }
+  ],
+  "elementType": "File",
+  "minSdkVersionForDexing": 26
+}
