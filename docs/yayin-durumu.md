@@ -5,7 +5,7 @@ Depo adresi: `https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plug
 ## Bir eklenti güncellemesi nasıl yayınlanır
 
 1. `keiyoushi-extensions-tr/src/tr/<eklenti>/build.gradle.kts` içinde `versionCode` değerini **bir artırın** (bu sayı kaynak numarasıdır; temanın `baseVersionCode` değeri derlemede üzerine eklenir).
-2. `tr-extension-release.yml` iş akışını çalıştırın (`modules` girdisine eklentiyi yazın).
+2. Mevcut eklentiler için ilgili APK iş akışını çalıştırın. Turkmanga için `Turkmanga parser verification and APK release` iş akışı kullanılır.
 3. İş akışı APK'yı derler, **katalog sürümünü doğrudan APK'nın manifestinden** okur ve katalogları eşitler.
 
 Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
@@ -15,14 +15,15 @@ Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
 
 ## Etkin eklentiler
 
-Yayında dört eklenti var; diğer tüm TR kaynakları kapatıldı (`enabled_plugins.txt`).
+Yayımlanmış `builds` kataloğunda hâlen dört eklenti var. Bu dalda `enabled_plugins.txt` listesine `tr/turkmanga` da eklendi; Turkmanga'nın APK'sı doğrulanıp derlenince katalogda beşinci kaynak olarak görünür. APK bu çalışma ortamında henüz üretilmedi (Java/Android SDK kurulu değil).
 
 | Eklenti | Site | Sürüm | Kod |
 |---|---|---|---|
 | Manga-TR | https://mangatr.net | 1.6.35 | 106035 |
 | MangaciX | https://mangacix.com | 1.6.2 | 106002 |
 | Mangitto | https://mangtto.com | 1.6.3 | 106003 |
-| OkuToon | https://okutoon.com | 1.6.9 | 106009 |
+| OkuToon | https://okutoon.com | 1.6.11 | 106011 |
+| Turkmanga | https://turkmanga.org | 1.6.1 (APK beklemede) | 106001 (planlanan) |
 
 ## Canlı doğrulama
 

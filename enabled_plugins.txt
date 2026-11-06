@@ -4,8 +4,10 @@
 tr/mangatr
 tr/mangacix
 tr/mangitto
-# 2026-11-06: kullanıcı isteğiyle yalnız Manga-TR, MangaciX, Mangitto ve OkuToon bırakıldı.
+# 2026-11-06: Manga-TR, MangaciX, Mangitto, OkuToon ve Turkmanga etkin; Turkmanga APK
+# Drive HTML kayıtlarına göre yeni kaynak olarak eklendi (derleme/yayın CI adımında doğrulanır).
 # Kaldırılanlar: mangadenizi, hayalistic, korelimanga, turkcemangaoku, amangaplanet
 # (bilinen mangaları kapsamıyor ve Türkçe adlar uygulama içi aramayla uyuşmuyordu).
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
 tr/okutoon
+tr/turkmanga
