@@ -38,7 +38,7 @@ jobs:
       - name: Build the release APK
         working-directory: keiyoushi-extensions-tr
         run: |
-          ./gradlew :src:tr:okutoon:assembleRelease --stacktrace > /tmp/gradle.log 2>&1 || echo "GRADLE_FAILED" >> /tmp/gradle.log
+          ./gradlew :src:tr:okutoon:testDebugUnitTest :src:tr:okutoon:assembleRelease --stacktrace > /tmp/gradle.log 2>&1 || echo "GRADLE_FAILED" >> /tmp/gradle.log
           tail -60 /tmp/gradle.log
           if grep -q GRADLE_FAILED /tmp/gradle.log; then exit 1; fi
       - name: Live end-to-end probe of okutoon.com

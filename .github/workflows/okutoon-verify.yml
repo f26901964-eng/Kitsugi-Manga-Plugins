@@ -1,0 +1,40 @@
+name: OkuToon APK verification
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/c26a42e3-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/okutoon/**
+      - tests/test_okutoon*.py
+      - tests/okutoon_runtime/**
+      - .github/workflows/okutoon-verify.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Test parser and build APK
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:okutoon:testDebugUnitTest :src:tr:okutoon:assembleRelease --stacktrace
+      - name: Check built APK and catalogs
+        run: |
+          python3 tools/prepare_extension_release.py okutoon
+          python3 -m unittest discover -s tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: okutoon-tests-and-apk
+          path: |
+            keiyoushi-extensions-tr/src/tr/okutoon/build/outputs/apk/release/*.apk
+            keiyoushi-extensions-tr/src/tr/okutoon/build/test-results/
+          if-no-files-found: warn

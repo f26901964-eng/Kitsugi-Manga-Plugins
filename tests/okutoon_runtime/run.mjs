@@ -2,8 +2,8 @@
 //
 // The dumps in docs/html-dumps/okutoon prove the selectors; this run proves the site still
 // serves the same shape today. Chapter pages sit behind a Cloudflare challenge for bots, so
-// a 403 there is reported as a known limitation instead of a failed selector: the same
-// markup is asserted offline by tests/test_okutoon_dumps.py.
+// a challenge there is a failure of the direct HTTP probe, not proof of a working reader.
+// The saved markup is asserted offline by tests/test_okutoon_dumps.py.
 //
 //   listing -> /tur?sira=..., .series-grid .series-card, nav.pagination a[rel=next]
 //   search  -> ?q=, ?sira=, ?durum=, ?tip=, ?k[]=
@@ -136,16 +136,15 @@ check('okutoon: chapter dates use Turkish month names', chapterDates.length === 
 // ----------------------------------------------------------------------- reader
 const chapterUrl = chapterLinks.length ? `${BASE}${chapterLinks[0]}` : null;
 if (chapterUrl) {
-  const chapter = await get(chapterUrl, { Referer: seriesUrl });
+  const chapter = await get(chapterUrl, { headers: { Referer: seriesUrl } });
   const blocked = chapter.status === 403 && chapter.mitigated === 'challenge';
   const pageImages = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*>/g);
   const srcs = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*\ssrc="([^"]+)"/g);
   const lazySrcs = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*\sdata-original-src="([^"]+)"/g);
 
   if (blocked) {
-    // Known limitation: Cloudflare serves a challenge to non-browser clients. The markup is
-    // covered by the saved dumps, so this is not a selector failure.
-    check('okutoon: reader is behind a Cloudflare challenge for bots (known limitation)', true, {
+    // Offline markup cannot establish that a live reader is working.
+    check('okutoon: reader blocked by Cloudflare; Android WebView path not tested', false, {
       url: chapterUrl,
       status: chapter.status,
       mitigated: chapter.mitigated,
@@ -164,7 +163,7 @@ if (chapterUrl) {
       check('okutoon: page images live on the CDN host', new URL(first).host === 'om-cdn.okutoon.com', {
         host: new URL(first).host,
       });
-      const image = await get(first, { Referer: chapterUrl });
+      const image = await get(first, { headers: { Referer: chapterUrl } });
       check('okutoon: first page image downloads and decodes', Boolean(imageKind(image.buf)), {
         status: image.status,
         kind: imageKind(image.buf),
@@ -172,6 +171,8 @@ if (chapterUrl) {
       });
     }
   }
+} else {
+  check('okutoon: a chapter is available for the reader probe', false);
 }
 
 const failed = results.filter((r) => !r.ok);
