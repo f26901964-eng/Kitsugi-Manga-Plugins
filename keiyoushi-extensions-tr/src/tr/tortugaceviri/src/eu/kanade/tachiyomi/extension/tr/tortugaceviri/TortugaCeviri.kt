@@ -7,5 +7,5 @@ import java.util.Locale
 
 @Source
 abstract class TortugaCeviri : Madara() {
-    override val chapterDateFormat = DateTimeFormatter.ofPattern("MMM d, yyy", Locale.forLanguageTag("tr"))
+    override val chapterDateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("tr"))
 }

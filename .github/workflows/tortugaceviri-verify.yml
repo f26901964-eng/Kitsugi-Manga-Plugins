@@ -1,0 +1,42 @@
+name: Tortuga Ceviri verification
+on:
+  push:
+    branches: [arena/a905f0e8-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/tortugaceviri/**
+      - tests/tortugaceviri_runtime/**
+      - .github/workflows/tortugaceviri-verify.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Enable module for build only
+        run: grep -qx 'tr/tortugaceviri' enabled_plugins.txt || echo 'tr/tortugaceviri' >> enabled_plugins.txt
+      - name: Build APK
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:tortugaceviri:assembleRelease --stacktrace --console=plain
+      - uses: actions/upload-artifact@v4
+        with:
+          name: tortugaceviri-apk
+          path: keiyoushi-extensions-tr/src/tr/tortugaceviri/build/outputs/apk/release/*.apk
+          if-no-files-found: error
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests==2.32.5 beautifulsoup4==4.13.4 pillow==11.3.0
+      - run: python tests/tortugaceviri_runtime/probe.py
