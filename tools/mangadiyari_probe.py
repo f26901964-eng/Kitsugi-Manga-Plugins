@@ -40,6 +40,16 @@ USER_AGENT = (
 TIMEOUT = 40
 PAGE_SIZE = 24
 
+# `Filters.kt` içindeki GenreFilter değerlerinin aynası: site her etiket için sonuç döndürmeli.
+# `tests/test_mangadiyari_filters.py` iki listeyi karşılaştırır.
+GENRE_FILTER_VALUES = [
+    "Aksiyon", "Macera", "Komedi", "Dram", "Fantezi", "Tarihi", "Korku", "Isekai",
+    "Dövüş Sanatları", "Gizem", "Reenkarnasyon", "Romantizm", "Okul Hayatı", "Bilim Kurgu",
+    "Doğaüstü", "Gerilim", "Ecchi", "Harem", "Josei", "Müstehcen", "Mecha", "Psikolojik",
+    "Seinen", "Shoujo", "Shounen", "Günlük Yaşam", "Spor", "Trajedi", "Webtoon", "Manhwa",
+    "Manhua", "Murim", "Sistem", "Şeytan", "Ters Harem",
+]
+
 
 def strip_diacritics(value: str) -> str:
     """Türkçe metni aksansız/ASCII hâle getirir (ı -> i, ş -> s, ...).
@@ -293,6 +303,54 @@ class Probe:
                 relative=not raw.startswith("http"),
             )
 
+    def check_genre_catalog(self) -> None:
+        """Filtre listesindeki her tür etiketi sitede karşılık buluyor mu."""
+        empty: list[str] = []
+        for genre in GENRE_FILTER_VALUES:
+            status, payload = self.get_json(f"/api/series?genre={quote(genre)}&limit=1&page=1")
+            series = (payload or {}).get("series") if isinstance(payload, dict) else None
+            count = len(series or [])
+            if status != 200:
+                self.record(f"genre-{genre}", False, http=status)
+            elif count == 0:
+                empty.append(genre)
+        self.record(
+            "genre-catalog",
+            not empty,
+            hard=False,
+            labels=len(GENRE_FILTER_VALUES),
+            empty=empty,
+        )
+
+    def check_web_routes(self, series: list[dict[str, Any]]) -> None:
+        """Eklentinin ürettiği web adresleri gerçekten açılıyor mu (tarayıcıda açılan sayfa)."""
+        slug = next(
+            (item.get("slug") for item in series if (item.get("chapterCount") or 0) > 0),
+            (series[0].get("slug") if series else None),
+        )
+        if not slug:
+            self.record("web-routes", False, reason="no slug")
+            return
+        for label, path, marker in (
+            ("series-page", f"/series/{slug}", b"/api/series/"),
+            ("reader-page", f"/seri/{slug}/bolum/1", b"/api/chapters/"),
+        ):
+            try:
+                response = self.session.get(BASE + path, timeout=TIMEOUT)
+            except requests.RequestException as exc:
+                self.record(f"web-{label}", False, error=type(exc).__name__)
+                continue
+            body = response.content
+            self.record(
+                f"web-{label}",
+                response.status_code == 200 and marker in body,
+                hard=False,
+                http=response.status_code,
+                bytes=len(body),
+                api_marker=marker in body,
+                final=response.url.replace(BASE, ""),
+            )
+
     def check_cdn_headers(self, series: list[dict[str, Any]]) -> None:
         """Görsellerin Referer/Origin ihtiyacını ve yönlendirmeleri ölçer."""
         if not series:
@@ -328,8 +386,10 @@ class Probe:
         else:
             self.check_search("Ben Ölümsüzüm")
         self.check_filters()
+        self.check_genre_catalog()
         self.check_details_and_pages(series)
         self.check_cdn_headers(series)
+        self.check_web_routes(series)
         self.report["ok"] = not self.report["failures"]
         return self.report
 
