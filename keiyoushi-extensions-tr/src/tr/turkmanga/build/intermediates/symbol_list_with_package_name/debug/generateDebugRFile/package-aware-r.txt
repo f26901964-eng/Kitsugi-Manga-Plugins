@@ -1,2 +1,0 @@
-eu.kanade.tachiyomi.extension
-mipmap ic_launcher
