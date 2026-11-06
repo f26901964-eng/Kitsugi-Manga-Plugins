@@ -21,7 +21,21 @@ async function request(url, headers) {
     const r = await fetch(url, { headers, signal: AbortSignal.timeout(10000), redirect: 'follow' });
     const bytes = new Uint8Array(await r.arrayBuffer());
     const text = new TextDecoder().decode(bytes.slice(0, 512));
-    return { status: r.status, challenge: r.headers.get('cf-mitigated'), type: r.headers.get('content-type'), bytes: bytes.length,
+    let schema;
+    if ((r.headers.get('content-type') || '').includes('application/json')) {
+      try {
+        const json = JSON.parse(new TextDecoder().decode(bytes));
+        const walk = (value, depth = 0) => {
+          if (depth > 4) return Array.isArray(value) ? `[array:${value.length}]` : typeof value;
+          if (Array.isArray(value)) return { length: value.length, sample: value.length ? walk(value[0], depth + 1) : null };
+          if (value && typeof value === 'object') return Object.fromEntries(Object.entries(value).slice(0, 80).map(([key, v]) => [key, walk(v, depth + 1)]));
+          if (typeof value === 'string') return value.startsWith('https://om-cdn.okutoon.com/chapters/') ? value : `string(${value.length})`;
+          return value;
+        };
+        schema = walk(json);
+      } catch (_) {}
+    }
+    return { schema, status: r.status, challenge: r.headers.get('cf-mitigated'), type: r.headers.get('content-type'), bytes: bytes.length,
       webp: bytes.length > 12 && String.fromCharCode(...bytes.slice(0,4)) === 'RIFF' && String.fromCharCode(...bytes.slice(8,12)) === 'WEBP',
       json: (r.headers.get('content-type') || '').includes('application/json'),
       // Error message only, to distinguish generic 404s; never record tokens or cookies.
