@@ -2,7 +2,7 @@ name: OkuToon runtime contract (live)
 
 on:
   push:
-    branches: [arena/777ee838-kitsugi-manga-plugins, main]
+    branches: [main]
     paths:
       - tests/okutoon_runtime/**
       - keiyoushi-extensions-tr/src/tr/okutoon/**

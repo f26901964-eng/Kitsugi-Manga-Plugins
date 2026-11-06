@@ -2,7 +2,7 @@ name: Capture shared HTML dumps
 
 on:
   push:
-    branches: [arena/777ee838-kitsugi-manga-plugins]
+    branches: [main]
     paths:
       - tools/capture_html_dumps.py
       - .github/workflows/capture-html-dumps.yml
