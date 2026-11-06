@@ -42,42 +42,61 @@ class StatusFilter :
 
 class GenreCheckBox(name: String, val value: String) : Filter.CheckBox(name)
 
+/**
+ * Genre matching is exact and the site stores the labels in the language a series was added with:
+ * newer rows carry Turkish names (`Aksiyon`), older ones English names (`Action`), and some genres
+ * only exist with one of the two. A comma separated list is read as AND and a repeated `genre`
+ * parameter keeps only its first value, so "Turkish or English" cannot be expressed in one query.
+ *
+ * Every group therefore sends the single label that actually returns series today. The values were
+ * measured against the live API (`tools/mangadiyari_probe.py`, check `genre-labels`) and both files
+ * are kept in step by `tests/test_mangadiyari_probe.py`.
+ */
 class GenreFilter :
     Filter.Group<GenreCheckBox>(
         "Kategoriler",
         listOf(
-            "Aksiyon" to "Action",
-            "Macera" to "Adventure",
-            "Komedi" to "Comedy",
-            "Drama" to "Drama",
-            "Fantastik" to "Fantasy",
-            "Tarihi" to "Historical",
-            "Korku" to "Horror",
-            "Isekai" to "Isekai",
-            "Dövüş Sanatları" to "Martial Arts",
-            "Gizem" to "Mystery",
-            "Reenkarnasyon" to "Reincarnation",
-            "Romantik" to "Romance",
-            "Okul" to "School",
-            "Bilim Kurgu" to "Sci-Fi",
-            "Doğaüstü" to "Supernatural",
-            "Gerilim" to "Thriller",
-            "Ecchi" to "Ecchi",
-            "Harem" to "Harem",
-            "Josei" to "Josei",
-            "Yetişkin" to "Mature",
-            "Mecha" to "Mecha",
-            "Psikolojik" to "Psychological",
-            "Seinen" to "Seinen",
-            "Shoujo" to "Shoujo",
-            "Shounen" to "Shounen",
-            "Günlük Yaşam" to "Slice of Life",
-            "Spor" to "Sports",
-            "Trajedi" to "Tragedy",
-            "Webtoon" to "Webtoon",
-            "Manhwa" to "Manhwa",
-            "Manhua" to "Manhua",
-        ).map { GenreCheckBox(it.first, it.second) },
+            GenreCheckBox("Aksiyon", "Aksiyon"),
+            GenreCheckBox("Macera", "Macera"),
+            GenreCheckBox("Komedi", "Komedi"),
+            GenreCheckBox("Dram", "Dram"),
+            GenreCheckBox("Fantastik", "Fantezi"),
+            GenreCheckBox("Tarihi", "Tarihi"),
+            GenreCheckBox("Korku", "Korku"),
+            GenreCheckBox("Isekai", "Isekai"),
+            GenreCheckBox("Dövüş Sanatları", "Dövüş Sanatları"),
+            GenreCheckBox("Gizem", "Gizem"),
+            GenreCheckBox("Reenkarnasyon", "Reincarnation"),
+            GenreCheckBox("Romantik", "Romantizm"),
+            GenreCheckBox("Okul", "Okul Hayatı"),
+            GenreCheckBox("Bilim Kurgu", "Bilim Kurgu"),
+            GenreCheckBox("Doğaüstü", "Doğaüstü"),
+            GenreCheckBox("Gerilim", "Gerilim"),
+            GenreCheckBox("Ecchi", "Ecchi"),
+            GenreCheckBox("Harem", "Harem"),
+            GenreCheckBox("Josei", "Josei"),
+            GenreCheckBox("Yetişkin", "Müstehcen"),
+            GenreCheckBox("Mecha", "Mecha"),
+            GenreCheckBox("Psikolojik", "Psikolojik"),
+            GenreCheckBox("Seinen", "Seinen"),
+            GenreCheckBox("Shoujo", "Shoujo"),
+            GenreCheckBox("Shounen", "Shounen"),
+            GenreCheckBox("Günlük Yaşam", "Slice of Life"),
+            GenreCheckBox("Spor", "Spor"),
+            GenreCheckBox("Trajedi", "Trajedi"),
+            GenreCheckBox("Webtoon", "Webtoon"),
+            GenreCheckBox("Manhwa", "Manhwa"),
+            GenreCheckBox("Manhua", "Manhua"),
+            GenreCheckBox("Murim", "Murim"),
+            GenreCheckBox("Sistem", "Sistem"),
+            GenreCheckBox("Şeytan", "Şeytan"),
+            GenreCheckBox("Ters Harem", "Ters Harem"),
+        ),
     ) {
-    fun toUriPart(): String = state.filter { it.state }.joinToString(",") { it.value }
+    /** Selected groups are sent in one `genre` parameter; the API reads the list as AND. */
+    fun toUriPart(): String = state.filter { it.state }
+        .map { it.value.trim() }
+        .filter { it.isNotEmpty() }
+        .distinct()
+        .joinToString(",")
 }

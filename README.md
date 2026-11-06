@@ -25,3 +25,11 @@ Arşiv, önceki yayımlanmış sürümlerin bir kopyasıdır; bir eklentiyi tekr
 Python 3 ile `python3 -m unittest discover -s tests` komutunu çalıştırın. Test, katalogların seçili paket ve sürüm bakımından tutarlı olduğunu ve APK kopyalarının eşleştiğini kontrol eder. Canlı siteyi veya Android uygulamasını test etmez.
 
 İnceleme ve kalan işler: `docs/mangatr/PLAN-VE-DURUM.md`.
+
+## Manga Diyarı (mangadiyari.com)
+
+Manga Diyarı eklentisi sitenin JSON API'sini kullanır (HTML kazımaz) ve 2026-11 itibarıyla canlı
+siteye karşı doğrulanmıştır: **1.6.4 / katalog 106004**. Popüler, son güncellemeler, arama, filtreler,
+seri detayı, bölüm listesi ve sayfa görselleri her CI koşusunda canlı olarak ölçülür
+(`tools/mangadiyari_probe.py`). Ölçüm sonuçları, tür filtrelerinin neden tek etiket gönderdiği ve
+bilinen sınırlar: `docs/mangadiyari/DURUM-VE-KANIT.md`.

@@ -40,11 +40,11 @@
       {
         "name": "Manga Diyarı",
         "packageName": "eu.kanade.tachiyomi.extension.tr.mangadiyari",
-        "versionName": "1.6.1",
-        "versionCode": "106001",
+        "versionName": "1.6.4",
+        "versionCode": "106004",
         "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadiyari-v1.6.1.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadiyari-v1.6.4.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadiyari.png"
         },
         "sources": [
