@@ -14,8 +14,7 @@ internal object MangittoHtml {
     fun mangaObjects(document: Document): List<JsonObject> {
         val script = document.selectFirst("script#__NUXT_DATA__") ?: error("Mangitto: ana sayfa verisi bulunamadı")
         val table = Json.parseToJsonElement(script.data()) as JsonArray
-        fun scalar(reference: kotlinx.serialization.json.JsonElement?) =
-            (reference as? JsonPrimitive)?.intOrNull?.let { table.getOrNull(it) } as? JsonPrimitive
+        fun scalar(reference: kotlinx.serialization.json.JsonElement?) = (reference as? JsonPrimitive)?.intOrNull?.let { table.getOrNull(it) } as? JsonPrimitive
         return table.filterIsInstance<JsonObject>()
             .filter { "slug" in it && "title" in it && "coverImage" in it }
             .map { item ->

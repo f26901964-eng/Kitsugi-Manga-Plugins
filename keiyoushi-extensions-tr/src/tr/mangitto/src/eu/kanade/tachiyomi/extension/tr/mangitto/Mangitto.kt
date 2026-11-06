@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.mangitto
 
+import eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtml.text
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -11,7 +12,6 @@ import keiyoushi.network.get
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.asJsoup
-import eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtml.text
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.getString
 import keiyoushi.utils.parseAs
