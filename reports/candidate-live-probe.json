@@ -1,141 +1,1657 @@
 {
-  "generatedAt": "2026-11-06T09:34:44+00:00",
-  "candidates": {
-    "mangadenizi": {
-      "name": "MangaDenizi",
-      "theme": "json-api",
-      "baseUrl": "https://mangadenizi.net",
-      "listing": {
-        "status": 200,
-        "bytes": 75459,
-        "contentType": "application/json",
-        "seriesFound": 15,
-        "lastPage": 8
+  "generatedAt": "2026-11-06T09:36:40+00:00",
+  "sources": {
+    "afroditscans": {
+      "name": "Afrodit Scans",
+      "theme": "uzaymanga",
+      "baseUrl": "https://afroditscans.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4918,
+        "contentType": "text/html; charset=UTF-8"
       },
+      "error": "home-403"
+    },
+    "amangaplanet": {
+      "name": "Amanga Planet",
+      "theme": "mangathemesia",
+      "baseUrl": "https://www.amangaplanet.com.tr",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 829222,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 18,
       "series": {
         "status": 200,
-        "slug": "black-clover",
-        "title": "Black Clover",
-        "chapters": 3,
-        "chaptersCount": "393",
-        "detailStatus": 200,
-        "detailChapters": 393
+        "slug": "suikastcinin-yeni-yasami",
+        "title": "Suikastçının Yeni Yaşamı",
+        "chapters": 12
       },
       "chapter": {
         "status": 200,
-        "pagesInApi": 20,
-        "scrambledPages": 20,
+        "bytes": 86496,
+        "imgTags": 25,
+        "pageImages": 16,
         "lockMarkers": [],
-        "imagesInDom": 20,
+        "decoded": 3,
         "imageProbe": [
           {
             "ok": true,
             "status": 200,
-            "contentType": "image/webp",
-            "bytes": 1149874,
-            "size": "1486x2100",
-            "format": "WEBP",
-            "host": "img.mangadenizi.net",
-            "name": "page1"
+            "contentType": "image/png",
+            "bytes": 2150221,
+            "size": "1956x804",
+            "format": "PNG"
           },
           {
             "ok": true,
             "status": 200,
             "contentType": "image/webp",
-            "bytes": 1135928,
-            "size": "1486x2100",
-            "format": "WEBP",
-            "host": "img.mangadenizi.net",
-            "name": "page2"
+            "bytes": 388480,
+            "size": "1133x850",
+            "format": "WEBP"
           },
           {
             "ok": true,
             "status": 200,
             "contentType": "image/webp",
-            "bytes": 765448,
-            "size": "1486x2100",
-            "format": "WEBP",
-            "host": "img.mangadenizi.net",
-            "name": "page3"
+            "bytes": 1870570,
+            "size": "800x13263",
+            "format": "WEBP"
           }
-        ],
-        "imageProbeWithReferer": {
-          "ok": true,
-          "status": 200,
-          "contentType": "image/webp",
-          "bytes": 1149874,
-          "size": "1486x2100",
-          "format": "WEBP",
-          "name": "page1+referer"
-        }
+        ]
+      }
+    },
+    "anikiga": {
+      "name": "Anikiga",
+      "theme": "madara",
+      "baseUrl": "https://anikiga.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 235631,
+        "contentType": "text/html; charset=UTF-8"
       },
-      "ok": true
+      "seriesFound": 19,
+      "series": {
+        "status": 200,
+        "slug": "ano-ko-ni-kubittake",
+        "title": "Ano Ko ni Kubittake",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "araznovel": {
+      "name": "ArazNovel",
+      "theme": "custom",
+      "baseUrl": "https://manga.araznovel.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5634,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "arcurafansub": {
+      "name": "Arcura Fansub",
+      "theme": "mangathemesia",
+      "baseUrl": "https://arcurafansub.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5609,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "diamondfansub": {
+      "name": "DiamondFansub",
+      "theme": "madara",
+      "baseUrl": "https://diamondfansub.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 233838,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 22,
+      "series": {
+        "status": 200,
+        "slug": "patron-kurt-ve-kucuk-patates",
+        "title": "Patron Kurt ve Küçük Patates",
+        "chapters": 2
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 158585,
+        "imgTags": 20,
+        "pageImages": 17,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 125299,
+            "size": "690x466",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 548997,
+            "size": "690x690",
+            "format": "PNG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 250261,
+            "size": "690x842",
+            "format": "JPEG"
+          }
+        ]
+      }
+    },
+    "eldermanga": {
+      "name": "Elder Manga",
+      "theme": "uzaymanga",
+      "baseUrl": "https://eldermanga.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4916,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "eskimangalar": {
+      "name": "Eski Mangalar",
+      "theme": "uzaymanga",
+      "baseUrl": "https://eskimangalar.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4918,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "gafeland": {
+      "name": "gafeland",
+      "theme": "mangathemesia",
+      "baseUrl": "https://gafeland.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5605,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "gaiatoon": {
+      "name": "Gaiatoon",
+      "theme": "mangathemesia",
+      "baseUrl": "https://gaiatoon.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5583,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "ghosthentai": {
+      "name": "GhosToon",
+      "theme": "madara",
+      "baseUrl": "https://ghostoon.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 491698,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 190,
+      "series": {
+        "status": 200,
+        "slug": "selena",
+        "title": "Selena",
+        "chapters": 64
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 314345,
+        "imgTags": 18,
+        "pageImages": 8,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 306233,
+            "size": "540x6678",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 230102,
+            "size": "540x6679",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 303083,
+            "size": "540x6678",
+            "format": "JPEG"
+          }
+        ]
+      }
+    },
+    "golgebahcesi": {
+      "name": "Gölge Bahçesi",
+      "theme": "custom",
+      "baseUrl": "https://golgebahcesi.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 606130,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "seriesFound": 50,
+      "series": {
+        "status": 200,
+        "slug": "seytan-kralin-kanali",
+        "title": "Şeytan Kralın Kanalı",
+        "chapters": 46
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 63664,
+        "imgTags": 2,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "hattorimanga": {
+      "name": "Hattori Manga",
+      "theme": "custom",
+      "baseUrl": "https://hattorimanga.net",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5609,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "hattoriscans": {
+      "name": "Hattori Scans",
+      "theme": "custom",
+      "baseUrl": "https://hattoriscans.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5587,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
     },
     "hayalistic": {
       "name": "Hayalistic",
       "theme": "madara",
       "baseUrl": "https://hayalistic.online",
-      "listing": {
+      "ok": false,
+      "home": {
         "status": 403,
-        "bytes": 5700,
+        "bytes": 5632,
         "contentType": "text/html; charset=UTF-8"
       },
-      "ok": false
+      "error": "home-403"
     },
-    "shijiescans": {
-      "name": "Shijie Scans",
-      "theme": "mangathemesia",
-      "baseUrl": "https://shijiescans.com",
-      "listing": {
+    "holyscans": {
+      "name": "Holy Scans",
+      "theme": "custom",
+      "baseUrl": "https://holyscans.com.tr",
+      "ok": false,
+      "home": {
         "status": 200,
-        "bytes": 130693,
-        "contentType": "text/html; charset=UTF-8",
-        "seriesFound": 36
+        "bytes": 279356,
+        "contentType": "text/html; charset=UTF-8"
       },
+      "seriesFound": 34,
       "series": {
         "status": 200,
-        "slug": "2-seviye-savas-tanrisi",
-        "title": "2. Seviye Savaş Tanrısı",
-        "chapterLinksFound": 46
+        "slug": "ideal-tipimi-buldum-ama-annesi-cikti",
+        "title": "İdeal Tipimi Buldum, Ama Annesi Çıktı!",
+        "chapters": 35
       },
       "chapter": {
         "status": 200,
-        "bytes": 53796,
+        "bytes": 202518,
+        "imgTags": 8,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "juratempest": {
+      "name": "JuraTempest",
+      "theme": "custom",
+      "baseUrl": "https://juratempe.st",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 538159,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "korelimanga": {
+      "name": "Koreli Manga",
+      "theme": "initmanga",
+      "baseUrl": "https://korelimanga.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 289032,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 47,
+      "series": {
+        "status": 200,
+        "slug": "kan-bagiyla-borclu",
+        "title": "Kan Bağıyla Borçlu",
+        "chapters": 25
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 96979,
+        "imgTags": 52,
+        "pageImages": 50,
         "lockMarkers": [],
-        "imagesInDom": 1,
-        "lazyPlaceholders": 0,
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 493542,
+            "size": "800x10736",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 94884,
+            "size": "800x4999",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 303172,
+            "size": "800x10000",
+            "format": "WEBP"
+          }
+        ]
+      }
+    },
+    "koreliscans": {
+      "name": "Koreli Scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://www.nabicix.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 187417,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 22,
+      "series": {
+        "status": 200,
+        "slug": "lookism",
+        "title": "Lookism",
+        "chapters": 633
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 136611,
+        "imgTags": 9,
+        "pageImages": 1,
+        "lockMarkers": [],
+        "decoded": 0,
         "imageProbe": [
           {
             "ok": false,
             "status": 200,
             "contentType": "image/svg+xml",
             "bytes": 1058,
-            "size": null,
-            "host": "shijiescans.com",
-            "name": "page1"
+            "error": "not-an-image"
           }
-        ],
-        "imageProbeWithReferer": {
-          "ok": false,
-          "status": 200,
-          "contentType": "image/svg+xml",
-          "bytes": 1058,
-          "size": null,
-          "name": "page1+referer"
-        }
+        ]
       },
-      "ok": true
+      "error": "images-not-real"
     },
-    "mangaruhu": {
-      "name": "MangaRuhu",
-      "theme": "initmanga",
-      "baseUrl": "https://mangaruhu.com",
-      "listing": {
-        "status": 403,
-        "bytes": 5603,
+    "kuroimanga": {
+      "name": "Kuroi Manga",
+      "theme": "madara",
+      "baseUrl": "https://kuroimanga.site",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 262735,
         "contentType": "text/html; charset=UTF-8"
       },
-      "ok": false
+      "seriesFound": 32,
+      "series": {
+        "status": 200,
+        "slug": "projection-oku",
+        "title": "Projection Oku",
+        "chapters": 53
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 269468,
+        "imgTags": 52,
+        "pageImages": 1,
+        "lockMarkers": [
+          "üye olmalısınız"
+        ],
+        "decoded": 0,
+        "imageProbe": [
+          {
+            "ok": false,
+            "error": "SSLError"
+          }
+        ]
+      },
+      "error": "login-wall"
+    },
+    "laviniafansub": {
+      "name": "Lavinia Fansub",
+      "theme": "madara",
+      "baseUrl": "https://laviniafansub.shop",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 199324,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 38,
+      "series": {
+        "status": 200,
+        "slug": "placebo-lets-playing-laviniafansub",
+        "title": "Placebo: Let’s Play",
+        "chapters": 1
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 273194,
+        "imgTags": 58,
+        "pageImages": 1,
+        "lockMarkers": [],
+        "decoded": 1,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 874689,
+            "size": "820x480",
+            "format": "PNG"
+          }
+        ]
+      }
+    },
+    "limonmanga": {
+      "name": "Limon Manga",
+      "theme": "uzaymanga",
+      "baseUrl": "https://limonmanga.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4916,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "lunascans": {
+      "name": "Luna Scans",
+      "theme": "madara",
+      "baseUrl": "https://tuhafscans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 347038,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 12,
+      "series": {
+        "status": 200,
+        "slug": "komsumsupheli",
+        "title": "Suspicious Neighbor",
+        "chapters": 4
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 309862,
+        "imgTags": 13,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "mangacix": {
+      "name": "MangaciX",
+      "theme": "custom",
+      "baseUrl": "https://mangacix.net",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 68415,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "mangadenizi": {
+      "name": "MangaDenizi",
+      "theme": "custom",
+      "baseUrl": "https://mangadenizi.net",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 158598,
+        "contentType": "text/html;charset=utf-8"
+      },
+      "seriesFound": 14,
+      "series": {
+        "status": 200,
+        "slug": "one-piece-renkli",
+        "title": "One Piece [Renkli]",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "mangadiyari": {
+      "name": "Manga Diyarı",
+      "theme": "custom",
+      "baseUrl": "https://mangadiyari.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 55182,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "mangadusleri": {
+      "name": "Mangadusleri",
+      "theme": "custom",
+      "baseUrl": null,
+      "ok": false,
+      "error": "no-base-url"
+    },
+    "mangakusu": {
+      "name": "Manga Kusu",
+      "theme": "mangathemesia",
+      "baseUrl": "https://mangakusu.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5670,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mangaportali": {
+      "name": "Manga Portalı",
+      "theme": "custom",
+      "baseUrl": "https://www.mangaportali.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5635,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mangaruhu": {
+      "name": "Manga Ruhu",
+      "theme": "initmanga",
+      "baseUrl": "https://mangaruhu.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5606,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mangaship": {
+      "name": "Manga Bahçesi",
+      "theme": "custom",
+      "baseUrl": "https://mangabahcesi.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 175402,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "mangatilkisi": {
+      "name": "MangaTilkisi",
+      "theme": "madara",
+      "baseUrl": "https://www.tilkiscans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 204321,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 24,
+      "series": {
+        "status": 200,
+        "slug": "murim-dunyasina-giris",
+        "title": "Murim Dünyasına Giriş",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "mangatr": {
+      "name": "Manga-TR",
+      "theme": "custom",
+      "baseUrl": "https://manga-tr.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 205667,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "mangawow": {
+      "name": "MangaWOW",
+      "theme": "madara",
+      "baseUrl": "https://mangawow.org",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 181530,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 35,
+      "series": {
+        "status": 200,
+        "slug": "ore-dake-haireru-kakushi-dungeon-kossori-kitaete-sekai-saikyou",
+        "title": "Ore dake Haireru Kakushi Dungeon: Kossori Kitaete Sekai Saikyou",
+        "chapters": 40
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 147300,
+        "imgTags": 27,
+        "pageImages": 22,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 132343,
+            "size": "1280x868",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 664720,
+            "size": "950x1364",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 565960,
+            "size": "950x1364",
+            "format": "JPEG"
+          }
+        ]
+      }
+    },
+    "mangawt": {
+      "name": "MangaWT",
+      "theme": "custom",
+      "baseUrl": "https://mangawt.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5604,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mangitto": {
+      "name": "Mangitto",
+      "theme": "custom",
+      "baseUrl": "https://mangtto.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4913,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "merlinscans": {
+      "name": "Merlin Scans",
+      "theme": "initmanga",
+      "baseUrl": "https://merlintoon.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5558,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mikrokosmosfansub": {
+      "name": "Mikrokosmos Fansub",
+      "theme": "zeistmanga",
+      "baseUrl": "https://mikrokosmosfb.blogspot.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 349866,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "milasub": {
+      "name": "MilaSub",
+      "theme": "madara",
+      "baseUrl": "https://millascan.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5584,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "mindafansub": {
+      "name": "Minda Fansub",
+      "theme": "madara",
+      "baseUrl": "https://mindafansub.dev",
+      "ok": false,
+      "home": {
+        "status": 502,
+        "bytes": 6410,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-502"
+    },
+    "monomanga": {
+      "name": "Mono Manga",
+      "theme": "custom",
+      "baseUrl": "https://monomanga.com.tr",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5631,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "moondaisyscans": {
+      "name": "Moon Daisy Scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://moondaisyscans.pro",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 219866,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 42,
+      "series": {
+        "status": 200,
+        "slug": "iseopun-aski",
+        "title": "Iseop’un Aşkı",
+        "chapters": 3
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 219866,
+        "imgTags": 68,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "nemesisscans": {
+      "name": "Nemesis scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://nemesisscans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 129533,
+        "contentType": "text/html;charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "nirvanamanga": {
+      "name": "Nirvana Manga",
+      "theme": "mangathemesia",
+      "baseUrl": "https://nirvanamanga.com",
+      "ok": false,
+      "home": {
+        "status": 521,
+        "bytes": 6998,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-521"
+    },
+    "niverafansub": {
+      "name": "Nivera Fansub",
+      "theme": "madara",
+      "baseUrl": "https://niverafansub.dev",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5587,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "norascans": {
+      "name": "Nora Scans",
+      "theme": "custom",
+      "baseUrl": "https://norascans.com",
+      "ok": false,
+      "home": {
+        "status": 502,
+        "bytes": 6398,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-502"
+    },
+    "okutoon": {
+      "name": "OkuToon",
+      "theme": "custom",
+      "baseUrl": "https://okutoon.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5710,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "opiatoon": {
+      "name": "Opiatoon",
+      "theme": "madara",
+      "baseUrl": "https://opiatoon.shop",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 227932,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 29,
+      "series": {
+        "status": 200,
+        "slug": "you-are-so-lovely",
+        "title": "Giriş Yapmalısınız",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "orimanga": {
+      "name": "Ori Manga",
+      "theme": "initmanga",
+      "baseUrl": "https://orimanga.net",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 274136,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 15,
+      "series": {
+        "status": 200,
+        "slug": "the-extras-academy-survival-guide",
+        "title": "The Extra’s Academy Survival Guide",
+        "chapters": 19
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 171517,
+        "imgTags": 40,
+        "pageImages": 8,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 6451518,
+            "size": "900x31341",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 4830342,
+            "size": "900x30000",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 5033155,
+            "size": "900x30000",
+            "format": "JPEG"
+          }
+        ]
+      }
+    },
+    "paradoxscans": {
+      "name": "Paradox Scans",
+      "theme": "initmanga",
+      "baseUrl": "https://paradoxscans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 676469,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 79,
+      "series": {
+        "status": 200,
+        "slug": "yeni-ise-baslayan-memur-eve-gitmeden-once-suclulari-avliyor",
+        "title": "Yeni İşe Başlayan Memur, Eve Gitmeden Önce Suçluları Avlıyor",
+        "chapters": 9
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 327626,
+        "imgTags": 46,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "patimanga": {
+      "name": "Pati Manga",
+      "theme": "mangathemesia",
+      "baseUrl": "https://www.patimanga.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 6029,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "ragnarscans": {
+      "name": "Ragnar Scans",
+      "theme": "initmanga",
+      "baseUrl": "https://ragnarscans.net",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 529573,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 73,
+      "series": {
+        "status": 200,
+        "slug": "klonlarla-otomatik-avlanma",
+        "title": "Klonlarla Otomatik Avlanma",
+        "chapters": 26
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 171438,
+        "imgTags": 44,
+        "pageImages": 2,
+        "lockMarkers": [],
+        "decoded": 1,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 144788,
+            "size": "900x4697",
+            "format": "WEBP"
+          },
+          {
+            "ok": false,
+            "status": 403,
+            "contentType": "",
+            "bytes": 0
+          }
+        ]
+      }
+    },
+    "raindropfansub": {
+      "name": "Raindrop Fansub",
+      "theme": "mangathemesia",
+      "baseUrl": "https://www.raindropteamfan.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 1686,
+        "contentType": "text/html"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "ruyamanga": {
+      "name": "Rüya Manga",
+      "theme": "madara",
+      "baseUrl": "https://www.ruyamanga2.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 110272,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 18,
+      "series": {
+        "status": 200,
+        "slug": "hukumdarlik-yolu",
+        "title": "Hükümdarlık Yolu",
+        "chapters": 3
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 84615,
+        "imgTags": 17,
+        "pageImages": 12,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 541248,
+            "size": "720x13500",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 431652,
+            "size": "720x11756",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 425366,
+            "size": "720x12580",
+            "format": "WEBP"
+          }
+        ]
+      }
+    },
+    "sereinscan": {
+      "name": "Serein Scan",
+      "theme": "mangathemesia",
+      "baseUrl": "https://sereinscan.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5607,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "shadowceviri": {
+      "name": "Shadow Çeviri",
+      "theme": "zeistmanga",
+      "baseUrl": "https://shadowceviri.blogspot.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 311689,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "shijiescans": {
+      "name": "Shijie Scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://shijiescans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 174146,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 38,
+      "series": {
+        "status": 200,
+        "slug": "vampir-aile",
+        "title": "Vampir Aile",
+        "chapters": 4
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 47342,
+        "imgTags": 5,
+        "pageImages": 1,
+        "lockMarkers": [],
+        "decoded": 0,
+        "imageProbe": [
+          {
+            "ok": false,
+            "status": 200,
+            "contentType": "image/svg+xml",
+            "bytes": 1058,
+            "error": "not-an-image"
+          }
+        ]
+      },
+      "error": "images-not-real"
+    },
+    "siyahmelek": {
+      "name": "Siyah Melek",
+      "theme": "initmanga",
+      "baseUrl": null,
+      "ok": false,
+      "error": "no-base-url"
+    },
+    "sleptmanga": {
+      "name": "Slept Manga",
+      "theme": "custom",
+      "baseUrl": "https://sleptmanga.com.tr",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5632,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "strayfansub": {
+      "name": "Stray Fansub",
+      "theme": "mangathemesia",
+      "baseUrl": "https://strayfansub.buzz",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5609,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "summertoon": {
+      "name": "SummerToon",
+      "theme": "mangathemesia",
+      "baseUrl": "https://summertoons.net",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 151701,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 28,
+      "series": {
+        "status": 200,
+        "slug": "garden-of-may",
+        "title": "Garden of May",
+        "chapters": 34
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 117462,
+        "imgTags": 2,
+        "pageImages": 0,
+        "lockMarkers": []
+      },
+      "error": "no-page-images"
+    },
+    "sunsetmanga": {
+      "name": "Sunset Manga",
+      "theme": "custom",
+      "baseUrl": "https://sunsetscans.com.tr",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 709237,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 34,
+      "series": {
+        "status": 200,
+        "slug": "close-family",
+        "title": "Close Family",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "tarotscans": {
+      "name": "Tarot Scans",
+      "theme": "madara",
+      "baseUrl": "https://www.tarotscans.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5633,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "tenshimanga": {
+      "name": "Tenshi Manga",
+      "theme": "uzaymanga",
+      "baseUrl": "https://tenshimanga.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4917,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "tonizutoon": {
+      "name": "TonizuToon",
+      "theme": "madara",
+      "baseUrl": "https://tonizu.top",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 162814,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 11,
+      "series": {
+        "status": 200,
+        "slug": "kis-ormani",
+        "title": "SıcakKış Ormanı",
+        "chapters": 10
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 183681,
+        "imgTags": 16,
+        "pageImages": 2,
+        "lockMarkers": [],
+        "decoded": 2,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 24150,
+            "size": "800x316",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/gif",
+            "bytes": 224910,
+            "size": "200x200",
+            "format": "GIF"
+          }
+        ]
+      }
+    },
+    "toontaku": {
+      "name": "Toontaku",
+      "theme": "custom",
+      "baseUrl": "https://toontaku.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 707217,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "seriesFound": 39,
+      "series": {
+        "status": 200,
+        "slug": "ote-lemin-zindan-hukumdari",
+        "title": "Öte Âlemin Zindan Hükümdarı (Tyrant of the Otherworld Prison: My Shado",
+        "chapters": 0
+      },
+      "error": "no-chapter-links"
+    },
+    "tortugaceviri": {
+      "name": "Tortuga Ceviri",
+      "theme": "madara",
+      "baseUrl": "https://tortugaceviri.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 117706,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 18,
+      "series": {
+        "status": 200,
+        "slug": "one-piece",
+        "title": "One Piece",
+        "chapters": 6
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 807025,
+        "imgTags": 26,
+        "pageImages": 17,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 130233,
+            "size": "900x500",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 1401873,
+            "size": "1115x1600",
+            "format": "PNG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 2831377,
+            "size": "2230x1600",
+            "format": "PNG"
+          }
+        ]
+      }
+    },
+    "trmanga": {
+      "name": "Tr Manga",
+      "theme": "custom",
+      "baseUrl": "https://trmanga.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 281449,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "turkcemangaoku": {
+      "name": "Türkçe Manga Oku",
+      "theme": "madara",
+      "baseUrl": "https://trmangaoku.com",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 353977,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 24,
+      "series": {
+        "status": 200,
+        "slug": "barbarin-oyun-rehberi",
+        "title": "Barbarın Oyun Rehberi",
+        "chapters": 40
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 219800,
+        "imgTags": 33,
+        "pageImages": 19,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 211562,
+            "size": "900x10000",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 528488,
+            "size": "900x9225",
+            "format": "WEBP"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 628920,
+            "size": "900x10000",
+            "format": "WEBP"
+          }
+        ]
+      }
+    },
+    "uzaymanga": {
+      "name": "Uzay Manga",
+      "theme": "uzaymanga",
+      "baseUrl": "https://uzaymanga.com",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 4915,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "webtoonhatti": {
+      "name": "Webtoon Hatti",
+      "theme": "madara",
+      "baseUrl": "https://webtoonhatti.club",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5610,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "webtoonia": {
+      "name": "Webtoonia",
+      "theme": "madara",
+      "baseUrl": "https://webtoonia.fun",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 211336,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 18,
+      "series": {
+        "status": 200,
+        "slug": "vampir-avciyla-karsilasiyor",
+        "title": "Vampir Avcıyla Karşılaşıyor",
+        "chapters": 24
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 115199,
+        "imgTags": 5,
+        "pageImages": 4,
+        "lockMarkers": [],
+        "decoded": 3,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 1143711,
+            "size": "1890x969",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 4892764,
+            "size": "800x10000",
+            "format": "JPEG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/jpeg",
+            "bytes": 534909,
+            "size": "800x1411",
+            "format": "JPEG"
+          }
+        ]
+      }
+    },
+    "webtoonoku": {
+      "name": "WebtoonOku",
+      "theme": "custom",
+      "baseUrl": "https://webtoonoku.org",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 244955,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 0,
+      "error": "no-series-links"
+    },
+    "yaoiflix": {
+      "name": "Yaoi Flix",
+      "theme": "madara",
+      "baseUrl": "https://yaoiflix.fit",
+      "ok": true,
+      "home": {
+        "status": 200,
+        "bytes": 161163,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 29,
+      "series": {
+        "status": 200,
+        "slug": "jinx",
+        "title": "Jinx",
+        "chapters": 129
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 170756,
+        "imgTags": 17,
+        "pageImages": 2,
+        "lockMarkers": [],
+        "decoded": 2,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 1388785,
+            "size": "1672x941",
+            "format": "PNG"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/png",
+            "bytes": 1301920,
+            "size": "1054x1493",
+            "format": "PNG"
+          }
+        ]
+      }
+    },
+    "yaoimangaoku": {
+      "name": "Yaoi Manga Oku",
+      "theme": "madara",
+      "baseUrl": "https://yaoimangaoku.net",
+      "ok": false,
+      "home": {
+        "status": 403,
+        "bytes": 5609,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "error": "home-403"
+    },
+    "zenithscans": {
+      "name": "Zenith Scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://zenithscans.com",
+      "ok": false,
+      "home": {
+        "status": 200,
+        "bytes": 233642,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "seriesFound": 32,
+      "series": {
+        "status": 200,
+        "slug": "rastgele-sohbetten-gelen-kiz",
+        "title": "Rastgele Sohbetten Gelen Kız",
+        "chapters": 201
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 145130,
+        "imgTags": 9,
+        "pageImages": 1,
+        "lockMarkers": [],
+        "decoded": 0,
+        "imageProbe": [
+          {
+            "ok": false,
+            "status": 200,
+            "contentType": "image/svg+xml",
+            "bytes": 1058,
+            "error": "not-an-image"
+          }
+        ]
+      },
+      "error": "images-not-real"
     }
   }
 }
