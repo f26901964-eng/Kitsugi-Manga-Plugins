@@ -2,7 +2,7 @@ package eu.kanade.tachiyomi.extension.tr.sadscans
 
 import eu.kanade.tachiyomi.source.model.Filter
 
-class SortFilter : Filter.Select<Pair<String, String>>("Sıralama", SORT_NAMES) {
+class SortFilter : Filter.Select<String>("Sıralama", SORT_NAMES) {
     val selected: Pair<String, String>
         get() = SORT_ORDERS[state]
 
