@@ -50,8 +50,16 @@ jobs:
           fi
       - name: Prepare and verify the new catalogs
         run: |
-          python3 tools/prepare_extension_release.py sadscans
-          python3 -m unittest discover -s tests -v
+          set -o pipefail
+          if ! { python3 tools/prepare_extension_release.py sadscans && python3 -m unittest discover -s tests -v; } 2>&1 | tee /tmp/prepare-sadscans.log; then
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            cp /tmp/prepare-sadscans.log "$GITHUB_WORKSPACE/prepare-sadscans.log"
+            git add "$GITHUB_WORKSPACE/prepare-sadscans.log"
+            git commit -m 'ci: sadscans prepare log [skip ci]' || true
+            git push origin "HEAD:${GITHUB_REF_NAME}" || true
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         with:
           name: sadscans-apk
