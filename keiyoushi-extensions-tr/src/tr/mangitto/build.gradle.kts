@@ -15,6 +15,7 @@ android {
 dependencies {
     testImplementation(libs.bundles.common)
     testImplementation(libs.junit)
+    testImplementation(libs.tachiyomi.lib.v16)
 }
 
 tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin") }.configureEach {
