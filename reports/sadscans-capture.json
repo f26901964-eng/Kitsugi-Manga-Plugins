@@ -1,0 +1,35 @@
+{
+  "base": "https://sadscans.net",
+  "pages": {
+    "seriler": {
+      "status": 403,
+      "blocked": true,
+      "title": "Attention Required! | Cloudflare",
+      "search_inputs": [],
+      "dropdown_containers": [],
+      "card_selectors": {
+        "a[href^=\"/seriler/\"] h3": 0,
+        "a[href*=\"/seriler/\"]": 0,
+        "h3": 0
+      },
+      "first_cards": [],
+      "sentinel": 0,
+      "body_head": "Sorry, you have been blocked\nYou are unable to access sadscans.net\nWhy have I been blocked?\n\nThis website is using a security service to protect itself from online attacks. The action you just performed triggered the security solution. There are several actions that could trigger this block including submitting a certain word or phrase, a SQL command or malformed data.\n\nWhat can I do to resolve this?\n\nYou can email the site owner to let them know you were blocked. Please include what you were do",
+      "search_error": "TimeoutError: locator.click: Timeout 5000ms exceeded.\nCall log:\n  - waiting for locator('input[placeholder*=\"Aramak\"], input[placeholder*=\"ara\"]').first()\n"
+    },
+    "detail": {
+      "skipped": "kart bağlantısı bulunamadı"
+    },
+    "reader": {
+      "skipped": "bölüm bağlantısı bulunamadı"
+    }
+  },
+  "transport": {
+    "page_fetch_getSeries": {
+      "status": 403,
+      "length": 5188,
+      "head": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta"
+    }
+  },
+  "notes": []
+}
