@@ -11,6 +11,7 @@ android {
     }
     sourceSets.named("test") {
         java.srcDir(rootDir.parentFile.resolve("tools/kitsugi-mangitto-bridge/src"))
+        kotlin.srcDir(rootDir.parentFile.resolve("tools/kitsugi-mangitto-bridge/src"))
     }
     testOptions { unitTests.isReturnDefaultValues = true }
 }

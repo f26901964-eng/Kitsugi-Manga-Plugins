@@ -42,7 +42,7 @@ jobs:
           mkdir -p ../reports/mangitto
           tail -150 /tmp/mangitto-tests.log > ../reports/mangitto/dto-tests.txt
           echo "EXIT_CODE=$status" >> ../reports/mangitto/dto-tests.txt
-          find src/tr/mangitto/build/test-results -name '*.xml' -exec cat {} \; > ../reports/mangitto/junit.xml
+          find src/tr/mangitto/build/test-results -name '*.xml' -exec cat {} \; > ../reports/mangitto/junit.xml || true
       - name: Preserve diagnostic evidence
         if: always()
         run: |
