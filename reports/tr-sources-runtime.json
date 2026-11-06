@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T10:17:07Z",
+  "generatedAt": "2026-11-06T10:24:44Z",
   "passed": 19,
   "total": 19,
   "checks": [
@@ -30,7 +30,7 @@
       "ok": true,
       "detail": {
         "seriesUrl": "https://hayalistic.site/manga/bir-hizmetciden-fazlasi/",
-        "bytes": 181316,
+        "bytes": 180701,
         "hasChapterWord": true,
         "bolumRefs": 165,
         "items": 124,
@@ -151,8 +151,8 @@
       "ok": true,
       "detail": {
         "status": 200,
-        "kind": "jpeg",
-        "bytes": 8876
+        "kind": "webp",
+        "bytes": 9386
       }
     }
   ]
