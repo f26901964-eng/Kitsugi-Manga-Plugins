@@ -18,6 +18,7 @@ import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -201,7 +202,8 @@ abstract class Sadscans : KeiSource() {
 
     private fun JsonElement.imageUrl(): String? = when (this) {
         is JsonObject -> (this["url"] ?: this["src"] ?: this["image"])?.jsonPrimitive?.contentOrNull
-        else -> jsonPrimitive.contentOrNull.takeIf { it.startsWith("http") || it.startsWith("/") }
+        is JsonPrimitive -> contentOrNull.takeIf { it.startsWith("http") || it.startsWith("/") }
+        else -> null
     }
 
     private fun JsonElement.imageUrlList(): List<String>? = when (this) {
@@ -226,14 +228,14 @@ abstract class Sadscans : KeiSource() {
         url = "/seriler/${slug ?: fallbackSlug}"
         title = postTitle?.trim()?.ifBlank { null } ?: fallbackSlug
         thumbnail_url = featuredImage?.let(::absolute)
-        description = this@PostDto.postContent ?: this@PostDto.description
+        description = this@toSMangaDetails.postContent ?: this@toSMangaDetails.description
         author = listOfNotNull(
-            this@PostDto.author?.trim()?.ifBlank { null },
-            this@PostDto.artist?.trim()?.ifBlank { null },
+            this@toSMangaDetails.author?.trim()?.ifBlank { null },
+            this@toSMangaDetails.artist?.trim()?.ifBlank { null },
         ).joinToString().ifBlank { null }
-        val genreNames = this@PostDto.genres.orEmpty().mapNotNull { it.name?.trim()?.ifBlank { null } }.distinct()
+        val genreNames = this@toSMangaDetails.genres.orEmpty().mapNotNull { it.name?.trim()?.ifBlank { null } }.distinct()
         if (genreNames.isNotEmpty()) genre = genreNames.joinToString()
-        status = when (this@PostDto.seriesStatus?.uppercase()) {
+        status = when (this@toSMangaDetails.seriesStatus?.uppercase()) {
             "ONGOING" -> SManga.ONGOING
             "COMPLETED" -> SManga.COMPLETED
             "HIATUS" -> SManga.ON_HIATUS
