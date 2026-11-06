@@ -24,13 +24,12 @@ abstract class OkuToon : KeiSource() {
 
     private val dateFormat = DateTimeFormatter.ofPattern("d MMMM yyyy", Locale.forLanguageTag("tr"))
 
-    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList("$baseUrl/tur?sira=popular&sayfa=$page".toHttpUrl())
+    override suspend fun getPopularManga(page: Int): MangasPage = parseMangaList(listingUrl(page, "popular"))
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList("$baseUrl/tur?sira=updated&sayfa=$page".toHttpUrl())
+    override suspend fun getLatestUpdates(page: Int): MangasPage = parseMangaList(listingUrl(page, "updated"))
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
-        val url = "$baseUrl/tur".toHttpUrl().newBuilder()
-        url.addQueryParameter("sayfa", page.toString())
+        val url = listingUrl(page, "updated")
 
         if (query.isNotEmpty()) {
             url.addQueryParameter("q", query)
@@ -38,9 +37,7 @@ abstract class OkuToon : KeiSource() {
 
         val sortFilter = filters.firstInstanceOrNull<SortFilter>()
         if (sortFilter != null) {
-            url.addQueryParameter("sira", sortFilter.toUriPart())
-        } else {
-            url.addQueryParameter("sira", "updated")
+            url.setQueryParameter("sira", sortFilter.toUriPart())
         }
 
         val statusFilter = filters.firstInstanceOrNull<StatusFilter>()
@@ -56,16 +53,24 @@ abstract class OkuToon : KeiSource() {
         return parseMangaList(url.build())
     }
 
+    // The site splits listings with "/tur?sayfa=N"; there is no path-based paging.
+    private fun listingUrl(page: Int, sort: String): HttpUrl.Builder =
+        "$baseUrl/tur".toHttpUrl().newBuilder()
+            .addQueryParameter("sira", sort)
+            .apply { if (page > 1) addQueryParameter("sayfa", page.toString()) }
+
     private suspend fun parseMangaList(url: HttpUrl): MangasPage {
         val document = client.get(url).asJsoup()
         val mangas = document.select(".series-grid .series-card").map { element ->
             SManga.create().apply {
+                // The card itself is the <a>; selectFirst("a") would look for a nested link.
                 setUrlWithoutDomain(element.attr("abs:href"))
                 title = element.selectFirst(".series-card-title")!!.text()
                 thumbnail_url = element.selectFirst(".series-card-cover img")?.attr("abs:src")
             }
         }
-        val hasNextPage = document.selectFirst("nav.pagination a.pagination-btn:contains(Sonraki)") != null
+        // Only an active "Sonraki" link means another page exists; the disabled state is a <span>.
+        val hasNextPage = document.selectFirst("nav.pagination a.pagination-btn[rel=next]") != null
         return MangasPage(mangas, hasNextPage)
     }
 
@@ -95,7 +100,7 @@ abstract class OkuToon : KeiSource() {
         else -> SManga.UNKNOWN
     }
 
-    // Site moved the chapter <a> inside a wrapper div; the link element no longer has the "chapter-item" class
+    // The chapter <a> sits inside a wrapper div, so the row itself carries .chapter-item.
     private fun chapterListParse(document: Document): List<SChapter> = document.select(".chapter-item").map { element ->
         SChapter.create().apply {
             setUrlWithoutDomain(element.selectFirst("a.chapter-item-link")!!.attr("abs:href"))
@@ -104,10 +109,18 @@ abstract class OkuToon : KeiSource() {
         }
     }
 
+    // The reader is Cloudflare-protected and the pages are lazy-loaded, so the image list has to
+    // be read from the lazy attributes too, not only from src.
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val document = client.get(getChapterUrl(chapter)).asJsoup()
-        return document.select("#readerPages img.reader-page").mapIndexed { index, img ->
-            Page(index, imageUrl = img.attr("abs:src"))
+        val images = document.select("#readerPages img.reader-page")
+            .ifEmpty { document.select("img.reader-page") }
+        return images.mapNotNull { img ->
+            val url = listOf("data-src", "data-lazy-src", "data-original", "src")
+                .asSequence()
+                .map { img.attr("abs:$it").trim() }
+                .firstOrNull { it.startsWith("http") && !it.startsWith("data:") }
+            url?.let { Page(images.indexOf(img), imageUrl = it) }
         }
     }
 

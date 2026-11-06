@@ -4,13 +4,14 @@ on:
   workflow_dispatch:
     inputs:
       modules:
-        description: 'Comma separated modules under src/tr (e.g. hayalistic,korelimanga)'
+        description: 'Comma separated modules under src/tr (e.g. okutoon)'
         required: true
-        default: 'hayalistic'
+        default: 'okutoon'
   push:
-    branches: [arena/58af4423-kitsugi-manga-plugins]
+    branches: [arena/777ee838-kitsugi-manga-plugins]
     paths:
-      - keiyoushi-extensions-tr/src/tr/hayalistic/build.gradle.kts
+      - keiyoushi-extensions-tr/src/tr/okutoon/build.gradle.kts
+      - keiyoushi-extensions-tr/src/tr/okutoon/src/**
       - tools/prepare_extension_release.py
       - tools/release_version.py
       - tools/apk_manifest.py
@@ -33,17 +34,17 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - name: Build the release APKs for the changed extensions
+      - name: Build the release APK
         working-directory: keiyoushi-extensions-tr
         run: |
           set -o pipefail
-          ./gradlew :src:tr:hayalistic:assembleRelease :src:tr:korelimanga:assembleRelease 2>&1 | tail -40
-      - name: Publish the APKs and synchronize the catalogs
+          ./gradlew :src:tr:okutoon:assembleRelease 2>&1 | tail -40
+      - name: Publish the APK and synchronize the catalogs
         run: |
           set -o pipefail
-          # The catalog entry is taken from each built APK's manifest, and a version code
-          # that would go backwards is refused instead of being published.
-          python3 tools/prepare_extension_release.py hayalistic korelimanga
+          # The catalog numbers come from the built APK's manifest; a version code that
+          # would go backwards is refused instead of being published.
+          python3 tools/prepare_extension_release.py okutoon
           python3 -m unittest discover -s tests
       - name: Commit the published artifacts
         run: |
@@ -55,6 +56,6 @@ jobs:
             echo 'Yayın zaten güncel.'
             exit 0
           fi
-          git commit -m 'hayalistic, korelimanga: publish the fixed APKs and catalogs [skip ci]'
+          git commit -m 'okutoon: publish the fixed APK and catalogs [skip ci]'
           git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

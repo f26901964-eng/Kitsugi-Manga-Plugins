@@ -3,9 +3,8 @@
 # main dalındaki değişiklikler GitHub Actions ile builds kataloğuna yayınlanır.
 tr/mangatr
 tr/mangacix
-tr/mangadenizi
-tr/hayalistic
-tr/korelimanga
-tr/turkcemangaoku
-tr/amangaplanet
+tr/okutoon
+# 2026-11-06: kullanıcı isteğiyle yalnız Manga-TR, MangaciX ve OkuToon bırakıldı.
+# Kaldırılanlar: mangadenizi, hayalistic, korelimanga, turkcemangaoku, amangaplanet
+# (bilinen mangaları kapsamıyor ve Türkçe adlar uygulama içi aramayla uyuşmuyordu).
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
