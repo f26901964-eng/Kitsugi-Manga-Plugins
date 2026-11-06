@@ -50,6 +50,13 @@ GENRE_FILTER_VALUES = [
     "Manhua", "Murim", "Sistem", "Şeytan", "Ters Harem",
 ]
 
+# Eski seriler türleri İngilizce etiketlerle taşıyor; `EnglishGenreFilter` bu listeyi gönderir.
+GENRE_ENGLISH_VALUES = [
+    "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Historical", "Isekai",
+    "Martial Arts", "Reincarnation", "Romance", "Shounen", "Shoujo", "Seinen",
+    "Slice of Life", "Webtoon", "Murim", "Harem", "Ecchi",
+]
+
 
 def strip_diacritics(value: str) -> str:
     """Türkçe metni aksansız/ASCII hâle getirir (ı -> i, ş -> s, ...).
@@ -303,24 +310,34 @@ class Probe:
                 relative=not raw.startswith("http"),
             )
 
+    def genre_totals(self, labels: list[str]) -> dict[str, int]:
+        totals: dict[str, int] = {}
+        for label in labels:
+            status, payload = self.get_json(f"/api/series?genre={quote(label)}&limit=1&page=1")
+            if status != 200 or not isinstance(payload, dict):
+                totals[label] = -1
+                continue
+            total = payload.get("total")
+            totals[label] = total if isinstance(total, int) else len(payload.get("series") or [])
+        return totals
+
     def check_genre_catalog(self) -> None:
-        """Filtre listesindeki her tür etiketi sitede karşılık buluyor mu."""
-        empty: list[str] = []
-        for genre in GENRE_FILTER_VALUES:
-            status, payload = self.get_json(f"/api/series?genre={quote(genre)}&limit=1&page=1")
-            series = (payload or {}).get("series") if isinstance(payload, dict) else None
-            count = len(series or [])
-            if status != 200:
-                self.record(f"genre-{genre}", False, http=status)
-            elif count == 0:
-                empty.append(genre)
-        self.record(
-            "genre-catalog",
-            not empty,
-            hard=False,
-            labels=len(GENRE_FILTER_VALUES),
-            empty=empty,
-        )
+        """Filtre gruplarındaki her etiket sitede karşılık buluyor mu; hangi etiket kaç seri."""
+        for name, labels in (
+            ("genre-catalog-tr", GENRE_FILTER_VALUES),
+            ("genre-catalog-en", GENRE_ENGLISH_VALUES),
+        ):
+            totals = self.genre_totals(labels)
+            present = {label: total for label, total in totals.items() if total > 0}
+            empty = [label for label, total in totals.items() if total <= 0]
+            self.record(
+                name,
+                not empty,
+                hard=False,
+                labels=len(labels),
+                present=present,
+                empty=empty,
+            )
 
     def check_genre_aliases(self) -> None:
         """Eski seriler İngilizce, yeni seriler Türkçe tür etiketi taşıyor.
@@ -328,36 +345,8 @@ class Probe:
         Eklenti filtrede hem Türkçe hem İngilizce etiketi göndereceği için hangi İngilizce
         etiketlerin gerçekten var olduğunu ve birleşik sorgunun iki listeyi de kapsadığını ölçer.
         """
-        candidates = [
-            "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Historical", "Horror",
-            "Isekai", "Martial Arts", "Mystery", "Reincarnation", "Romance", "Romantic",
-            "School Life", "Sci-Fi", "Science Fiction", "Shounen", "Shoujo", "Seinen", "Josei",
-            "Slice of Life", "Sports", "Supernatural", "Thriller", "Tragedy", "Mecha",
-            "Psychological", "Mature", "Webtoon", "System", "Demon", "Murim", "Reverse Harem",
-            "Harem", "Ecchi", "Adult", "Drama/Romance",
-        ]
-        found: dict[str, int] = {}
-        empty: list[str] = []
-        for label in candidates:
-            status, payload = self.get_json(f"/api/series?genre={quote(label)}&limit=1&page=1")
-            series = (payload or {}).get("series") if isinstance(payload, dict) else None
-            if status != 200:
-                continue
-            total = (payload or {}).get("total")
-            count = total if isinstance(total, int) else len(series or [])
-            if count:
-                found[label] = count
-            else:
-                empty.append(label)
-        self.record(
-            "genre-english-labels",
-            len(found) > 0,
-            hard=False,
-            found=found,
-            empty=len(empty),
-        )
-
-        # Türkçe etiket + İngilizce karşılığı tek sorguda geliyor mu (birleşim sayısı)?
+        # Virgülle ayrılmış liste VE (AND) anlamına geliyor; tekrarlı `genre` parametresi ise yok
+        # sayılıyor (yalnız ilki kullanılıyor). Filtreler buna göre tasarlanmalı.
         for turkish, english in (("Dram", "Drama"), ("Fantezi", "Fantasy"), ("Aksiyon", "Action")):
             _, single_tr = self.get_json(f"/api/series?genre={quote(turkish)}&limit=1&page=1")
             _, single_en = self.get_json(f"/api/series?genre={quote(english)}&limit=1&page=1")
@@ -365,14 +354,24 @@ class Probe:
             tr_total = (single_tr or {}).get("total") or 0
             en_total = (single_en or {}).get("total") or 0
             both_total = (both or {}).get("total") or 0
+            # AND: birleşim iki listeden de küçük/eşit olmalı, tek tek toplamdan büyük olmamalı.
             self.record(
-                f"genre-union-{turkish}",
-                both_total >= max(tr_total, en_total),
+                f"genre-and-{turkish}",
+                both_total <= max(tr_total, en_total),
                 hard=False,
                 tr=tr_total,
                 en=en_total,
-                union=both_total,
+                combined=both_total,
             )
+        _, first_only = self.get_json("/api/series?genre=Aksiyon&genre=Fantezi&limit=1&page=1")
+        _, aksiyon = self.get_json(f"/api/series?genre={quote('Aksiyon')}&limit=1&page=1")
+        self.record(
+            "genre-repeat-param",
+            ((first_only or {}).get("total") or 0) == ((aksiyon or {}).get("total") or 0),
+            hard=False,
+            repeated=(first_only or {}).get("total"),
+            single=(aksiyon or {}).get("total"),
+        )
 
     def check_web_routes(self, series: list[dict[str, Any]]) -> None:
         """Eklentinin ürettiği web adresleri gerçekten açılıyor mu (tarayıcıda açılan sayfa)."""

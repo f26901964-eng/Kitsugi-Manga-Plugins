@@ -56,6 +56,39 @@ class MangaDiyariTest {
     }
 
     @Test
+    fun `a malformed row is skipped instead of breaking the list`() {
+        val body = """
+            {"series":[
+              {"id":1,"title":"","slug":"bos-baslik"},
+              {"id":2,"title":"Basliksiz"},
+              {"id":3,"title":"Saglam","slug":"saglam"}
+            ],"total":3,"page":1,"hasMore":false}
+        """.trimIndent()
+        val response = json.decodeFromString<SeriesListResponse>(body)
+
+        // Parsing must not throw for a row missing a field; the row is simply not openable.
+        assertEquals(3, response.series.size)
+        assertNull(response.series[0].toSMangaOrNull(BASE))
+        assertNull(response.series[1].toSMangaOrNull(BASE))
+        assertEquals("saglam", response.series[2].toSMangaOrNull(BASE)?.url)
+    }
+
+    @Test
+    fun `genre filter sends both the turkish and the english label`() {
+        val filter = GenreFilter()
+        assertTrue(filter.toUriPart().isEmpty())
+
+        val aksiyon = filter.state.first { it.name == "Aksiyon" }
+        aksiyon.state = true
+        assertEquals("Aksiyon,Action", filter.toUriPart())
+
+        // A genre that only exists with one label must not send an extra value.
+        val isekai = filter.state.first { it.name == "Isekai" }
+        isekai.state = true
+        assertEquals("Aksiyon,Action,Isekai", filter.toUriPart())
+    }
+
+    @Test
     fun `details response tolerates missing alt names and chapters`() {
         val body = """
             {"series":{"id":24,"title":"İlahi Savaşçı","slug":"ilahi-savasci-goksel-hukumdar",

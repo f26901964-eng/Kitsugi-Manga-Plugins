@@ -31,8 +31,10 @@ class SeriesDetailsResponse(
 
 @Serializable
 class SeriesDto(
-    val slug: String,
-    private val title: String,
+    // Both are required by the app, not by the API: a single row without them must not make the
+    // whole list unparseable, so the defaults keep the response readable and the row is skipped.
+    val slug: String = "",
+    private val title: String = "",
     @SerialName("cover_url") private val coverUrl: String? = null,
     private val description: String? = null,
     private val author: String? = null,
@@ -72,6 +74,9 @@ class SeriesDto(
     )
 
     fun toSManga(baseUrl: String): SManga = toEntry(baseUrl).toSManga()
+
+    /** Rows without a slug or a title cannot be opened, so the list drops them instead of failing. */
+    fun toSMangaOrNull(baseUrl: String): SManga? = if (slug.isBlank() || title.isBlank()) null else toSManga(baseUrl)
 }
 
 /** The parts of a series the extension sends to the app; kept apart from [SManga] so it can be tested. */
@@ -100,7 +105,8 @@ data class SeriesEntry(
 @Serializable
 class ChapterDto(
     // `url` carries this id because `/api/chapters/{id}` is how the page list is read.
-    val id: Long,
+    // Defaulted so a single row without an id cannot break the whole chapter list.
+    val id: Long = 0,
     // The site stores unnumbered chapters, so this is not guaranteed.
     @SerialName("chapter_number") val chapterNumber: Float? = null,
     private val title: String? = null,

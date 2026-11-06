@@ -38,7 +38,7 @@ abstract class MangaDiyari : KeiSource() {
 
     override suspend fun getLatestUpdates(page: Int): MangasPage {
         val response = client.get(latestUpdatesUrl(baseUrl, page)).parseAs<LatestUpdatesResponse>()
-        return MangasPage(response.updates.map { it.toSManga(baseUrl) }, response.hasMore)
+        return MangasPage(response.updates.mapNotNull { it.toSMangaOrNull(baseUrl) }, response.hasMore)
     }
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
@@ -59,7 +59,7 @@ abstract class MangaDiyari : KeiSource() {
     ): MangasPage {
         val url = seriesListUrl(baseUrl, page, query, sort, type, status, genres)
         val response = client.get(url).parseAs<SeriesListResponse>()
-        return MangasPage(response.series.map { it.toSManga(baseUrl) }, response.hasMore)
+        return MangasPage(response.series.mapNotNull { it.toSMangaOrNull(baseUrl) }, response.hasMore)
     }
 
     override suspend fun getMangaByUrl(url: HttpUrl): SManga? {

@@ -43,51 +43,60 @@ class StatusFilter :
 class GenreCheckBox(name: String, val value: String) : Filter.CheckBox(name)
 
 /**
- * Genres are stored on the site in the language the series was added with, so the catalog mostly
- * carries the Turkish names (`Aksiyon`) while a few older entries carry the English ones (`Action`).
- * The values below are the Turkish names, which cover the larger part of the catalog; the server
- * accepts them case-insensitively. Duplicate selections are collapsed so a number is never sent twice.
+ * The site stores genres in the language the series was added with: the newer rows carry Turkish
+ * names (`Aksiyon`) and the older ones English names (`Action`), and the API matches the stored
+ * label exactly, so a single label list only ever finds one half of the catalog.
+ *
+ * Every entry below therefore sends the Turkish label first and, after it, the English label the
+ * same genre is stored under, joined with `,`. The API treats a comma separated list as **AND**, so
+ * `Aksiyon,Action` finds the rows that carry both labels. That is the right shape here: those rows
+ * are exactly the series that have this one genre.
  */
 class GenreFilter :
     Filter.Group<GenreCheckBox>(
         "Kategoriler",
         listOf(
-            "Aksiyon" to "Aksiyon",
-            "Macera" to "Macera",
-            "Komedi" to "Komedi",
-            "Dram" to "Dram",
-            "Fantastik" to "Fantezi",
-            "Tarihi" to "Tarihi",
-            "Korku" to "Korku",
-            "Isekai" to "Isekai",
-            "Dövüş Sanatları" to "Dövüş Sanatları",
-            "Gizem" to "Gizem",
-            "Reenkarnasyon" to "Reenkarnasyon",
-            "Romantik" to "Romantizm",
-            "Okul" to "Okul Hayatı",
-            "Bilim Kurgu" to "Bilim Kurgu",
-            "Doğaüstü" to "Doğaüstü",
-            "Gerilim" to "Gerilim",
-            "Ecchi" to "Ecchi",
-            "Harem" to "Harem",
-            "Josei" to "Josei",
-            "Yetişkin" to "Müstehcen",
-            "Mecha" to "Mecha",
-            "Psikolojik" to "Psikolojik",
-            "Seinen" to "Seinen",
-            "Shoujo" to "Shoujo",
-            "Shounen" to "Shounen",
-            "Günlük Yaşam" to "Günlük Yaşam",
-            "Spor" to "Spor",
-            "Trajedi" to "Trajedi",
-            "Webtoon" to "Webtoon",
-            "Manhwa" to "Manhwa",
-            "Manhua" to "Manhua",
-            "Murim" to "Murim",
-            "Sistem" to "Sistem",
-            "Şeytan" to "Şeytan",
-            "Ters Harem" to "Ters Harem",
-        ).map { GenreCheckBox(it.first, it.second) },
+            GenreCheckBox("Aksiyon", "Aksiyon,Action"),
+            GenreCheckBox("Macera", "Macera,Adventure"),
+            GenreCheckBox("Komedi", "Komedi,Comedy"),
+            GenreCheckBox("Dram", "Dram,Drama"),
+            GenreCheckBox("Fantastik", "Fantezi,Fantasy"),
+            GenreCheckBox("Tarihi", "Tarihi,Historical"),
+            GenreCheckBox("Korku", "Korku,Horror"),
+            GenreCheckBox("Isekai", "Isekai"),
+            GenreCheckBox("Dövüş Sanatları", "Dövüş Sanatları,Martial Arts"),
+            GenreCheckBox("Gizem", "Gizem,Mystery"),
+            GenreCheckBox("Reenkarnasyon", "Reenkarnasyon,Reincarnation"),
+            GenreCheckBox("Romantik", "Romantizm,Romance"),
+            GenreCheckBox("Okul", "Okul Hayatı,School Life"),
+            GenreCheckBox("Bilim Kurgu", "Bilim Kurgu,Science Fiction"),
+            GenreCheckBox("Doğaüstü", "Doğaüstü,Supernatural"),
+            GenreCheckBox("Gerilim", "Gerilim,Thriller"),
+            GenreCheckBox("Ecchi", "Ecchi"),
+            GenreCheckBox("Harem", "Harem"),
+            GenreCheckBox("Josei", "Josei"),
+            GenreCheckBox("Yetişkin", "Müstehcen,Mature"),
+            GenreCheckBox("Mecha", "Mecha"),
+            GenreCheckBox("Psikolojik", "Psikolojik,Psychological"),
+            GenreCheckBox("Seinen", "Seinen"),
+            GenreCheckBox("Shoujo", "Shoujo"),
+            GenreCheckBox("Shounen", "Shounen"),
+            GenreCheckBox("Günlük Yaşam", "Günlük Yaşam,Slice of Life"),
+            GenreCheckBox("Spor", "Spor,Sports"),
+            GenreCheckBox("Trajedi", "Trajedi,Tragedy"),
+            GenreCheckBox("Webtoon", "Webtoon"),
+            GenreCheckBox("Manhwa", "Manhwa"),
+            GenreCheckBox("Manhua", "Manhua"),
+            GenreCheckBox("Murim", "Murim"),
+            GenreCheckBox("Sistem", "Sistem"),
+            GenreCheckBox("Şeytan", "Şeytan,Demon"),
+            GenreCheckBox("Ters Harem", "Ters Harem,Reverse Harem"),
+        ),
     ) {
-    fun toUriPart(): String = state.filter { it.state }.distinctBy { it.value }.joinToString(",") { it.value }
+    /** Every selected group is sent in one `genre` parameter, comma separated; the API reads it as AND. */
+    fun toUriPart(): String = state.filter { it.state }.flatMap { it.value.split(',') }
+        .map { it.trim() }
+        .filter { it.isNotEmpty() }
+        .distinct()
+        .joinToString(",")
 }
