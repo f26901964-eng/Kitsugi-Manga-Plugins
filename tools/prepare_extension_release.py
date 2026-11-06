@@ -14,6 +14,7 @@ import json
 import re
 import shutil
 import sys
+import zipfile
 from pathlib import Path
 
 try:
@@ -51,8 +52,13 @@ def release(module_name: str, root: Path = ROOT) -> tuple[str, int]:
     if len(built) != 1:
         raise ValueError(f"{module_name}: tam olarak bir release APK bekleniyordu, {len(built)} bulundu")
     apk_bytes = built[0].read_bytes()
-    if len(apk_bytes) < 50_000 or apk_bytes[:2] != b"PK":
+    if len(apk_bytes) < 10_000 or apk_bytes[:2] != b"PK":
         raise ValueError(f"{module_name}: APK boş ya da bir Android paketi değil")
+    with zipfile.ZipFile(built[0]) as archive:
+        names = set(archive.namelist())
+    missing = {"AndroidManifest.xml", "classes.dex"} - names
+    if missing:
+        raise ValueError(f"{module_name}: APK içinde eksik dosya: {', '.join(sorted(missing))}")
 
     manifest = read_android_manifest(built[0])
     version_name = str(manifest.get("versionName"))

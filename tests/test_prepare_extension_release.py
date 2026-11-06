@@ -2,6 +2,7 @@ import json
 import shutil
 import tempfile
 import unittest
+import zipfile
 from pathlib import Path
 from unittest import mock
 
@@ -28,7 +29,11 @@ class PrepareExtensionReleaseTests(unittest.TestCase):
                 shutil.copyfile(source, target)
         module = self.dir / "keiyoushi-extensions-tr/src/tr" / MODULE
         (module / "build/outputs/apk/release").mkdir(parents=True)
-        (module / "build/outputs/apk/release/out.apk").write_bytes(b"PK\x03\x04" + b"0" * 60_000)
+        # A minimal but real zip: the release script checks the package layout.
+        apk = module / "build/outputs/apk/release/out.apk"
+        with zipfile.ZipFile(apk, "w") as archive:
+            archive.writestr("AndroidManifest.xml", b"\x03\x00\x08\x00")
+            archive.writestr("classes.dex", b"dex\n035\x00" + b"\x00" * 12_000)
         shutil.copyfile(ROOT / f"keiyoushi-extensions-tr/src/tr/{MODULE}/build.gradle.kts",
                         module / "build.gradle.kts")
         theme = self.dir / "keiyoushi-extensions-tr/lib-multisrc/madara"
