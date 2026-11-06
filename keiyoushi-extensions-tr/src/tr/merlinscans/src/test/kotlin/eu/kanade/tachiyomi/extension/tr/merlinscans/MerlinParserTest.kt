@@ -20,7 +20,7 @@ class MerlinParserTest {
         assertEquals(1, page.mangas.size)
         assertEquals("Tembel Soylunun Değişimi", page.mangas.single().title)
         assertEquals("/seri/tembel-soylunun-degisimi/", page.mangas.single().url)
-        assertEquals("https://merlintoon.com/cover.webp", page.mangas.single().thumbnail_url)
+        assertEquals("https://merlintoon.com/cover.webp", page.mangas.single().thumbnail)
         assertTrue(page.hasNextPage)
     }
 

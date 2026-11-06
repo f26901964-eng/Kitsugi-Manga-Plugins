@@ -29,7 +29,14 @@ abstract class MerlinScans : InitManga() {
             .addPathSegment("")
             .build()
         val document = client.get(url).asJsoup()
-        return MerlinParser.searchResults(document, baseUrl)
+        val result = MerlinParser.searchResults(document, baseUrl)
+        return MangasPage(result.mangas.map { item ->
+            SManga.create().apply {
+                title = item.title
+                url = item.url
+                thumbnail_url = item.thumbnail
+            }
+        }, result.hasNextPage)
     }
 
     override suspend fun pageListParse(document: Document, chapterUrl: String): List<Page> {
