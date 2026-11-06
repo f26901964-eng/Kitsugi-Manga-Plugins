@@ -261,6 +261,19 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   ]);
   assert.ok(env.scrolls() > 0, 'lazy görseller için kaydırma denenmeli');
 
+  // Görseller CDN alan adına taşınmış olsa da bölüm kimliğiyle kapsamlanmalı.
+  const cdn = environment(`<html><body><main>
+    <img src="https://cdn.sadscans.net/chapter123/01.webp">
+    <img data-src="https://cdn.sadscans.net/chapter123/02.webp">
+    <img src="https://cdn.sadscans.net/site/banner.png">
+  </main></body></html>`, {path: '/reader/chainsaw-man/1-bolum/chapter123'});
+  Object.defineProperty(cdn.window.document.documentElement, 'scrollHeight', {value: 3000, configurable: true});
+  const cdnRaw = await drive(cdn, templates[2].replace('$id', JSON.stringify('chapter123')), 40);
+  assert.deepEqual(JSON.parse(cdnRaw).urls, [
+    'https://cdn.sadscans.net/chapter123/01.webp',
+    'https://cdn.sadscans.net/chapter123/02.webp',
+  ], 'CDN alan adındaki bölüm görselleri alınmalı, banner alınmamalı');
+
   const schemaOnly = environment('<html><body><script type="application/ld+json">{"image":"https://sadscans.net/api/uploads/assets/series/a/chapter123/images/cover.jpg"}</script></body></html>', {
     path: '/reader/s/c/chapter123',
   });

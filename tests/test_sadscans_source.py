@@ -83,9 +83,15 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('/api/trpc/_s4d7g2k9m0.getSeries', script)
         self.assertIn('/api/trpc/_n3p6q1v8x5.getSeriesData', script)
 
+    def test_reader_tolerates_cdn_hosts(self):
+        script = FRONTEND.read_text(encoding='utf-8')
+        reader = script.split('fun readerScript(', 1)[1]
+        self.assertNotIn("url.host !== location.host", reader, 'bölüm görselleri CDN\'de olabilir')
+        self.assertIn("lower.indexOf('/banner')", reader)
+
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 9', gradle)
+        self.assertIn('versionCode = 10', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

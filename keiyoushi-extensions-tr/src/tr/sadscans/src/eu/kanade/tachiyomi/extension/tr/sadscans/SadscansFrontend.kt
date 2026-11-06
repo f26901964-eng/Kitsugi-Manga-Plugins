@@ -38,7 +38,8 @@ internal object SadscansFrontend {
               if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
                 return out({error: 'SadScans bu bağlantıyı engelledi (Cloudflare). Siteyi tarayıcıda bir kez açıp tekrar deneyin.'});
               }
-              if (location.pathname !== '/seriler') return null;
+              var route = location.pathname.replace(/\/+$/, '');
+              if (route !== '/seriler') return null;
               var input = document.querySelector('input[placeholder="Aramak istediğiniz seriyi yazın"]');
               if (!input) return null;
 
@@ -518,15 +519,19 @@ internal object SadscansFrontend {
                   if (!raw) continue;
                   var url;
                   try { url = new URL(raw, location.href); } catch (e) { continue; }
-                  if (url.host !== location.host) continue;
                   var path = url.pathname;
-                  if (path.indexOf('/images/') < 0) continue;
-                  if (path.indexOf('logo') >= 0) continue;
-                  if (path.indexOf('/slider/') >= 0) continue;
+                  var lower = path.toLowerCase();
+                  // Site arayüz görselleri (logo, banner, slider, küçük resim) bölüm sayılmaz.
+                  if (lower.indexOf('logo') >= 0 || lower.indexOf('/slider/') >= 0) continue;
+                  if (lower.indexOf('favicon') >= 0 || lower.indexOf('/icons/') >= 0) continue;
+                  if (lower.indexOf('thumb_') >= 0 || lower.indexOf('/avatar') >= 0 || lower.indexOf('/banner') >= 0) continue;
+                  // Bölüm görselleri CDN'e taşınmış olabilir: alan adına değil, yola bakılır.
+                  var looksLikeImage = /\.(jpe?g|png|webp|gif|avif)$/.test(lower) || lower.indexOf('/images/') >= 0;
+                  if (!looksLikeImage) continue;
                   var entry = {url: url.href, order: index};
                   if (path.indexOf('/' + id + '/') >= 0) {
                     scoped.push(entry);
-                  } else if (path.indexOf('/api/uploads/assets/series/') === 0 && path.indexOf('/images/thumb_') < 0) {
+                  } else if (lower.indexOf('/images/') >= 0 || lower.indexOf('/api/uploads/') >= 0) {
                     loose.push(entry);
                   }
                 }
@@ -568,7 +573,7 @@ internal object SadscansFrontend {
                 var stepSize = window.innerHeight || 900;
                 var height = (document.documentElement && document.documentElement.scrollHeight) || 0;
                 if (y + stepSize < height) {
-                  window.scrollTo(0, y + stepSize);
+                  window.scrollTo(0, y + stepSize * 2);
                   state.scrolls++;
                   return null;
                 }
