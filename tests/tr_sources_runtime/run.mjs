@@ -69,12 +69,19 @@ async function hayalistic() {
   const archive = await get(`${base}/manga/?m_orderby=views`);
   check('hayalistic: archive listing answers 200', archive.ok, { status: archive.status });
   const cards = countMatches(archive.text, /class="page-item-detail[^"]*"/g);
+  const cardLinks = countMatches(archive.text, /class="page-item-detail[\s\S]{0,2000}?href="https:\/\/hayalistic\.site\/manga\//g);
   check('hayalistic: archive cards found (div.page-item-detail)', cards > 0, { cards });
 
-  const seriesUrls = links(archive.text, /https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\//g).filter(
-    (u) => !/\/manga\/(page|manga-genre)\//.test(u),
+  // Only take links that sit inside an archive card, otherwise the pager/feed links
+  // (/manga/page/2/, /manga/feed/) get picked and the run tests the wrong page.
+  const seriesUrls = links(
+    archive.text,
+    /class="page-item-detail[\s\S]{0,2000}?href="(https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\/)"/g,
   );
-  check('hayalistic: series links found', seriesUrls.length > 0, { first: seriesUrls[0] ?? null });
+  check('hayalistic: series links found inside the archive cards', cardLinks > 0, {
+    cardLinks,
+    first: seriesUrls[0] ?? null,
+  });
   if (!seriesUrls.length) return;
 
   const seriesUrl = seriesUrls[0];
