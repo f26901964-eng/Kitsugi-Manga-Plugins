@@ -27,6 +27,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - name: Check Turkish chapter dates
+        run: java tests/tortugaceviri_runtime/TurkishDateCheck.java
       - uses: gradle/actions/setup-gradle@v4
       - name: Enable source and build APK
         run: |
@@ -36,7 +38,8 @@ jobs:
       - name: Record certificate fingerprints
         run: |
           APKSIGNER=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
-          "$APKSIGNER" verify --print-certs prebuilt/apk/tachiyomi-tr.tortugaceviri-v1.6.57.apk | grep 'certificate SHA-256 digest' > /tmp/old-cert
+          OLD_APK=$(python3 -c 'import json; print(next(x["apk"] for x in json.load(open("registry/extensions.json")) if x["pkg"].endswith(".tortugaceviri")))')
+          "$APKSIGNER" verify --print-certs "prebuilt/apk/$OLD_APK" | grep 'certificate SHA-256 digest' > /tmp/old-cert
           "$APKSIGNER" verify --print-certs keiyoushi-extensions-tr/src/tr/tortugaceviri/build/outputs/apk/release/*.apk | grep 'certificate SHA-256 digest' > /tmp/new-cert
           echo 'Archive certificate:'; cat /tmp/old-cert
           echo 'New certificate:'; cat /tmp/new-cert
