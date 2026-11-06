@@ -90,6 +90,24 @@
             "type": "manga"
           }
         ]
+      },
+      {
+        "name": "Turkmanga",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.turkmanga",
+        "versionName": "1.6.2",
+        "versionCode": "106002",
+        "contentWarning": "CONTENT_WARNING_NSFW",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.turkmanga-v1.6.2.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.turkmanga.png"
+        },
+        "sources": [
+          {
+            "name": "Turkmanga",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
       }
     ]
   }
