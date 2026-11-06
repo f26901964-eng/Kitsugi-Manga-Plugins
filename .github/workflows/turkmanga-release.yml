@@ -43,13 +43,12 @@ jobs:
           set -e
           tail -n 80 /tmp/turkmanga-gradle.log
           if [ "$result" -ne 0 ]; then
-            failed_line=$(grep -n -m1 ':spotlessKotlinApply FAILED' /tmp/turkmanga-gradle.log | cut -d: -f1 || true)
-            if [ -n "$failed_line" ]; then
-              start_line=$((failed_line > 8 ? failed_line - 8 : 1))
-              end_line=$((failed_line + 40))
-              mapfile -t diagnostics < <(sed -n "${start_line},${end_line}p" /tmp/turkmanga-gradle.log)
+            failure_line=$(grep -n -F -m1 '* What went wrong:' /tmp/turkmanga-gradle.log | cut -d: -f1 || true)
+            if [ -n "$failure_line" ]; then
+              end_line=$((failure_line + 30))
+              mapfile -t diagnostics < <(sed -n "${failure_line},${end_line}p" /tmp/turkmanga-gradle.log)
             else
-              mapfile -t diagnostics < <(tail -n 35 /tmp/turkmanga-gradle.log)
+              mapfile -t diagnostics < <(grep -E 'What went wrong|Execution failed|Caused by:|Exception|Error|error|Could not|FAILED|spotlessKotlinApply' /tmp/turkmanga-gradle.log | tail -n 30)
             fi
             for line in "${diagnostics[@]}"; do
               line=${line//'%'/'%25'}
