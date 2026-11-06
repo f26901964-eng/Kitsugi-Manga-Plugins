@@ -51,7 +51,6 @@ class CategoryFilter(state: Int = 0) :
             Pair("Fantastik", "fantastik"),
             Pair("Gerilim", "gerilim"),
             Pair("Gizem", "gizem"),
-            Pair("Hayattan Bir Parça", "hayattan-bir-parca"),
             Pair("Hayattan Kesitler", "hayattan-kesitler"),
             Pair("Komedi", "komedi"),
             Pair("Korku", "korku"),
