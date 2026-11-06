@@ -5,7 +5,7 @@ Depo adresi: `https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plug
 ## Bir eklenti güncellemesi nasıl yayınlanır
 
 1. `keiyoushi-extensions-tr/src/tr/<eklenti>/build.gradle.kts` içinde `versionCode` değerini **bir artırın** (bu sayı kaynak numarasıdır; temanın `baseVersionCode` değeri derlemede üzerine eklenir).
-2. `tr-extension-release.yml` iş akışını çalıştırın (`modules` girdisine eklentiyi yazın).
+2. Mevcut eklentiler için ilgili APK iş akışını çalıştırın. Turkmanga için `Turkmanga parser verification and APK release` iş akışı kullanılır.
 3. İş akışı APK'yı derler, **katalog sürümünü doğrudan APK'nın manifestinden** okur ve katalogları eşitler.
 
 Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
@@ -15,14 +15,20 @@ Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
 
 ## Etkin eklentiler
 
-Yayında dört eklenti var; diğer tüm TR kaynakları kapatıldı (`enabled_plugins.txt`).
+Bu dal, `main`deki beş kaynağı (SadScans dahil) koruyup Turkmanga'yı altıncı olarak etkinleştirir. GitHub Actions `1.6.2` (`106002`) APK'sını derleyip parser testlerini ve altı kaynaklı katalog senkronizasyonunu başarıyla tamamladı. APK ile katalog dosyaları bu dala kaydedildi; genel `builds` dağıtımını `main` dalındaki katalog yayın iş akışı günceller.
 
 | Eklenti | Site | Sürüm | Kod |
 |---|---|---|---|
 | Manga-TR | https://mangatr.net | 1.6.35 | 106035 |
 | MangaciX | https://mangacix.com | 1.6.2 | 106002 |
 | Mangitto | https://mangtto.com | 1.6.3 | 106003 |
-| OkuToon | https://okutoon.com | 1.6.9 | 106009 |
+| OkuToon | https://okutoon.com | 1.6.11 | 106011 |
+| SadScans | https://sadscans.net | 1.6.1 | 106001 |
+| Turkmanga | https://turkmanga.org | 1.6.2 (CI doğrulandı) | 106002 |
+
+## Turkmanga CI doğrulaması
+
+[Turkmanga parser verification and APK release](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42241616480) çalışması başarılı oldu: parser birim testleri ve APK derlemesi geçti; altı kaynaklı katalog senkronizasyonu ve depo testleri tamamlandı. APK `prebuilt/apk/tachiyomi-tr.turkmanga-v1.6.2.apk` yolunda bulunur (SHA-256 `1e6d06e1f73c0f716bcc9d0467843f88ce705a176c0887aba910a8ff906b4b77`). Testler paylaşılan HTML biçimlerinden alınan fixtures üzerindedir; canlı siteye veya uygulama cihazına uçtan uca istek yapılmadı.
 
 ## Canlı doğrulama
 
