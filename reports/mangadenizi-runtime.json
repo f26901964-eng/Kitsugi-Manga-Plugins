@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-11-06T09:50:56Z",
+  "baseUrl": "https://mangadenizi.net",
+  "passed": 9,
+  "total": 9,
+  "checks": [
+    {
+      "name": "descrambler inverts the tiled-v1 scheme",
+      "ok": true
+    },
+    {
+      "name": "a wrong seed stays scrambled",
+      "ok": true
+    },
+    {
+      "name": "restored page survives the pipeline",
+      "ok": true
+    },
+    {
+      "name": "popular listing parses like MangaListDataDto",
+      "ok": true
+    },
+    {
+      "name": "series detail parses like MangaDetailsData",
+      "ok": true
+    },
+    {
+      "name": "reader payload parses like ReaderDto",
+      "ok": true
+    },
+    {
+      "name": "pages arrive in reading order",
+      "ok": true
+    },
+    {
+      "name": "page image downloads without a referer",
+      "ok": true
+    },
+    {
+      "name": "descrambled page renders real artwork",
+      "ok": true
+    }
+  ]
+}

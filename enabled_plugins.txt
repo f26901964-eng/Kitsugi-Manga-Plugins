@@ -5,4 +5,7 @@ tr/mangatr
 tr/mangacix
 tr/mangadenizi
 tr/hayalistic
+tr/korelimanga
+tr/turkcemangaoku
+tr/amangaplanet
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.

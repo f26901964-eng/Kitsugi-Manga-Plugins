@@ -42,5 +42,38 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.hayalistic-v1.6.61.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.hayalistic.png"
+  },
+  {
+    "name": "Koreli Manga",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.korelimanga",
+    "apk": "tachiyomi-tr.korelimanga-v1.6.3.apk",
+    "lang": "tr",
+    "code": 106003,
+    "version": "1.6.3",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.korelimanga-v1.6.3.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.korelimanga.png"
+  },
+  {
+    "name": "Türkçe Manga Oku",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.turkcemangaoku",
+    "apk": "tachiyomi-tr.turkcemangaoku-v1.6.56.apk",
+    "lang": "tr",
+    "code": 106056,
+    "version": "1.6.56",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.turkcemangaoku-v1.6.56.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.turkcemangaoku.png"
+  },
+  {
+    "name": "Amanga Planet",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.amangaplanet",
+    "apk": "tachiyomi-tr.amangaplanet-v1.6.1.apk",
+    "lang": "tr",
+    "code": 106001,
+    "version": "1.6.1",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.amangaplanet-v1.6.1.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.amangaplanet.png"
   }
 ]
