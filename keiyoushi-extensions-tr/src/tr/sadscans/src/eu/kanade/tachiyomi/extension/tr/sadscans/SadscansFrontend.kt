@@ -38,10 +38,27 @@ internal object SadscansFrontend {
               if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
                 return out({error: 'SadScans bu bağlantıyı engelledi (Cloudflare). Siteyi tarayıcıda bir kez açıp tekrar deneyin.'});
               }
+              if (/Just a moment|Checking your browser|Verifying you are human|Verify you are human/i.test(text)) {
+                return out({error: 'SadScans tarayıcı doğrulaması istiyor. Uygulama içi tarayıcıda sadscans.net adresini açıp doğrulamayı geçin, sonra tekrar deneyin.'});
+              }
               var route = location.pathname.replace(/\/+$/, '');
-              if (route !== '/seriler') return null;
-              var input = document.querySelector('input[placeholder="Aramak istediğiniz seriyi yazın"]');
-              if (!input) return null;
+              if (route !== '/seriler' && route.indexOf('/seriler/') !== 0) return null;
+
+              // Arama kutusu tRPC kademesi için gerekli değil: kutu adı değişse bile arama
+              // çalışsın diye kutu yalnızca arayüz yedeğinde ve esnek biçimde aranır.
+              function searchInput() {
+                var exact = document.querySelector('input[placeholder="Aramak istediğiniz seriyi yazın"]');
+                if (exact) return exact;
+                var inputs = document.querySelectorAll('input');
+                for (var i = 0; i < inputs.length; i++) {
+                  var candidate = inputs[i];
+                  var kind = (candidate.getAttribute('type') || 'text').toLowerCase();
+                  if (kind !== 'text' && kind !== 'search') continue;
+                  if (candidate.disabled || candidate.readOnly) continue;
+                  return candidate;
+                }
+                return null;
+              }
 
               function normalize(value) {
                 return String(value)
@@ -73,12 +90,53 @@ internal object SadscansFrontend {
                 return list;
               }
 
-              function trpcUrl(search, pageNumber) {
+              var DEFAULT_ROUTER = '_s4d7g2k9m0';
+
+              // Site her derlemede tRPC yönlendirici adını (build hash) değiştirebiliyor. Adı
+              // sabit varsaymak, site güncellendiği gün aramayı sessizce kırar. Bu yüzden ad,
+              // sayfanın kendi JS parçalarındaki "getSeries" çağrısından öğrenilir.
+              function discoverRouters() {
+                var box = {state: 'pending', map: {}};
+                var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
+                var urls = [];
+                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                if (!urls.length || typeof fetch !== 'function') {
+                  box.state = 'ok';
+                  return box;
+                }
+                var index = 0;
+                function step() {
+                  if (index >= urls.length) { box.state = 'ok'; return; }
+                  var target = urls[index++];
+                  try {
+                    fetch(target, {credentials: 'same-origin'})
+                      .then(function(response) { return response.ok ? response.text() : ''; })
+                      .then(function(source) {
+                        var pattern = /([A-Za-z0-9_]{4,60})\.(getSeriesData|getSeries)\b/g;
+                        var match;
+                        while ((match = pattern.exec(source)) !== null) box.map[match[2]] = match[1];
+                        step();
+                      })
+                      .catch(step);
+                  } catch (e) {
+                    step();
+                  }
+                }
+                step();
+                return box;
+              }
+
+              function routerName(box) {
+                var discovered = box && box.map ? box.map.getSeries : null;
+                return discovered || DEFAULT_ROUTER;
+              }
+
+              function trpcUrl(search, pageNumber, router) {
                 var payload = {sortBy: options.sort, page: pageNumber, limit: 15};
                 if (search) payload.search = search;
                 if (options.type) payload.type = options.type;
                 if (options.status) payload.status = options.status;
-                return '/api/trpc/_s4d7g2k9m0.getSeries?batch=1&input=' +
+                return '/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input=' +
                   encodeURIComponent(JSON.stringify({0: {json: payload}}));
               }
 
@@ -100,7 +158,7 @@ internal object SadscansFrontend {
                 }
               }
 
-              function request(search, pageNumber) {
+              function request(search, pageNumber, router) {
                 var box = {state: 'pending', items: null};
                 if (typeof fetch !== 'function') {
                   box.state = 'bad';
@@ -108,7 +166,7 @@ internal object SadscansFrontend {
                   return box;
                 }
                 try {
-                  fetch(trpcUrl(search, pageNumber), {credentials: 'same-origin', headers: {accept: 'application/json'}})
+                  fetch(trpcUrl(search, pageNumber, router), {credentials: 'same-origin', headers: {accept: 'application/json'}})
                     .then(function(response) { return response.ok ? response.text() : null; })
                     .then(function(body) {
                       var items = body ? parseBatch(body) : null;
@@ -129,17 +187,22 @@ internal object SadscansFrontend {
                 var seen = {};
                 for (var i = 0; i < anchors.length; i++) {
                   var anchor = anchors[i];
-                  var title = anchor.querySelector('h3');
-                  if (!title) continue;
                   var path;
                   try { path = new URL(anchor.href, location.href).pathname; } catch (e) { continue; }
                   if (path.indexOf('/seriler/') !== 0) continue;
+                  if (path.split('/').filter(Boolean).length < 2) continue;
                   if (seen[path]) continue;
-                  seen[path] = 1;
+                  // Başlık her zaman h3 olmayabilir; sırayla denenir.
+                  var label = anchor.querySelector('h3, h2, h4, [class*="title"], [class*="Title"]');
+                  var name = label ? label.textContent.trim() : '';
+                  if (!name) name = (anchor.getAttribute('title') || anchor.getAttribute('aria-label') || '').trim();
                   var image = anchor.querySelector('img');
+                  if (!name && image) name = (image.getAttribute('alt') || '').trim();
+                  if (!name) continue;
+                  seen[path] = 1;
                   result.push({
                     href: path,
-                    name: title.textContent.trim(),
+                    name: name,
                     thumb: image ? (image.currentSrc || image.src || null) : null
                   });
                 }
@@ -187,7 +250,9 @@ internal object SadscansFrontend {
                   status: options.status,
                   t0: now,
                   phase: 'api',
-                  api: request(search, options.page),
+                  routers: discoverRouters(),
+                  api: request(search, options.page, null),
+                  retried: false,
                   raw: null,
                   rawAt: 0,
                   dom: null
@@ -203,6 +268,16 @@ internal object SadscansFrontend {
                 }
                 if (api.state === 'ok' && api.items.length) {
                   return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api'});
+                }
+                // Sabit yönlendirici adı işe yaramadıysa sayfadan öğrenilen adla bir kez dene.
+                if (!state.retried) {
+                  if (state.routers && state.routers.state === 'pending' && now - state.t0 < 15000) return null;
+                  var learned = routerName(state.routers);
+                  state.retried = true;
+                  if (learned !== DEFAULT_ROUTER) {
+                    state.api = request(normalize(options.query), options.page, learned);
+                    return null;
+                  }
                 }
                 if (options.query && state.raw === null) {
                   state.raw = request(options.query, options.page);
@@ -228,6 +303,11 @@ internal object SadscansFrontend {
               if (dom.pause && now < dom.pause) return null;
 
               if (dom.step === 'prepare') {
+                var input = searchInput();
+                if (!input) {
+                  if (now - state.t0 < 20000) return null;
+                  return out({error: 'SadScans arama kutusu bulunamadı; sayfa beklenen hâle gelmedi. Siteyi uygulama içi tarayıcıda açıp tekrar deneyin.'});
+                }
                 var hydrated = false;
                 for (var key in input) {
                   if (key.indexOf('__reactProps') === 0 || key.indexOf('__reactFiber') === 0) { hydrated = true; break; }
@@ -328,14 +408,53 @@ internal object SadscansFrontend {
               if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
                 return out({error: 'SadScans detay sayfasını engelledi (Cloudflare).'});
               }
+              if (/Just a moment|Checking your browser|Verifying you are human|Verify you are human/i.test(text)) {
+                return out({error: 'SadScans tarayıcı doğrulaması istiyor. Uygulama içi tarayıcıda seri sayfasını açıp doğrulamayı geçin, sonra tekrar deneyin.'});
+              }
               if (location.pathname.indexOf('/seriler/') !== 0) return null;
               var parts = location.pathname.split('/').filter(Boolean);
               var slug = parts.length > 1 ? parts[1] : '';
 
-              function request(pageNumber) {
+              var DEFAULT_DETAIL_ROUTER = '_n3p6q1v8x5';
+              var routerBox = {state: 'pending', map: {}};
+
+              function discoverRouters() {
+                var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
+                var urls = [];
+                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                if (!urls.length || typeof fetch !== 'function') {
+                  routerBox.state = 'ok';
+                  return;
+                }
+                var index = 0;
+                function step() {
+                  if (index >= urls.length) { routerBox.state = 'ok'; return; }
+                  var target = urls[index++];
+                  try {
+                    fetch(target, {credentials: 'same-origin'})
+                      .then(function(response) { return response.ok ? response.text() : ''; })
+                      .then(function(source) {
+                        var pattern = /([A-Za-z0-9_]{4,60})\.(getSeriesData|getSeries)\b/g;
+                        var match;
+                        while ((match = pattern.exec(source)) !== null) routerBox.map[match[2]] = match[1];
+                        step();
+                      })
+                      .catch(step);
+                  } catch (e) {
+                    step();
+                  }
+                }
+                step();
+              }
+
+              function detailRouter() {
+                return (routerBox.map && routerBox.map.getSeriesData) || DEFAULT_DETAIL_ROUTER;
+              }
+
+              function request(pageNumber, router) {
                 if (typeof fetch !== 'function') return Promise.resolve(null);
                 var payload = {sef: slug, page: pageNumber, limit: 10};
-                var url = '/api/trpc/_n3p6q1v8x5.getSeriesData?batch=1&input=' +
+                var url = '/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input=' +
                   encodeURIComponent(JSON.stringify({0: {json: payload}}));
                 try {
                   return fetch(url, {credentials: 'same-origin', headers: {accept: 'application/json'}})
@@ -357,8 +476,15 @@ internal object SadscansFrontend {
               function loadAll() {
                 var box = {state: 'pending', data: null};
                 var started = Date.now();
-                request(1).then(function(first) {
+                discoverRouters();
+                function start(router) {
+                request(1, router).then(function(first) {
                   if (!first || !first.chapters || !first.chapters.length) {
+                    var learned = detailRouter();
+                    if (learned !== (router || DEFAULT_DETAIL_ROUTER)) {
+                      start(learned);
+                      return null;
+                    }
                     box.state = 'bad';
                     return null;
                   }
@@ -388,6 +514,8 @@ internal object SadscansFrontend {
                   }
                   return step();
                 }).catch(function() { box.state = 'bad'; });
+                }
+                start(null);
                 return box;
               }
 

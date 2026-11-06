@@ -6,9 +6,9 @@ plugins {
 
 keiyoushi {
     name = "SadScans"
-    // 11: arama/filtre/detay/okuyucu düzeltmeleri (1.6.8-1.6.10) + okuyucu CDN toleransı.
-    //     Uygulamadaki mağaza güncellemesi bu sürümle 1.6.7 -> 1.6.11 yükseltmesini görür.
-    versionCode = 11
+    // 13: kart başlığı h3 olmasa ve /seriler alt yola yönlense de arama/liste çalışır.
+    // 12: arama kutusunun adı ve tRPC yönlendirici adı (build hash) değişse de çalışır.
+    versionCode = 13
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

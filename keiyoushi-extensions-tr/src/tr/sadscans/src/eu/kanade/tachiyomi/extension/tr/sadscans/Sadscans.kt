@@ -60,6 +60,19 @@ import kotlin.time.Instant
 @Source
 abstract class Sadscans : KeiSource() {
 
+    /**
+     * Bulut sağlayıcı IP'lerinde Cloudflare her isteği engelliyor; ev/ mobil bağlantıda ise
+     * bot puanını belirleyen şey başlık setidir. Bu yüzden istekler gerçek bir Android Chrome
+     * tarayıcısı gibi görünür (çalışan MangaTR kaynağındaki setin aynısı).
+     */
+    override fun Headers.Builder.configureHeaders() = apply {
+        set("User-Agent", USER_AGENT)
+        set("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
+        set("Sec-Ch-Ua", "\"Chromium\";v=\"131\", \"Google Chrome\";v=\"131\", \"Not_A Brand\";v=\"24\"")
+        set("Sec-Ch-Ua-Mobile", "?1")
+        set("Sec-Ch-Ua-Platform", "\"Android\"")
+    }
+
     override fun OkHttpClient.Builder.configureClient() = apply {
         addInterceptor(CommonHeadersInterceptor())
     }
@@ -556,6 +569,9 @@ abstract class Sadscans : KeiSource() {
 
     companion object {
         private const val LOG_TAG = "SadScans"
+        private const val USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/131.0.0.0 Mobile Safari/537.36"
         private const val BASE_URL = "https://sadscans.net"
         private const val SERIES_ROUTER = "_s4d7g2k9m0"
         private const val DETAIL_ROUTER = "_n3p6q1v8x5"
