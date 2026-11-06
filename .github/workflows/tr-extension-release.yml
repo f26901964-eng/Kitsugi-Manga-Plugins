@@ -56,10 +56,11 @@ jobs:
           done
       - name: Publish the APK and synchronize the catalogs
         run: |
-          set -o pipefail
           # The catalog numbers come from the built APK's manifest; a version code that
           # would go backwards is refused instead of being published.
-          python3 tools/prepare_extension_release.py okutoon
+          python3 tools/prepare_extension_release.py okutoon > /tmp/publish.log 2>&1 || {
+            echo "PUBLISH_FAILED"; cat /tmp/publish.log; exit 1; }
+          cat /tmp/publish.log
           python3 -m unittest discover -s tests
       - name: Commit the published artifacts
         run: |
