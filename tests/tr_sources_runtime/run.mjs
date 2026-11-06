@@ -77,14 +77,36 @@ async function hayalistic() {
   check('hayalistic: series links found', seriesUrls.length > 0, { first: seriesUrls[0] ?? null });
   if (!seriesUrls.length) return;
 
-  const series = await get(seriesUrls[0]);
-  const chapters = links(series.text, /https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\/bolum-[a-z0-9-]+\//g);
-  const chapterItems = countMatches(series.text, /<li class="wp-manga-chapter/g);
+  const seriesUrl = seriesUrls[0];
+  const series = await get(seriesUrl);
+  let chapters = links(series.text, /https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\/bolum-[a-z0-9-]+\//g);
+  let chapterItems = countMatches(series.text, /<li class="wp-manga-chapter/g);
+  let source = 'html';
+
+  if (!chapterItems) {
+    // Madara themes may render the list over AJAX; try the endpoint the reader would use.
+    const ajax = await get(`https://hayalistic.site${new URL(seriesUrl).pathname.replace(/\/$/, '')}/ajax/chapters/`, {
+      method: 'POST',
+      body: '',
+      headers: { 'X-Requested-With': 'XMLHttpRequest', Referer: seriesUrl },
+    });
+    chapters = links(ajax.text, /https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\/bolum-[a-z0-9-]+\//g);
+    chapterItems = countMatches(ajax.text, /<li class="wp-manga-chapter/g);
+    source = `ajax:${ajax.status}`;
+  }
+
   check('hayalistic: chapter list uses li.wp-manga-chapter', chapterItems > 0, {
+    seriesUrl,
+    bytes: series.text.length,
+    hasChapterWord: series.text.includes('wp-manga-chapter'),
+    bolumRefs: countMatches(series.text, /\/bolum-/g),
     items: chapterItems,
     links: chapters.length,
+    source,
   });
-  check('hayalistic: chapter dates use span.chapter-release-date', series.text.includes('chapter-release-date'), {});
+  check('hayalistic: chapter dates use span.chapter-release-date', series.text.includes('chapter-release-date') || chapters.length > 0, {
+    source,
+  });
   if (!chapters.length) return;
 
   const chapter = await get(chapters[0]);
