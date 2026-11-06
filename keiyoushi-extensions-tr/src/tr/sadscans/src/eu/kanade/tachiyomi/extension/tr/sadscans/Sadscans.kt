@@ -10,6 +10,8 @@ import eu.kanade.tachiyomi.source.model.SMangaUpdate
 import keiyoushi.annotation.Source
 import keiyoushi.network.get
 import keiyoushi.source.KeiSource
+import keiyoushi.utils.WebViewTimeoutException
+import keiyoushi.utils.runWebView
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
@@ -30,6 +32,9 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import java.io.IOException
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.time.Instant
@@ -55,6 +60,15 @@ abstract class Sadscans : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient() = apply {
         addInterceptor(CommonHeadersInterceptor())
+    }
+
+    // Do not let the host retry a challenged JSON URL in WebView. Bootstrap the HTML
+    // page and execute fetch there instead; clearance is bound to browser identity.
+    private val apiClient: OkHttpClient by lazy {
+        client.newBuilder().apply {
+            interceptors().removeAll { it.javaClass.simpleName == "CloudflareInterceptor" }
+            callTimeout(10, TimeUnit.SECONDS)
+        }.build()
     }
 
     private val apiHeaders: Headers by lazy {
@@ -96,10 +110,49 @@ abstract class Sadscans : KeiSource() {
             .addQueryParameter("batch", "1")
             .addQueryParameter("input", inputParam)
             .build()
-        val batch = client.get(url, apiHeaders).parseAs<List<TrpcBatchItem>>()
+        val direct = try {
+            apiClient.get(url, apiHeaders, ensureSuccess = false).use { response ->
+                val body = response.body.string()
+                when {
+                    response.header("cf-mitigated") == "challenge" -> null
+                    response.code in listOf(403, 429, 503) &&
+                        (body.contains("cloudflare", ignoreCase = true) || body.contains("cf-chl-")) -> null
+                    !response.isSuccessful -> throw IOException("SadScans API HTTP ${response.code}: $procedure")
+                    else -> body
+                }
+            }
+        } catch (_: java.net.SocketTimeoutException) {
+            null
+        }
+        val body = direct ?: browserApiCall(url)
+        val batch = trpcJson.decodeFromString<List<TrpcBatchItem>>(body)
         val payload = batch.firstOrNull()?.result?.data?.json
             ?: error("SadScans: tRPC yanıtı boş: $procedure")
         return payload
+    }
+
+    private suspend fun browserApiCall(url: HttpUrl): String = try {
+        runWebView(timeout = 35.seconds) {
+            onReceivedError { request, _ ->
+                if (request.isForMainFrame) reject(IOException("SadScans tarayıcı bağlantısı başarısız."))
+            }
+            val script = SadscansBrowser.script(url.encodedPath + "?" + url.encodedQuery.orEmpty())
+            poll(1.seconds) {
+                evaluateJs(script) { value ->
+                    val raw = value.parseAs<String?>() ?: return@evaluateJs
+                    val result = trpcJson.parseToJsonElement(raw).jsonObject
+                    val status = result["status"]?.jsonPrimitive?.content?.toIntOrNull()
+                    if (status == 200) {
+                        resolve(result["body"]?.jsonPrimitive?.content.orEmpty())
+                    } else {
+                        reject(IOException("SadScans tarayıcı API HTTP $status. Siteyi WebView'de açıp doğrulamayı tamamlayın."))
+                    }
+                }
+            }
+            loadUrl("$baseUrl/seriler")
+        }
+    } catch (_: WebViewTimeoutException) {
+        throw IOException("SadScans tarayıcı doğrulaması zaman aşımına uğradı. Siteyi WebView'de açıp tekrar deneyin.")
     }
 
     private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray = trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
