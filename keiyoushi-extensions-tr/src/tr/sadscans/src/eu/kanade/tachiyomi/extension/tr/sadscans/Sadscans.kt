@@ -138,9 +138,8 @@ abstract class Sadscans : KeiSource() {
         return entry.result?.data?.json ?: throw IOException("SadScans tRPC verisi boş")
     }
 
-    private suspend fun trpcObject(procedure: String, input: JsonElement): JsonObject =
-        trpcPayload(procedure, input) as? JsonObject
-            ?: throw IOException("SadScans tRPC nesnesi bekleniyordu: $procedure")
+    private suspend fun trpcObject(procedure: String, input: JsonElement): JsonObject = trpcPayload(procedure, input) as? JsonObject
+        ?: throw IOException("SadScans tRPC nesnesi bekleniyordu: $procedure")
 
     private fun seriesInput(slug: String, page: Int): JsonObject = buildJsonObject {
         put("sef", JsonPrimitive(slug))
