@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.okutoon
+package eu.kanade.tachiyomi.extension.tr.okutoon
 
 import eu.kanade.tachiyomi.source.model.Filter
 

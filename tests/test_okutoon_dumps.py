@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DUMPS = ROOT / "docs/html-dumps/okutoon"
-SOURCE = ROOT / "keiyoushi-extensions-tr/src/tr/okutoon/src/eu/kanade/tachiyomi/extension/okutoon"
+SOURCE = ROOT / "keiyoushi-extensions-tr/src/tr/okutoon/src/eu/kanade/tachiyomi/extension/tr/okutoon"
 
 
 def dump(name):

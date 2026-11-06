@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 MODULE = ROOT / "keiyoushi-extensions-tr/src/tr/okutoon"
-SOURCE = (MODULE / "src/eu/kanade/tachiyomi/extension/okutoon")
+SOURCE = (MODULE / "src/eu/kanade/tachiyomi/extension/tr/okutoon")
 
 
 def read(name):
