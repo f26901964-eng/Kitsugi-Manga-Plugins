@@ -12,6 +12,7 @@ on:
     paths:
       - keiyoushi-extensions-tr/src/tr/okutoon/build.gradle.kts
       - keiyoushi-extensions-tr/src/tr/okutoon/src/**
+      - tests/okutoon_runtime/**
       - tools/prepare_extension_release.py
       - tools/release_version.py
       - tools/apk_manifest.py
