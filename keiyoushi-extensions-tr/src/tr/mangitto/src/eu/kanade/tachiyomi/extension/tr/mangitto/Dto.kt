@@ -65,7 +65,7 @@ class MangttoDetailData(
         title = this@MangttoDetailData.title
         url = slug
         thumbnail_url = coverImage
-        description = this@MangttoDetailData.description
+        description = this@MangttoDetailData.description?.let { org.jsoup.Jsoup.parse(it).text() }
         status = when (this@MangttoDetailData.status) {
             "FINISHED" -> SManga.COMPLETED
             "RELEASING" -> SManga.ONGOING
