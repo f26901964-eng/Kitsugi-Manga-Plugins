@@ -20,7 +20,8 @@ jobs:
           node-version: '22'
       - run: |
           set -o pipefail
-          node tests/okutoon_runtime/probe.mjs | tee docs/html-dumps/okutoon/probe.txt
+          mkdir -p docs/html-dumps/okutoon
+          node tests/okutoon_runtime/probe.mjs 2>&1 | tee docs/html-dumps/okutoon/probe.txt || true
       - run: |
           set -euo pipefail
           git config user.name kitsugi-tr-runtime
