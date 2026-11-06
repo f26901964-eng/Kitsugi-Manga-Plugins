@@ -81,9 +81,17 @@ abstract class Sadscans : KeiSource() {
      * CloudflareInterceptor **kaldırılmaz**: `/api/trpc` engellendiğinde WebView tabanlı çözümün
      * ürettiği `cf_clearance` çerezini kullanabilmek için istemcide kalması gerekir.
      */
+    /**
+     * Kitsugi (ve Mihon) her kaynak aramasını **25 saniyede** kesiyor
+     * (`MangaSourceRepository` → `withTimeoutOrNull(25_000)`, keşfet ekranında 30 s).
+     * Bu yüzden API denemesi kısa tutulur: API engelliyse vakit WebView kademesine kalır.
+     */
     private val apiClient: OkHttpClient by lazy {
         client.newBuilder()
-            .callTimeout(45, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(6, TimeUnit.SECONDS)
+            .writeTimeout(6, TimeUnit.SECONDS)
+            .callTimeout(8, TimeUnit.SECONDS)
             .build()
     }
 
@@ -207,6 +215,7 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             "$baseUrl/seriler",
             SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page),
+            timeout = 18.seconds,
         )
         val rows = result["items"] as? JsonArray ?: throw IOException("SadScans arama sonuçları okunamadı.")
         val loaded = parseSeriesItems(rows)
@@ -302,7 +311,7 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             "$baseUrl/seriler/$slug",
             SadscansFrontend.detailsScript(1),
-            timeout = 60.seconds,
+            timeout = 25.seconds,
         )
         val merged = result["merged"].stringOrNull() == "true"
         val dto = decodeFrontend(result)
@@ -318,7 +327,7 @@ abstract class Sadscans : KeiSource() {
                     frontendPage(
                         "$baseUrl/seriler/$slug",
                         SadscansFrontend.detailsScript(page),
-                        timeout = 60.seconds,
+                        timeout = 20.seconds,
                     ),
                 )
             } ?: break
@@ -429,7 +438,7 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             chapterUrl,
             SadscansFrontend.readerScript(chapterId),
-            timeout = 90.seconds,
+            timeout = 35.seconds,
         )
         val urls = (result["urls"] as? JsonArray)
             ?.mapNotNull { it.stringOrNull()?.trim()?.ifBlank { null } }
@@ -448,7 +457,7 @@ abstract class Sadscans : KeiSource() {
     private suspend fun frontendPage(
         url: String,
         script: String,
-        timeout: Duration = 45.seconds,
+        timeout: Duration = 20.seconds,
     ): JsonObject {
         return try {
             runWebView(timeout = timeout) {

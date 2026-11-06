@@ -105,6 +105,15 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('Just a moment', script)
         self.assertIn('tarayıcı doğrulaması', script)
 
+    def test_time_budget_fits_the_host_app(self):
+        """Kitsugi/Mihon kaynak aramasini 25 sn'de kesiyor; toplam butce bunun altinda kalmali."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('callTimeout(8, TimeUnit.SECONDS)', source)
+        self.assertIn('connectTimeout(5, TimeUnit.SECONDS)', source)
+        self.assertIn('timeout: Duration = 20.seconds', source, 'frontendPage varsayilani 20 sn olmali')
+        self.assertIn('timeout = 18.seconds', source, 'liste WebView suresi kisa olmali')
+        self.assertNotIn('callTimeout(45', source)
+
     def test_requests_look_like_a_mobile_browser(self):
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('override fun Headers.Builder.configureHeaders()', source)
@@ -119,7 +128,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 13', gradle)
+        self.assertIn('versionCode = 14', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 
