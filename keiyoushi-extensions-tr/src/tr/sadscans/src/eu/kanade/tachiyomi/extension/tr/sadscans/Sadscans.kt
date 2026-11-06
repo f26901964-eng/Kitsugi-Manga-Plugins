@@ -102,11 +102,9 @@ abstract class Sadscans : KeiSource() {
         return payload
     }
 
-    private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray =
-        trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
+    private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray = trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
 
-    private suspend fun trpcCallObject(procedure: String, input: JsonElement?): JsonObject =
-        trpcCall(procedure, input) as? JsonObject ?: error("SadScans: tRPC nesne bekleniyordu: $procedure")
+    private suspend fun trpcCallObject(procedure: String, input: JsonElement?): JsonObject = trpcCall(procedure, input) as? JsonObject ?: error("SadScans: tRPC nesne bekleniyordu: $procedure")
 
     // ============================== Popular / Latest / Search ==============================
 
@@ -281,6 +279,7 @@ abstract class Sadscans : KeiSource() {
 
     private fun extractImageUrls(payload: JsonElement?): List<String> = when (payload) {
         is JsonArray -> payload.mapNotNull { imageUrlFromJson(it) }
+
         is JsonObject -> {
             for (key in listOf("images", "pages", "files")) {
                 val arr = payload[key] as? JsonArray ?: continue
@@ -290,6 +289,7 @@ abstract class Sadscans : KeiSource() {
             payload.values.filter { it is JsonObject || it is JsonArray }
                 .flatMap { extractImageUrls(it) }
         }
+
         else -> emptyList()
     }
 
@@ -297,7 +297,9 @@ abstract class Sadscans : KeiSource() {
         is JsonObject -> listOf("url", "src", "image", "path", "file")
             .firstNotNullOfOrNull { item[it]?.contentOrNullOrNull()?.takeIf { s -> s.startsWith("http") || s.startsWith("/") } }
             ?.let(::absolute)
+
         is JsonPrimitive -> item.contentOrNull?.takeIf { it.startsWith("http") || it.startsWith("/") }?.let(::absolute)
+
         else -> null
     }
 
@@ -313,7 +315,7 @@ abstract class Sadscans : KeiSource() {
     }
 
     private fun SeriesItemDto.toSManga(): SManga = SManga.create().apply {
-        val slugPath = href?.trimStart('/') ?: "seriler/${slug}"
+        val slugPath = href?.trimStart('/') ?: "seriler/$slug"
         url = if (slugPath.startsWith("seriler/")) "/$slugPath" else "/seriler/${slug ?: slugPath.substringAfterLast('/')}"
         title = name.orEmpty()
         thumbnail_url = thumb?.let(::absolute)
@@ -352,11 +354,12 @@ abstract class Sadscans : KeiSource() {
 
     private fun Float.trimNumber(): String = if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
 
-    private class SortFilter(state: Int = 0) : Filter.Select<String>(
-        "Sırala",
-        arrayOf("Popüler", "Güncel", "Yeni", "İsim (A-Z)", "İsim (Z-A)"),
-        state,
-    ) {
+    private class SortFilter(state: Int = 0) :
+        Filter.Select<String>(
+            "Sırala",
+            arrayOf("Popüler", "Güncel", "Yeni", "İsim (A-Z)", "İsim (Z-A)"),
+            state,
+        ) {
         val selected: String
             get() = when (state) {
                 0 -> "-views"
