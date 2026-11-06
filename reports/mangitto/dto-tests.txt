@@ -1,0 +1,135 @@
+Fetching distribution.
+Downloading https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
+..............10%..............20%...............30%..............40%...............50%..............60%...............70%..............80%...............90%..............100%
+
+Welcome to Gradle 9.8.2!
+
+Here are the highlights of this release:
+ - Java 27 support
+ - Maven mirror settings reuse
+ - Linked problem locations in build output
+
+For more details see https://docs.gradle.org/9.8.2/release-notes.html
+
+Starting a Gradle Daemon (subsequent builds will be faster)
+Configuration on demand is an incubating feature.
+Calculating task graph as no cached configuration is available for tasks: :src:tr:mangitto:testDebugUnitTest
+Type-safe project accessors is an incubating feature.
+> Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :build-logic:pluginDescriptors
+> Task :build-logic:processResources
+> Task :build-logic:compileKotlin
+> Task :build-logic:compileJava NO-SOURCE
+> Task :build-logic:classes
+> Task :build-logic:jar
+
+> Configure project :src:tr:mangitto
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangitto/build.gradle.kts:9:14: 'fun setSrcDirs(srcDirs: Iterable<*>): Any' is deprecated. Use `directories` mutable set instead.
+w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangitto/build.gradle.kts:10:16: 'fun setSrcDirs(srcDirs: Iterable<*>): Any' is deprecated. Use `directories` mutable set instead.
+
+> Task :core:spotlessGradle
+> Task :core:spotlessGradleCheck
+> Task :core:spotlessXml
+> Task :core:spotlessJava
+> Task :core:spotlessXmlCheck
+> Task :core:spotlessJavaCheck
+> Task :src:tr:mangitto:spotlessGradle FROM-CACHE
+> Task :src:tr:mangitto:spotlessJava
+> Task :src:tr:mangitto:spotlessJavaCheck
+> Task :src:tr:mangitto:spotlessGradleCheck UP-TO-DATE
+> Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
+> Task :src:tr:mangitto:spotlessXml
+> Task :src:tr:mangitto:spotlessXmlCheck
+> Task :compiler:processResources
+> Task :src:tr:mangitto:generateExtensionManifest
+> Task :src:tr:mangitto:spotlessKotlin
+> Task :src:tr:mangitto:spotlessKotlinCheck
+> Task :src:tr:mangitto:spotlessCheck
+> Task :src:tr:mangitto:preBuild
+> Task :src:tr:mangitto:preDebugBuild
+> Task :src:tr:mangitto:generateDebugResources
+> Task :src:tr:mangitto:generateDebugBuildConfig
+> Task :src:tr:mangitto:mapDebugSourceSetPaths
+> Task :src:tr:mangitto:createDebugCompatibleScreenManifests
+> Task :src:tr:mangitto:extractDeepLinksDebug
+> Task :src:tr:mangitto:preDebugUnitTestBuild
+> Task :src:tr:mangitto:javaPreCompileDebugUnitTest
+> Task :src:tr:mangitto:packageDebugResources
+> Task :core:spotlessKotlin
+> Task :core:spotlessKotlinCheck
+> Task :core:spotlessCheck
+> Task :core:preBuild
+> Task :core:preDebugBuild
+> Task :core:processDebugNavigationResources
+> Task :core:generateDebugResources
+> Task :core:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:mangitto:processDebugNavigationResources
+> Task :core:mapDebugSourceSetPaths
+> Task :core:packageDebugResources
+> Task :core:writeDebugAarMetadata
+> Task :core:compileDebugLibraryResources
+> Task :src:tr:mangitto:checkDebugAarMetadata
+> Task :src:tr:mangitto:compileDebugNavigationResources
+> Task :src:tr:mangitto:mergeDebugResources
+> Task :core:extractDeepLinksDebug
+> Task :core:processDebugManifest
+> Task :src:tr:mangitto:processDebugMainManifest
+> Task :src:tr:mangitto:parseDebugLocalResources
+> Task :core:parseDebugLocalResources
+> Task :src:tr:mangitto:processDebugManifest
+> Task :src:tr:mangitto:processDebugManifestForPackage
+> Task :core:generateDebugRFile
+> Task :src:tr:mangitto:generateDebugRFile
+> Task :src:tr:mangitto:processDebugResources
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:mangitto:javaPreCompileDebug
+> Task :core:compileDebugKotlin
+> Task :core:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:processDebugJavaRes
+> Task :core:bundleLibCompileToJarDebug
+> Task :core:bundleLibRuntimeToJarDebug
+> Task :src:tr:mangitto:kspDebugKotlin
+> Task :src:tr:mangitto:compileDebugKotlin
+> Task :src:tr:mangitto:processDebugJavaRes
+> Task :src:tr:mangitto:compileDebugJavaWithJavac
+> Task :src:tr:mangitto:bundleDebugClassesToRuntimeJar
+> Task :src:tr:mangitto:bundleDebugClassesToCompileJar
+> Task :src:tr:mangitto:kspDebugUnitTestKotlin SKIPPED
+> Task :src:tr:mangitto:compileDebugUnitTestKotlin
+> Task :src:tr:mangitto:compileDebugUnitTestJavaWithJavac NO-SOURCE
+> Task :src:tr:mangitto:processDebugUnitTestJavaRes
+
+> Task :src:tr:mangitto:testDebugUnitTest
+
+MangittoDtoContractTest > actualDtoRetainsSeriesWhenHostDropsMemo FAILED
+    java.lang.Exception at MangittoDtoContractTest.kt:10
+
+10 tests completed, 1 failed
+
+> Task :src:tr:mangitto:testDebugUnitTest FAILED
+gradle/actions: Writing build results to /home/runner/work/_temp/.gradle-actions/build-results/__run_2-1793966098106.json
+
+[Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':src:tr:mangitto:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangitto/build/reports/tests/testDebugUnitTest/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 2m
+66 actionable tasks: 63 executed, 2 from cache, 1 up-to-date
+Configuration cache entry stored.
+EXIT_CODE=1
