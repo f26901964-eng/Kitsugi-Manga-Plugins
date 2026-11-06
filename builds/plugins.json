@@ -86,5 +86,16 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadenizi-v1.6.9.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadenizi.png"
+  },
+  {
+    "name": "Merlin Scans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.merlinscans",
+    "apk": "tachiyomi-tr.merlinscans-v1.6.8.apk",
+    "lang": "tr",
+    "code": 106008,
+    "version": "1.6.8",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.merlinscans-v1.6.8.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.merlinscans.png"
   }
 ]

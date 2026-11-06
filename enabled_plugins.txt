@@ -14,3 +14,4 @@ tr/sadscans
 tr/turkmanga
 tr/tortugaceviri
 tr/mangadenizi
+tr/merlinscans

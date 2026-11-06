@@ -144,6 +144,24 @@
             "type": "manga"
           }
         ]
+      },
+      {
+        "name": "Merlin Scans",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.merlinscans",
+        "versionName": "1.6.8",
+        "versionCode": "106008",
+        "contentWarning": "CONTENT_WARNING_SAFE",
+        "resources": {
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.merlinscans-v1.6.8.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.merlinscans.png"
+        },
+        "sources": [
+          {
+            "name": "Merlin Scans",
+            "language": "tr",
+            "type": "manga"
+          }
+        ]
       }
     ]
   }

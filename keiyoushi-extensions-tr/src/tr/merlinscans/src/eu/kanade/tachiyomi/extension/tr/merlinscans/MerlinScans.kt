@@ -17,26 +17,33 @@ abstract class MerlinScans : InitManga() {
     override val popularUrlSlug = "seri"
     override val latestUrlSlug = "son-guncellenenler"
 
-    override fun popularMangaSelector() =
-        "div.manga-card, div.manga-item-grid > div.uk-panel:not(.manga-item-ranking):not(.user-item-info)"
+    override fun popularMangaSelector() = "div.manga-card, div.manga-item-grid > div.uk-panel:not(.manga-item-ranking):not(.user-item-info)"
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         if (query.isBlank()) return super.getSearchMangaList(page, query, filters)
         val url = baseUrl.toHttpUrl().newBuilder()
             .addPathSegment("search")
             .addPathSegment(query.trim())
-            .apply { if (page > 1) { addPathSegment("page"); addPathSegment(page.toString()) } }
+            .apply {
+                if (page > 1) {
+                    addPathSegment("page")
+                    addPathSegment(page.toString())
+                }
+            }
             .addPathSegment("")
             .build()
         val document = client.get(url).asJsoup()
         val result = MerlinParser.searchResults(document, baseUrl)
-        return MangasPage(result.mangas.map { item ->
-            SManga.create().apply {
-                title = item.title
-                this.url = item.url
-                thumbnail_url = item.thumbnail
-            }
-        }, result.hasNextPage)
+        return MangasPage(
+            result.mangas.map { item ->
+                SManga.create().apply {
+                    title = item.title
+                    this.url = item.url
+                    thumbnail_url = item.thumbnail
+                }
+            },
+            result.hasNextPage,
+        )
     }
 
     override suspend fun pageListParse(document: Document, chapterUrl: String): List<Page> {
