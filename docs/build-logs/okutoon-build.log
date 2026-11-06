@@ -1,4 +1,4 @@
-commit: f5187cab88c7ff8952c1cc144041b7c742d4af2b
+commit: 0294605cdbe628e6c5f236b028c50c6299a99c10
 --- publish ---
 --- build tail ---
 > Task :src:tr:okutoon:packageRelease
@@ -18,6 +18,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 21s
+BUILD SUCCESSFUL in 2m 55s
 87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
 Configuration cache entry stored.
