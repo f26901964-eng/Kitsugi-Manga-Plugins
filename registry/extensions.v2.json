@@ -634,11 +634,11 @@
       {
         "name": "Mangitto",
         "packageName": "eu.kanade.tachiyomi.extension.tr.mangitto",
-        "versionName": "1.6.1",
-        "versionCode": "106001",
+        "versionName": "1.6.3",
+        "versionCode": "106003",
         "contentWarning": "CONTENT_WARNING_NSFW",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangitto-v1.6.1.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangitto-v1.6.3.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangitto.png"
         },
         "sources": [

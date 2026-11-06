@@ -65,7 +65,7 @@ class MangttoDetailData(
         title = this@MangttoDetailData.title
         url = slug
         thumbnail_url = coverImage
-        description = this@MangttoDetailData.description
+        description = this@MangttoDetailData.description?.let { org.jsoup.Jsoup.parse(it).text() }
         status = when (this@MangttoDetailData.status) {
             "FINISHED" -> SManga.COMPLETED
             "RELEASING" -> SManga.ONGOING
@@ -94,7 +94,7 @@ class MangttoChapter(
         val chapterStr = chapter.toString().removeSuffix(".0")
         name = "Bölüm $chapterStr"
         chapter_number = chapter
-        url = chapterStr
+        url = MangittoChapterAddress(mangaSlug, chapterStr).path
         memo = buildJsonObject {
             put("mangaSlug", mangaSlug)
         }

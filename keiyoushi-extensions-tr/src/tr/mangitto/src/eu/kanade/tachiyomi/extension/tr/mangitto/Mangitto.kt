@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.mangitto
 
+import eu.kanade.tachiyomi.extension.tr.mangitto.MangittoHtml.text
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -10,12 +11,14 @@ import keiyoushi.annotation.Source
 import keiyoushi.network.get
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
+import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
-import keiyoushi.utils.getString
 import keiyoushi.utils.parseAs
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -30,10 +33,17 @@ abstract class Mangitto : KeiSource() {
     }
 
     override suspend fun getPopularManga(page: Int): MangasPage {
-        val skip = (page - 1) * PAGE_SIZE
-        val data = client.get("$apiUrl/populer?skip=$skip&take=$PAGE_SIZE").parseAs<MangttoPopularData>()
+        val mangas = homeManga().map { it.toHomeManga() }
+        val start = (page - 1).coerceAtLeast(0) * PAGE_SIZE
+        return MangasPage(mangas.drop(start).take(PAGE_SIZE), start + PAGE_SIZE < mangas.size)
+    }
 
-        return MangasPage(data.mangas.map { it.toSManga() }, skip + data.mangas.size < data.total)
+    private suspend fun homeManga() = MangittoHtml.mangaObjects(client.get(baseUrl).asJsoup())
+
+    private fun kotlinx.serialization.json.JsonObject.toHomeManga() = SManga.create().apply {
+        url = text("slug")!!
+        title = text("title")!!
+        thumbnail_url = text("coverImage")?.let { baseUrl.toHttpUrl().resolve(it)?.toString() }
     }
 
     override suspend fun getLatestUpdates(page: Int): MangasPage {
@@ -73,7 +83,18 @@ abstract class Mangitto : KeiSource() {
 
         val data = client.get(url.build()).parseAs<MangttoSearchData>()
 
-        return MangasPage(data.hits.map { it.document.toSManga() }, page * SEARCH_PAGE_SIZE < data.estimatedTotalHits)
+        // No search HTML page exists. Keep the site's JSON search for the whole
+        // archive, and include homepage aliases (English/native/romaji) on page one.
+        // Do not silently turn a failed API request into an incomplete local search.
+        val aliases = if (page == 1 && query.isNotBlank() && filters.isEmpty()) {
+            homeManga().filter { MangittoHtml.matches(it, query) }.map { it.toHomeManga() }
+        } else {
+            emptyList()
+        }
+        return MangasPage(
+            (data.hits.map { it.document.toSManga() } + aliases).distinctBy { it.url },
+            page * SEARCH_PAGE_SIZE < data.estimatedTotalHits,
+        )
     }
 
     override val supportsFilterFetching = true
@@ -106,7 +127,12 @@ abstract class Mangitto : KeiSource() {
 
     override fun getMangaUrl(manga: SManga): String = "$baseUrl/manga/${manga.url}"
 
-    override fun getChapterUrl(chapter: SChapter): String = "$baseUrl/manga/${chapter.memo.getString("mangaSlug")}/${chapter.url}"
+    private fun chapterAddress(chapter: SChapter) = MangittoChapterAddress.parse(
+        chapter.url,
+        (chapter.memo["mangaSlug"] as? JsonPrimitive)?.contentOrNull,
+    )
+
+    override fun getChapterUrl(chapter: SChapter): String = baseUrl + chapterAddress(chapter).path
 
     override suspend fun fetchMangaUpdate(
         manga: SManga,
@@ -125,29 +151,41 @@ abstract class Mangitto : KeiSource() {
     }
 
     private suspend fun fetchAllChapters(slug: String): List<SChapter> {
-        val allChapters = mutableListOf<SChapter>()
+        val allChapters = linkedMapOf<String, SChapter>()
         var skip = 0
 
         while (true) {
             val data = client.get("$apiUrl/$slug/chapters?skip=$skip&take=$PAGE_SIZE").parseAs<MangttoChapterPageData>()
 
-            allChapters.addAll(data.chapters.map { it.toSChapter(slug) })
+            val batch = data.chapters.map { it.toSChapter(slug) }
+            check(batch.isEmpty() || batch.any { it.url !in allChapters }) {
+                "Mangitto: bölüm sayfalaması ilerlemiyor"
+            }
+            batch.forEach { allChapters[it.url] = it }
             skip += data.chapters.size
 
             if (data.chapters.isEmpty() || skip >= data.total) break
         }
 
         // The API returns chapters in ascending order.
-        return allChapters.reversed()
+        return allChapters.values.sortedByDescending { it.chapter_number }
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val slug = chapter.memo.getString("mangaSlug")
-        val data = client.get("$apiUrl/$slug/${chapter.url}").parseAs<MangttoPageData>()
-        val upload = data.uploads.firstOrNull() ?: return emptyList()
+        val address = chapterAddress(chapter)
+        val slug = address.slug
+        val number = address.number
+        val document = client.get(baseUrl + address.path).asJsoup()
+        val images = MangittoHtml.readerImages(document, slug, number)
+        if (images.isNotEmpty()) return images.mapIndexed { index, url -> Page(index, imageUrl = url) }
+
+        // Client-rendered readers can omit images; retain the existing upload API.
+        val data = client.get("$apiUrl/$slug/$number").parseAs<MangttoPageData>()
+        val upload = data.uploads.firstOrNull { it.fileLength > 0 }
+            ?: error("Mangitto: bu bölüm için okunabilir görsel bulunamadı")
 
         return (1..upload.fileLength).map { pageNum ->
-            Page(pageNum - 1, imageUrl = "${data.cdn}/manga/$slug/${chapter.url}/$pageNum-${upload.fansubId}.webp")
+            Page(pageNum - 1, imageUrl = "${data.cdn.trimEnd('/')}/manga/$slug/$number/$pageNum-${upload.fansubId}.webp")
         }
     }
 
