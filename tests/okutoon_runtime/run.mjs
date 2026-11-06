@@ -2,14 +2,14 @@
 //
 // The dumps in docs/html-dumps/okutoon prove the selectors; this run proves the site still
 // serves the same shape today. Chapter pages sit behind a Cloudflare challenge for bots, so
-// a 403 there is reported as a known limitation instead of a failed selector: the same
-// markup is asserted offline by tests/test_okutoon_dumps.py.
+// the reader API and image bytes are checked even when the HTML reader is challenged.
+// Saved HTML is independently asserted offline by tests/test_okutoon_dumps.py.
 //
 //   listing -> /tur?sira=..., .series-grid .series-card, nav.pagination a[rel=next]
 //   search  -> ?q=, ?sira=, ?durum=, ?tip=, ?k[]=
 //   details -> .series-detail-* , .series-status--*, [data-series-description-content]
 //   chapters-> .chapter-item > a.chapter-item-link / .chapter-title / .chapter-date
-//   reader  -> #readerPages img.reader-page (+ data-original-src), CDN host om-cdn.okutoon.com
+//   reader  -> /api/v1/series/{series}/chapters/{chapter}, data.pages[].image_url
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 
@@ -133,42 +133,33 @@ check('okutoon: chapter dates use Turkish month names', chapterDates.length === 
   sample: chapterDates[0] ?? null,
 });
 
-// ----------------------------------------------------------------------- reader
-const chapterUrl = chapterLinks.length ? `${BASE}${chapterLinks[0]}` : null;
-if (chapterUrl) {
-  const chapter = await get(chapterUrl, { Referer: seriesUrl });
-  const blocked = chapter.status === 403 && chapter.mitigated === 'challenge';
-  const pageImages = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*>/g);
-  const srcs = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*\ssrc="([^"]+)"/g);
-  const lazySrcs = unique(chapter.text, /<img[^>]*class="reader-page"[^>]*\sdata-original-src="([^"]+)"/g);
-
-  if (blocked) {
-    // Known limitation: Cloudflare serves a challenge to non-browser clients. The markup is
-    // covered by the saved dumps, so this is not a selector failure.
-    check('okutoon: reader is behind a Cloudflare challenge for bots (known limitation)', true, {
-      url: chapterUrl,
-      status: chapter.status,
-      mitigated: chapter.mitigated,
-      dumpsCoverTheMarkup: 'docs/html-dumps/okutoon/message-73.txt',
-    });
-  } else {
-    check('okutoon: reader answers and ships the page list', chapter.ok && pageImages.length > 0, {
-      url: chapterUrl,
-      status: chapter.status,
-      images: pageImages.length,
-      srcs: srcs.length,
-      lazySrcs: lazySrcs.length,
-    });
-    const first = srcs[0] ?? lazySrcs[0];
-    if (first) {
-      check('okutoon: page images live on the CDN host', new URL(first).host === 'om-cdn.okutoon.com', {
-        host: new URL(first).host,
-      });
-      const image = await get(first, { Referer: chapterUrl });
-      check('okutoon: first page image downloads and decodes', Boolean(imageKind(image.buf)), {
-        status: image.status,
-        kind: imageKind(image.buf),
-        bytes: image.buf.length,
+// ----------------------------------------------------------------------- reader API
+// This is the extension's primary path. A challenged HTML reader is diagnostic only:
+// API success and real image responses are required and are checked independently.
+for (const [seriesSlug, chapterSlug] of [
+  ['chainsaw-man', 'bolum-1'],
+  ['chainsaw-man', 'bolum-2'],
+  ['one-piece', 'bolum-1197'],
+]) {
+  const readerUrl = `${BASE}/${seriesSlug}/${chapterSlug}`;
+  const apiUrl = `${BASE}/api/v1/series/${encodeURIComponent(seriesSlug)}/chapters/${encodeURIComponent(chapterSlug)}`;
+  const response = await get(apiUrl, { headers: { Accept: 'application/json', Referer: readerUrl } });
+  let data;
+  try { data = JSON.parse(response.text).data; } catch (_) {}
+  const pages = data?.pages;
+  const valid = response.ok && data?.series?.slug === seriesSlug && data?.chapter?.slug === chapterSlug &&
+    Array.isArray(pages) && pages.length > 0 &&
+    pages.every((p) => Number.isInteger(p.page_number) && p.page_number > 0 && typeof p.image_url === 'string' && /^https?:\/\//.test(p.image_url)) &&
+    new Set(pages.map((p) => p.page_number)).size === pages.length;
+  check(`okutoon: ${seriesSlug}/${chapterSlug} API returns validated pages`, valid, {
+    status: response.status, mitigated: response.mitigated, count: pages?.length ?? 0,
+  });
+  if (valid) {
+    const sorted = [...pages].sort((a, b) => a.page_number - b.page_number);
+    for (const index of [...new Set([0, Math.floor(sorted.length / 2), sorted.length - 1])]) {
+      const image = await get(sorted[index].image_url, { headers: { Referer: readerUrl } });
+      check(`okutoon: ${seriesSlug}/${chapterSlug} page ${index + 1} returns image bytes`, image.ok && Boolean(imageKind(image.buf)), {
+        status: image.status, kind: imageKind(image.buf), bytes: image.buf.length,
       });
     }
   }
