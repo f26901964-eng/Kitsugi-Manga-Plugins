@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: sadscans-release-${{ github.ref }}
@@ -75,4 +76,4 @@ jobs:
           git commit -m 'sadscans: publish verified SadScans APK [skip ci]'
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-# retrigger
+
