@@ -1,4 +1,4 @@
-commit: 7ee4242660bd07a0c4aa5c1a6b30b9f68415fe52
+commit: b0029f98f2a7852b12f920aae45523b281b2a6dc
 > Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :build-logic:pluginDescriptors
 > Task :build-logic:processResources
@@ -9,10 +9,10 @@ commit: 7ee4242660bd07a0c4aa5c1a6b30b9f68415fe52
 > Task :src:tr:okutoon:generateSourceInfo
 > Task :core:spotlessGradle
 > Task :core:spotlessGradleCheck
-> Task :core:spotlessXml
-> Task :core:spotlessXmlCheck
 > Task :core:spotlessJava
 > Task :core:spotlessJavaCheck
+> Task :core:spotlessXml
+> Task :core:spotlessXmlCheck
 > Task :src:tr:okutoon:spotlessJava
 > Task :src:tr:okutoon:spotlessJavaCheck
 > Task :src:tr:okutoon:spotlessGradle FROM-CACHE
@@ -25,58 +25,129 @@ commit: 7ee4242660bd07a0c4aa5c1a6b30b9f68415fe52
 > Task :core:generateReleaseAssets UP-TO-DATE
 > Task :src:tr:okutoon:generateReleaseAssets UP-TO-DATE
 > Task :src:tr:okutoon:spotlessKotlin
-> Task :src:tr:okutoon:spotlessKotlinCheck FAILED
+> Task :src:tr:okutoon:spotlessKotlinCheck
+> Task :src:tr:okutoon:spotlessCheck
+> Task :src:tr:okutoon:preBuild
+> Task :src:tr:okutoon:preReleaseBuild
+> Task :src:tr:okutoon:checkReleaseDuplicateClasses
+> Task :src:tr:okutoon:generateReleaseBuildConfig
+> Task :src:tr:okutoon:generateReleaseResources
+> Task :src:tr:okutoon:mergeReleaseJniLibFolders
+> Task :src:tr:okutoon:mapReleaseSourceSetPaths
+> Task :src:tr:okutoon:createReleaseCompatibleScreenManifests
+> Task :src:tr:okutoon:extractDeepLinksRelease
+> Task :src:tr:okutoon:extractProguardFiles
+> Task :src:tr:okutoon:mergeReleaseStartupProfile
+> Task :src:tr:okutoon:validateSigningRelease
+> Task :src:tr:okutoon:writeReleaseAppMetadata
+> Task :src:tr:okutoon:packageReleaseResources
+> Task :src:tr:okutoon:writeReleaseSigningConfigVersions
 > Task :core:spotlessKotlin
+> Task :core:spotlessKotlinCheck
+> Task :core:spotlessCheck
+> Task :core:preBuild
+> Task :core:preReleaseBuild
+> Task :core:mergeReleaseJniLibFolders
+> Task :core:generateReleaseResources
+> Task :core:processReleaseNavigationResources
+> Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :core:copyReleaseJniLibsProjectOnly
+> Task :src:tr:okutoon:mergeReleaseNativeLibs NO-SOURCE
+> Task :core:javaPreCompileRelease
+> Task :src:tr:okutoon:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:okutoon:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:okutoon:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :core:prepareReleaseArtProfile
+> Task :src:tr:okutoon:processReleaseNavigationResources
+> Task :core:packageReleaseResources
+> Task :src:tr:okutoon:mergeReleaseArtProfile
+> Task :core:mapReleaseSourceSetPaths
+> Task :core:compileReleaseLibraryResources
+> Task :core:writeReleaseAarMetadata
+> Task :src:tr:okutoon:checkReleaseAarMetadata
+> Task :src:tr:okutoon:compileReleaseNavigationResources
+> Task :src:tr:okutoon:mergeReleaseResources
+> Task :core:extractDeepLinksRelease
+> Task :core:processReleaseManifest
+> Task :src:tr:okutoon:processReleaseMainManifest
+> Task :src:tr:okutoon:processReleaseManifest
+> Task :src:tr:okutoon:processReleaseManifestForPackage
+> Task :core:mergeReleaseAssets
+> Task :src:tr:okutoon:mergeReleaseAssets
+> Task :src:tr:okutoon:compressReleaseAssets
+> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :core:parseReleaseLocalResources
+> Task :core:generateReleaseRFile
+> Task :src:tr:okutoon:generateReleaseRFile
 > Task :compiler:compileKotlin
-FAILURE: Build failed with an exception.
-* What went wrong:
-> The following files had format violations:
-> Run with --info or --debug option to get more log output.
-> Run with --scan to get full insights from a Build Scan (powered by Develocity).
-> Get more help at https://help.gradle.org.
-	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
-	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeCatchingFailures(DefaultTaskNodeExecutor.java:228)
-	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:65)
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:okutoon:processReleaseResources
+> Task :src:tr:okutoon:javaPreCompileRelease
+> Task :src:tr:okutoon:optimizeReleaseResources
+> Task :core:compileReleaseKotlin
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:processReleaseJavaRes
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:bundleLibCompileToJarRelease
+> Task :core:bundleLibRuntimeToJarRelease
+> Task :src:tr:okutoon:kspReleaseKotlin
+> Task :src:tr:okutoon:compileReleaseKotlin
+> Task :src:tr:okutoon:processReleaseJavaRes
+> Task :src:tr:okutoon:mergeReleaseJavaResource
+> Task :src:tr:okutoon:compileReleaseJavaWithJavac
+> Task :src:tr:okutoon:mergeReleaseGeneratedProguardFiles
+> Task :src:tr:okutoon:expandReleaseArtProfileWildcards
+> Task :src:tr:okutoon:minifyReleaseWithR8
+> Task :src:tr:okutoon:compileReleaseArtProfile
+> Task :src:tr:okutoon:packageRelease
+> Task :src:tr:okutoon:createReleaseApkListingFileRedirect
+> Task :src:tr:okutoon:createReleaseExtensionJar
+> Task :src:tr:okutoon:signReleaseExtensionJar
+> Task :src:tr:okutoon:assembleRelease
 --- tail ---
-	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:63)
-	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:34)
-	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
-	at org.gradle.internal.execution.steps.ValidateStep$Mutable.executeDelegate(ValidateStep.java:79)
-	at org.gradle.internal.execution.steps.ValidateStep$Mutable.executeDelegate(ValidateStep.java:65)
-	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:105)
-	at org.gradle.internal.execution.steps.ValidateStep$Mutable.execute(ValidateStep.java:65)
-	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.executeMutable(CaptureMutableStateBeforeExecutionStep.java:86)
-	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:65)
-	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:45)
-	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeWithNonEmptySources(SkipEmptyMutableWorkStep.java:210)
-	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:85)
-	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:53)
-	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
-	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
-	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.executeMutable(LoadPreviousExecutionStateStep.java:36)
-	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.executeMutable(LoadPreviousExecutionStateStep.java:23)
-	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
-	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:77)
-	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:43)
-	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
-	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$executeMutable$0(AssignMutableWorkspaceStep.java:34)
-	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:314)
-	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.executeMutable(AssignMutableWorkspaceStep.java:30)
-	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.executeMutable(AssignMutableWorkspaceStep.java:21)
-	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
-	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
-	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
-	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
-	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
-	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
-	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
-	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
-	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:56)
-	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:38)
-	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:68)
-	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:364)
-	... 25 more
+> Task :core:mergeReleaseAssets
+> Task :src:tr:okutoon:mergeReleaseAssets
+> Task :src:tr:okutoon:compressReleaseAssets
+> Task :src:tr:okutoon:parseReleaseLocalResources
+> Task :core:parseReleaseLocalResources
+> Task :core:generateReleaseRFile
+> Task :src:tr:okutoon:generateReleaseRFile
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:okutoon:processReleaseResources
+> Task :src:tr:okutoon:javaPreCompileRelease
+> Task :src:tr:okutoon:optimizeReleaseResources
+> Task :core:compileReleaseKotlin
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:processReleaseJavaRes
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:bundleLibCompileToJarRelease
+> Task :core:bundleLibRuntimeToJarRelease
+> Task :src:tr:okutoon:kspReleaseKotlin
+> Task :src:tr:okutoon:compileReleaseKotlin
+> Task :src:tr:okutoon:processReleaseJavaRes
+> Task :src:tr:okutoon:mergeReleaseJavaResource
+> Task :src:tr:okutoon:compileReleaseJavaWithJavac
+> Task :src:tr:okutoon:mergeReleaseGeneratedProguardFiles
+> Task :src:tr:okutoon:expandReleaseArtProfileWildcards
+> Task :src:tr:okutoon:minifyReleaseWithR8
+> Task :src:tr:okutoon:compileReleaseArtProfile
+> Task :src:tr:okutoon:packageRelease
+> Task :src:tr:okutoon:createReleaseApkListingFileRedirect
 
+> Task :src:tr:okutoon:createReleaseExtensionJar
+ProGuard, version 7.10.0
+
+> Task :src:tr:okutoon:signReleaseExtensionJar
+> Task :src:tr:okutoon:assembleRelease
+
+[Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -84,7 +155,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD FAILED in 1m 55s
-23 actionable tasks: 21 executed, 1 from cache, 1 up-to-date
+BUILD SUCCESSFUL in 1m 57s
+87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
 Configuration cache entry stored.
-GRADLE_FAILED
