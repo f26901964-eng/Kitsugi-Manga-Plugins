@@ -836,6 +836,17 @@
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.zenithscans.png"
   },
   {
+    "name": "SadScans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.sadscans",
+    "apk": "tachiyomi-tr.sadscans-v1.6.1.apk",
+    "lang": "tr",
+    "code": 106001,
+    "version": "1.6.1",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.sadscans-v1.6.1.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.sadscans.png"
+  },
+  {
     "name": "Turkmanga",
     "pkg": "eu.kanade.tachiyomi.extension.tr.turkmanga",
     "apk": "tachiyomi-tr.turkmanga-v1.6.1.apk",
