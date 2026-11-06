@@ -52,6 +52,7 @@ jobs:
         run: |
           set -o pipefail
           if ! { python3 tools/prepare_extension_release.py sadscans && python3 -m unittest discover -s tests -v; } 2>&1 | tee /tmp/prepare-sadscans.log; then
+            { ls -la keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/; for a in keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/*.apk; do echo "== $a"; xxd "$a" | head -3; done; } >> /tmp/prepare-sadscans.log 2>&1
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             cp /tmp/prepare-sadscans.log "$GITHUB_WORKSPACE/prepare-sadscans.log"
