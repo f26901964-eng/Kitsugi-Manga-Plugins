@@ -36,12 +36,20 @@ class OkutoonSourceTests(unittest.TestCase):
     def test_reader_challenge_does_not_wait_for_the_host_interceptor(self):
         code = read("OkuToon.kt")
         self.assertIn('it.javaClass.simpleName == "CloudflareInterceptor"', code)
-        self.assertIn('callTimeout(8, TimeUnit.SECONDS)', code)
+        self.assertIn('callTimeout(6, TimeUnit.SECONDS)', code)
         self.assertIn('OkuToonReader.isChallenge(response.header("cf-mitigated"))', code)
         self.assertIn('runWebView(timeout = 30.seconds)', code)
         self.assertNotIn('blockImages = true', code)
         self.assertIn('response.close()', code)
         self.assertIn('throw IOException("OkuToon Cloudflare', code)
+
+    def test_reader_prefers_the_public_chapter_api(self):
+        code = read("OkuToon.kt")
+        self.assertIn('addPathSegments("api/v1/series")', code)
+        self.assertIn('OkuToonReader.apiImageUrls(response.body.string(), chapterUrl)', code)
+        self.assertIn('page["image_url"]', code)
+        self.assertIn('page["page_number"]', code)
+        self.assertIn('parsed.sortedBy { it.first }', code)
 
     def test_reader_keeps_chapter_referer_and_compact_indexes(self):
         code = read("OkuToon.kt")

@@ -28,7 +28,7 @@ tasks.withType<org.gradle.api.tasks.testing.Test>().configureEach {
 
 keiyoushi {
     name = "OkuToon"
-    versionCode = 10
+    versionCode = 11
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

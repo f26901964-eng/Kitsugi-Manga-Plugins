@@ -15,7 +15,13 @@ import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.runWebView
 import keiyoushi.utils.tryParseDate
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.intOrNull
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
@@ -136,12 +142,33 @@ abstract class OkuToon : KeiSource() {
     private val readerClient: OkHttpClient by lazy {
         client.newBuilder().apply {
             interceptors().removeAll { it.javaClass.simpleName == "CloudflareInterceptor" }
-            callTimeout(8, TimeUnit.SECONDS)
+            callTimeout(6, TimeUnit.SECONDS)
         }.build()
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val chapterUrl = getChapterUrl(chapter)
+        // The mobile API returns the complete ordered page list without fetching the
+        // Cloudflare-challenged HTML reader. Keep the browser path as a fallback.
+        val apiUrl = OkuToonReader.chapterApiUrl(baseUrl, chapterUrl)
+        if (apiUrl != null) {
+            val apiPages = try {
+                val apiHeaders = headers.newBuilder().set("Accept", "application/json").build()
+                readerClient.get(apiUrl, apiHeaders, ensureSuccess = false).use { response ->
+                    if (response.isSuccessful && !OkuToonReader.isChallenge(response.header("cf-mitigated"))) {
+                        OkuToonReader.apiImageUrls(response.body.string(), chapterUrl)
+                    } else {
+                        null
+                    }
+                }
+            } catch (_: IOException) {
+                null
+            }
+            if (!apiPages.isNullOrEmpty()) {
+                return apiPages.mapIndexed { index, url -> Page(index, url = chapterUrl, imageUrl = url) }
+            }
+        }
+
         val response = readerClient.get(chapterUrl, ensureSuccess = false)
         val document = if (OkuToonReader.isChallenge(response.header("cf-mitigated"))) {
             response.close()
@@ -192,6 +219,48 @@ abstract class OkuToon : KeiSource() {
 }
 
 internal object OkuToonReader {
+    fun chapterApiUrl(baseUrl: String, chapterUrl: String): HttpUrl? {
+        val base = baseUrl.toHttpUrlOrNull() ?: return null
+        val chapter = chapterUrl.toHttpUrlOrNull() ?: return null
+        if (chapter.host != base.host || chapter.scheme != base.scheme) return null
+        val segments = chapter.pathSegments.filter { it.isNotBlank() }
+        if (segments.size != 2) return null
+        return base.newBuilder()
+            .addPathSegments("api/v1/series")
+            .addPathSegment(segments[0])
+            .addPathSegment("chapters")
+            .addPathSegment(segments[1])
+            .build()
+    }
+
+    // Null means malformed/unavailable API data, not an empty successful reader.
+    fun apiImageUrls(body: String, chapterUrl: String): List<String>? {
+        val root = try {
+            Json.parseToJsonElement(body) as? JsonObject
+        } catch (_: IllegalArgumentException) {
+            null
+        } ?: return null
+        val data = root["data"] as? JsonObject ?: return null
+        val base = chapterUrl.toHttpUrlOrNull() ?: return null
+        val segments = base.pathSegments.filter { it.isNotBlank() }
+        if (segments.size != 2) return null
+        val series = data["series"] as? JsonObject ?: return null
+        val chapter = data["chapter"] as? JsonObject ?: return null
+        if ((series["slug"] as? JsonPrimitive)?.contentOrNull != segments[0]) return null
+        if ((chapter["slug"] as? JsonPrimitive)?.contentOrNull != segments[1]) return null
+        val pages = data["pages"] as? JsonArray ?: return null
+        if (pages.isEmpty()) return null
+        val parsed = pages.map { entry ->
+            val page = entry as? JsonObject ?: return null
+            val number = (page["page_number"] as? JsonPrimitive)?.intOrNull?.takeIf { it > 0 } ?: return null
+            val raw = (page["image_url"] as? JsonPrimitive)?.takeIf { it.isString }?.contentOrNull ?: return null
+            val url = base.resolve(raw.trim().takeIf { it.isNotEmpty() } ?: return null) ?: return null
+            number to url.toString()
+        }
+        if (parsed.map { it.first }.distinct().size != parsed.size) return null
+        return parsed.sortedBy { it.first }.map { it.second }
+    }
+
     fun isChallenge(mitigated: String?): Boolean = mitigated.equals("challenge", ignoreCase = true)
 
     fun imageUrls(document: Document): List<String> {
