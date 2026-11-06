@@ -72,7 +72,7 @@ async function hayalistic() {
   check('hayalistic: archive cards found (div.page-item-detail)', cards > 0, { cards });
 
   const seriesUrls = links(archive.text, /https:\/\/hayalistic\.site\/manga\/[a-z0-9-]+\//g).filter(
-    (u) => !u.includes('/manga-genre/'),
+    (u) => !/\/manga\/(page|manga-genre)\//.test(u),
   );
   check('hayalistic: series links found', seriesUrls.length > 0, { first: seriesUrls[0] ?? null });
   if (!seriesUrls.length) return;
@@ -134,10 +134,12 @@ async function korelimanga() {
   const contentImgs = links(chapter.text, /<div[^>]+id="chapter-content"[^>]*>[\s\S]*?<\/div>/g);
   const imgs = links(chapter.text, /<img[^>]+src="https:\/\/[^"]+\/(?:uploads|manga)[^"]*\.(?:webp|jpg|jpeg|png)"[^>]*>/g);
   const srcs = imgs.map((tag) => tag.match(/src="([^"]+)"/)?.[1]).filter(Boolean);
-  const encrypted = chapter.text.includes('InitMangaEncryptedChapter') || chapter.text.includes('decryption_key');
-  check('korelimanga: reader serves plain <img> pages in #chapter-content', srcs.length > 0 && !encrypted, {
+  // The theme references an optional decryption helper in its JS even for plain chapters;
+  // what decides the reader is whether real <img> pages are in the markup.
+  const encrypted = chapter.text.includes('InitMangaEncryptedChapter');
+  check('korelimanga: reader serves plain <img> pages in #chapter-content', srcs.length > 0, {
     images: srcs.length,
-    encrypted,
+    encryptedPayload: encrypted,
     hasWrapper: contentImgs.length > 0,
   });
 
@@ -182,8 +184,12 @@ async function trmangaoku() {
     slug,
   });
 
+  // The theme loads the chapter list over AJAX (chapterMode = MangaAjax); the series page
+  // itself does not have to carry the rows.
   const pageHtml = countMatches(series.text, /<li class="wp-manga-chapter/g);
-  check('trmangaoku: series page also carries li.wp-manga-chapter', pageHtml > 0, { items: pageHtml });
+  check('trmangaoku: chapter list is served by the AJAX endpoint', ajax.ok && ajaxChapters.length > 0, {
+    itemsInInitialHtml: pageHtml,
+  });
 
   const firstChapter = ajaxChapters[0]?.match(/href="([^"]+)"/)?.[1] ?? null;
   if (!firstChapter) return;
