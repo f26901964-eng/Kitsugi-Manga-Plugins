@@ -49,6 +49,17 @@ jobs:
             git push origin "HEAD:${GITHUB_REF_NAME}" || true
             exit 1
           fi
+      - name: Debug artifacts
+        if: always()
+        run: |
+          { ls -la keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/ 2>&1; for a in keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/*.apk; do echo "== $a"; stat -c %s "$a"; xxd "$a" | head -3; done; } > /tmp/debug-sadscans.log 2>&1
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git pull --rebase origin "${GITHUB_REF_NAME}" || true
+          cp /tmp/debug-sadscans.log "$GITHUB_WORKSPACE/debug-sadscans.log"
+          git add "$GITHUB_WORKSPACE/debug-sadscans.log"
+          git commit -m 'ci: sadscans build debug [skip ci]' || true
+          git push origin "HEAD:${GITHUB_REF_NAME}" || true
       - name: Prepare and verify the new catalogs
         run: |
           set -o pipefail
