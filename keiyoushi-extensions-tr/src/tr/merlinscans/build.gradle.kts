@@ -24,7 +24,7 @@ tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin")
 
 keiyoushi {
     name = "MerlinToon"
-    versionCode = 5
+    versionCode = 6
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
     theme = "initmanga"
@@ -32,6 +32,8 @@ keiyoushi {
     source {
         lang = "tr"
         baseUrl = "https://merlintoon.com"
+        // Preserve the ID previously derived from "Merlin Scans/tr/2".
+        id = 4883620005315879682L
         versionId = 2
     }
 }
