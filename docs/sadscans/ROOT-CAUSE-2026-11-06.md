@@ -38,3 +38,10 @@
 - Kotatsu's separate IkenParser still has its own legacy transport/reader code; this candidate targets the Keiyoushi APK used for the app update and does not assert Kotatsu compatibility.
 
 Do not merge/publish this candidate solely because compilation succeeds. Update this record with actual build/live outcomes.
+
+## Results from this session
+
+- Candidate compiles successfully: run `42254821226`, build/catalog stages passed; 59 Python tests OK (12 unrelated optional-dependency skips). Artifact-save stage failed due to concurrent binary add/add rebase conflict, not compilation. A subsequent build is being run from the latest branch head, avoiding stale queued checkout.
+- Exact DOM-script tests pass locally, including explicit no-results vs loading, schema-only reader rejection, canonical chapter href, pagination stale-row rejection and React hydration readiness.
+- Current frontend live run `42254821232` fails at the first catalogue page with explicit hard block, zero Worker/API observations. The signer claim remains externally reported, not independently confirmed on this connection.
+- The candidate is v1.6.6 on the working branch only. Main/app publication is still v1.6.5; no new release has been claimed as a working fix.
