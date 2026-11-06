@@ -2,6 +2,7 @@
 """Sanitized live diagnostics for user-reported Manga-TR series and readers."""
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import re
@@ -154,7 +155,54 @@ def parse_api_body(response: requests.Response) -> tuple[BeautifulSoup, dict[str
     return document, metadata
 
 
-def reader_diagnostic(session: requests.Session, chapter: dict[str, str], detail_url: str) -> dict[str, Any]:
+def chapter_fixture(document: BeautifulSoup) -> str:
+    fixture = BeautifulSoup("<!doctype html><html><body></body></html>", "html.parser")
+    nodes = document.select(f".chapter-list__hero, {CARD_SELECTOR}, .empty-state")
+    for node in nodes:
+        clone = BeautifulSoup(str(node), "html.parser")
+        for unwanted in clone.select("script, style"):
+            unwanted.decompose()
+        for element in clone.select("[onclick]"):
+            del element["onclick"]
+        fixture.body.append(clone)
+    return str(fixture)
+
+
+def reader_fixture(document: BeautifulSoup) -> str | None:
+    heading = next(
+        (
+            element for element in document.select("h1, h2, h3")
+            if "Bu İçeriği Okumak İçin Giriş Yapmalısınız".casefold()
+            in element.get_text(" ", strip=True).casefold()
+        ),
+        None,
+    )
+    if heading is None:
+        return None
+    container = heading
+    for parent in heading.parents:
+        if getattr(parent, "name", None) not in ("div", "section"):
+            continue
+        container = parent
+        if "yalnızca kayıtlı Manga-TR üyeleri".casefold() in parent.get_text(" ", strip=True).casefold():
+            break
+    clone = BeautifulSoup(str(container), "html.parser")
+    for unwanted in clone.select("script, style, img, iframe, form"):
+        unwanted.decompose()
+    for element in clone.find_all(True):
+        for attribute in ("href", "src", "data-src", "onclick"):
+            element.attrs.pop(attribute, None)
+    fixture = BeautifulSoup("<!doctype html><html><body></body></html>", "html.parser")
+    fixture.body.append(clone)
+    return str(fixture)
+
+
+def reader_diagnostic(
+    session: requests.Session,
+    chapter: dict[str, str],
+    detail_url: str,
+    fixture_path: Path | None = None,
+) -> dict[str, Any]:
     url = urljoin(BASE + "/", chapter["path"])
     response = request(session, "GET", url, headers=navigation_headers(detail_url))
     document = BeautifulSoup(response.text, "html.parser")
@@ -171,7 +219,7 @@ def reader_diagnostic(session: requests.Session, chapter: dict[str, str], detail
         "Bu İçeriği Okumak İçin Giriş Yapmalısınız".casefold() in page_text.casefold()
         or "yalnızca kayıtlı Manga-TR üyeleri".casefold() in page_text.casefold()
     )
-    return {
+    result = {
         **chapter,
         "http": response.status_code,
         "finalPath": urlsplit(response.url).path,
@@ -186,9 +234,23 @@ def reader_diagnostic(session: requests.Session, chapter: dict[str, str], detail
         "genericReaderImages": len(generic),
         "textPreview": safe_text(page_text, 700),
     }
+    if fixture_path is not None:
+        fixture = reader_fixture(document) if login_required and response.status_code == 200 else None
+        if fixture is not None:
+            fixture_path.parent.mkdir(parents=True, exist_ok=True)
+            fixture_path.write_text(fixture, encoding="utf-8")
+        result["fixtureWritten"] = fixture is not None
+    return result
 
 
-def probe_target(session: requests.Session, seed: int, key: str, query: str, known_slug: str | None) -> dict[str, Any]:
+def probe_target(
+    session: requests.Session,
+    seed: int,
+    key: str,
+    query: str,
+    known_slug: str | None,
+    fixture_root: Path | None = None,
+) -> dict[str, Any]:
     try:
         slug = known_slug or resolve_slug(session, query)
         if not slug:
@@ -207,10 +269,29 @@ def probe_target(session: requests.Session, seed: int, key: str, query: str, kno
         )
         api_document, metadata = parse_api_body(response)
         links = chapter_links(api_document)
+        empty_state = api_document.select_one(".empty-state")
+        explicit_empty = (
+            not links and empty_state is not None
+            and "Henüz bölüm eklenmemiş".casefold() in empty_state.get_text(" ", strip=True).casefold()
+        )
+        fixture_dir = fixture_root / key if fixture_root is not None else None
+        fixture_written = False
+        if (
+            fixture_dir is not None and detail_response.status_code == 200
+            and response.status_code == 200 and (links or explicit_empty)
+        ):
+            fixture_dir.mkdir(parents=True, exist_ok=True)
+            (fixture_dir / "chapters.html").write_text(chapter_fixture(api_document), encoding="utf-8")
+            fixture_written = True
         readers = []
         for chapter in links[:4]:
+            reader_fixture_path = None
+            if fixture_written and fixture_dir is not None:
+                reader_id = re.search(r"/id-(\d+)-", chapter["path"])
+                suffix = reader_id.group(1) if reader_id else str(len(readers))
+                reader_fixture_path = fixture_dir / f"reader-{suffix}.html"
             try:
-                readers.append(reader_diagnostic(session, chapter, detail_url))
+                readers.append(reader_diagnostic(session, chapter, detail_url, reader_fixture_path))
             except Exception as exc:
                 readers.append({**chapter, "error": str(exc)})
             time.sleep(0.25)
@@ -223,6 +304,7 @@ def probe_target(session: requests.Session, seed: int, key: str, query: str, kno
             "apiHttp": response.status_code,
             "cardCount": len(api_document.select(CARD_SELECTOR)),
             "chapterLinkCount": len(links),
+            "fixtureWritten": fixture_written,
             **metadata,
             "readers": readers,
         }
@@ -231,6 +313,13 @@ def probe_target(session: requests.Session, seed: int, key: str, query: str, kno
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--fixture-dir",
+        type=Path,
+        help="Write sanitized live chapter/login DOM fragments for the production Kotlin parser tests.",
+    )
+    args = parser.parse_args()
     # Use the same public DDoS-Guard exchange as the production/browser probes.
     session = clear_ddos_guard()
     session.headers.update({"User-Agent": UA, "Accept-Language": "tr-TR,tr;q=0.9,en;q=0.7"})
@@ -239,7 +328,7 @@ def main() -> int:
         report = {
             "timestamp": int(time.time()),
             "seedResolved": seed != 0,
-            "targets": [probe_target(session, seed, *target) for target in TARGETS],
+            "targets": [probe_target(session, seed, *target, fixture_root=args.fixture_dir) for target in TARGETS],
         }
     finally:
         session.close()

@@ -33,11 +33,8 @@ class DDoSGuardInterceptor(private val client: OkHttpClient) : Interceptor {
     }
 
     private fun clearDdosGuard(originalRequest: okhttp3.Request): Boolean {
-        // The public clearance flow currently issues a cookie with its reduced
-        // Chromium UA. Only the exchange uses it; the original source request is
-        // retried byte-for-byte with its production UA and headers.
         val checkHeaders = Headers.Builder()
-            .set("User-Agent", CLEARANCE_USER_AGENT)
+            .set("User-Agent", originalRequest.header("User-Agent") ?: DEFAULT_USER_AGENT)
             .set("Accept", "*/*")
             .build()
         val checkJsBody = client.newCall(GET(WELL_KNOWN_URL, checkHeaders)).execute().use { response ->
@@ -65,7 +62,6 @@ class DDoSGuardInterceptor(private val client: OkHttpClient) : Interceptor {
             .removeAll("Origin")
             .removeAll("Sec-Fetch-User")
             .removeAll("Upgrade-Insecure-Requests")
-            .set("User-Agent", CLEARANCE_USER_AGENT)
             .set("Accept", "*/*")
             .set("Referer", originalRequest.header("Referer") ?: "${originalRequest.url.scheme}://${originalRequest.url.host}/")
             .set("Sec-Fetch-Dest", "empty")
@@ -100,7 +96,7 @@ class DDoSGuardInterceptor(private val client: OkHttpClient) : Interceptor {
     companion object {
         private const val WELL_KNOWN_URL = "https://check.ddos-guard.net/check.js"
         private const val CHALLENGE_PEEK_BYTES = 8192L
-        private const val CLEARANCE_USER_AGENT = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
+        private const val DEFAULT_USER_AGENT = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 Chrome/124.0.0.0 Mobile Safari/537.36"
         private val WELL_KNOWN_PATH_REGEX = Regex("""['"](/.well-known/ddos-guard/[^'"]+)['"]""")
     }
 }

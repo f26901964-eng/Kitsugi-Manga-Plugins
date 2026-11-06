@@ -31,12 +31,14 @@ jobs:
       - name: Install diagnostics dependencies
         run: python -m pip install requests==2.32.5 beautifulsoup4 playwright==1.56.0
       - name: Probe reported series, chapter cards and readers
-        run: python tools/mangatr_regression_probe.py
+        run: |
+          rm -rf /tmp/mangatr-kotlin-live-fixture/reported
+          python tools/mangatr_regression_probe.py --fixture-dir /tmp/mangatr-kotlin-live-fixture/reported
       - name: Verify reported series with the production Kotlin parser
         working-directory: keiyoushi-extensions-tr
         env:
           MANGATR_LIVE_TEST: '1'
-          MANGATR_LIVE_NETWORK: '1'
+          MANGATR_LIVE_FIXTURE_DIR: '/tmp/mangatr-kotlin-live-fixture'
         run: |
           ./gradlew :src:tr:mangatr:spotlessCheck :src:tr:mangatr:testDebugUnitTest \
             --tests 'eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.reported series*'

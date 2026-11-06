@@ -3,11 +3,8 @@ package eu.kanade.tachiyomi.extension.tr.mangatr
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Cookie
 import okhttp3.CookieJar
-import okhttp3.FormBody
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -37,36 +34,21 @@ class MangaTRLiveTest {
 
     @Test
     fun `reported series expose current chapters and explicit access states`() {
-        assumeTrue(System.getenv("MANGATR_LIVE_NETWORK") == "1")
-        val cookieJar = MemoryCookieJar()
-        val gateClient = OkHttpClient.Builder()
-            .cookieJar(cookieJar)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .build()
-        val client = gateClient.newBuilder()
-            .addInterceptor(DDoSGuardInterceptor(gateClient))
-            .build()
-        client.newCall(
-            Request.Builder()
-                .url("$BASE_URL/manga-zootopia-i-will-survive.html")
-                .headers(navigationHeaders())
-                .get()
-                .build(),
-        ).execute().use { response ->
-            assertEquals("Initial series detail failed", 200, response.code)
+        val fixtureRoot = File(
+            requireNotNull(System.getenv("MANGATR_LIVE_FIXTURE_DIR")) {
+                "MANGATR_LIVE_FIXTURE_DIR is required for the reported-series fixture test"
+            },
+            "reported",
+        )
+
+        fun chapterBatch(slug: String): MangaTRParser.ChapterBatch {
+            val fixture = File(fixtureRoot, "$slug/chapters.html")
+            assertTrue("Missing sanitized live chapter fixture: $slug", fixture.isFile)
+            return MangaTRParser.parseChapterDocument(
+                Jsoup.parse(fixture.readText(), "$BASE_URL/manga-$slug.html"),
+                chapterFactory = ::createTestChapter,
+            )
         }
-        val seed = client.newCall(
-            Request.Builder()
-                .url("$BASE_URL/app/manga/themes/default/assets/css/mtr.min.css")
-                .headers(navigationHeaders())
-                .get()
-                .build(),
-        ).execute().use { response ->
-            assertEquals("Chapter CSS failed", 200, response.code)
-            MangaTRContract.seedFromCss(response.body.string())
-        }
-        requireNotNull(seed) { "Chapter CSS did not expose the signing seed" }
 
         val loginReaders = linkedMapOf(
             "zootopia-i-will-survive" to "90944",
@@ -74,34 +56,29 @@ class MangaTRLiveTest {
             "one-piece-dj-which" to "90914",
         )
         loginReaders.forEach { (slug, expectedReaderId) ->
-            val batch = fetchReportedChapterBatch(client, slug, seed)
+            val batch = chapterBatch(slug)
             assertEquals("$slug chapter card count changed", 1, batch.cardCount)
             val chapter = batch.chapters.firstOrNull {
                 READER_ID.find(it.url)?.groupValues?.get(1) == expectedReaderId
             }
             requireNotNull(chapter) { "$slug did not expose current reader $expectedReaderId" }
-            val readerUrl = BASE_URL + chapter.url
-            val readerBody = client.newCall(
-                Request.Builder().url(readerUrl).headers(navigationHeaders()).get().build(),
-            ).execute().use { response ->
-                assertEquals("Reader $expectedReaderId failed", 200, response.code)
-                response.body.string()
-            }
-            val readerDocument = Jsoup.parse(readerBody, readerUrl)
+            val readerFixture = File(fixtureRoot, "$slug/reader-$expectedReaderId.html")
+            assertTrue("Missing sanitized live login-wall fixture: $expectedReaderId", readerFixture.isFile)
+            val readerDocument = Jsoup.parse(readerFixture.readText(), BASE_URL + chapter.url)
             assertTrue(
                 "Reader $expectedReaderId no longer exposes the reported login wall",
                 MangaTRParser.requiresReaderLogin(readerDocument),
             )
             assertTrue(MangaTRParser.parseReaderPages(readerDocument).isEmpty())
-            println("MangaTR reported reader $expectedReaderId: current chapter and login wall verified")
+            println("MangaTR reported reader $expectedReaderId: live chapter and login-wall fixtures verified")
         }
 
         for (slug in listOf("lord-of-the-mysteries", "one-piece-dj-welcome-to-the-straw-hat-forest")) {
-            val batch = fetchReportedChapterBatch(client, slug, seed)
+            val batch = chapterBatch(slug)
             assertTrue("$slug explicit empty catalog was not recognized", batch.emptyCatalog)
             assertTrue(batch.chapters.isEmpty())
             assertEquals(0, batch.cardCount)
-            println("MangaTR reported series $slug: explicit empty catalog verified")
+            println("MangaTR reported series $slug: live empty-catalog fixture verified")
         }
     }
 
@@ -389,47 +366,6 @@ class MangaTRLiveTest {
         }
         assertTrue("Cloudflare blocked only some images: $cloudflareImageBlocks", cloudflareImageBlocks.isEmpty())
         assertEquals("Not all selected chapter images were decoded and unscrambled", 4, decodedImages)
-    }
-
-    private fun fetchReportedChapterBatch(
-        client: OkHttpClient,
-        slug: String,
-        seed: Int,
-    ): MangaTRParser.ChapterBatch {
-        val timestamp = System.currentTimeMillis() / 1000
-        val detailUrl = "$BASE_URL/manga-$slug.html"
-        val form = FormBody.Builder()
-            .add("manga", slug)
-            .add("tur", "")
-            .add("offset", "0")
-            .add("_t", timestamp.toString())
-            .add("_sig", MangaTRContract.signature(slug, seed, timestamp))
-            .build()
-        val headers = navigationHeaders().newBuilder()
-            .mangaTrAjaxHeaders(detailUrl, acceptsHtml = true)
-            .set("Origin", BASE_URL)
-            .set("Referer", detailUrl)
-            .build()
-        val body = client.newCall(
-            Request.Builder()
-                .url("$BASE_URL/cek/fetch_pages_manga.php")
-                .headers(headers)
-                .post(form)
-                .build(),
-        ).execute().use { response ->
-            assertEquals("Chapter API failed for $slug", 200, response.code)
-            response.body.string()
-        }
-        val html = runCatching {
-            if (!body.trim().startsWith("{")) return@runCatching null
-            val payload = Json.parseToJsonElement(body) as? JsonObject
-            payload?.get("html")?.jsonPrimitive?.content
-                ?: payload?.get("data")?.jsonPrimitive?.content
-        }.getOrNull() ?: body
-        return MangaTRParser.parseChapterDocument(
-            Jsoup.parse(html, detailUrl),
-            chapterFactory = ::createTestChapter,
-        )
     }
 
     private fun unscramble(imageUrl: String, source: BufferedImage): BufferedImage {
