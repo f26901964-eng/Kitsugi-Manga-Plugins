@@ -33,7 +33,7 @@ abstract class MerlinScans : InitManga() {
         return MangasPage(result.mangas.map { item ->
             SManga.create().apply {
                 title = item.title
-                url = item.url
+                this.url = item.url
                 thumbnail_url = item.thumbnail
             }
         }, result.hasNextPage)
