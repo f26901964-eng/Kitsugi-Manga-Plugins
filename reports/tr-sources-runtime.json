@@ -1,0 +1,128 @@
+{
+  "generatedAt": "2026-11-06T10:08:51Z",
+  "passed": 12,
+  "total": 16,
+  "checks": [
+    {
+      "name": "hayalistic: archive listing answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "hayalistic: archive cards found (div.page-item-detail)",
+      "ok": true,
+      "detail": {
+        "cards": 16
+      }
+    },
+    {
+      "name": "hayalistic: series links found",
+      "ok": true,
+      "detail": {
+        "first": "https://hayalistic.site/manga/page/"
+      }
+    },
+    {
+      "name": "hayalistic: chapter list uses li.wp-manga-chapter",
+      "ok": false,
+      "detail": {
+        "items": 0,
+        "links": 0
+      }
+    },
+    {
+      "name": "hayalistic: chapter dates use span.chapter-release-date",
+      "ok": false,
+      "detail": {}
+    },
+    {
+      "name": "korelimanga: home answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "korelimanga: series links on the home page",
+      "ok": true,
+      "detail": {
+        "count": 47
+      }
+    },
+    {
+      "name": "korelimanga: chapter rows use div.chapter-item > a.uk-link-toggle",
+      "ok": true,
+      "detail": {
+        "rows": 24,
+        "links": 24
+      }
+    },
+    {
+      "name": "korelimanga: reader serves plain <img> pages in #chapter-content",
+      "ok": false,
+      "detail": {
+        "images": 23,
+        "encrypted": true,
+        "hasWrapper": true
+      }
+    },
+    {
+      "name": "korelimanga: first page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "png",
+        "bytes": 73281,
+        "host": "korelimanga.com"
+      }
+    },
+    {
+      "name": "trmangaoku: home answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "trmangaoku: series links on the home page",
+      "ok": true,
+      "detail": {
+        "count": 24
+      }
+    },
+    {
+      "name": "trmangaoku: chapterMode=MangaAjax endpoint returns chapters",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "chapters": 92,
+        "slug": "barbarin-oyun-rehberi"
+      }
+    },
+    {
+      "name": "trmangaoku: series page also carries li.wp-manga-chapter",
+      "ok": false,
+      "detail": {
+        "items": 0
+      }
+    },
+    {
+      "name": "trmangaoku: reader page exposes page images",
+      "ok": true,
+      "detail": {
+        "images": 10
+      }
+    },
+    {
+      "name": "trmangaoku: page image downloads and decodes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "jpeg",
+        "bytes": 9522
+      }
+    }
+  ]
+}
