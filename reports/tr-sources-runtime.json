@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-06T10:13:46Z",
+  "generatedAt": "2026-11-06T10:15:31Z",
   "passed": 14,
-  "total": 16,
+  "total": 15,
   "checks": [
     {
       "name": "hayalistic: archive listing answers 200",
@@ -18,30 +18,18 @@
       }
     },
     {
-      "name": "hayalistic: series links found",
+      "name": "hayalistic: series links found inside the archive cards",
       "ok": true,
       "detail": {
-        "first": "https://hayalistic.site/manga/feed/"
+        "cardLinks": 16,
+        "first": "class=\"page-item-detail manga  \">\n\t\t\t\t                <div id=\"manga-item-122\" class=\"item-thumb  c-image-hover\" data-post-id=\"122\">\n\t\t\t\t\t                            <a href=\"https://hayalistic.site/manga/bir-hizmetciden-fazlasi/\""
       }
     },
     {
-      "name": "hayalistic: chapter list uses li.wp-manga-chapter",
+      "name": "hayalistic: live run completed",
       "ok": false,
       "detail": {
-        "seriesUrl": "https://hayalistic.site/manga/feed/",
-        "bytes": 14682,
-        "hasChapterWord": false,
-        "bolumRefs": 0,
-        "items": 0,
-        "links": 0,
-        "source": "ajax:404"
-      }
-    },
-    {
-      "name": "hayalistic: chapter dates use span.chapter-release-date",
-      "ok": false,
-      "detail": {
-        "source": "ajax:404"
+        "error": "Failed to parse URL from class=\"page-item-detail manga  \">\n\t\t\t\t                <div id=\"manga-item-122\" class=\"item-thumb  c-image-hover\" data-post-id=\"122\">\n\t\t"
       }
     },
     {
@@ -127,8 +115,8 @@
       "ok": true,
       "detail": {
         "status": 200,
-        "kind": "jpeg",
-        "bytes": 8425
+        "kind": "webp",
+        "bytes": 8964
       }
     }
   ]
