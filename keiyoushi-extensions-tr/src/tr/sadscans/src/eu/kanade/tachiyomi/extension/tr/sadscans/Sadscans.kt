@@ -110,7 +110,7 @@ abstract class Sadscans : KeiSource() {
 
     override suspend fun getPopularManga(page: Int): MangasPage = fetchSeries(page, "-views", null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchSeries(page, "-updatedAt", null)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchSeries(page, "name", null)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val sort = filters.firstInstanceOrNull<SortFilter>()?.selected ?: "-views"
@@ -128,7 +128,14 @@ abstract class Sadscans : KeiSource() {
         }
         val items = trpcCallArray("$seriesListRouter.getSeries", input)
             .map { it.jsonObject }
-            .mapNotNull { runCatching { trpcJson.decodeFromJsonElement(SeriesItemDto.serializer(), it) }.getOrNull() }
+            .map { item ->
+                // Counts are presentation-only. A decimal/string count must never discard a series.
+                SeriesItemDto(
+                    href = item["href"].stringOrNull() ?: item["slug"].stringOrNull()?.let { "/seriler/$it" },
+                    name = item["name"].stringOrNull(),
+                    thumb = item["thumb"].stringOrNull(),
+                )
+            }
             .filter { !it.href.isNullOrBlank() && !it.name.isNullOrBlank() }
         val mangas = items.map { it.toSManga() }
         return MangasPage(mangas, mangas.size >= PAGE_SIZE)
@@ -211,9 +218,10 @@ abstract class Sadscans : KeiSource() {
             put("page", JsonPrimitive(page))
             put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
         }
-        return runCatching {
-            trpcJson.decodeFromJsonElement(SeriesDataDto.serializer(), trpcCallObject("$seriesDetailRouter.getSeriesData", input))
-        }.getOrNull()
+        return trpcJson.decodeFromJsonElement(
+            SeriesDataDto.serializer(),
+            trpcCallObject("$seriesDetailRouter.getSeriesData", input),
+        )
     }
 
     private suspend fun fetchChapters(slug: String): List<SChapter> {
@@ -363,8 +371,8 @@ abstract class Sadscans : KeiSource() {
         val selected: String
             get() = when (state) {
                 0 -> "-views"
-                1 -> "-updatedAt"
-                2 -> "-id"
+                1 -> "name"
+                2 -> "name"
                 3 -> "name"
                 else -> "-name"
             }
@@ -382,6 +390,6 @@ abstract class Sadscans : KeiSource() {
 
     companion object {
         private const val PAGE_SIZE = 15
-        private const val CHAPTER_PAGE_LIMIT = 50
+        private const val CHAPTER_PAGE_LIMIT = 10
     }
 }
