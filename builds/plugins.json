@@ -20,16 +20,5 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangacix-v1.6.2.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangacix.png"
-  },
-  {
-    "name": "Manga Diyarı",
-    "pkg": "eu.kanade.tachiyomi.extension.tr.mangadiyari",
-    "apk": "tachiyomi-tr.mangadiyari-v1.6.5.apk",
-    "lang": "tr",
-    "code": 106005,
-    "version": "1.6.5",
-    "nsfw": 0,
-    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadiyari-v1.6.5.apk",
-    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadiyari.png"
   }
 ]

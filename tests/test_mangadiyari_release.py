@@ -16,7 +16,8 @@ class MangaDiyariReleaseTests(unittest.TestCase):
 
     def test_only_the_current_apk_stays_in_the_archive(self):
         """Birden fazla sürüm arşivde kalırsa katalog testi ve imza karışıklığı çıkar."""
-        text = open("tools/prepare_mangadiyari_release.py", encoding="utf-8").read()
+        with open("tools/prepare_mangadiyari_release.py", encoding="utf-8") as handle:
+            text = handle.read()
         self.assertIn("prebuilt/apk", text)
         self.assertIn("stale.unlink()", text)
 
