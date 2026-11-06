@@ -19,7 +19,6 @@ on:
 
 permissions:
   contents: write
-  issues: write
 
 concurrency:
   group: sadscans-release-${{ github.ref }}
@@ -38,41 +37,11 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build signed release APK
         working-directory: keiyoushi-extensions-tr
-        run: |
-          set -o pipefail
-          if ! ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease 2>&1 | tee /tmp/build-sadscans.log; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            cp /tmp/build-sadscans.log "$GITHUB_WORKSPACE/build-sadscans.log"
-            git add "$GITHUB_WORKSPACE/build-sadscans.log"
-            git commit -m 'ci: sadscans build log [skip ci]' || true
-            git push origin "HEAD:${GITHUB_REF_NAME}" || true
-            exit 1
-          fi
-      - name: Debug artifacts
-        if: always()
-        run: |
-          { ls -la keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/ 2>&1; for a in keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/*.apk; do echo "== $a"; stat -c %s "$a"; xxd "$a" | head -3; done; } > /tmp/debug-sadscans.log 2>&1
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git pull --rebase origin "${GITHUB_REF_NAME}" || true
-          cp /tmp/debug-sadscans.log "$GITHUB_WORKSPACE/debug-sadscans.log"
-          git add "$GITHUB_WORKSPACE/debug-sadscans.log"
-          git commit -m 'ci: sadscans build debug [skip ci]' || true
-          git push origin "HEAD:${GITHUB_REF_NAME}" || true
+        run: ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease
       - name: Prepare and verify the new catalogs
         run: |
-          set -o pipefail
-          if ! { python3 tools/prepare_extension_release.py sadscans && python3 -m unittest discover -s tests -v; } 2>&1 | tee /tmp/prepare-sadscans.log; then
-            { ls -la keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/; for a in keiyoushi-extensions-tr/src/tr/sadscans/build/outputs/apk/release/*.apk; do echo "== $a"; xxd "$a" | head -3; done; } >> /tmp/prepare-sadscans.log 2>&1
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            cp /tmp/prepare-sadscans.log "$GITHUB_WORKSPACE/prepare-sadscans.log"
-            git add "$GITHUB_WORKSPACE/prepare-sadscans.log"
-            git commit -m 'ci: sadscans prepare log [skip ci]' || true
-            git push origin "HEAD:${GITHUB_REF_NAME}" || true
-            exit 1
-          fi
+          python3 tools/prepare_extension_release.py sadscans
+          python3 -m unittest discover -s tests -v
       - uses: actions/upload-artifact@v4
         with:
           name: sadscans-apk
@@ -86,5 +55,3 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'sadscans: publish verified SadScans APK [skip ci]'
           git push origin "HEAD:${GITHUB_REF_NAME}"
-
-

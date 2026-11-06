@@ -51,7 +51,9 @@ def release(module_name: str, root: Path = ROOT) -> tuple[str, int]:
     if len(built) != 1:
         raise ValueError(f"{module_name}: tam olarak bir release APK bekleniyordu, {len(built)} bulundu")
     apk_bytes = built[0].read_bytes()
-    if len(apk_bytes) < 50_000 or apk_bytes[:2] != b"PK":
+    # A real (even minimal) extension APK is a zip well above 10 KB; the floor only
+    # guards against empty/corrupt files — tiny modules can legitimately be ~45 KB.
+    if len(apk_bytes) < 10_000 or apk_bytes[:2] != b"PK":
         raise ValueError(f"{module_name}: APK boş ya da bir Android paketi değil")
 
     manifest = read_android_manifest(built[0])
