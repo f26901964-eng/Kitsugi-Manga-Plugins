@@ -55,6 +55,8 @@ class MangaDto(
         status = when (this@MangaDto.status) {
             "ongoing" -> SManga.ONGOING
             "completed" -> SManga.COMPLETED
+            "hiatus" -> SManga.ON_HIATUS
+            "cancelled" -> SManga.CANCELLED
             else -> SManga.UNKNOWN
         }
         genre = (categories + genres).map { it.name }.distinct().joinToString()
@@ -81,9 +83,11 @@ class ChapterDto(
 ) {
     fun toSChapter(mangaSlug: String) = SChapter.create().apply {
         url = "/read/$mangaSlug/$slug"
-        val numberStr = number.jsonPrimitive.contentOrNull ?: number.toString()
+        val rawNumber = number.jsonPrimitive.contentOrNull ?: number.toString()
+        // Site "762.0" gibi ondalıklı yazabiliyor; tam sayıysa ".0" kısmını at.
+        val numberStr = rawNumber.removeSuffix(".0")
         name = "Bölüm $numberStr" + (if (title.isNullOrBlank()) "" else ": $title")
-        chapter_number = numberStr.toFloatOrNull() ?: -1f
+        chapter_number = rawNumber.toFloatOrNull() ?: -1f
         date_upload = Instant.tryParse(publishedAt)
     }
 }
@@ -98,14 +102,16 @@ class ReaderPageDto(
     @SerialName("image_url") private val url: String,
     private val scramble: ScrambleDto? = null,
 ) {
-    fun toPage(index: Int): Page {
+    fun toPage(index: Int, baseUrl: String): Page {
+        // Göreli yolları (ör. /storage/...) mutlak adrese çevir; yoksa toHttpUrl çöker.
+        val absolute = if (url.startsWith("/")) "$baseUrl$url" else url
         val pageUrl = if (scramble?.method == "tiled-v1" && scramble.grid != null && scramble.seed != null) {
-            url.toHttpUrl().newBuilder()
+            absolute.toHttpUrl().newBuilder()
                 .addQueryParameter(UnscramblerInterceptor.PARAM_GRID, scramble.grid.toString())
                 .addQueryParameter(UnscramblerInterceptor.PARAM_SEED, scramble.seed.toString())
                 .build().toString()
         } else {
-            url
+            absolute
         }
         return Page(index, imageUrl = pageUrl)
     }

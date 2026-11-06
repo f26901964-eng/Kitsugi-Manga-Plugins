@@ -128,7 +128,7 @@ abstract class MangaDenizi : KeiSource() {
         val chapterSlug = trimmed.substringAfter("/")
         val dto = client.get("$baseUrl/api/v1/reader/$mangaSlug/$chapterSlug", apiHeaders)
             .parseAs<ReaderDto>()
-        return dto.pages.mapIndexed { index, page -> page.toPage(index) }
+        return dto.pages.mapIndexed { index, page -> page.toPage(index, baseUrl) }
     }
 
     // =============================== Filters ===============================
