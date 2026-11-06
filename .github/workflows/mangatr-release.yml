@@ -3,7 +3,7 @@ name: Manga-TR branch APK release
 on:
   workflow_dispatch:
   push:
-    branches: [arena/720282f3-kitsugi-manga-plugins]
+    branches: [arena/5307b37d-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangatr/build.gradle.kts
       - tools/prepare_mangatr_release.py
@@ -40,8 +40,8 @@ jobs:
           git add prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           git diff --cached --quiet && exit 0
           git commit -m 'mangatr: publish compiled APK and catalogs [skip ci]'
-          git pull --rebase origin arena/720282f3-kitsugi-manga-plugins
-          git push origin HEAD:arena/720282f3-kitsugi-manga-plugins
+          git pull --rebase origin arena/5307b37d-kitsugi-manga-plugins
+          git push origin HEAD:arena/5307b37d-kitsugi-manga-plugins
       - name: Upload the tested release APK
         uses: actions/upload-artifact@v4
         with:

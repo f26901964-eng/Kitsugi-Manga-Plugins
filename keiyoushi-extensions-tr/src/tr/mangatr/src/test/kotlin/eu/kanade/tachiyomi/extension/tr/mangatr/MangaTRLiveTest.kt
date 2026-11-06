@@ -33,13 +33,65 @@ class MangaTRLiveTest {
     }
 
     @Test
+    fun `reported series expose current chapters and explicit access states`() {
+        val fixtureRoot = File(
+            requireNotNull(System.getenv("MANGATR_LIVE_FIXTURE_DIR")) {
+                "MANGATR_LIVE_FIXTURE_DIR is required for the reported-series fixture test"
+            },
+            "reported",
+        )
+
+        fun chapterBatch(slug: String): MangaTRParser.ChapterBatch {
+            val fixture = File(fixtureRoot, "$slug/chapters.html")
+            assertTrue("Missing sanitized live chapter fixture: $slug", fixture.isFile)
+            return MangaTRParser.parseChapterDocument(
+                Jsoup.parse(fixture.readText(), "$BASE_URL/manga-$slug.html"),
+                chapterFactory = ::createTestChapter,
+            )
+        }
+
+        val loginReaders = linkedMapOf(
+            "zootopia-i-will-survive" to "90944",
+            "greenteaneko" to "90930",
+            "one-piece-dj-which" to "90914",
+        )
+        loginReaders.forEach { (slug, expectedReaderId) ->
+            val batch = chapterBatch(slug)
+            assertEquals("$slug chapter card count changed", 1, batch.cardCount)
+            val chapter = batch.chapters.firstOrNull {
+                READER_ID.find(it.url)?.groupValues?.get(1) == expectedReaderId
+            }
+            requireNotNull(chapter) { "$slug did not expose current reader $expectedReaderId" }
+            val readerFixture = File(fixtureRoot, "$slug/reader-$expectedReaderId.html")
+            assertTrue("Missing sanitized live login-wall fixture: $expectedReaderId", readerFixture.isFile)
+            val readerDocument = Jsoup.parse(readerFixture.readText(), BASE_URL + chapter.url)
+            assertTrue(
+                "Reader $expectedReaderId no longer exposes the reported login wall",
+                MangaTRParser.requiresReaderLogin(readerDocument),
+            )
+            assertTrue(MangaTRParser.parseReaderPages(readerDocument).isEmpty())
+            println("MangaTR reported reader $expectedReaderId: live chapter and login-wall fixtures verified")
+        }
+
+        for (slug in listOf("lord-of-the-mysteries", "one-piece-dj-welcome-to-the-straw-hat-forest")) {
+            val batch = chapterBatch(slug)
+            assertTrue("$slug explicit empty catalog was not recognized", batch.emptyCatalog)
+            assertTrue(batch.chapters.isEmpty())
+            assertEquals(0, batch.cardCount)
+            println("MangaTR reported series $slug: live empty-catalog fixture verified")
+        }
+    }
+
+    @Test
     fun `browser captured live configs decode with production Kotlin contract`() {
         val fixtureRoot = File(
             requireNotNull(System.getenv("MANGATR_LIVE_FIXTURE_DIR")) {
                 "MANGATR_LIVE_FIXTURE_DIR is required for the live fixture test"
             },
         )
-        val fixtureDirs = fixtureRoot.listFiles().orEmpty().filter { it.isDirectory }.sortedBy { it.name }
+        val fixtureDirs = fixtureRoot.listFiles().orEmpty()
+            .filter { it.isDirectory && it.name.all(Char::isDigit) }
+            .sortedBy { it.name }
         assertEquals(setOf("125451", "125989"), fixtureDirs.map { it.name }.toSet())
 
         fixtureDirs.forEach { fixtureDir ->

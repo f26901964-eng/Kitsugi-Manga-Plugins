@@ -1,0 +1,94 @@
+name: Manga-TR reported-series diagnostics
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/5307b37d-kitsugi-manga-plugins]
+    paths:
+      - tools/mangatr_regression_probe.py
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTR.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/MangaTRParser.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/eu/**/DDoSGuardInterceptor.kt
+      - keiyoushi-extensions-tr/src/tr/mangatr/src/test/kotlin/**/MangaTRLiveTest.kt
+      - .github/workflows/mangatr-regression-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Install diagnostics dependencies
+        run: python -m pip install requests==2.32.5 beautifulsoup4 playwright==1.56.0
+      - name: Probe reported series, chapter cards and readers
+        run: |
+          captured=0
+          for attempt in 1 2 3; do
+            echo "Live fixture capture attempt $attempt/3"
+            rm -rf /tmp/mangatr-kotlin-live-fixture/reported
+            if python tools/mangatr_regression_probe.py \
+              --fixture-dir /tmp/mangatr-kotlin-live-fixture/reported --require-live; then
+              captured=1
+              break
+            fi
+            sleep 5
+          done
+          test "$captured" = 1
+      - name: Verify reported series with the production Kotlin parser
+        working-directory: keiyoushi-extensions-tr
+        env:
+          MANGATR_LIVE_TEST: '1'
+          MANGATR_LIVE_FIXTURE_DIR: '/tmp/mangatr-kotlin-live-fixture'
+        run: |
+          ./gradlew :src:tr:mangatr:spotlessCheck :src:tr:mangatr:testDebugUnitTest \
+            --tests 'eu.kanade.tachiyomi.extension.tr.mangatr.MangaTRLiveTest.reported series*'
+      - name: Report targeted Kotlin success
+        run: echo '::notice title=Reported-series Kotlin::Live chapter cards, member walls, and explicit empty catalogs passed.'
+      - name: Expose targeted Kotlin failure
+        if: failure()
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+          import xml.etree.ElementTree as ET
+          messages = []
+          for report in Path('keiyoushi-extensions-tr/src/tr/mangatr/build/test-results').rglob('TEST-*.xml'):
+              for case in ET.parse(report).getroot().iter('testcase'):
+                  for failure in list(case.findall('failure')) + list(case.findall('error')):
+                      messages.append(case.get('name', 'test') + '\n' + failure.get('message', '') + '\n' + (failure.text or '')[:10000])
+          text = '\n\n'.join(messages) or 'Targeted Kotlin test failed; inspect the workflow step log.'
+          text = re.sub(r'[A-Za-z0-9_\-+/=]{32,}', '<redacted>', text)
+          text = text.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+          print('::error title=Reported-series Kotlin failure::' + text)
+          PY
+      - name: Expose sanitized diagnostics
+        if: always()
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('reports/mangatr-regression-results.json')
+          report = json.loads(path.read_text())
+          for target in report['targets']:
+              message = json.dumps(target, ensure_ascii=False, separators=(',', ':'))
+              message = message.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+              print(f"::notice title={target.get('key', 'unknown')}::{message}")
+          PY
+          cat reports/mangatr-regression-results.json >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload sanitized diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mangatr-reported-series-diagnostics
+          path: reports/mangatr-regression-results.json
+          if-no-files-found: error

@@ -57,6 +57,61 @@ class MangaTRParserTest {
     }
 
     @Test
+    fun `explicit empty chapter catalog differs from malformed responses`() {
+        val empty = MangaTRParser.parseChapterDocument(
+            Jsoup.parse(
+                """<div class="chapter-list__hero"></div><div class="empty-state">Henüz bölüm eklenmemiş.</div>""",
+                BASE_URL,
+            ),
+            now,
+            ::createTestChapter,
+        )
+        assertTrue(empty.emptyCatalog)
+        assertTrue(empty.chapters.isEmpty())
+        assertEquals(0, empty.cardCount)
+
+        for (html in listOf(
+            "",
+            "<html><body>DDoS-Guard</body></html>",
+            """<div class="empty-state">API failed</div>""",
+            """<div class="empty-state">Henüz yorum yapılmamış.</div>""",
+        )) {
+            val malformed = MangaTRParser.parseChapterDocument(
+                Jsoup.parse(html, BASE_URL),
+                now,
+                ::createTestChapter,
+            )
+            assertFalse(malformed.emptyCatalog)
+        }
+    }
+
+    @Test
+    fun `reader login wall is distinct from ordinary navigation`() {
+        val loginWall = Jsoup.parse(
+            """
+            <html><body>
+              <h2>Bu İçeriği Okumak İçin Giriş Yapmalısınız</h2>
+              <p>Telif ve güvenlik politikalarımız gereği bu içeriğe yalnızca kayıtlı Manga-TR üyeleri erişebilmektedir.</p>
+            </body></html>
+            """.trimIndent(),
+            BASE_URL,
+        )
+        assertTrue(MangaTRParser.requiresReaderLogin(loginWall))
+
+        val normalReader = Jsoup.parse(
+            """
+            <html><body>
+              <nav><a href="/giris.php">Giriş Yap</a></nav>
+              <div id="login-modal">Üye girişi yapmalısınız.</div>
+              <div class="chapter-page">Reader content</div>
+            </body></html>
+            """.trimIndent(),
+            BASE_URL,
+        )
+        assertFalse(MangaTRParser.requiresReaderLogin(normalReader))
+    }
+
+    @Test
     fun `reader decrypts twenty five pages with changing attribute names`() {
         val first = readerHtml("data-index-a", "data-payload-a", reverse = false)
         val second = readerHtml("data-index-b", "data-payload-b", reverse = true)

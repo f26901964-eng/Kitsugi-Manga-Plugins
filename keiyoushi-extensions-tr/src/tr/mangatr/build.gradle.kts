@@ -36,8 +36,8 @@ tasks.withType<Test>().configureEach {
 
 keiyoushi {
     name = "Manga-TR"
-    // Reader contract 34: join ordered/flipped strips into one full-size page.
-    versionCode = 34
+    // Contract 35: distinguish explicit empty catalogs and member login walls.
+    versionCode = 35
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

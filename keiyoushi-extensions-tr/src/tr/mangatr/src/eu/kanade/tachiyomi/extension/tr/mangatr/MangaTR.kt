@@ -442,8 +442,8 @@ abstract class MangaTR : KeiSource() {
 
         if (mangaSlug != null) {
             val tur = document.selectFirst("#results")?.attr("data-tur") ?: ""
-            val newChapters = fetchMangaChaptersNew(mangaSlug, tur)
-            if (newChapters.isNotEmpty()) return newChapters
+            val newResult = fetchMangaChaptersNew(mangaSlug, tur)
+            if (newResult.chapters.isNotEmpty() || newResult.emptyCatalog) return newResult.chapters
         }
 
         // --- Eski: Bento listKey doğrudan HTML içinde (geriye dönük uyumluluk) ---
@@ -477,7 +477,12 @@ abstract class MangaTR : KeiSource() {
     // Site: cek/fetch_pages_manga.php POST { manga, tur, offset, _t, _sig }
     // _sig = SHA256(mangaSlug_seed_timestamp)  seed = --mdx-white + --mdx-black (CSS)
     // offset: 0 -> 20 -> 120 -> 220 ... (ilk 20, sonra 100'er)
-    private suspend fun fetchMangaChaptersNew(mangaSlug: String, tur: String = ""): List<SChapter> {
+    private data class NewChapterResult(
+        val chapters: List<SChapter>,
+        val emptyCatalog: Boolean = false,
+    )
+
+    private suspend fun fetchMangaChaptersNew(mangaSlug: String, tur: String = ""): NewChapterResult {
         val chapters = mutableListOf<SChapter>()
         val seenUrls = mutableSetOf<String>()
         var offset = 0
@@ -529,6 +534,9 @@ abstract class MangaTR : KeiSource() {
             }
             val newChapters = batch.chapters.filter { seenUrls.add(it.url.substringBefore('?')) }
 
+            if (batch.emptyCatalog && offset == 0 && chapters.isEmpty()) {
+                return NewChapterResult(emptyList(), emptyCatalog = true)
+            }
             if (batch.cardCount == 0 || batch.chapters.isEmpty()) {
                 if (offset == 0 && chapters.isEmpty()) {
                     throw IOException("Bölüm API'si geçerli bölüm kartı döndürmedi.")
@@ -547,7 +555,7 @@ abstract class MangaTR : KeiSource() {
             isFirst = false
         }
 
-        return chapters
+        return NewChapterResult(chapters)
     }
 
     private fun parseChapterHtmlResponse(response: Response): MangaTRParser.ChapterBatch {
@@ -1106,7 +1114,16 @@ abstract class MangaTR : KeiSource() {
     // =============================== Pages ===============================
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        var response = client.get(baseUrl + chapter.url)
+        var response = client.get(baseUrl + chapter.url, ensureSuccess = false)
+        val missingReader = response.code == 404 || response.request.url.encodedPath == "/404.php"
+        if (missingReader || !response.isSuccessful) {
+            val status = response.code
+            response.close()
+            if (missingReader) {
+                throw IOException("Bölüm bağlantısı kaynakta kaldırılmış veya artık mevcut değil (HTTP 404).")
+            }
+            throw IOException("Bölüm sayfası yüklenemedi (HTTP $status).")
+        }
         var rawHtml = response.peekBody(Long.MAX_VALUE).string()
         var document = response.asJsoup()
 
@@ -1139,9 +1156,7 @@ abstract class MangaTR : KeiSource() {
         }
 
         fun validateDocument() {
-            if (document.selectFirst("div#uyari:contains(üye girişi), div.alert:contains(üye girişi)") != null ||
-                document.html().contains("üye girişi yapmanız gerekmektedir", ignoreCase = true)
-            ) {
+            if (MangaTRParser.requiresReaderLogin(document)) {
                 throw IOException("Bu bölümü okuyabilmek için WebView üzerinden üye girişi yapmanız gerekmektedir.")
             }
             if (document.selectFirst("canvas#sliderCanvas, div.box h2:contains(Güvenlik Doğrulaması), div.cf-turnstile, div#turnstile") != null) {

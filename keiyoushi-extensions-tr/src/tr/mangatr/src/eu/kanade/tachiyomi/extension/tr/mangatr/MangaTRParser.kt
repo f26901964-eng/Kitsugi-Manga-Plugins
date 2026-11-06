@@ -20,6 +20,7 @@ internal object MangaTRParser {
         val chapters: List<SChapter>,
         val hasMore: Boolean,
         val cardCount: Int,
+        val emptyCatalog: Boolean,
     )
 
     fun parseChapterDocument(
@@ -37,7 +38,23 @@ internal object MangaTRParser {
             ?.let { it == "1" || it.equals("true", ignoreCase = true) }
             ?: false
 
-        return ChapterBatch(chapters, hasMore, cards.size)
+        val emptyCatalog = cards.isEmpty() && document.selectFirst(".empty-state")
+            ?.text()
+            ?.contains("Henüz bölüm eklenmemiş", ignoreCase = true) == true
+
+        return ChapterBatch(chapters, hasMore, cards.size, emptyCatalog)
+    }
+
+    /** Matches the content wall, not the site's ordinary navigation/login modal. */
+    fun requiresReaderLogin(document: Document): Boolean {
+        if (document.selectFirst("div#uyari:contains(üye girişi), div.alert:contains(üye girişi)") != null ||
+            document.html().contains("üye girişi yapmanız gerekmektedir", ignoreCase = true)
+        ) {
+            return true
+        }
+        val text = document.text()
+        return text.contains("Bu İçeriği Okumak İçin Giriş Yapmalısınız", ignoreCase = true) ||
+            text.contains("yalnızca kayıtlı Manga-TR üyeleri", ignoreCase = true)
     }
 
     fun parseChapterCard(
