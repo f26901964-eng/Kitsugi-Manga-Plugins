@@ -1,6 +1,12 @@
-commit: 181e5b9eef9573f4329bc890af108bced5959514
+commit: 8b327c57c6da68a2d4a558297ea12f273478e494
 --- publish ---
-Hata: okutoon: APK boş ya da bir Android paketi değil
+okutoon: 1.6.5 (106005) apk=tachiyomi-tr.okutoon-v1.6.5.apk bytes=42631 sha256=c47d46107a835f05eacae91b29fb2738e8e3c3c471e07992dbf33639b6bb01d7
+...........ssss...........................ssssssss
+----------------------------------------------------------------------
+Ran 50 tests in 0.187s
+
+OK (skipped=12)
+hayalistic: 1.6.62 (106062) apk=tachiyomi-tr.hayalistic-v1.6.62.apk bytes=12246 sha256=f99cb4235d4fc6f1590aa0b28cc384971fbc5fc943fc41c430a10c46b8781f28
 --- build tail ---
 > Task :src:tr:okutoon:packageRelease
 > Task :src:tr:okutoon:createReleaseApkListingFileRedirect
@@ -19,6 +25,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 30s
+BUILD SUCCESSFUL in 2m 31s
 87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
 Configuration cache entry stored.
