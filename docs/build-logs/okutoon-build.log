@@ -1,9 +1,9 @@
-commit: 9e5f7ce4b274ca96122ba8f58848215b9ce7a9c2
+commit: 912d69b12c1a4ed27d1ff090c8e81cf32cc0055c
 --- live probe ---
 PASS okutoon: catalogue answers 200 {"status":200}
 PASS okutoon: series cards are anchors with a title and a cover {"cards":24,"titles":24,"covers":24,"first":"/one-piece"}
 PASS okutoon: covers come from the image CDN {"host":"om-cdn.okutoon.com"}
-PASS okutoon: ?sayfa=2 returns a different page of the catalogue {"page1":24,"page2":24,"firstOfEach":["One Piece","The Youngest Has Much to Hide"]}
+PASS okutoon: ?sayfa=2 returns a different page of the catalogue {"page1":24,"page2":24,"firstOfEach":["One Piece","I Married the Dragon I Killed"]}
 PASS okutoon: paging exposes a rel=next link {"nextLink":1}
 PASS okutoon: search by Turkish/English title works {"hits":["Chainsaw Man"]}
 PASS okutoon: series details expose every hook the extension reads {"url":"https://okutoon.com/one-piece","title":1,"author":1,"cover":1,"genres":1,"status":1,"description":1}
@@ -14,14 +14,43 @@ PASS okutoon: reader is behind a Cloudflare challenge for bots (known limitation
 
 11/11 checks passed
 ::notice title=okutoon runtime::11/11 checks passed
+--- artifacts ---
+--- staged ---
+R  apk/tachiyomi-tr.okutoon-v1.6.5.apk -> apk/tachiyomi-tr.okutoon-v1.6.8.apk
+R  builds/apk/tachiyomi-tr.okutoon-v1.6.5.apk -> builds/apk/tachiyomi-tr.okutoon-v1.6.8.apk
+M  builds/index.json
+M  builds/index.v2.json
+M  builds/plugins.json
+M  index.json
+M  plugins.json
+R  prebuilt/apk/tachiyomi-tr.okutoon-v1.6.5.apk -> prebuilt/apk/tachiyomi-tr.okutoon-v1.6.8.apk
+M  registry/extensions.json
+M  registry/extensions.v2.json
+ M reports/okutoon-runtime.json
+[arena/777ee838-kitsugi-manga-plugins 59c30d7] okutoon: publish the fixed APK and catalogs [skip ci]
+ 10 files changed, 26 insertions(+), 26 deletions(-)
+ rename apk/{tachiyomi-tr.okutoon-v1.6.5.apk => tachiyomi-tr.okutoon-v1.6.8.apk} (95%)
+ rename builds/apk/{tachiyomi-tr.okutoon-v1.6.5.apk => tachiyomi-tr.okutoon-v1.6.8.apk} (95%)
+ rename prebuilt/apk/{tachiyomi-tr.okutoon-v1.6.5.apk => tachiyomi-tr.okutoon-v1.6.8.apk} (95%)
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+error: cannot rebase: You have unstaged changes.
+error: Please commit or stash them.
+yayın commit edilemedi: push reddedildi
 --- publish ---
-okutoon: 1.6.7 (106007) apk=tachiyomi-tr.okutoon-v1.6.7.apk bytes=42631 sha256=6b626a814d0294812b3f4e8c98328f72c597d6b5a38fb92d860ad77c0227665e
+okutoon: 1.6.8 (106008) apk=tachiyomi-tr.okutoon-v1.6.8.apk bytes=42627 sha256=6ec4051814baee896579e5d58d9f70516db7635935c7ba0e8f43de8fec50ccf0
 ...........ssss...........................ssssssss
 ----------------------------------------------------------------------
 Ran 50 tests in 0.162s
 
 OK (skipped=12)
-hayalistic: 1.6.62 (106062) apk=tachiyomi-tr.hayalistic-v1.6.62.apk bytes=12246 sha256=3e627887fe58db24292c8cd0110ac923dbf2aa57cb0380d7479905433a72b291
+hayalistic: 1.6.62 (106062) apk=tachiyomi-tr.hayalistic-v1.6.62.apk bytes=12246 sha256=3c480fb12d50d13b3596203a36e6b0a3d292ff14880abf2e961ec124ffde22d1
 --- build tail ---
 > Task :src:tr:okutoon:packageRelease
 > Task :src:tr:okutoon:createReleaseApkListingFileRedirect
@@ -40,6 +69,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 21s
+BUILD SUCCESSFUL in 2m 23s
 87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
 Configuration cache entry stored.
