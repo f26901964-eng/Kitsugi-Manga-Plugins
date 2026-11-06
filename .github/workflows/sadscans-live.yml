@@ -11,7 +11,7 @@ permissions:
   contents: write
 jobs:
   probe:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
@@ -20,13 +20,21 @@ jobs:
           python-version: '3.12'
       - name: Verify live list search and chapters
         run: python tools/probe_sadscans.py
-      - name: Test exact browser script and browser transport live
+      - name: Test exact browser script
         if: always()
-        run: |
-          node tests/sadscans_runtime/browser.mjs
-          npm install --no-save --package-lock=false playwright@1.56.1
-          npx playwright install --with-deps chromium
-          node tests/sadscans_runtime/live.mjs
+        run: node tests/sadscans_runtime/browser.mjs
+      - name: Install browser test dependency
+        if: always()
+        timeout-minutes: 2
+        run: npm install --no-save --package-lock=false --registry=https://registry.npmjs.org --fetch-retries=1 --fetch-timeout=30000 playwright@1.56.1
+      - name: Install Chromium
+        if: always()
+        timeout-minutes: 2
+        run: npx --no-install playwright install chromium
+      - name: Verify same-browser API transport live
+        if: always()
+        timeout-minutes: 2
+        run: node tests/sadscans_runtime/live.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -41,4 +49,5 @@ jobs:
           git add reports/sadscans*live.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'sadscans: record live HTTP verification [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
