@@ -43,6 +43,29 @@ jobs:
           set -e
           tail -n 80 /tmp/turkmanga-gradle.log
           if [ "$result" -ne 0 ]; then
+            test_results="src/tr/turkmanga/build/test-results/testDebugUnitTest"
+            if [ -d "$test_results" ]; then
+              python3 - "$test_results" > /tmp/turkmanga-test-failures.txt <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          for report in Path(sys.argv[1]).glob("TEST-*.xml"):
+              root = ET.parse(report).getroot()
+              for case in root.iter("testcase"):
+                  failure = case.find("failure")
+                  if failure is None:
+                      failure = case.find("error")
+                  if failure is not None:
+                      message = " ".join(f"{failure.get('message', '')} {failure.text or ''}".split())
+                      print(f"{case.get('name')}: {message[:3000]}")
+          PY
+              while IFS= read -r line; do
+                line=${line//'%'/'%25'}
+                line=${line//$'\r'/'%0D'}
+                echo "::error title=Turkmanga parser test::${line}"
+              done < /tmp/turkmanga-test-failures.txt
+            fi
             failure_line=$(grep -n -F -m1 '* What went wrong:' /tmp/turkmanga-gradle.log | cut -d: -f1 || true)
             if [ -n "$failure_line" ]; then
               end_line=$((failure_line + 30))
