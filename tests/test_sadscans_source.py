@@ -108,11 +108,22 @@ class SadscansSourceTests(unittest.TestCase):
     def test_time_budget_fits_the_host_app(self):
         """Kitsugi/Mihon kaynak aramasini 25 sn'de kesiyor; toplam butce bunun altinda kalmali."""
         source = SOURCE.read_text(encoding='utf-8')
-        self.assertIn('callTimeout(8, TimeUnit.SECONDS)', source)
+        self.assertIn('callTimeout(6, TimeUnit.SECONDS)', source)
         self.assertIn('connectTimeout(5, TimeUnit.SECONDS)', source)
         self.assertIn('timeout: Duration = 20.seconds', source, 'frontendPage varsayilani 20 sn olmali')
-        self.assertIn('timeout = 18.seconds', source, 'liste WebView suresi kisa olmali')
+        self.assertIn('timeout = 13.seconds', source, 'liste WebView suresi kisa olmali')
         self.assertNotIn('callTimeout(45', source)
+
+    def test_sitemap_tier_runs_before_webview(self):
+        """tRPC engelliyse JS'siz sitemap kademesi devreye girmeli (WebView'den once)."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('sitemapSearch(', source)
+        self.assertIn('SITEMAP_TTL_MS', source)
+        self.assertIn('/sitemap.xml', source)
+        self.assertLess(source.index('sitemapSearch(query)'), source.index('SadscansFrontend.listScript'),
+                        'sitemap kademesi WebView kademesinden once cagrilmali')
+        self.assertIn('"/seriler/${entry.slug}"', source, 'sitemap girdisi detay rotasina baglanmali')
+        self.assertIn('Normalizer.normalize', source, 'Turkce karakterler ASCII anahtara cevrilmeli')
 
     def test_requests_look_like_a_mobile_browser(self):
         source = SOURCE.read_text(encoding='utf-8')
