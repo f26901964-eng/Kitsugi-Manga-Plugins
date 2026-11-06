@@ -274,7 +274,7 @@ def probe_target(
             not links and empty_state is not None
             and "Henüz bölüm eklenmemiş".casefold() in empty_state.get_text(" ", strip=True).casefold()
         )
-        fixture_dir = fixture_root / key if fixture_root is not None else None
+        fixture_dir = fixture_root / slug if fixture_root is not None else None
         fixture_written = False
         if (
             fixture_dir is not None and detail_response.status_code == 200
