@@ -21,9 +21,9 @@ def soup(response):
     return BeautifulSoup(response.text, 'html.parser')
 
 
-def archive(mode, query=''):
+def archive(mode, query='', page=1):
     body = {
-        'action': 'madara_load_more', 'page': '0', 'template': 'madara-core/content/content-archive',
+        'action': 'madara_load_more', 'page': str(page - 1), 'template': 'madara-core/content/content-archive',
         'vars[paged]': '1', 'vars[template]': 'archive', 'vars[posts_per_page]': '25',
         'vars[post_type]': 'wp-manga', 'vars[post_status]': 'publish',
         'vars[manga_archives_item_layout]': 'big_thumbnail',
@@ -40,7 +40,9 @@ def archive(mode, query=''):
     cards = d.select('div.page-item-detail, .manga__item, .c-tabs-item__content')
     usable = [x for x in cards if (x.get('data-post-id') or x.select_one('[data-post-id]')) and x.select_one('.post-title a')]
     titles = [x.select_one('.post-title a').get_text(' ', strip=True) for x in usable]
-    return {'status': r.status_code, 'cards': len(cards), 'usable_with_id': len(usable), 'titles': titles[:8]}
+    ids = [x.get('data-post-id') or x.select_one('[data-post-id]').get('data-post-id') for x in usable]
+    covers = sum(bool(x.select_one('img[src], img[data-src], img[data-lazy-src]')) for x in usable)
+    return {'status': r.status_code, 'cards': len(cards), 'usable_with_id': len(usable), 'with_cover': covers, 'ids': ids, 'titles': titles[:8]}
 
 
 def main():
@@ -48,6 +50,7 @@ def main():
     try:
         for mode, query in [('popular', ''), ('latest', ''), ('search', 'Doom')]:
             result[mode] = archive(mode, query)
+        result['popular_page_2'] = archive('popular', page=2)
         d = soup(s.get(BASE + SERIES, timeout=40))
         desc = d.select_one('div.description-summary div.summary__content')
         chapters = d.select('li.wp-manga-chapter a[href]')
@@ -58,17 +61,21 @@ def main():
         images = [img.get('data-src') or img.get('data-lazy-src') or img.get('src') for img in reader.select('div.page-break img')]
         images = [urljoin(BASE, x.strip()) for x in images if x and x.strip()]
         result['reader'] = {'images': len(images)}
-        if images:
-            r = s.get(images[0], headers={'Referer': BASE + CHAPTER}, timeout=60)
+        result['reader']['probed'] = []
+        for url in images[:3]:
+            r = s.get(url, headers={'Referer': BASE + CHAPTER}, timeout=60)
             r.raise_for_status()
             with Image.open(io.BytesIO(r.content)) as image:
                 image.verify()
-                result['reader'].update({'first_image_type': r.headers.get('Content-Type'), 'format': image.format, 'size': image.size})
+                result['reader']['probed'].append({'content_type': r.headers.get('Content-Type'), 'format': image.format, 'size': image.size})
         assert result['popular']['usable_with_id'] > 0, 'popular AJAX cards lack post IDs or titles'
         assert result['latest']['usable_with_id'] > 0, 'latest AJAX cards lack post IDs or titles'
         assert any('doom' in title.lower() for title in result['search']['titles']), 'search AJAX did not find Doom'
         assert result['details']['description'] and result['details']['chapters'], 'missing description or chapters'
-        assert result['reader'].get('format') and result['reader']['images'], 'reader image missing'
+        assert result['popular']['with_cover'] > 0, 'popular covers missing'
+        if len(result['popular']['ids']) == 25:
+            assert result['popular_page_2']['ids'] and result['popular_page_2']['ids'] != result['popular']['ids'], 'pagination repeated or empty'
+        assert len(result['reader']['probed']) == min(3, len(images)) and images, 'reader image missing'
         result['ok'] = True
     except Exception as exc:
         result.update(ok=False, error=f'{type(exc).__name__}: {exc}')
