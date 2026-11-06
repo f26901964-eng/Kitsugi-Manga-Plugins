@@ -40,33 +40,49 @@ USER_AGENT = (
 TIMEOUT = 40
 PAGE_SIZE = 24
 
-# `Filters.kt` içindeki GenreFilter değerlerinin aynası: site her etiket için sonuç döndürmeli.
-# `tests/test_mangadiyari_filters.py` iki listeyi karşılaştırır.
-GENRE_FILTER_VALUES = [
-    "Aksiyon", "Macera", "Komedi", "Dram", "Fantezi", "Tarihi", "Korku", "Isekai",
-    "Dövüş Sanatları", "Gizem", "Reenkarnasyon", "Romantizm", "Okul Hayatı", "Bilim Kurgu",
-    "Doğaüstü", "Gerilim", "Ecchi", "Harem", "Josei", "Müstehcen", "Mecha", "Psikolojik",
-    "Seinen", "Shoujo", "Shounen", "Günlük Yaşam", "Spor", "Trajedi", "Webtoon", "Manhwa",
-    "Manhua", "Murim", "Sistem", "Şeytan", "Ters Harem",
+# `Filters.kt` içindeki her tür grubunun adayları: (Türkçe ad, gönderilecek etiket, aday etiketler).
+# Site etiketi birebir eşleştiriyor ve eski seriler İngilizce, yeniler Türkçe etiket taşıyor; bu yüzden
+# her grup için **tek** bir etiket gönderilir ve hangisinin gerçekten sonuç verdiği burada ölçülür.
+# `tests/test_mangadiyari_probe.py` bu tabloyu `Filters.kt` ile karşılaştırır.
+GENRE_GROUPS: list[tuple[str, str, tuple[str, ...]]] = [
+    # (görünen ad, eklentinin gönderdiği etiket, canlı ölçümde denenecek adaylar)
+    ("Aksiyon", "Aksiyon", ("Aksiyon", "Action")),
+    ("Macera", "Macera", ("Macera", "Adventure")),
+    ("Komedi", "Komedi", ("Komedi", "Comedy")),
+    ("Dram", "Dram", ("Dram", "Drama")),
+    ("Fantastik", "Fantezi", ("Fantezi", "Fantasy")),
+    ("Tarihi", "Tarihi", ("Tarihi", "Historical")),
+    ("Korku", "Korku", ("Korku", "Horror")),
+    ("Isekai", "Isekai", ("Isekai",)),
+    ("Dövüş Sanatları", "Dövüş Sanatları", ("Dövüş Sanatları", "Martial Arts")),
+    ("Gizem", "Gizem", ("Gizem", "Mystery")),
+    # Türkçe etiketle seri yok, İngilizcesiyle var (2026-11-06 ölçümü: 0 / 3).
+    ("Reenkarnasyon", "Reincarnation", ("Reenkarnasyon", "Reincarnation")),
+    ("Romantik", "Romantizm", ("Romantizm", "Romance", "Romantic")),
+    ("Okul", "Okul Hayatı", ("Okul Hayatı", "School Life")),
+    ("Bilim Kurgu", "Bilim Kurgu", ("Bilim Kurgu", "Science Fiction", "Sci-Fi")),
+    ("Doğaüstü", "Doğaüstü", ("Doğaüstü", "Supernatural")),
+    ("Gerilim", "Gerilim", ("Gerilim", "Thriller")),
+    ("Ecchi", "Ecchi", ("Ecchi",)),
+    ("Harem", "Harem", ("Harem",)),
+    ("Josei", "Josei", ("Josei",)),
+    ("Yetişkin", "Müstehcen", ("Müstehcen", "Mature")),
+    ("Mecha", "Mecha", ("Mecha",)),
+    ("Psikolojik", "Psikolojik", ("Psikolojik", "Psychological")),
+    ("Seinen", "Seinen", ("Seinen",)),
+    ("Shoujo", "Shoujo", ("Shoujo",)),
+    ("Shounen", "Shounen", ("Shounen",)),
+    ("Günlük Yaşam", "Slice of Life", ("Günlük Yaşam", "Slice of Life")),
+    ("Spor", "Spor", ("Spor", "Sports")),
+    ("Trajedi", "Trajedi", ("Trajedi", "Tragedy")),
+    ("Webtoon", "Webtoon", ("Webtoon",)),
+    ("Manhwa", "Manhwa", ("Manhwa",)),
+    ("Manhua", "Manhua", ("Manhua",)),
+    ("Murim", "Murim", ("Murim",)),
+    ("Sistem", "Sistem", ("Sistem", "System")),
+    ("Şeytan", "Şeytan", ("Şeytan", "Demon")),
+    ("Ters Harem", "Ters Harem", ("Ters Harem", "Reverse Harem")),
 ]
-
-# Eski seriler türleri İngilizce etiketlerle taşıyor; `EnglishGenreFilter` bu listeyi gönderir.
-GENRE_ENGLISH_VALUES = [
-    "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Historical", "Isekai",
-    "Martial Arts", "Reincarnation", "Romance", "Shounen", "Shoujo", "Seinen",
-    "Slice of Life", "Webtoon", "Murim", "Harem", "Ecchi",
-]
-
-
-def strip_diacritics(value: str) -> str:
-    """Türkçe metni aksansız/ASCII hâle getirir (ı -> i, ş -> s, ...).
-
-    Eklentideki `slugify` yardımcısının Python karşılığı; arama yedeğinde
-    aynı normalizasyon kullanılmalı ki iki taraf aynı sonucu üretsin.
-    """
-    lowered = value.replace("ı", "i").replace("İ", "i").lower()
-    folded = unicodedata.normalize("NFKD", lowered)
-    return "".join(ch for ch in folded if not unicodedata.combining(ch))
 
 
 class Probe:
@@ -85,6 +101,7 @@ class Probe:
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "base": BASE,
             "checks": {},
+            "genres": {},
             "failures": [],
             "warnings": [],
         }
@@ -310,68 +327,63 @@ class Probe:
                 relative=not raw.startswith("http"),
             )
 
-    def genre_totals(self, labels: list[str]) -> dict[str, int]:
-        totals: dict[str, int] = {}
-        for label in labels:
-            status, payload = self.get_json(f"/api/series?genre={quote(label)}&limit=1&page=1")
-            if status != 200 or not isinstance(payload, dict):
-                totals[label] = -1
-                continue
-            total = payload.get("total")
-            totals[label] = total if isinstance(total, int) else len(payload.get("series") or [])
-        return totals
+    def _total(self, path: str) -> int:
+        status, payload = self.get_json(path)
+        if status != 200 or not isinstance(payload, dict):
+            return -1
+        total = payload.get("total")
+        return total if isinstance(total, int) else len(payload.get("series") or [])
+
+    def genre_total(self, label: str) -> int:
+        status, payload = self.get_json(f"/api/series?genre={quote(label)}&limit=1&page=1")
+        if status != 200 or not isinstance(payload, dict):
+            return -1
+        total = payload.get("total")
+        return total if isinstance(total, int) else len(payload.get("series") or [])
 
     def check_genre_catalog(self) -> None:
-        """Filtre gruplarındaki her etiket sitede karşılık buluyor mu; hangi etiket kaç seri."""
-        for name, labels in (
-            ("genre-catalog-tr", GENRE_FILTER_VALUES),
-            ("genre-catalog-en", GENRE_ENGLISH_VALUES),
-        ):
-            totals = self.genre_totals(labels)
-            present = {label: total for label, total in totals.items() if total > 0}
-            empty = [label for label, total in totals.items() if total <= 0]
-            self.record(
-                name,
-                not empty,
-                hard=False,
-                labels=len(labels),
-                present=present,
-                empty=empty,
-            )
+        """Her filtre grubu için ölçüm: seçilen etiket sonuç veriyor mu, daha iyi aday var mı.
 
-    def check_genre_aliases(self) -> None:
-        """Eski seriler İngilizce, yeni seriler Türkçe tür etiketi taşıyor.
-
-        Eklenti filtrede hem Türkçe hem İngilizce etiketi göndereceği için hangi İngilizce
-        etiketlerin gerçekten var olduğunu ve birleşik sorgunun iki listeyi de kapsadığını ölçer.
+        API virgüllü listeyi AND olarak okuyor ve tekrarlı `genre` parametresinde yalnız ilkini
+        kullanıyor; yani "Türkçe veya İngilizce" tek sorguda ifade edilemiyor. Bu yüzden her grup
+        tek etiket gönderir ve etiketin gerçekten seri döndürdüğü burada ölçülür.
         """
-        # Virgülle ayrılmış liste VE (AND) anlamına geliyor; tekrarlı `genre` parametresi ise yok
-        # sayılıyor (yalnız ilki kullanılıyor). Filtreler buna göre tasarlanmalı.
-        for turkish, english in (("Dram", "Drama"), ("Fantezi", "Fantasy"), ("Aksiyon", "Action")):
-            _, single_tr = self.get_json(f"/api/series?genre={quote(turkish)}&limit=1&page=1")
-            _, single_en = self.get_json(f"/api/series?genre={quote(english)}&limit=1&page=1")
-            _, both = self.get_json(f"/api/series?genre={quote(turkish + ',' + english)}&limit=1&page=1")
-            tr_total = (single_tr or {}).get("total") or 0
-            en_total = (single_en or {}).get("total") or 0
-            both_total = (both or {}).get("total") or 0
-            # AND: birleşim iki listeden de küçük/eşit olmalı, tek tek toplamdan büyük olmamalı.
-            self.record(
-                f"genre-and-{turkish}",
-                both_total <= max(tr_total, en_total),
-                hard=False,
-                tr=tr_total,
-                en=en_total,
-                combined=both_total,
-            )
-        _, first_only = self.get_json("/api/series?genre=Aksiyon&genre=Fantezi&limit=1&page=1")
-        _, aksiyon = self.get_json(f"/api/series?genre={quote('Aksiyon')}&limit=1&page=1")
+        dead: list[str] = []
+        better: dict[str, str] = {}
+        chosen_totals: dict[str, int] = {}
+        for name, chosen, candidates in GENRE_GROUPS:
+            totals = {candidate: self.genre_total(candidate) for candidate in candidates}
+            chosen_total = totals.get(chosen, 0)
+            chosen_totals[name] = chosen_total
+            if chosen_total <= 0:
+                # Etiket katalogda yok: sitede karşılığı olan başka bir ad varsa onu bildir.
+                alternative = next((c for c in candidates if totals.get(c, 0) > 0), None)
+                if alternative:
+                    better[name] = alternative
+                else:
+                    dead.append(name)
+            self.report["genres"][name] = {"chosen": chosen, "totals": totals}
         self.record(
-            "genre-repeat-param",
-            ((first_only or {}).get("total") or 0) == ((aksiyon or {}).get("total") or 0),
+            "genre-labels",
+            not better,
             hard=False,
-            repeated=(first_only or {}).get("total"),
-            single=(aksiyon or {}).get("total"),
+            groups=len(GENRE_GROUPS),
+            with_results=sum(1 for total in chosen_totals.values() if total > 0),
+            empty_labels=dead,
+            better_label_available=better,
         )
+
+        # Virgüllü liste AND demek: tek etiket her zaman tercih edilmeli (kanıt).
+        for label, other in (("Dram", "Drama"), ("Fantezi", "Fantasy")):
+            single = self.genre_total(label)
+            combined = self._total(f"/api/series?genre={quote(label + ',' + other)}&limit=1&page=1")
+            self.record(
+                f"genre-and-{label}",
+                combined <= single,
+                hard=False,
+                single=single,
+                combined=combined,
+            )
 
     def check_web_routes(self, series: list[dict[str, Any]]) -> None:
         """Eklentinin ürettiği web adresleri gerçekten açılıyor mu (tarayıcıda açılan sayfa)."""
@@ -438,7 +450,6 @@ class Probe:
             self.check_search("Ben Ölümsüzüm")
         self.check_filters()
         self.check_genre_catalog()
-        self.check_genre_aliases()
         self.check_details_and_pages(series)
         self.check_cdn_headers(series)
         self.check_web_routes(series)

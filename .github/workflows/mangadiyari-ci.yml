@@ -67,6 +67,13 @@ jobs:
           report_line = report_line.replace("%", "%25").replace("\r", " ").replace("\n", " ")
           print(report_line)
           print(f"::notice title=probe report::{report_line[:60000]}")
+          genres = report.get("genres", {})
+          genre_lines = [
+              f"{name}: chosen={data['chosen']} totals={json.dumps(data['totals'], ensure_ascii=False)}"
+              for name, data in genres.items()
+          ]
+          genre_text = " || ".join(genre_lines).replace("%", "%25").replace("\r", " ").replace("\n", " ")
+          print(f"::notice title=probe genre table::{genre_text[:60000]}")
           groups = {"core": [], "filters": [], "genres": [], "web": []}
           for name, data in checks.items():
               if name.startswith("genre-"):

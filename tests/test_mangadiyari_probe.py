@@ -9,37 +9,35 @@ URLS = MODULE / 'Urls.kt'
 PROBE = ROOT / 'tools/mangadiyari_probe.py'
 
 
-def probe_genre_values():
-    """Sondanın tür listesi; `requests` kurulu olmayan ortamda da okunabilsin diye kaynaktan ayıklanır."""
+def probe_genre_groups():
+    """Sondanın tür tablosu; `requests` kurulu olmayan ortamda da okunabilsin diye kaynaktan ayıklanır."""
     text = PROBE.read_text(encoding='utf-8')
-    block = text.split('GENRE_FILTER_VALUES = [', 1)[1].split(']', 1)[0]
-    return re.findall(r'"([^"]+)"', block)
+    block = text.split('GENRE_GROUPS:', 1)[1].split('\n]', 1)[0]
+    return {name: value for name, value in re.findall(r'^\s*\("([^"]+)", "([^"]+)"', block, re.M)}
 
 
 def kotlin_genre_values():
-    """`GenreCheckBox("Aksiyon", "Aksiyon,Action")` -> ilk (Türkçe) değer."""
+    """`GenreCheckBox("Aksiyon", "Aksiyon")` -> gönderilen etiket."""
     text = FILTERS.read_text(encoding='utf-8')
     body = text.split('class GenreFilter', 1)[1]
-    return [value.split(',')[0] for value in re.findall(r'GenreCheckBox\("[^"]+", "([^"]+)"\)', body)]
+    return re.findall(r'GenreCheckBox\("([^"]+)", "([^"]+)"\)', body)
 
 
 class ProbeContractTest(unittest.TestCase):
     """Sonda eklentinin uçlarını ve listelerini kopyalar; ikisi sessizce ayrışmamalı."""
 
     def test_probe_genres_match_the_filter(self):
-        self.assertEqual(probe_genre_values(), kotlin_genre_values())
+        """Sondanın doğruladığı etiket, eklentinin gönderdiği etiketle birebir aynı olmalı."""
+        probe = probe_genre_groups()
+        self.assertEqual(35, len(probe))
+        self.assertEqual(probe, {name: value for name, value in kotlin_genre_values()})
 
-    def test_filter_sends_a_turkish_and_an_english_label(self):
-        text = FILTERS.read_text(encoding='utf-8')
-        body = text.split('class GenreFilter', 1)[1]
-        pairs = re.findall(r'GenreCheckBox\("([^"]+)", "([^"]+)"\)', body)
-        self.assertEqual(35, len(pairs))
-        # Her grup Türkçe etiketle başlar; İngilizcesi olan gruplarda ikinci etiket de gönderilir.
-        # Görünen ad Türkçe olabilir (Fantastik); gönderilen ilk değer sitenin Türkçe etiketi.
-        for _, value in pairs:
-            self.assertTrue(value.strip())
-        self.assertIn("Aksiyon,Action", [value for _, value in pairs])
-        self.assertIn("Dram,Drama", [value for _, value in pairs])
+    def test_genre_values_are_single_labels(self):
+        """Virgül = AND olduğu için gruplar tek etiket göndermeli; aksi hâlde sonuç boş döner."""
+        values = [value for _, value in kotlin_genre_values()]
+        self.assertEqual(len(values), len(set(values)))
+        for value in values:
+            self.assertNotIn(',', value)
 
     def test_probe_hits_the_same_endpoints_as_the_source(self):
         probe = PROBE.read_text(encoding='utf-8')

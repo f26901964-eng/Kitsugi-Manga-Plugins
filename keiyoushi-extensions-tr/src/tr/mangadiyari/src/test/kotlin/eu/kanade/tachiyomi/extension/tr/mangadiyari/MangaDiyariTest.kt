@@ -74,18 +74,20 @@ class MangaDiyariTest {
     }
 
     @Test
-    fun `genre filter sends both the turkish and the english label`() {
+    fun `genre filter sends one label per selected group`() {
         val filter = GenreFilter()
         assertTrue(filter.toUriPart().isEmpty())
 
-        val aksiyon = filter.state.first { it.name == "Aksiyon" }
-        aksiyon.state = true
-        assertEquals("Aksiyon,Action", filter.toUriPart())
+        filter.state.first { it.name == "Aksiyon" }.state = true
+        assertEquals("Aksiyon", filter.toUriPart())
 
-        // A genre that only exists with one label must not send an extra value.
-        val isekai = filter.state.first { it.name == "Isekai" }
-        isekai.state = true
-        assertEquals("Aksiyon,Action,Isekai", filter.toUriPart())
+        // The API reads a comma separated list as AND, so a single label must never be doubled.
+        filter.state.first { it.name == "Fantastik" }.state = true
+        assertEquals("Aksiyon,Fantezi", filter.toUriPart())
+
+        // Genres the site only stores in English are sent the way they are stored there.
+        filter.state.first { it.name == "Reenkarnasyon" }.state = true
+        assertEquals("Aksiyon,Fantezi,Reincarnation", filter.toUriPart())
     }
 
     @Test
