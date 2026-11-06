@@ -37,17 +37,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build signed release APK
         working-directory: keiyoushi-extensions-tr
-        run: |
-          set -o pipefail
-          if ! ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease 2>&1 | tee /tmp/build-sadscans.log; then
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            cp /tmp/build-sadscans.log "$GITHUB_WORKSPACE/build-sadscans.log"
-            git add "$GITHUB_WORKSPACE/build-sadscans.log"
-            git commit -m 'ci: sadscans build log [skip ci]' || true
-            git push origin "HEAD:${GITHUB_REF_NAME}" || true
-            exit 1
-          fi
+        run: ./gradlew :src:tr:sadscans:spotlessApply :src:tr:sadscans:assembleRelease
       - name: Prepare and verify the new catalogs
         run: |
           python3 tools/prepare_extension_release.py sadscans
