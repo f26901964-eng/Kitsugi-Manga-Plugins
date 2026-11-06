@@ -27,6 +27,6 @@ jobs:
           git config user.name kitsugi-tr-runtime
           git config user.email kitsugi-tr-runtime@users.noreply.github.com
           git add docs/html-dumps/okutoon/probe.txt
-          git diff --cached --quiet && exit 0
+          if git diff --cached --quiet; then exit 0; fi
           git commit -m "chore(evidence): okutoon markup probe [skip ci]"
           git push origin "HEAD:${GITHUB_REF_NAME}"
