@@ -1,9 +1,9 @@
-name: SadScans verified APK and activation
+name: SadScans APK build (live verification separate)
 
 on:
   workflow_dispatch:
   push:
-    branches: [arena/f1c29b94-kitsugi-manga-plugins, main]
+    branches: [arena/9e5cc01a-kitsugi-manga-plugins, main]
     paths:
       - keiyoushi-extensions-tr/src/tr/sadscans/**
       - enabled_plugins.txt
@@ -30,6 +30,8 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -53,5 +55,6 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/sadscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'sadscans: publish verified SadScans APK [skip ci]'
+          git commit -m 'sadscans: save compiled APK candidate [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"

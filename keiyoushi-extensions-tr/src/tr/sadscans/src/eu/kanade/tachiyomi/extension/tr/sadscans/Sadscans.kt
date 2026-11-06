@@ -11,7 +11,6 @@ import keiyoushi.annotation.Source
 import keiyoushi.network.get
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.WebViewTimeoutException
-import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.runWebView
@@ -31,6 +30,7 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
 import java.text.SimpleDateFormat
@@ -46,14 +46,14 @@ import kotlin.time.Instant
  *  - Seri listesi / arama: `GET /api/trpc/_s4d7g2k9m0.getSeries?batch=1&input={"0":{"json":{"search":...,"page":...,"limit":15}}}`
  *    -> `[{result:{data:{json:[{id,href,thumb,name,status,views,ratingAverage,ratingCount,type}]}}}]`
  *  - Türler:               `GET /api/trpc/tur.getAll` -> `[{id,name,slug}]`
- *  - Seri detay + bölümler: `GET /api/trpc/_n3p6q1v8x5.getSeriesData?batch=1&input={"0":{"json":{"sef":<slug>,"page":1,"limit":50}}}`
+ *  - Seri detay + bölümler: `GET /api/trpc/_n3p6q1v8x5.getSeriesData?batch=1&input={"0":{"json":{"sef":<slug>,"page":1,"limit":10}}}`
  *    -> `{series:{...}, chapters:[{chap_id,name,no,...}], pagination:{totalPages,...}}`
  *  - Bölüm okuma: `/reader/{seriesSlug}/{chapterSlug}/{chapterId}` (kısa form `/reader/{chapterId}` de çalışır)
  *  - Görseller `/api/uploads/assets/series/{seriesId}/{chapterId}/images/...` altında; site Cloudflare arkasında.
  *
  * tRPC batch zarfı: `?batch=1&input=<urlencoded {"0":{"json":...}}>`, yanıt `[{result:{data:{json:...}}}]`.
- * Router adları canlı sitede build-time hash; chapter görselleri için birden fazla aday
- * endpoint sırayla denenir (bkz. [chapterImageProcedures]), yedek olarak okuyucu HTML'i kazınır.
+ * Korunan liste çağrıları site arayüzü üzerinden yürütülür. Bölüm görselleri yalnızca
+ * çalışan okuyucudaki img elemanlarından alınır; tahmini API adları denenmez.
  */
 @Source
 abstract class Sadscans : KeiSource() {
@@ -62,8 +62,8 @@ abstract class Sadscans : KeiSource() {
         addInterceptor(CommonHeadersInterceptor())
     }
 
-    // Do not let the host retry a challenged JSON URL in WebView. Bootstrap the HTML
-    // page and execute fetch there instead; clearance is bound to browser identity.
+    // Inspect the original API response without repeated host challenge retries.
+    // A protected response uses the site's actual frontend, not a manual fetch.
     private val apiClient: OkHttpClient by lazy {
         client.newBuilder().apply {
             interceptors().removeAll { it.javaClass.simpleName == "CloudflareInterceptor" }
@@ -90,18 +90,6 @@ abstract class Sadscans : KeiSource() {
 
     protected open val genreRouter: String = "tur"
 
-    protected open val chapterImageProcedures: List<String> = listOf(
-        "$seriesDetailRouter.getChapterData",
-        "$seriesDetailRouter.getChapter",
-        "$seriesDetailRouter.getPages",
-        "$seriesListRouter.getChapterData",
-        "chapterSingle.getChapterData",
-        "chapterSingle.getChapter",
-        "chapter.getChapterData",
-        "chapter.getById",
-        "chapters.getById",
-    )
-
     private suspend fun trpcCall(procedure: String, input: JsonElement?): JsonElement {
         val inputParam = buildJsonObject {
             put("0", buildJsonObject { put("json", input ?: JsonNull) })
@@ -127,38 +115,12 @@ abstract class Sadscans : KeiSource() {
         } catch (_: java.net.SocketTimeoutException) {
             null
         }
-        val body = direct ?: browserApiCall(url)
+        val body = direct ?: throw IOException("SadScans: doğrudan API erişimi engellendi.")
         val batch = trpcJson.decodeFromString<List<TrpcBatchItem>>(body)
         val payload = batch.firstOrNull()?.result?.data?.json
             ?: error("SadScans: tRPC yanıtı boş: $procedure")
         return payload
     }
-
-    private suspend fun browserApiCall(url: HttpUrl): String = try {
-        runWebView(timeout = 35.seconds) {
-            onReceivedError { request, _ ->
-                if (request.isForMainFrame) reject(IOException("SadScans tarayıcı bağlantısı başarısız."))
-            }
-            val script = SadscansBrowser.script(url.encodedPath + "?" + url.encodedQuery.orEmpty())
-            poll(1.seconds) {
-                evaluateJs(script) { value ->
-                    val raw = value.parseAs<String?>() ?: return@evaluateJs
-                    val result = trpcJson.parseToJsonElement(raw).jsonObject
-                    val status = result["status"]?.jsonPrimitive?.content?.toIntOrNull()
-                    if (status == 200) {
-                        resolve(result["body"]?.jsonPrimitive?.content.orEmpty())
-                    } else {
-                        reject(IOException("SadScans tarayıcı API HTTP $status. Siteyi WebView'de açıp doğrulamayı tamamlayın."))
-                    }
-                }
-            }
-            loadUrl("$baseUrl/seriler")
-        }
-    } catch (_: WebViewTimeoutException) {
-        throw IOException("SadScans tarayıcı doğrulaması zaman aşımına uğradı. Siteyi WebView'de açıp tekrar deneyin.")
-    }
-
-    private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray = trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
 
     private suspend fun trpcCallObject(procedure: String, input: JsonElement?): JsonObject = trpcCall(procedure, input) as? JsonObject ?: error("SadScans: tRPC nesne bekleniyordu: $procedure")
 
@@ -182,19 +144,43 @@ abstract class Sadscans : KeiSource() {
             put("sortBy", JsonPrimitive(sortBy))
             if (query != null) put("search", JsonPrimitive(query))
         }
-        val items = trpcCallArray("$seriesListRouter.getSeries", input)
-            .map { it.jsonObject }
-            .map { item ->
-                // Counts are presentation-only. A decimal/string count must never discard a series.
-                SeriesItemDto(
-                    href = item["href"].stringOrNull() ?: item["slug"].stringOrNull()?.let { "/seriler/$it" },
-                    name = item["name"].stringOrNull(),
-                    thumb = item["thumb"].stringOrNull(),
-                )
+        val items = try {
+            trpcCall("$seriesListRouter.getSeries", input) as? JsonArray
+                ?: throw IOException("SadScans: seri listesi dizi değil.")
+        } catch (_: IOException) {
+            // Let the site's frontend run its own request preparation/Worker path.
+            // A manual fetch from WebView is not equivalent to a frontend request.
+            val result = frontendPage("$baseUrl/seriler", SadscansFrontend.listScript(query.orEmpty(), sortBy, page))
+            val rows = result["items"] as? JsonArray ?: throw IOException("SadScans: tarayıcı seri listesi eksik.")
+            return MangasPage(parseSeriesItems(rows), result["hasMore"]?.jsonPrimitive?.content == "true")
+        }
+        return MangasPage(parseSeriesItems(items), items.size >= PAGE_SIZE)
+    }
+
+    private fun parseSeriesItems(items: JsonArray): List<SManga> = items.map { it.jsonObject }.mapNotNull { item ->
+        val href = item["href"].stringOrNull() ?: item["slug"].stringOrNull()?.let { "/seriler/$it" }
+        val name = item["name"].stringOrNull()
+        if (href.isNullOrBlank() || name.isNullOrBlank()) return@mapNotNull null
+        SeriesItemDto(href = href, name = name, thumb = item["thumb"].stringOrNull()).toSManga()
+    }
+
+    private suspend fun frontendPage(url: String, script: String): JsonObject = try {
+        runWebView(timeout = 35.seconds) {
+            onReceivedError { request, _ ->
+                if (request.isForMainFrame) reject(IOException("SadScans site arayüzüne bağlanılamadı."))
             }
-            .filter { !it.href.isNullOrBlank() && !it.name.isNullOrBlank() }
-        val mangas = items.map { it.toSManga() }
-        return MangasPage(mangas, mangas.size >= PAGE_SIZE)
+            poll(1.seconds) {
+                evaluateJs(script) { value ->
+                    val raw = value.parseAs<String?>() ?: return@evaluateJs
+                    val result = trpcJson.parseToJsonElement(raw).jsonObject
+                    val message = result["error"].stringOrNull()
+                    if (message != null) reject(IOException(message)) else resolve(result)
+                }
+            }
+            loadUrl(url)
+        }
+    } catch (_: WebViewTimeoutException) {
+        throw IOException("SadScans site arayüzü zamanında veri üretemedi. WebView'de siteye erişimi kontrol edin.")
     }
 
     // ============================== Details + Chapters ==============================
@@ -274,10 +260,12 @@ abstract class Sadscans : KeiSource() {
             put("page", JsonPrimitive(page))
             put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
         }
-        return trpcJson.decodeFromJsonElement(
-            SeriesDataDto.serializer(),
-            trpcCallObject("$seriesDetailRouter.getSeriesData", input),
-        )
+        val payload = try {
+            trpcCallObject("$seriesDetailRouter.getSeriesData", input)
+        } catch (_: IOException) {
+            frontendPage("$baseUrl/seriler/$slug", SadscansFrontend.detailsScript(page))
+        }
+        return trpcJson.decodeFromJsonElement(SeriesDataDto.serializer(), payload)
     }
 
     private suspend fun fetchChapters(slug: String): List<SChapter> {
@@ -299,73 +287,19 @@ abstract class Sadscans : KeiSource() {
     override fun getChapterUrl(chapter: SChapter): String = baseUrl + chapter.url
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val chapterId = chapter.url.substringAfterLast('/')
-        val seriesSlug = chapter.url.removePrefix("/reader/").substringBefore('/')
-        val chapterSlug = chapter.url.removePrefix("/reader/$seriesSlug/").substringBefore('/')
-
-        // 1) tRPC chapter endpoint candidates
-        for (procedure in chapterImageProcedures) {
-            val urls = runCatching {
-                fetchChapterImages(procedure, chapterId, chapterSlug)
-            }.getOrNull()
-            if (!urls.isNullOrEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
-        }
-
-        // 2) Reader page HTML / RSC payload fallback
-        val doc = client.get(getChapterUrl(chapter)).asJsoup()
-        val urls = doc.select("img.reader-img, main img[src*='/api/uploads']")
-            .mapNotNull { img -> img.attr("src").ifBlank { img.attr("data-src") }.takeIf { it.isNotBlank() }?.let(::absolute) }
-            .ifEmpty {
-                doc.select("script").flatMap { s ->
-                    Regex("/api/uploads/assets/[^\"\\\\ ]+").findAll(s.data()).map { it.value }.toList()
-                }.map(::absolute)
-            }
-            .distinct()
-        if (urls.isNotEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
-
-        error("SadScans: bölüm görselleri bulunamadı: ${chapter.url}")
+        val chapterUrl = getChapterUrl(chapter)
+        val chapterId = chapter.url.substringAfterLast('/').substringBefore('?')
+        // Never probe undocumented procedure names or interpret JSON-LD thumbnail URLs
+        // as a complete chapter. Only read images actually rendered by the reader.
+        val result = frontendPage(chapterUrl, SadscansFrontend.readerScript(chapterId))
+        val urls = (result["urls"] as? JsonArray)?.mapNotNull { it.stringOrNull() }.orEmpty()
+        if (urls.isEmpty()) throw IOException("SadScans okuyucusunda bölüm görselleri bulunamadı.")
+        return urls.mapIndexed { index, url -> Page(index, url = chapterUrl, imageUrl = url) }
     }
 
-    private suspend fun fetchChapterImages(procedure: String, chapterId: String, chapterSlug: String): List<String> {
-        val inputVariants = listOf(
-            buildJsonObject { put("id", JsonPrimitive(chapterId)) },
-            buildJsonObject { put("chap_id", JsonPrimitive(chapterId)) },
-            buildJsonObject { put("chapterId", JsonPrimitive(chapterId)) },
-            buildJsonObject { put("sef", JsonPrimitive(chapterSlug)) },
-        )
-        for (input in inputVariants) {
-            val payload = runCatching { trpcCall(procedure, input) }.getOrNull() ?: continue
-            val urls = extractImageUrls(payload)
-            if (urls.isNotEmpty()) return urls
-        }
-        return emptyList()
-    }
-
-    private fun extractImageUrls(payload: JsonElement?): List<String> = when (payload) {
-        is JsonArray -> payload.mapNotNull { imageUrlFromJson(it) }
-
-        is JsonObject -> {
-            for (key in listOf("images", "pages", "files")) {
-                val arr = payload[key] as? JsonArray ?: continue
-                val urls = arr.mapNotNull { imageUrlFromJson(it) }
-                if (urls.isNotEmpty()) return urls
-            }
-            payload.values.filter { it is JsonObject || it is JsonArray }
-                .flatMap { extractImageUrls(it) }
-        }
-
-        else -> emptyList()
-    }
-
-    private fun imageUrlFromJson(item: JsonElement): String? = when (item) {
-        is JsonObject -> listOf("url", "src", "image", "path", "file")
-            .firstNotNullOfOrNull { item[it]?.contentOrNullOrNull()?.takeIf { s -> s.startsWith("http") || s.startsWith("/") } }
-            ?.let(::absolute)
-
-        is JsonPrimitive -> item.contentOrNull?.takeIf { it.startsWith("http") || it.startsWith("/") }?.let(::absolute)
-
-        else -> null
-    }
+    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
+        .header("Referer", page.url.takeIf { it.startsWith("$baseUrl/reader/") } ?: "$baseUrl/")
+        .build()
 
     // ============================== Helpers ==============================
 
@@ -388,11 +322,11 @@ abstract class Sadscans : KeiSource() {
     private fun ChapterItemDto.toSChapter(seriesSlug: String): SChapter? {
         val id = idString ?: return null
         val num = numberValue ?: 0f
-        val chSlug = slug?.ifBlank { null }
-            ?: href?.substringAfterLast('/')?.ifBlank { null }
-            ?: slugifyChapter(num, name)
+        val readerPath = href?.let { runCatching { absolute(it).toHttpUrl().encodedPath }.getOrNull() }
+            ?.takeIf { it.startsWith("/reader/") }
+        val chSlug = slug?.ifBlank { null } ?: slugifyChapter(num, name)
         return SChapter.create().apply {
-            url = "/reader/$seriesSlug/$chSlug/$id"
+            url = readerPath ?: "/reader/$seriesSlug/$chSlug/$id"
             name = name?.trim()?.ifBlank { null } ?: "Bölüm ${num.trimNumber()}"
             chapter_number = num
             date_upload = listOfNotNull(createdAt, date).firstNotNullOfOrNull { raw ->
@@ -437,8 +371,10 @@ abstract class Sadscans : KeiSource() {
     private class CommonHeadersInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request().newBuilder()
-                .header("Referer", "https://sadscans.net/")
-                .header("Accept", "application/json, text/html, */*")
+                .apply {
+                    if (chain.request().header("Referer") == null) header("Referer", "https://sadscans.net/")
+                    if (chain.request().header("Accept") == null) header("Accept", "application/json, text/html, */*")
+                }
                 .build()
             return chain.proceed(request)
         }
