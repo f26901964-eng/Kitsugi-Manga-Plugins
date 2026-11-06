@@ -1,0 +1,116 @@
+{
+  "generatedAt": "2026-11-06T12:37:08Z",
+  "passed": 11,
+  "total": 11,
+  "checks": [
+    {
+      "name": "okutoon: catalogue answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200
+      }
+    },
+    {
+      "name": "okutoon: series cards are anchors with a title and a cover",
+      "ok": true,
+      "detail": {
+        "cards": 24,
+        "titles": 24,
+        "covers": 24,
+        "first": "/one-piece"
+      }
+    },
+    {
+      "name": "okutoon: covers come from the image CDN",
+      "ok": true,
+      "detail": {
+        "host": "om-cdn.okutoon.com"
+      }
+    },
+    {
+      "name": "okutoon: ?sayfa=2 returns a different page of the catalogue",
+      "ok": true,
+      "detail": {
+        "page1": 24,
+        "page2": 24,
+        "firstOfEach": [
+          "One Piece",
+          "I Married the Dragon I Killed"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: paging exposes a rel=next link",
+      "ok": true,
+      "detail": {
+        "nextLink": 1
+      }
+    },
+    {
+      "name": "okutoon: search by Turkish/English title works",
+      "ok": true,
+      "detail": {
+        "hits": [
+          "Chainsaw Man"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: series details expose every hook the extension reads",
+      "ok": true,
+      "detail": {
+        "url": "https://okutoon.com/one-piece",
+        "title": 1,
+        "author": 1,
+        "cover": 1,
+        "genres": 1,
+        "status": 1,
+        "description": 1
+      }
+    },
+    {
+      "name": "okutoon: genres are .tag-link anchors",
+      "ok": true,
+      "detail": {
+        "genres": [
+          "Aksiyon",
+          "Doğaüstü",
+          "Dövüş Sanatları",
+          "Dram",
+          "Fantezi"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: chapter rows parse into links, names and dates",
+      "ok": true,
+      "detail": {
+        "rows": 1225,
+        "links": 1225,
+        "titles": 1225,
+        "dates": [
+          "30 Ekim 2026",
+          "18 Ekim 2026",
+          "11 Ekim 2026"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: chapter dates use Turkish month names",
+      "ok": true,
+      "detail": {
+        "sample": "30 Ekim 2026"
+      }
+    },
+    {
+      "name": "okutoon: reader is behind a Cloudflare challenge for bots (known limitation)",
+      "ok": true,
+      "detail": {
+        "url": "https://okutoon.com/one-piece/bolum-1197",
+        "status": 403,
+        "mitigated": "challenge",
+        "dumpsCoverTheMarkup": "docs/html-dumps/okutoon/message-73.txt"
+      }
+    }
+  ]
+}

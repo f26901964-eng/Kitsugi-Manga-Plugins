@@ -38,18 +38,18 @@
         ]
       },
       {
-        "name": "Mangitto",
-        "packageName": "eu.kanade.tachiyomi.extension.tr.mangitto",
-        "versionName": "1.6.3",
-        "versionCode": "106003",
-        "contentWarning": "CONTENT_WARNING_NSFW",
+        "name": "OkuToon",
+        "packageName": "eu.kanade.tachiyomi.extension.tr.okutoon",
+        "versionName": "1.6.9",
+        "versionCode": "106009",
+        "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangitto-v1.6.3.apk",
-          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangitto.png"
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.okutoon-v1.6.9.apk",
+          "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.okutoon.png"
         },
         "sources": [
           {
-            "name": "Mangitto",
+            "name": "OkuToon",
             "language": "tr",
             "type": "manga"
           }

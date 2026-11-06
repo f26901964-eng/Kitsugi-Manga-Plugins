@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Download the shared HTML dumps (Google Drive) into the workspace for inspection.
 
-The dumps are only used as local evidence while fixing selectors; the files are
-written under docs/html-dumps/<site>/.
+The dumps are only used as evidence while fixing selectors; the files are written under
+docs/html-dumps/<site>/.
 """
 from __future__ import annotations
 
@@ -30,24 +30,36 @@ FILES = {
         "67": "1nhNKA9iL5ZIxrmX4kNUph8SdZ4RudmHo",
         "66": "1SaX8Aph5GkkKO3pZmtSVIsf0KdupuWq5",
     },
+    # 2026-11-06, okutoon.com: the four pages the user saved (plain text dumps of the HTML).
+    "okutoon": {
+        "70": "1pIlu5CG1J5FRlkHon2N-rnrGKzxVTQD-",
+        "71": "1Vnx8amQGrhunaJDz2LHwvtEya4hrkQjK",
+        "72": "1vCPkYUSqWbYttTVfxK19k-NwrVx85_3T",
+        "73": "1UsfbIoIegI5-oki3dQjBHKP1dKxwqln0",
+    },
 }
 
 URL = "https://drive.usercontent.google.com/download?id={id}&export=download&confirm=t"
 UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/124 Safari/537.36"}
 
+# The okutoon dumps were saved from the browser as text, so they keep the .txt name.
+TEXT_SITES = {"okutoon"}
+
 
 def main() -> int:
     root = pathlib.Path("docs/html-dumps")
-    for site, ids in FILES.items():
+    only = sys.argv[1:] or list(FILES)
+    for site in only:
         folder = root / site
         folder.mkdir(parents=True, exist_ok=True)
-        for tag, file_id in ids.items():
+        for tag, file_id in FILES[site].items():
             response = requests.get(URL.format(id=file_id), headers=UA, timeout=60, allow_redirects=True)
             body = response.content
-            ok = response.ok and b"<!DOCTYPE html>" in body[:400] or b"<html" in body[:2000]
-            target = folder / f"message-{tag}.html"
+            suffix = ".txt" if site in TEXT_SITES else ".html"
+            target = folder / f"message-{tag}{suffix}"
             target.write_bytes(body)
-            print(f"{site}/{target.name}: status={response.status_code} bytes={len(body)} html={bool(ok)}")
+            markup = (b"<html" in body[:2000]) or (b"<!DOCTYPE" in body[:400])
+            print(f"{site}/{target.name}: status={response.status_code} bytes={len(body)} markup={bool(markup)}")
     return 0
 
 

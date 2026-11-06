@@ -1,0 +1,1972 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark" data-theme-pref="dark" data-accent="green">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <script>
+(function () {
+    var root = document.documentElement;
+    var query = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+    function apply() {
+        if (root.getAttribute('data-theme-pref') !== 'system' || root.hasAttribute('data-theme-locked')) return;
+        var theme = query && query.matches ? 'light' : 'dark';
+        root.setAttribute('data-theme', theme);
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) meta.setAttribute('content', theme === 'light' ? '#ffffff' : '#000000');
+    }
+    apply();
+    if (query) {
+        if (query.addEventListener) query.addEventListener('change', apply); else if (query.addListener) query.addListener(apply);
+    }
+    // Bazı tarayıcılar arka plandaki sekmeye değişim olayı göndermez; sekmeye dönünce yeniden bak.
+    document.addEventListener('visibilitychange', function () { if (!document.hidden) apply(); });
+    window.okutoonApplyThemePref = apply;
+})();
+</script>
+                                                <title>Webtoon Oku — Türkçe Manga, Manhwa ve Webtoon — OkuToon</title>
+    <meta name="robots" content="index,follow">
+    <meta name="description" content="OkuToon'da türkçe webtoon, manga ve manhwa oku. Yüzlerce seriyi ücretsiz, reklamsız oku. Aksiyon, romantik, fantastik ve daha fazla türde içerik seni bekliyor.">
+        <link rel="canonical" href="https://okutoon.com/">
+        <meta property="og:site_name" content="OkuToon">
+    <meta property="og:locale" content="tr_TR">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="OkuToon — Türkçe Webtoon, Manga ve Manhwa Oku">
+    <meta property="og:description" content="OkuToon'da türkçe webtoon, manga ve manhwa oku. Yüzlerce seriyi ücretsiz, reklamsız oku.">
+    <meta property="og:image" content="https://okutoon.com/images/og-default.png">
+    <meta property="og:image:alt" content="OkuToon — Türkçe Webtoon, Manga ve Manhwa Oku">
+            <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:url" content="https://okutoon.com/">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="OkuToon — Türkçe Webtoon, Manga ve Manhwa Oku">
+    <meta name="twitter:description" content="OkuToon'da türkçe webtoon, manga ve manhwa oku. Yüzlerce seriyi ücretsiz, reklamsız oku.">
+    <meta name="twitter:image" content="https://okutoon.com/images/og-default.png">
+                    <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://okutoon.com/#website","url":"https://okutoon.com/","name":"OkuToon","inLanguage":"tr-TR","publisher":{"@id":"https://okutoon.com/#organization"},"potentialAction":{"@type":"SearchAction","target":{"@type":"EntryPoint","urlTemplate":"https://okutoon.com/tur?q={search_term_string}"},"query-input":"required name=search_term_string"}},{"@type":"Organization","@id":"https://okutoon.com/#organization","name":"OkuToon","url":"https://okutoon.com/","logo":{"@type":"ImageObject","url":"https://okutoon.com/images/favicon.png","width":512,"height":512}}]}</script>
+        <link rel="icon" type="image/png" href="/images/favicon.png?v=1790414538">
+    <link rel="apple-touch-icon" href="/images/favicon.png?v=1790414538">
+        <link rel="preconnect" href="https://om-cdn.okutoon.com">
+    <link rel="dns-prefetch" href="https://om-cdn.okutoon.com">    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <script>document.documentElement.classList.add('js-spoilers');</script>
+    <link rel="stylesheet" href="/build/assets/css/variables.3e445e2c71c8746e.css">
+    <link rel="stylesheet" href="/build/assets/css/style.c388c02ee4904391.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+                <meta name="csrf-token" content="ea4e78ada9ca5d0875be37a9b48de8cc51bce7e76bb6791716ec34723918a78e">
+        <script src="https://unpkg.com/lucide@1.48.0/dist/umd/lucide.min.js" defer></script>
+</head>
+<body class="page-home"
+      data-user-id=""
+      data-content-policy-accepted="0"
+      data-content-policy-version=""
+      data-can-upload-images="0"
+      data-current-username="">
+    <header class="site-header" data-site-header>
+    <div class="container site-header-inner">
+        <a href="/" class="site-logo" aria-label="OkuToon ana sayfa">
+            <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+        </a>
+
+        <nav class="site-nav" aria-label="Ana menü">
+            <a href="/" class="site-nav-link is-active" aria-current="page">Ana Sayfa</a>
+            <a href="/tur" class="site-nav-link">Keşfet</a>
+                            <div class="navbar-categories">
+                    <button type="button"
+                            class="site-nav-link navbar-categories-toggle"
+                            id="categoryDropdownToggle"
+                            aria-haspopup="true"
+                            aria-controls="categoryDropdownMenu"
+                            aria-expanded="false">
+                        <span>Türler</span>
+                        <i data-lucide="chevron-down" class="dropdown-caret"></i>
+                    </button>
+                    <div class="navbar-categories-menu" id="categoryDropdownMenu">
+                        <div class="navbar-categories-head">
+                            <span>Kategoriler</span>
+                            <a href="/tur" class="navbar-categories-all">Tümünü keşfet <i data-lucide="chevron-right"></i></a>
+                        </div>
+                                                                                                                            <p class="navbar-categories-subtitle">Okuyucu kitlesi</p>
+                            <div class="navbar-categories-audience">
+                                                                    <a href="/tur/shounen" class="chip navbar-audience-link">Shounen</a>
+                                                                    <a href="/tur/seinen" class="chip navbar-audience-link">Seinen</a>
+                                                                    <a href="/tur/shoujo" class="chip navbar-audience-link">Shoujo</a>
+                                                                    <a href="/tur/josei" class="chip navbar-audience-link">Josei</a>
+                                                            </div>
+                            <p class="navbar-categories-subtitle">Türler</p>
+                                                <div class="navbar-categories-grid">
+                                                                                                <a href="/tur/aile" class="navbar-category-link">Aile</a>
+                                                                                                                                <a href="/tur/aksiyon" class="navbar-category-link">Aksiyon</a>
+                                                                                                                                <a href="/tur/askeri" class="navbar-category-link">Askeri</a>
+                                                                                                                                <a href="/tur/bilim-kurgu" class="navbar-category-link">Bilim Kurgu</a>
+                                                                                                                                <a href="/tur/dogaustu" class="navbar-category-link">Doğaüstü</a>
+                                                                                                                                <a href="/tur/dovus-sanatlari" class="navbar-category-link">Dövüş Sanatları</a>
+                                                                                                                                <a href="/tur/dram" class="navbar-category-link">Dram</a>
+                                                                                                                                <a href="/tur/ecchi" class="navbar-category-link">Ecchi</a>
+                                                                                                                                <a href="/tur/fantezi" class="navbar-category-link">Fantezi</a>
+                                                                                                                                <a href="/tur/gerilim" class="navbar-category-link">Gerilim</a>
+                                                                                                                                <a href="/tur/gizem" class="navbar-category-link">Gizem</a>
+                                                                                                                                <a href="/tur/gunluk-hayat" class="navbar-category-link">Günlük Hayat</a>
+                                                                                                                                <a href="/tur/harem" class="navbar-category-link">Harem</a>
+                                                                                                                                <a href="/tur/hayatta-kalma" class="navbar-category-link">Hayatta Kalma</a>
+                                                                                                                                <a href="/tur/isekai" class="navbar-category-link">Isekai</a>
+                                                                                                                                                                                            <a href="/tur/kiyamet" class="navbar-category-link">Kıyamet</a>
+                                                                                                                                <a href="/tur/komedi" class="navbar-category-link">Komedi</a>
+                                                                                                                                <a href="/tur/korku" class="navbar-category-link">Korku</a>
+                                                                                                                                <a href="/tur/macera" class="navbar-category-link">Macera</a>
+                                                                                                                                <a href="/tur/murim" class="navbar-category-link">Murim</a>
+                                                                                                                                <a href="/tur/okul-hayati" class="navbar-category-link">Okul Hayatı</a>
+                                                                                                                                <a href="/tur/oyun" class="navbar-category-link">Oyun</a>
+                                                                                                                                <a href="/tur/psikolojik" class="navbar-category-link">Psikolojik</a>
+                                                                                                                                <a href="/tur/reenkarnasyon" class="navbar-category-link">Reenkarnasyon</a>
+                                                                                                                                <a href="/tur/romantizm" class="navbar-category-link">Romantizm</a>
+                                                                                                                                                                                                                                                                                                                    <a href="/tur/sihir" class="navbar-category-link">Sihir</a>
+                                                                                                                                <a href="/tur/sistem" class="navbar-category-link">Sistem</a>
+                                                                                                                                <a href="/tur/spor" class="navbar-category-link">Spor</a>
+                                                                                                                                <a href="/tur/suc" class="navbar-category-link">Suç</a>
+                                                                                                                                <a href="/tur/super-kahraman" class="navbar-category-link">Süper Kahraman</a>
+                                                                                                                                <a href="/tur/tarihi" class="navbar-category-link">Tarihi</a>
+                                                                                                                                <a href="/tur/vampir" class="navbar-category-link">Vampir</a>
+                                                                                                                                <a href="/tur/zamanda-yolculuk" class="navbar-category-link">Zamanda Yolculuk</a>
+                                                                                                                                <a href="/tur/zindan" class="navbar-category-link">Zindan</a>
+                                                                                                                                <a href="/tur/zombi" class="navbar-category-link">Zombi</a>
+                                                                                    </div>
+                    </div>
+                </div>
+                        <a href="/forum" class="site-nav-link">Forum</a>
+                                            </nav>
+
+        <div class="site-actions">
+            <form action="/tur" method="get" class="navbar-search" role="search" data-header-search>
+                <i data-lucide="search" class="navbar-search-icon" aria-hidden="true"></i>
+                <input type="search"
+                       name="q"
+                       placeholder="Seri, yazar ara"
+                       value=""
+                       class="navbar-search-input"
+                       autocomplete="off"
+                       enterkeyhint="search"
+                       data-search-input
+                       aria-label="Seri ara">
+                <button type="button" class="navbar-search-cancel" data-header-search-close>Vazgeç</button>
+                <div class="navbar-search-suggest" id="navbarSearchSuggest" data-search-suggest hidden>
+                    <div class="navbar-search-suggest-list" data-search-suggest-list></div>
+                </div>
+            </form>
+
+            
+            <button type="button" class="icon-btn site-search-toggle" data-header-search-open aria-label="Ara">
+                <i data-lucide="search"></i>
+            </button>
+
+                            <a href="/login" class="site-login-link">Giriş</a>
+                <a href="/register" class="btn btn-invert btn-sm btn-pill site-register-btn">Kayıt ol</a>
+                    </div>
+    </div>
+</header>
+
+    
+    <main class="container">
+                
+        <h1 class="sr-only">OkuToon — Türkçe Webtoon, Manga ve Manhwa Oku</h1>
+
+                        <section class="home-hero" aria-label="Öne çıkanlar">
+            <div class="swiper home-headline-swiper" data-home-swiper="headline">
+                <div class="swiper-wrapper">
+                                                                                                                                            <div class="swiper-slide">
+                            <article class="hero-slide">
+                                <a href="/can-i-cry-now" class="hero-slide-media" tabindex="-1" aria-hidden="true">
+                                                                            <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata" poster="https://om-cdn.okutoon.com/covers/headline_1791145752_df9af8c9.webp">
+                                            <source src="https://om-cdn.okutoon.com/headline-videos/headline_video_1791145753_d56a12e9.mp4">
+                                        </video>
+                                                                    </a>
+                                <div class="hero-slide-content">
+                                    <p class="hero-slide-meta">
+                                        Webtoon
+                                        <span class="dot-sep">·</span>65 bölüm                                                                            </p>
+                                    <h2 class="hero-slide-title"><a href="/can-i-cry-now">Can I Cry Now?</a></h2>
+                                                                            <p class="hero-slide-desc">Toplumun ve ailesinin omuzlarına yüklediği ağır beklentiler altında ezilen ana karakterimiz, hayatı boyunca her zaman güçlü, kusursuz ve day…</p>
+                                                                        <div class="hero-slide-actions">
+                                        <a href="/can-i-cry-now/bolum-1" class="btn btn-invert hero-slide-read">
+                                            <i data-lucide="play" class="btn-icon"></i>
+                                            Okumaya başla
+                                        </a>
+                                        <a href="/can-i-cry-now" class="btn hero-slide-btn">Detaylar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                                                                                                                                            <div class="swiper-slide">
+                            <article class="hero-slide">
+                                <a href="/fight-delivery" class="hero-slide-media" tabindex="-1" aria-hidden="true">
+                                                                            <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata" poster="https://om-cdn.okutoon.com/covers/headline_1793145009_41af4f70.webp">
+                                            <source src="https://om-cdn.okutoon.com/headline-videos/headline_video_1793145127_fec3e3ac.mp4">
+                                        </video>
+                                                                    </a>
+                                <div class="hero-slide-content">
+                                    <p class="hero-slide-meta">
+                                        Webtoon
+                                        <span class="dot-sep">·</span>31 bölüm                                                                            </p>
+                                    <h2 class="hero-slide-title"><a href="/fight-delivery">Fight Delivery</a></h2>
+                                                                            <p class="hero-slide-desc">Fight Delivery, okulda zorbalığa uğrayan ve çıkış yolu bulamayan genç bir öğrencinin yasa dışı bir uygulamaya başvurmasıyla başlayan bir aks…</p>
+                                                                        <div class="hero-slide-actions">
+                                        <a href="/fight-delivery/bolum-1" class="btn btn-invert hero-slide-read">
+                                            <i data-lucide="play" class="btn-icon"></i>
+                                            Okumaya başla
+                                        </a>
+                                        <a href="/fight-delivery" class="btn hero-slide-btn">Detaylar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                                                                                                                                            <div class="swiper-slide">
+                            <article class="hero-slide">
+                                <a href="/the-mad-dog" class="hero-slide-media" tabindex="-1" aria-hidden="true">
+                                                                            <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata" poster="https://om-cdn.okutoon.com/covers/headline_1791422978_9d9ff016.webp">
+                                            <source src="https://om-cdn.okutoon.com/headline-videos/headline_video_1791423042_664342ed.mp4">
+                                        </video>
+                                                                    </a>
+                                <div class="hero-slide-content">
+                                    <p class="hero-slide-meta">
+                                        Webtoon
+                                        <span class="dot-sep">·</span>55 bölüm                                                                            </p>
+                                    <h2 class="hero-slide-title"><a href="/the-mad-dog">The Mad Dog</a></h2>
+                                                                            <p class="hero-slide-desc">Yeraltı dünyasının en karanlık köşelerinde, adeta bir kuduz köpek gibi kafesler ardında tutulan ve insanlığı elinden alınan vahşi bir dövüşç…</p>
+                                                                        <div class="hero-slide-actions">
+                                        <a href="/the-mad-dog/bolum-1" class="btn btn-invert hero-slide-read">
+                                            <i data-lucide="play" class="btn-icon"></i>
+                                            Okumaya başla
+                                        </a>
+                                        <a href="/the-mad-dog" class="btn hero-slide-btn">Detaylar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                                                                                                                                            <div class="swiper-slide">
+                            <article class="hero-slide">
+                                <a href="/my-girlfriend-returned-as-a-dragon" class="hero-slide-media" tabindex="-1" aria-hidden="true">
+                                                                            <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata" poster="https://om-cdn.okutoon.com/covers/headline_1791248546_deac5b22.webp">
+                                            <source src="https://om-cdn.okutoon.com/headline-videos/headline_video_1791248547_a25748f4.mp4">
+                                        </video>
+                                                                    </a>
+                                <div class="hero-slide-content">
+                                    <p class="hero-slide-meta">
+                                        Webtoon
+                                        <span class="dot-sep">·</span>11 bölüm                                                                            </p>
+                                    <h2 class="hero-slide-title"><a href="/my-girlfriend-returned-as-a-dragon">My Girlfriend Returned as a Dragon</a></h2>
+                                                                            <p class="hero-slide-desc">Yıllar önce aniden açılan gizemli bir boyut kapısının içine çekilerek kaybolan sevgilisinin ardından yas tutan ana karakter, hayatını buruk …</p>
+                                                                        <div class="hero-slide-actions">
+                                        <a href="/my-girlfriend-returned-as-a-dragon/bolum-1" class="btn btn-invert hero-slide-read">
+                                            <i data-lucide="play" class="btn-icon"></i>
+                                            Okumaya başla
+                                        </a>
+                                        <a href="/my-girlfriend-returned-as-a-dragon" class="btn hero-slide-btn">Detaylar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                                                                                                                                            <div class="swiper-slide">
+                            <article class="hero-slide">
+                                <a href="/i-dare-you" class="hero-slide-media" tabindex="-1" aria-hidden="true">
+                                                                            <video class="hero-slide-video" autoplay muted loop playsinline preload="metadata" poster="https://om-cdn.okutoon.com/covers/headline_1791440952_7f107180.webp">
+                                            <source src="https://om-cdn.okutoon.com/headline-videos/headline_video_1791441389_139039ac.mp4">
+                                        </video>
+                                                                    </a>
+                                <div class="hero-slide-content">
+                                    <p class="hero-slide-meta">
+                                        Webtoon
+                                        <span class="dot-sep">·</span>34 bölüm                                                                            </p>
+                                    <h2 class="hero-slide-title"><a href="/i-dare-you">I Dare You</a></h2>
+                                                                            <p class="hero-slide-desc">Okul koridorlarında masum bir cesaret testi veya eğlenceli bir şaka gibi başlayan utandırma oyunu, sınırların aşılmasıyla birlikte tehlikeli…</p>
+                                                                        <div class="hero-slide-actions">
+                                        <a href="/i-dare-you/bolum-1" class="btn btn-invert hero-slide-read">
+                                            <i data-lucide="play" class="btn-icon"></i>
+                                            Okumaya başla
+                                        </a>
+                                        <a href="/i-dare-you" class="btn hero-slide-btn">Detaylar</a>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                                    </div>
+            </div>
+                            <div class="hero-controls">
+                    <button type="button" class="hero-arrow home-headline-prev" aria-label="Önceki"><i data-lucide="chevron-left"></i></button>
+                    <div class="home-headline-pagination hero-pagination"></div>
+                    <button type="button" class="hero-arrow home-headline-next" aria-label="Sonraki"><i data-lucide="chevron-right"></i></button>
+                </div>
+                    </section>
+    
+        
+                <section class="home-section"
+                 data-popularity-root
+                 data-requested-period="daily"
+                 data-effective-period="daily">
+            <div class="section-header popular-header">
+                <div class="section-copy">
+                    <h2 class="section-title">Popüler seriler</h2>
+                </div>
+                <div class="chip-row popular-period-tabs" role="group" aria-label="Popülerlik dönemi">
+                                            <button type="button"
+                                class="chip popular-period-tab is-active"
+                                data-popularity-period="daily"
+                                aria-pressed="true">Bugün</button>
+                                            <button type="button"
+                                class="chip popular-period-tab"
+                                data-popularity-period="weekly"
+                                aria-pressed="false">Haftalık</button>
+                                            <button type="button"
+                                class="chip popular-period-tab"
+                                data-popularity-period="monthly"
+                                aria-pressed="false">Aylık</button>
+                                            <button type="button"
+                                class="chip popular-period-tab"
+                                data-popularity-period="all_time"
+                                aria-pressed="false">Tüm zamanlar</button>
+                                    </div>
+                <div class="section-header-actions">
+                    <a href="/tur?sira=popular&amp;donem=daily" class="section-action" data-popularity-all>
+                        Tümü <i data-lucide="chevron-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="popular-series-stage" data-popularity-stage aria-live="polite" aria-busy="false">
+                <div class="rail-wrap">
+                                    <button type="button" class="rail-arrow rail-arrow--prev home-popular-prev" aria-label="Önceki"><i data-lucide="chevron-left"></i></button>
+                    <button type="button" class="rail-arrow rail-arrow--next home-popular-next" aria-label="Sonraki"><i data-lucide="chevron-right"></i></button>
+                                <div class="swiper rail home-popular-swiper" data-home-swiper="popular">
+                    <div class="swiper-wrapper" data-popularity-list>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="1. sıra, One Piece">
+    <span class="popular-series-rank" aria-hidden="true">
+                    1
+            </span>
+    <a href="/one-piece" class="popular-series-cover" aria-label="One Piece serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1779829439_973e3978.webp" alt="One Piece" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">1. Sıra</span>
+        <h3 class="popular-series-title"><a href="/one-piece">One Piece</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="2. sıra, The Mad Dog">
+    <span class="popular-series-rank" aria-hidden="true">
+                    2
+            </span>
+    <a href="/the-mad-dog" class="popular-series-cover" aria-label="The Mad Dog serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1791332764_7cb58814.webp" alt="The Mad Dog" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">2. Sıra</span>
+        <h3 class="popular-series-title"><a href="/the-mad-dog">The Mad Dog</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="3. sıra, Solo Leveling: Ragnarok">
+    <span class="popular-series-rank" aria-hidden="true">
+                    3
+            </span>
+    <a href="/solo-leveling-ragnarok" class="popular-series-cover" aria-label="Solo Leveling: Ragnarok serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1791499011_c4773598.webp" alt="Solo Leveling: Ragnarok" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">3. Sıra</span>
+        <h3 class="popular-series-title"><a href="/solo-leveling-ragnarok">Solo Leveling: Ragnarok</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="4. sıra, The Forgotten Field">
+    <span class="popular-series-rank" aria-hidden="true">
+                    4
+            </span>
+    <a href="/the-forgotten-field" class="popular-series-cover" aria-label="The Forgotten Field serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1785923833_bb2cbaae.webp" alt="The Forgotten Field" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">4. Sıra</span>
+        <h3 class="popular-series-title"><a href="/the-forgotten-field">The Forgotten Field</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="5. sıra, Dirt Cheap">
+    <span class="popular-series-rank" aria-hidden="true">
+                    5
+            </span>
+    <a href="/dirt-cheap" class="popular-series-cover" aria-label="Dirt Cheap serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793662873_17426f27.webp" alt="Dirt Cheap" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">5. Sıra</span>
+        <h3 class="popular-series-title"><a href="/dirt-cheap">Dirt Cheap</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="6. sıra, Can I Cry Now?">
+    <span class="popular-series-rank" aria-hidden="true">
+                    6
+            </span>
+    <a href="/can-i-cry-now" class="popular-series-cover" aria-label="Can I Cry Now? serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1791020898_6f4220a4.webp" alt="Can I Cry Now?" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">6. Sıra</span>
+        <h3 class="popular-series-title"><a href="/can-i-cry-now">Can I Cry Now?</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="7. sıra, I Became the Despised Granddaughter of the Murim Family">
+    <span class="popular-series-rank" aria-hidden="true">
+                    7
+            </span>
+    <a href="/i-became-the-despised-granddaughter-of-the-murim-family" class="popular-series-cover" aria-label="I Became the Despised Granddaughter of the Murim Family serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793842365_efe07171.webp" alt="I Became the Despised Granddaughter of the Murim Family" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">7. Sıra</span>
+        <h3 class="popular-series-title"><a href="/i-became-the-despised-granddaughter-of-the-murim-family">I Became the Despised Granddaughter of the Murim Family</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="8. sıra, On Your Knees, Your Highness!">
+    <span class="popular-series-rank" aria-hidden="true">
+                    8
+            </span>
+    <a href="/on-your-knees-your-highness" class="popular-series-cover" aria-label="On Your Knees, Your Highness! serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793127195_084fb0ba.webp" alt="On Your Knees, Your Highness!" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">8. Sıra</span>
+        <h3 class="popular-series-title"><a href="/on-your-knees-your-highness">On Your Knees, Your Highness!</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="9. sıra, The Symbiotic Relationship Between the Rabbit and the Black Panther">
+    <span class="popular-series-rank" aria-hidden="true">
+                    9
+            </span>
+    <a href="/the-symbiotic-relationship-between-the-rabbit-and-the-black-panther" class="popular-series-cover" aria-label="The Symbiotic Relationship Between the Rabbit and the Black Panther serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1786386469_84ee14b3.webp" alt="The Symbiotic Relationship Between the Rabbit and the Black Panther" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">9. Sıra</span>
+        <h3 class="popular-series-title"><a href="/the-symbiotic-relationship-between-the-rabbit-and-the-black-panther">The Symbiotic Relationship Between the Rabbit and the Black Panther</a></h3>
+    </div>
+</article>
+                            </div>
+                                                    <div class="swiper-slide">
+                                <article class="popular-series-card" aria-label="10. sıra, Revenge of the Iron-Blooded Sword Hound">
+    <span class="popular-series-rank popular-series-rank--stacked" aria-hidden="true">
+                                    <span class="popular-series-rank-digit">1</span>
+                            <span class="popular-series-rank-digit">0</span>
+                        </span>
+    <a href="/revenge-of-the-iron-blooded-sword-hound" class="popular-series-cover" aria-label="Revenge of the Iron-Blooded Sword Hound serisini aç">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1786728397_9cd5c020.webp" alt="Revenge of the Iron-Blooded Sword Hound" loading="lazy">
+                    </a>
+    <div class="popular-series-body">
+        <span class="popular-series-position">10. Sıra</span>
+        <h3 class="popular-series-title"><a href="/revenge-of-the-iron-blooded-sword-hound">Revenge of the Iron-Blooded Sword Hound</a></h3>
+    </div>
+</article>
+                            </div>
+                                            </div>
+                </div>
+                </div>
+                <p class="popular-series-error" data-popularity-error hidden>Liste yüklenemedi. Lütfen yeniden deneyin.</p>
+            </div>
+        </section>
+    
+                <section class="home-section">
+            <div class="section-header">
+                <div class="section-copy">
+                    <h2 class="section-title">Yeni bölümler</h2>
+                </div>
+                <div class="section-header-actions">
+                    <a href="/tur?sira=updated" class="section-action">Tümü <i data-lucide="chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="rail-wrap">
+                            <button type="button" class="rail-arrow rail-arrow--prev home-updates-prev" aria-label="Önceki"><i data-lucide="chevron-left"></i></button>
+                <button type="button" class="rail-arrow rail-arrow--next home-updates-next" aria-label="Sonraki"><i data-lucide="chevron-right"></i></button>
+                        <div class="swiper rail home-updates-swiper" data-home-swiper="updates">
+                <div class="swiper-wrapper">
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/monster-eater" class="update-card-cover" aria-label="Monster Eater">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791332915_afcfbd33.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/monster-eater">Monster Eater</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/monster-eater/bolum-126" class="update-card-chapter">Bölüm 126</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T08:26:57+03:00">5 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/my-wife-is-from-a-thousand-years-ago" class="update-card-cover" aria-label="My Wife Is From a Thousand Years Ago">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1789105734_26f4e433.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/my-wife-is-from-a-thousand-years-ago">My Wife Is From a Thousand Years Ago</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/my-wife-is-from-a-thousand-years-ago/bolum-456" class="update-card-chapter">Bölüm 456</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T06:47:01+03:00">7 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/hand-jumper" class="update-card-cover" aria-label="Hand Jumper">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791096033_4b21fe4a.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                            <span class="cover-badge cover-badge--ai"><svg class="ai-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.94 15.5a2 2 0 0 0-1.44-1.44l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+AI Çeviri</span>                                        </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/hand-jumper">Hand Jumper</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/hand-jumper/bolum-134-1" class="update-card-chapter">Bölüm 134.1</a>
+                                            <span class="ai-tag" title="Bu bölüm yapay zekâ ile çevrildi"><svg class="ai-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.94 15.5a2 2 0 0 0-1.44-1.44l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+AI</span>                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-06T04:36:00+03:00">9 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/villain-i-ll-do-everything-except-marriage-for-you-2" class="update-card-cover" aria-label="Villain, I&#039;ll Do Everything Except Marriage for You!">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308235_a8b322b2.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/villain-i-ll-do-everything-except-marriage-for-you-2">Villain, I&#039;ll Do Everything Except Marriage for You!</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/villain-i-ll-do-everything-except-marriage-for-you-2/bolum-65" class="update-card-chapter">Bölüm 65</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T04:30:11+03:00">9 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/foam-of-the-sea" class="update-card-cover" aria-label="Foam of the Sea">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793918381_6456ca5f.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/foam-of-the-sea">Foam of the Sea</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/foam-of-the-sea/bolum-58-3" class="update-card-chapter">Bölüm 58.3</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T03:37:59+03:00">10 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/script-shop-of-dream" class="update-card-cover" aria-label="Script Shop of Dream">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1792564055_34eaf5fd.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/script-shop-of-dream">Script Shop of Dream</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/script-shop-of-dream/bolum-53" class="update-card-chapter">Bölüm 53</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T03:17:13+03:00">10 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-beloved-bashful-villainess" class="update-card-cover" aria-label="The Beloved Bashful Villainess">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791864793_e35f130a.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-beloved-bashful-villainess">The Beloved Bashful Villainess</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/the-beloved-bashful-villainess/bolum-67" class="update-card-chapter">Bölüm 67</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T01:44:19+03:00">12 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-ultimate-of-all-ages" class="update-card-cover" aria-label="The Ultimate of All Ages">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1786600894_bf720da5.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-ultimate-of-all-ages">The Ultimate of All Ages</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/the-ultimate-of-all-ages/bolum-578" class="update-card-chapter">Bölüm 578</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T01:43:36+03:00">12 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/my-daddy-hides-his-power" class="update-card-cover" aria-label="My Daddy Hides His Power">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791865843_3f1ffd81.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/my-daddy-hides-his-power">My Daddy Hides His Power</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/my-daddy-hides-his-power/bolum-50" class="update-card-chapter">Bölüm 50</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T01:24:31+03:00">12 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/can-i-cry-now" class="update-card-cover" aria-label="Can I Cry Now?">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791020898_6f4220a4.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/can-i-cry-now">Can I Cry Now?</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/can-i-cry-now/bolum-65" class="update-card-chapter">Bölüm 65</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:14:15+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/we-re-not-a-couple" class="update-card-cover" aria-label="We&#039;re Not a Couple!">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1791324245_adb44560.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/we-re-not-a-couple">We&#039;re Not a Couple!</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/we-re-not-a-couple/bolum-19" class="update-card-chapter">Bölüm 19</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:12:08+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-academy-s-weapon-replicator" class="update-card-cover" aria-label="The Academy’s Weapon Replicator">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1792342790_50275b91.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-academy-s-weapon-replicator">The Academy’s Weapon Replicator</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/the-academy-s-weapon-replicator/bolum-25" class="update-card-chapter">Bölüm 25</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:11:53+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/fight-delivery" class="update-card-cover" aria-label="Fight Delivery">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793131777_503725d2.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/fight-delivery">Fight Delivery</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/fight-delivery/bolum-31" class="update-card-chapter">Bölüm 31</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:11:19+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/blade-of-the-discarded" class="update-card-cover" aria-label="Blade of the Discarded">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793146245_ad42a6d2.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/blade-of-the-discarded">Blade of the Discarded</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/blade-of-the-discarded/bolum-7" class="update-card-chapter">Bölüm 7</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:10:48+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/perfection-is-everything" class="update-card-cover" aria-label="Perfection is Everything">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1785925028_65c17ad4.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/perfection-is-everything">Perfection is Everything</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/perfection-is-everything/bolum-61" class="update-card-chapter">Bölüm 61</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:10:37+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/i-faked-a-pregnancy-but-my-husband-returned" class="update-card-cover" aria-label="I Faked a Pregnancy, but My Husband Returned">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308495_4ae60941.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/i-faked-a-pregnancy-but-my-husband-returned">I Faked a Pregnancy, but My Husband Returned</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/i-faked-a-pregnancy-but-my-husband-returned/bolum-45" class="update-card-chapter">Bölüm 45</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:09:03+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-youngest-has-much-to-hide" class="update-card-cover" aria-label="The Youngest Has Much to Hide">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1792564437_cca586b3.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-youngest-has-much-to-hide">The Youngest Has Much to Hide</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/the-youngest-has-much-to-hide/bolum-55" class="update-card-chapter">Bölüm 55</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-06T00:05:57+03:00">13 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/supreme-zerg-lord-the-catastrophe" class="update-card-cover" aria-label="Supreme Zerg Lord: The Catastrophe">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1790288594_45cdc141.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/supreme-zerg-lord-the-catastrophe">Supreme Zerg Lord: The Catastrophe</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/supreme-zerg-lord-the-catastrophe/bolum-140" class="update-card-chapter">Bölüm 140</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-05T23:40:14+03:00">14 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/boruto-two-blue-vortex" class="update-card-cover" aria-label="Boruto: Two Blue Vortex">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1789935763_cc691797.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/boruto-two-blue-vortex">Boruto: Two Blue Vortex</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/boruto-two-blue-vortex/bolum-118" class="update-card-chapter">Bölüm 118</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-05T21:12:24+03:00">16 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                                                    <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/wee" class="update-card-cover" aria-label="WEE!!!">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1788050395_5e91a574.webp" alt="" loading="lazy">
+                                                                                                                <span class="cover-badges">
+                                            <span class="cover-badge cover-badge--up">UP</span>                                                                                    </span>
+                                                                    </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/wee">WEE!!!</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <a href="/wee/bolum-469" class="update-card-chapter">Bölüm 469</a>
+                                                                                                                                                                        <span class="update-card-time" data-time-ago="2026-11-05T21:12:00+03:00">16 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                    </div>
+            </div>
+            </div>
+        </section>
+    
+                <section class="home-section">
+            <div class="section-header">
+                <div class="section-copy">
+                    <h2 class="section-title">Yeni seriler</h2>
+                </div>
+                <div class="section-header-actions">
+                    <a href="/tur?sira=newest" class="section-action">Tümü <i data-lucide="chevron-right"></i></a>
+                </div>
+            </div>
+            <div class="rail-wrap">
+                            <button type="button" class="rail-arrow rail-arrow--prev home-new-series-prev" aria-label="Önceki"><i data-lucide="chevron-left"></i></button>
+                <button type="button" class="rail-arrow rail-arrow--next home-new-series-next" aria-label="Sonraki"><i data-lucide="chevron-right"></i></button>
+                        <div class="swiper rail home-new-series-swiper" data-home-swiper="new-series">
+                <div class="swiper-wrapper">
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/reiko-mutlulugun-kayip-yolu" class="update-card-cover" aria-label="Reiko: Mutluluğun Kayıp Yolu">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793888131_f7acdd42.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/reiko-mutlulugun-kayip-yolu">Reiko: Mutluluğun Kayıp Yolu</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>2 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-05T17:17:41+03:00">20 saat önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/bleach-one-shot" class="update-card-cover" aria-label="Bleach One-Shot">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793664845_8c4fbd2a.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/bleach-one-shot">Bleach One-Shot</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>1 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T03:15:53+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/dirt-cheap" class="update-card-cover" aria-label="Dirt Cheap">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793662873_17426f27.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/dirt-cheap">Dirt Cheap</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>5 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T02:56:34+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/save-the-sunfish-princess" class="update-card-cover" aria-label="Save the Sunfish Princess!">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793662549_37fca7ed.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/save-the-sunfish-princess">Save the Sunfish Princess!</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>6 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T02:42:34+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/bleach-the-unforgivens" class="update-card-cover" aria-label="Bleach: The Unforgivens">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793660406_c90bf2b4.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/bleach-the-unforgivens">Bleach: The Unforgivens</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>1 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T02:12:14+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/ginseng-star-store" class="update-card-cover" aria-label="Ginseng Star Store">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793659812_c2caf6aa.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/ginseng-star-store">Ginseng Star Store</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>221 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T01:50:17+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/wistoria-wand-and-sword" class="update-card-cover" aria-label="Wistoria: Wand and Sword">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793657574_8574e7fa.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/wistoria-wand-and-sword">Wistoria: Wand and Sword</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>31 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-03T01:13:31+03:00">3 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-northern-grand-duke-s-crazy-son-in-law" class="update-card-cover" aria-label="The Northern Grand Duke&#039;s Crazy Son-in-Law">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793589145_9de001b3.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-northern-grand-duke-s-crazy-son-in-law">The Northern Grand Duke&#039;s Crazy Son-in-Law</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>7 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-02T07:44:06+03:00">4 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/a-girl-clumsy-with-her-words" class="update-card-cover" aria-label="A Girl Clumsy With Her Words">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793588859_62b06c62.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/a-girl-clumsy-with-her-words">A Girl Clumsy With Her Words</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>10 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-02T07:21:04+03:00">4 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/blind-obedience" class="update-card-cover" aria-label="Blind Obedience">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793581549_e0ebf1cb.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/blind-obedience">Blind Obedience</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>24 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-02T05:27:05+03:00">4 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/reborn-as-a-hatchling" class="update-card-cover" aria-label="Reborn as a Hatchling">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793504213_6c06c997.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/reborn-as-a-hatchling">Reborn as a Hatchling</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>31 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-01T08:45:34+03:00">5 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/killing-field" class="update-card-cover" aria-label="Killing Field">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793382705_7c143e48.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/killing-field">Killing Field</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>23 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-11-01T06:29:09+03:00">5 gün önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-villainess-makes-amends" class="update-card-cover" aria-label="The Villainess Makes Amends">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793315503_1608f6e2.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-villainess-makes-amends">The Villainess Makes Amends</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>67 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-30T05:14:51+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/the-northern-duke-needs-a-warm-hug" class="update-card-cover" aria-label="The Northern Duke Needs a Warm Hug">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308043_02b15896.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/the-northern-duke-needs-a-warm-hug">The Northern Duke Needs a Warm Hug</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>77 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-30T05:06:52+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/welcome-to-rose-manor" class="update-card-cover" aria-label="Welcome to Rose Manor">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308924_6e810578.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/welcome-to-rose-manor">Welcome to Rose Manor</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>67 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-30T04:59:11+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/summer-sweetness" class="update-card-cover" aria-label="Summer Sweetness">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793307614_188db30a.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/summer-sweetness">Summer Sweetness</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>5 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-30T01:46:26+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/my-beloved-oppressor" class="update-card-cover" aria-label="My Beloved Oppressor">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308379_ff7fcab6.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/my-beloved-oppressor">My Beloved Oppressor</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>85 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-30T01:46:22+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/golden-chevalier" class="update-card-cover" aria-label="Golden Chevalier">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793127769_1b250bc8.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/golden-chevalier">Golden Chevalier</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>54 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-28T21:42:20+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/44th-period-survival-class" class="update-card-cover" aria-label="44th Period: Survival Class">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793201420_f7d0f3c0.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/44th-period-survival-class">44th Period: Survival Class</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>47 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-28T18:36:58+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                            <div class="swiper-slide">
+                            <article class="update-card">
+                                <a href="/on-your-knees-your-highness" class="update-card-cover" aria-label="On Your Knees, Your Highness!">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793127195_084fb0ba.webp" alt="" loading="lazy">
+                                                                        <span class="cover-badges">
+                                        <span class="cover-badge">Yeni</span>
+                                                                            </span>
+                                </a>
+                                <div class="update-card-body">
+                                    <h3 class="update-card-title"><a href="/on-your-knees-your-highness">On Your Knees, Your Highness!</a></h3>
+                                    <p class="update-card-meta">
+                                                                                    <span>52 bölüm</span>
+                                                                                                                            <span class="update-card-time" data-time-ago="2026-10-28T00:56:06+03:00">1 hafta önce</span>
+                                                                            </p>
+                                </div>
+                            </article>
+                        </div>
+                                    </div>
+            </div>
+            </div>
+        </section>
+    
+        <section class="home-section home-community" data-tabs aria-label="Topluluk">
+
+        <div class="segmented home-community-tabs" role="tablist" aria-label="Topluluk akışı">
+            <button type="button" class="segmented-item is-active" role="tab" aria-selected="true" data-tab="reviews">İncelemeler</button>
+            <button type="button" class="segmented-item" role="tab" aria-selected="false" data-tab="comments">Yorumlar</button>
+            <button type="button" class="segmented-item" role="tab" aria-selected="false" data-tab="forum">Forum</button>
+        </div>
+
+        <div class="home-community-grid">
+            <div class="home-community-col is-active" data-tab-panel="reviews" role="tabpanel">
+                <h3 class="home-community-title">Son incelemeler</h3>
+                                    <div class="feed-list">
+                                                                                                            <article class="feed-item">
+                                <a href="/villain-i-ll-do-everything-except-marriage-for-you-2" class="feed-cover" aria-label="Villain, I&#039;ll Do Everything Except Marriage for You!" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1793308235_a8b322b2.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/villain-i-ll-do-everything-except-marriage-for-you-2">Villain, I&#039;ll Do Everything Except Marriage for You!</a>                                                                                    <span class="feed-rating" aria-label="3/5 puan"><i data-lucide="star"></i>3</span>
+                                                                            </div>
+                                    <a href="/yorumlar/171311/ac" class="feed-text">
+                                        O kocanın yüzü korkutucu okuyamam yik                                    </a>
+                                    <div class="feed-meta">
+                                        <a href="/@SamaelsHeir" class="feed-user" title="SamaelsHeir">
+                                                                                        <span class="feed-avatar avatar--xs is-premium-avatar">
+                                                <img src="https://om-cdn.okutoon.com/avatars/20066_1791494716.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name has-name-color" style="--name-dark:linear-gradient(90deg,#C084FC,#818CF8,#38BDF8);--name-light:linear-gradient(90deg,#9333EA,#4F46E5,#0284C7);--name-line:#C084FC;--name-line-light:#9333EA;">SamaelsHeir</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T12:59:17+03:00">52 dk önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                                                                            <article class="feed-item">
+                                <a href="/how-to-win-my-husband-over" class="feed-cover" aria-label="How to Win My Husband Over" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1783992553_0512e8d3.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/how-to-win-my-husband-over">How to Win My Husband Over</a>                                                                                    <span class="feed-rating" aria-label="5/5 puan"><i data-lucide="star"></i>5</span>
+                                                                            </div>
+                                    <a href="/yorumlar/171270/ac" class="feed-text">
+                                        Benim için çok özel bir yerleri var 🥹💓                                    </a>
+                                    <div class="feed-meta">
+                                        <a href="/@Rhimarg" class="feed-user" title="Rhimarg">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <img src="https://om-cdn.okutoon.com/avatars/30805_1793798716_50eb.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name">Rhimarg</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T12:16:22+03:00">1 saat önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                                                                            <article class="feed-item">
+                                <a href="/i-married-the-dragon-i-killed" class="feed-cover" aria-label="I Married the Dragon I Killed" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1784154193_53cabde4.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/i-married-the-dragon-i-killed">I Married the Dragon I Killed</a>                                                                                    <span class="feed-rating" aria-label="3/5 puan"><i data-lucide="star"></i>3</span>
+                                                                            </div>
+                                    <a href="/yorumlar/171201/ac" class="feed-text">
+                                        Yalnızca puan verdi.                                    </a>
+                                    <div class="feed-meta">
+                                        <a href="/@agas" class="feed-user" title="agas">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <span>A</span>                                            </span>
+                                            <span class="feed-user-name">agas</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T11:03:56+03:00">2 saat önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                                                                            <article class="feed-item">
+                                <a href="/daytime-star" class="feed-cover" aria-label="Daytime Star" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/daytime-star.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/daytime-star">Daytime Star</a>                                                                                    <span class="feed-rating" aria-label="5/5 puan"><i data-lucide="star"></i>5</span>
+                                                                            </div>
+                                    <a href="/yorumlar/171199/ac" class="feed-text">
+                                        Yalnızca puan verdi.                                    </a>
+                                    <div class="feed-meta">
+                                        <a href="/@blake_" class="feed-user" title="blake_">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <img src="https://om-cdn.okutoon.com/avatars/23056_1791462299.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name">blake_</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T11:00:20+03:00">2 saat önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                            </div>
+                            </div>
+
+            <div class="home-community-col" data-tab-panel="comments" role="tabpanel">
+                <h3 class="home-community-title">Son yorumlar</h3>
+                                    <div class="feed-list">
+                                                                                                                                                                    <article class="feed-item">
+                                <a href="/the-gamer" class="feed-cover" aria-label="The Gamer" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/oyuncu-3600.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/the-gamer">The Gamer</a>                                        <a href="/the-gamer/bolum-171" class="feed-target-sub">Bölüm 171</a>                                    </div>
+                                    <a href="/yorumlar/171367/ac" class="feed-text">Ejder lral PintiPanda çıktı 🤣</a>
+                                    <div class="feed-meta">
+                                        <a href="/@drveno" class="feed-user" title="drveno">
+                                                                                        <span class="feed-avatar avatar--xs is-premium-avatar">
+                                                <img src="https://om-cdn.okutoon.com/avatars/25661_1792398536.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name has-name-color" style="--name-dark:linear-gradient(90deg,#F0F9FF,#93C5FD,#FCD34D);--name-light:linear-gradient(90deg,#475569,#2563EB,#B45309);--name-line:#F0F9FF;--name-line-light:#475569;">drveno</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T13:51:29+03:00">az önce</span>
+                                                                            </div>
+                                </div>
+                            </article>
+                                                                                                                                                                    <article class="feed-item">
+                                <a href="/boruto-two-blue-vortex" class="feed-cover" aria-label="Boruto: Two Blue Vortex" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1789935763_cc691797.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/boruto-two-blue-vortex">Boruto: Two Blue Vortex</a>                                        <a href="/boruto-two-blue-vortex/bolum-118" class="feed-target-sub">Bölüm 118</a>                                    </div>
+                                    <a href="/yorumlar/171366/ac" class="feed-text">Çeviri için arigatto gozaimasu💙❤️</a>
+                                    <div class="feed-meta">
+                                        <a href="/@Asya2014" class="feed-user" title="Asya2014">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <img src="https://om-cdn.okutoon.com/avatars/26402_1792496462.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name">Asya2014</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T13:50:45+03:00">1 dk önce</span>
+                                                                            </div>
+                                </div>
+                            </article>
+                                                                                                                                                                    <article class="feed-item">
+                                <a href="/bastard" class="feed-cover" aria-label="Bastard" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1782430369_958b6119.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/bastard">Bastard</a>                                        <a href="/bastard/bolum-36" class="feed-target-sub">Bölüm 36</a>                                    </div>
+                                    <a href="/yorumlar/171365/ac" class="feed-text">[Spoiler]</a>
+                                    <div class="feed-meta">
+                                        <a href="/@LevelMonster359" class="feed-user" title="LevelMonster359">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <img src="https://om-cdn.okutoon.com/avatars/25995_1792347004.webp" alt="" loading="lazy">                                            </span>
+                                            <span class="feed-user-name">LevelMonster359</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T13:50:19+03:00">1 dk önce</span>
+                                                                                    <span class="dot-sep">·</span>
+                                            <span class="feed-reply-to" title="Readerofeverything">@Readerofeverything yanıtı</span>
+                                                                            </div>
+                                </div>
+                            </article>
+                                                                                                                                                                    <article class="feed-item">
+                                <a href="/demon-x-angel-can-t-get-along" class="feed-cover" aria-label="Demon X Angel, Can&#039;t Get Along!" tabindex="-1">
+                                                                            <img src="https://om-cdn.okutoon.com/covers/cover_1790285344_776f7926.webp" alt="" loading="lazy">
+                                                                    </a>
+                                <div class="feed-body">
+                                    <div class="feed-target">
+                                        <a href="/demon-x-angel-can-t-get-along">Demon X Angel, Can&#039;t Get Along!</a>                                        <a href="/demon-x-angel-can-t-get-along/bolum-28" class="feed-target-sub">Bölüm 28</a>                                    </div>
+                                    <a href="/yorumlar/171364/ac" class="feed-text">su seytanin yuz ifadesini classmatedemi haesuya benzettim</a>
+                                    <div class="feed-meta">
+                                        <a href="/@riyalbugra" class="feed-user" title="riyalbugra">
+                                                                                        <span class="feed-avatar avatar--xs ">
+                                                <span>R</span>                                            </span>
+                                            <span class="feed-user-name">riyalbugra</span>
+                                        </a>
+                                        <span class="dot-sep">·</span>
+                                        <span title="6 Kasım 2026" data-time-ago="2026-11-06T13:49:00+03:00">3 dk önce</span>
+                                                                            </div>
+                                </div>
+                            </article>
+                                            </div>
+                            </div>
+
+            <div class="home-community-col" data-tab-panel="forum" role="tabpanel">
+                <h3 class="home-community-title">Forumda gündem</h3>
+                                    <div class="feed-list">
+                                                    <article class="feed-item feed-item--topic">
+                                                                <a href="/@Nephyss" class="feed-avatar-link" title="Nephyss" aria-label="Nephyss profili">
+                                <span class="avatar-deco">                                <span class="feed-avatar avatar--md is-premium-avatar">
+                                    <img src="https://om-cdn.okutoon.com/avatars/26788_1792665724.webp" alt="" loading="lazy">                                </span>
+                                <img class="avatar-deco-img" src="https://om-cdn.okutoon.com/cosmetics/decorations/static_1790471534_09a285cf.webp" alt="" aria-hidden="true" loading="lazy"></span>                                </a>
+                                <div class="feed-body">
+                                    <a href="/forum/genel-sohbet/one-piece-3" class="feed-title">One Piece</a>
+                                    <div class="feed-meta">
+                                        <a href="/@Nephyss" class="feed-user-name has-name-color" title="Nephyss" style="--name-dark:linear-gradient(90deg,#C084FC,#818CF8,#38BDF8);--name-light:linear-gradient(90deg,#9333EA,#4F46E5,#0284C7);--name-line:#C084FC;--name-line-light:#9333EA;">Nephyss</a>
+                                        <span class="dot-sep">·</span>
+                                        <a href="/forum/genel-sohbet">Genel Sohbet</a>
+                                        <span class="dot-sep">·</span>
+                                        <span data-time-ago="2026-11-06T13:51:43+03:00">az önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                    <article class="feed-item feed-item--topic">
+                                                                <a href="/@katzfie1" class="feed-avatar-link" title="katzfie1" aria-label="katzfie1 profili">
+                                <span class="avatar-deco">                                <span class="feed-avatar avatar--md is-premium-avatar">
+                                    <img src="https://om-cdn.okutoon.com/avatars/4757_1793465369_7674.webp" alt="" loading="lazy">                                </span>
+                                <img class="avatar-deco-img" src="https://om-cdn.okutoon.com/cosmetics/decorations/static_1790460492_69859c5d.webp" alt="" aria-hidden="true" loading="lazy"></span>                                </a>
+                                <div class="feed-body">
+                                    <a href="/forum/genel-sohbet/ey-ask" class="feed-title">ey ask</a>
+                                    <div class="feed-meta">
+                                        <a href="/@katzfie1" class="feed-user-name has-name-color" title="katzfie1" style="--name-dark:linear-gradient(90deg,#F5F5F4,#FCA5A5,#F87171);--name-light:linear-gradient(90deg,#57534E,#EF4444,#DC2626);--name-line:#F5F5F4;--name-line-light:#57534E;">katzfie1</a>
+                                        <span class="dot-sep">·</span>
+                                        <a href="/forum/genel-sohbet">Genel Sohbet</a>
+                                        <span class="dot-sep">·</span>
+                                        <span data-time-ago="2026-11-06T13:32:43+03:00">19 dk önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                    <article class="feed-item feed-item--topic">
+                                                                <a href="/@katzfie1" class="feed-avatar-link" title="katzfie1" aria-label="katzfie1 profili">
+                                <span class="avatar-deco">                                <span class="feed-avatar avatar--md is-premium-avatar">
+                                    <img src="https://om-cdn.okutoon.com/avatars/4757_1793465369_7674.webp" alt="" loading="lazy">                                </span>
+                                <img class="avatar-deco-img" src="https://om-cdn.okutoon.com/cosmetics/decorations/static_1790460492_69859c5d.webp" alt="" aria-hidden="true" loading="lazy"></span>                                </a>
+                                <div class="feed-body">
+                                    <a href="/forum/genel-sohbet/now-here" class="feed-title">now here</a>
+                                    <div class="feed-meta">
+                                        <a href="/@katzfie1" class="feed-user-name has-name-color" title="katzfie1" style="--name-dark:linear-gradient(90deg,#F5F5F4,#FCA5A5,#F87171);--name-light:linear-gradient(90deg,#57534E,#EF4444,#DC2626);--name-line:#F5F5F4;--name-line-light:#57534E;">katzfie1</a>
+                                        <span class="dot-sep">·</span>
+                                        <a href="/forum/genel-sohbet">Genel Sohbet</a>
+                                        <span class="dot-sep">·</span>
+                                        <span data-time-ago="2026-11-06T13:30:45+03:00">21 dk önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                    <article class="feed-item feed-item--topic">
+                                                                <a href="/@katzfie1" class="feed-avatar-link" title="katzfie1" aria-label="katzfie1 profili">
+                                <span class="avatar-deco">                                <span class="feed-avatar avatar--md is-premium-avatar">
+                                    <img src="https://om-cdn.okutoon.com/avatars/4757_1793465369_7674.webp" alt="" loading="lazy">                                </span>
+                                <img class="avatar-deco-img" src="https://om-cdn.okutoon.com/cosmetics/decorations/static_1790460492_69859c5d.webp" alt="" aria-hidden="true" loading="lazy"></span>                                </a>
+                                <div class="feed-body">
+                                    <a href="/forum/genel-sohbet/selaminkoooo" class="feed-title">selaminkoooo</a>
+                                    <div class="feed-meta">
+                                        <a href="/@katzfie1" class="feed-user-name has-name-color" title="katzfie1" style="--name-dark:linear-gradient(90deg,#F5F5F4,#FCA5A5,#F87171);--name-light:linear-gradient(90deg,#57534E,#EF4444,#DC2626);--name-line:#F5F5F4;--name-line-light:#57534E;">katzfie1</a>
+                                        <span class="dot-sep">·</span>
+                                        <a href="/forum/genel-sohbet">Genel Sohbet</a>
+                                        <span class="dot-sep">·</span>
+                                        <span data-time-ago="2026-11-06T12:59:49+03:00">52 dk önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                                    <article class="feed-item feed-item--topic">
+                                                                <a href="/@riverinhell" class="feed-avatar-link" title="riverinhell" aria-label="riverinhell profili">
+                                <span class="avatar-deco">                                <span class="feed-avatar avatar--md is-premium-avatar">
+                                    <img src="https://om-cdn.okutoon.com/avatars/4118_1791563285.webp" alt="" loading="lazy">                                </span>
+                                <img class="avatar-deco-img" src="https://om-cdn.okutoon.com/cosmetics/decorations/static_1790472945_bbf60950.webp" alt="" aria-hidden="true" loading="lazy"></span>                                </a>
+                                <div class="feed-body">
+                                    <a href="/forum/genel-sohbet/ortalama-yasi-merak-ediyorum" class="feed-title">ortalama yasi merak ediyorum</a>
+                                    <div class="feed-meta">
+                                        <a href="/@riverinhell" class="feed-user-name has-name-color" title="riverinhell" style="--name-dark:linear-gradient(90deg,#A78BFA,#A78BFA);--name-light:linear-gradient(90deg,#9877F9,#9877F9);--name-line:#A78BFA;--name-line-light:#9877F9;">riverinhell</a>
+                                        <span class="dot-sep">·</span>
+                                        <a href="/forum/genel-sohbet">Genel Sohbet</a>
+                                        <span class="dot-sep">·</span>
+                                        <span data-time-ago="2026-11-06T12:58:46+03:00">53 dk önce</span>
+                                    </div>
+                                </div>
+                            </article>
+                                            </div>
+                                <div class="home-community-actions">
+                                        <a href="/forum" class="btn btn-ghost btn-sm">Foruma git</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<section class="home-section">
+    <div class="section-header">
+        <div class="section-copy">
+                                                <h2 class="section-title">Tüm seriler</h2>
+                                    </div>
+        <div class="section-header-actions">
+            <a href="/tur" class="section-action">
+                Filtrele <i data-lucide="sliders-horizontal"></i>
+            </a>
+        </div>
+    </div>
+
+            <div class="series-grid">
+                            <a href="/the-dark-magician-transmigrates-after-66666-years" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1789684280_07930494.webp" alt="The Dark Magician Transmigrates After 66666 Years" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">The Dark Magician Transmigrates After 66666 Years</h3>
+        <p class="series-card-author">Hwabong, Taru, Team the Zeke</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.2</span>
+                                    <span class="dot-sep">·</span>
+                    <span>197 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/solo-leveling-ragnarok" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1791499011_c4773598.webp" alt="Solo Leveling: Ragnarok" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Solo Leveling: Ragnarok</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>67 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/unrivaled-spear-demon" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1784817568_17142e8d.webp" alt="Unrivaled Spear Demon" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Unrivaled Spear Demon</h3>
+        <p class="series-card-author">Burying Beetles S.J</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>54 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/shadow-slave" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1787950996_250ecc26.webp" alt="Shadow Slave" loading="lazy">
+                                    <span class="cover-badges">
+                <span class="cover-badge cover-badge--ai"><svg class="ai-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M9.94 15.5a2 2 0 0 0-1.44-1.44l-6.13-1.58a.5.5 0 0 1 0-.96L8.5 9.94A2 2 0 0 0 9.94 8.5l1.58-6.14a.5.5 0 0 1 .96 0l1.58 6.14a2 2 0 0 0 1.44 1.44l6.14 1.58a.5.5 0 0 1 0 .96l-6.14 1.58a2 2 0 0 0-1.44 1.44l-1.58 6.14a.5.5 0 0 1-.96 0z"/></svg>
+AI Çeviri</span>                            </span>
+                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Shadow Slave</h3>
+        <p class="series-card-author">Guiltythree</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.9</span>
+                                    <span class="dot-sep">·</span>
+                    <span>16 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/fog-land" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1787951980_f9ae9174.webp" alt="Fog Land" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Fog Land</h3>
+        <p class="series-card-author">Pogo</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>62 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/player-hides-his-past" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1790550082_3fca8f57.webp" alt="Player Hides His Past" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Player Hides His Past</h3>
+        <p class="series-card-author">Bang Eun-woo</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>144 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/a-wimp-s-tower-strategy-guide" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1791865080_25e644d1.webp" alt="A Wimp’s Tower Strategy Guide" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">A Wimp’s Tower Strategy Guide</h3>
+        <p class="series-card-author">Geuljin</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.4</span>
+                                    <span class="dot-sep">·</span>
+                    <span>48 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/regressing-with-the-king-s-power" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1787031161_b532c626.webp" alt="Regressing with the King&#039;s Power" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Regressing with the King&#039;s Power</h3>
+        <p class="series-card-author">Ahn Soseol, Sunghyun, KIM</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>3.4</span>
+                                    <span class="dot-sep">·</span>
+                    <span>164 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/regressing-as-the-reincarnated-bastard-of-the-sword-clan" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1785970074_8681159f.webp" alt="Regressing as the Reincarnated Bastard of the Sword Clan" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Regressing as the Reincarnated Bastard of the Sword Clan</h3>
+        <p class="series-card-author">Bread-Eating Squirrel</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>119 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/sam-plays-the-game" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1790371420_6cda21db.webp" alt="Sam Plays the Game" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Sam Plays the Game</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.9</span>
+                                    <span class="dot-sep">·</span>
+                    <span>87 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/the-symbiotic-relationship-between-the-rabbit-and-the-black-panther" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1786386469_84ee14b3.webp" alt="The Symbiotic Relationship Between the Rabbit and the Black Panther" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">The Symbiotic Relationship Between the Rabbit and the Black Panther</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>206 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/i-became-the-despised-granddaughter-of-the-murim-family" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793842365_efe07171.webp" alt="I Became the Despised Granddaughter of the Murim Family" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">I Became the Despised Granddaughter of the Murim Family</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>129 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/hunter-x-hunter" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1783812310_f96f7475.webp" alt="Hunter x Hunter" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Hunter x Hunter</h3>
+        <p class="series-card-author">Yoshihiro Togashi</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>92 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/damn-reincarnation" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793842615_473097ee.webp" alt="Damn Reincarnation" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Damn Reincarnation</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>81 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/i-raised-cinderella-preciously" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793842459_f68113d4.webp" alt="I Raised Cinderella Preciously" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">I Raised Cinderella Preciously</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>133 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/the-flower-who-bears-the-sword" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793842233_4146e3e0.webp" alt="The Flower Who Bears the Sword" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">The Flower Who Bears the Sword</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.8</span>
+                                    <span class="dot-sep">·</span>
+                    <span>65 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/mushoku-tensei-jobless-reincarnation" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1784484514_8946398a.webp" alt="Mushoku Tensei: Jobless Reincarnation" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Mushoku Tensei: Jobless Reincarnation</h3>
+        <p class="series-card-author">Rifujin na Magonote</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>3.7</span>
+                                    <span class="dot-sep">·</span>
+                    <span>112 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/a-guide-to-the-right-life-for-rankers" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1793841303_fde3e677.webp" alt="A Guide to the Right Life for Rankers" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">A Guide to the Right Life for Rankers</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>63 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/i-became-the-genius-bastard-of-a-noble-dark-clan" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1790288733_77145e1e.webp" alt="I Became The Genius Bastard Of A Noble Dark Clan" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">I Became The Genius Bastard Of A Noble Dark Clan</h3>
+        <p class="series-card-author">Han Yeoul</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>3.3</span>
+                                    <span class="dot-sep">·</span>
+                    <span>67 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/the-margrave-s-10th-class-outcast" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1788124722_4f446829.webp" alt="The Margrave&#039;s 10th-Class Outcast" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">The Margrave&#039;s 10th-Class Outcast</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.5</span>
+                                    <span class="dot-sep">·</span>
+                    <span>35 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/i-m-stuck-on-a-remote-island-with-the-male-leads" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1786840403_0d67333c.webp" alt="I&#039;m Stuck on a Remote Island With the Male Leads" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">I&#039;m Stuck on a Remote Island With the Male Leads</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.6</span>
+                                    <span class="dot-sep">·</span>
+                    <span>45 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/hashtag-my-first-love" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1789839495_083381d6.webp" alt="Hashtag: My First Love" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Hashtag: My First Love</h3>
+        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.4</span>
+                                    <span class="dot-sep">·</span>
+                    <span>34 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/martial-god-regressed-to-level-2" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1787495107_be96838e.webp" alt="Martial God Regressed to Level 2" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Martial God Regressed to Level 2</h3>
+        <p class="series-card-author">Yeom-Bi</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.2</span>
+                                    <span class="dot-sep">·</span>
+                    <span>132 bölüm</span>
+                            </p>
+            </div>
+</a>
+                            <a href="/teto-x-egen" class="series-card">
+    <div class="series-card-cover">
+                    <img src="https://om-cdn.okutoon.com/covers/cover_1787698388_0ab89bde.webp" alt="Teto X Egen" loading="lazy">
+                                    </div>
+    <div class="series-card-body">
+        <h3 class="series-card-title">Teto X Egen</h3>
+        <p class="series-card-author">Studio Dragon</p>                    <p class="series-card-meta">
+                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>4.6</span>
+                                    <span class="dot-sep">·</span>
+                    <span>26 bölüm</span>
+                            </p>
+            </div>
+</a>
+                    </div>
+
+                        
+        <nav class="pagination" aria-label="Sayfalama">
+                <span class="pagination-btn pagination-btn--disabled">&laquo; Önceki</span>
+    
+        <div class="pagination-numbers">
+                
+        
+                                    <span class="pagination-num pagination-num--active">1</span>
+                                                <a href="/?sayfa=2" class="pagination-num">2</a>
+                                                <a href="/?sayfa=3" class="pagination-num">3</a>
+                    
+                                    <span class="pagination-ellipsis">…</span>
+                        <a href="/?sayfa=43" class="pagination-num">43</a>
+            </div>
+
+                <a href="/?sayfa=2" class="pagination-btn" rel="next">Sonraki &raquo;</a>
+    </nav>
+    
+    </section>
+
+<section class="seo-content">
+    <h2>OkuToon, Türkçe Webtoon ve Manga Oku</h2>
+    <p><strong>OkuToon</strong>, Türkiye'nin ücretsiz <strong>manga</strong>, <strong>webtoon</strong> ve <strong>manhwa</strong> okuma platformu. Yüzlerce seriyi Türkçe olarak, reklamsız ve tamamen ücretsiz okuyabilirsin. Tek yapman gereken bir seri seçmek ve okumaya başlamak, kayıt bile zorunlu değil.</p>
+    <p>Platformda aksiyon, romantik, fantastik, dram, komedi, psikolojik, bilim kurgu gibi onlarca farklı türde içerik var. Webtoon formatında dikey kaydırmalı okuma deneyiminin yanı sıra klasik manga formatında seriler de bulabilirsin. Tüm içerikler düzenli olarak güncelleniyor ve yeni seriler ekleniyor.</p>
+
+    <h3>Neden OkuToon?</h3>
+    <p>Birçok platformda manga ve <strong>webtoon oku</strong>mak için reklam izlemek ya da ücretli abonelik almak gerekiyor. OkuToon'da böyle bir zorunluluk yok. Tüm bölümler ücretsiz, reklam yok ve okuma deneyimini bozan hiçbir engel yok. Ayrıca kütüphane özelliğiyle takip ettiğin serileri kaydedebilir, kaldığın yerden okumaya devam edebilirsin.</p>
+
+    <h3>Hangi Türleri Bulabilirsin?</h3>
+    <p>OkuToon'da <strong>türkçe webtoon</strong>, <strong>manhwa oku</strong>ma ve <strong>manga oku</strong>ma imkanı sunan geniş bir koleksiyon var. <strong>Aksiyon</strong> ve <strong>dövüş sanatları</strong> serilerinden <strong>romantik</strong> ve <strong>shoujo</strong> hikayelerine, <strong>fantastik</strong> dünyalardan <strong>psikolojik</strong> gerilime kadar her zevke uygun içerik bulabilirsin. Tür sayfalarından kategorilere göre filtre uygulayarak aradığın seriyi kolayca bulabilirsin.</p>
+</section>
+    </main>
+
+    <footer class="site-footer">
+    <div class="container">
+        <div class="footer-top">
+            <div class="footer-brand">
+                <a href="/" class="footer-logo" aria-label="OkuToon ana sayfa">
+                    <img class="site-logo-img" src="/images/logo.svg?v=1790414943" alt="OkuToon" width="1563" height="422" decoding="async">
+                </a>
+                <p class="footer-tagline">Türkçe webtoon, manga ve manhwa oku. Ücretsiz, sınırsız.</p>
+                <div class="footer-app-links" role="group" aria-label="OkuToon mobil uygulamaları">
+                    <a href="https://play.google.com/store/apps/details?id=app.abimobile.okutoon&hl=tr"
+                       class="footer-app-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="OkuToon Android uygulamasını Google Play'den indir">
+                        <svg class="footer-app-link-icon" viewBox="0 0 512 512" focusable="false" aria-hidden="true">
+                            <path fill="currentColor" d="M325.3 234.3 104.6 13l280.8 161.2-60.1 60.1zM47 0C34 6.8 25.3 19.2 25.3 35.3v441.3c0 16.1 8.7 28.5 21.7 35.3l256.6-256L47 0zm425.6 225.6-58.9-34.1-65.7 64.5 65.7 64.5 60.1-34.1c18-14.3 18-46.5-1.2-60.8zM104.6 499l280.8-161.2-60.1-60.1L104.6 499z"/>
+                        </svg>
+                        <span class="footer-app-link-copy">
+                            <span class="footer-app-link-kicker">Android</span>
+                            <span class="footer-app-link-title">Google Play</span>
+                        </span>
+                    </a>
+                    <a href="https://apps.apple.com/us/app/okutoon/id6800834700"
+                       class="footer-app-link"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       aria-label="OkuToon iOS uygulamasını App Store'dan indir">
+                        <svg class="footer-app-link-icon" viewBox="0 0 384 512" focusable="false" aria-hidden="true">
+                            <path fill="currentColor" d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-72.6-19.7C63.3 141.2 0 184.6 0 273.5c0 26.3 4.8 53.5 14.4 81.7 12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.7-17.9 31.8 0 48.3 17.9 76.3 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.8-90-57.5-92.4zm-34.9-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/>
+                        </svg>
+                        <span class="footer-app-link-copy">
+                            <span class="footer-app-link-kicker">iPhone ve iPad</span>
+                            <span class="footer-app-link-title">App Store</span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="footer-cols">
+                                    <div class="footer-col footer-col--wide">
+                        <h4 class="footer-col-title">Türler</h4>
+                        <ul class="footer-links footer-links--grid">
+                                                            <li><a href="/tur/aile">Aile</a></li>
+                                                            <li><a href="/tur/aksiyon">Aksiyon</a></li>
+                                                            <li><a href="/tur/askeri">Askeri</a></li>
+                                                            <li><a href="/tur/bilim-kurgu">Bilim Kurgu</a></li>
+                                                            <li><a href="/tur/dogaustu">Doğaüstü</a></li>
+                                                            <li><a href="/tur/dovus-sanatlari">Dövüş Sanatları</a></li>
+                                                            <li><a href="/tur/dram">Dram</a></li>
+                                                            <li><a href="/tur/ecchi">Ecchi</a></li>
+                                                            <li><a href="/tur/fantezi">Fantezi</a></li>
+                                                            <li><a href="/tur/gerilim">Gerilim</a></li>
+                                                            <li><a href="/tur/gizem">Gizem</a></li>
+                                                            <li><a href="/tur/gunluk-hayat">Günlük Hayat</a></li>
+                                                            <li><a href="/tur/harem">Harem</a></li>
+                                                            <li><a href="/tur/hayatta-kalma">Hayatta Kalma</a></li>
+                                                            <li><a href="/tur/isekai">Isekai</a></li>
+                                                            <li><a href="/tur/josei">Josei</a></li>
+                                                            <li><a href="/tur/kiyamet">Kıyamet</a></li>
+                                                            <li><a href="/tur/komedi">Komedi</a></li>
+                                                            <li><a href="/tur/korku">Korku</a></li>
+                                                            <li><a href="/tur/macera">Macera</a></li>
+                                                            <li><a href="/tur/murim">Murim</a></li>
+                                                            <li><a href="/tur/okul-hayati">Okul Hayatı</a></li>
+                                                            <li><a href="/tur/oyun">Oyun</a></li>
+                                                            <li><a href="/tur/psikolojik">Psikolojik</a></li>
+                                                            <li><a href="/tur/reenkarnasyon">Reenkarnasyon</a></li>
+                                                            <li><a href="/tur/romantizm">Romantizm</a></li>
+                                                            <li><a href="/tur/seinen">Seinen</a></li>
+                                                            <li><a href="/tur/shoujo">Shoujo</a></li>
+                                                            <li><a href="/tur/shounen">Shounen</a></li>
+                                                            <li><a href="/tur/sihir">Sihir</a></li>
+                                                            <li><a href="/tur/sistem">Sistem</a></li>
+                                                            <li><a href="/tur/spor">Spor</a></li>
+                                                            <li><a href="/tur/suc">Suç</a></li>
+                                                            <li><a href="/tur/super-kahraman">Süper Kahraman</a></li>
+                                                            <li><a href="/tur/tarihi">Tarihi</a></li>
+                                                            <li><a href="/tur/vampir">Vampir</a></li>
+                                                            <li><a href="/tur/zamanda-yolculuk">Zamanda Yolculuk</a></li>
+                                                            <li><a href="/tur/zindan">Zindan</a></li>
+                                                            <li><a href="/tur/zombi">Zombi</a></li>
+                                                    </ul>
+                    </div>
+                
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Keşfet</h4>
+                    <ul class="footer-links">
+                        <li><a href="/tur?sira=popular&amp;donem=weekly">Popüler</a></li>
+                        <li><a href="/tur?sira=updated">Yeni bölümler</a></li>
+                        <li><a href="/tur?sira=newest">Yeni seriler</a></li>
+                        <li><a href="/forum">Forum</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4 class="footer-col-title">Hesap</h4>
+                    <ul class="footer-links">
+                                                    <li><a href="/login">Giriş yap</a></li>
+                            <li><a href="/register">Kayıt ol</a></li>
+                                                <li><a href="/sayfa/iletisim">İletişim</a></li>
+                    </ul>
+                </div>
+
+                                    <div class="footer-col">
+                        <h4 class="footer-col-title">Bilgi</h4>
+                        <ul class="footer-links">
+                                                            <li><a href="/sayfa/hakkimizda">Hakkımızda</a></li>
+                                                            <li><a href="/sayfa/iletisim">İletişim</a></li>
+                                                            <li><a href="/sayfa/hesap-silme-yardimi">Hesap Silme Yardımı</a></li>
+                                                            <li><a href="/sayfa/gizlilik-politikasi">Gizlilik Politikası</a></li>
+                                                            <li><a href="/sayfa/kullanim-kosullari">Kullanım Koşulları</a></li>
+                                                            <li><a href="/sayfa/cerez-politikasi">Çerez Politikası</a></li>
+                                                            <li><a href="/sayfa/topluluk-kurallari">Topluluk Kuralları</a></li>
+                                                    </ul>
+                    </div>
+                            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p class="footer-copy">
+                &copy; 2026 OkuToon — Türkiye'nin ücretsiz manga ve webtoon okuma sitesi.
+            </p>
+            <p class="footer-legal">
+                <a href="/sayfa/gizlilik-politikasi">Gizlilik</a>
+                <a href="/sayfa/kullanim-kosullari">Kullanım Koşulları</a>
+                <a href="/sayfa/cerez-politikasi">Çerezler</a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+        <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+    <script src="/build/assets/js/mobile-app-promo.10aea0d87bbd717a.js" defer></script>
+        <script src="/build/assets/js/app.5e1e6dec7633008a.js" defer></script>
+                <script>document.addEventListener('DOMContentLoaded', function() { if (window.lucide) lucide.createIcons(); });</script>
+    <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=110130175', 'ym');
+
+    ym(110130175, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/110130175" style="position:absolute; left:-9999px;" alt=""></div></noscript>
+<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"0db46d72a0f14356990f60ea3063196c","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+</html>
