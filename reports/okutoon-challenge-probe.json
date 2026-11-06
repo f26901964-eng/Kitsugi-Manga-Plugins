@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-06T13:48:44.857Z",
+  "date": "2026-11-06T13:50:02.955Z",
   "note": "Hosted CI IP; desktop Chromium is not Android WebView. No cookies captured.",
   "http": [
     {
@@ -206,119 +206,480 @@
       "bytes": 74929,
       "webp": false,
       "json": true,
-      "generic404": false
+      "generic404": false,
+      "pageCount": 53,
+      "images": [
+        {
+          "index": 0,
+          "pageNumber": 1,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 393396,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 26,
+          "pageNumber": 27,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 565898,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 52,
+          "pageNumber": 53,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 555076,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        }
+      ]
     },
     {
-      "path": "/api/v1/series/chainsaw-man/chapter/bolum-1",
+      "path": "/api/v1/series/chainsaw-man/chapters/bolum-2",
       "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
+        "data": {
+          "series": {
+            "id": 503,
+            "title": "string(12)",
+            "alt_title": "string(33)",
+            "slug": "string(12)",
+            "author": "string(16)",
+            "type": "string(5)",
+            "status": "string(7)",
+            "is_ai_translated": false,
+            "description_text": "string(422)",
+            "cover_url": "string(61)",
+            "headline_url": "string(61)",
+            "headline_video_url": null,
+            "view_count": 15432,
+            "rating_avg": 4.8,
+            "rating_count": 35,
+            "chapter_count": 234,
+            "published_at": "string(19)",
+            "first_chapter": null,
+            "latest_chapter": {
+              "slug": "string(9)",
+              "number": 232,
+              "display_number": "string(3)",
+              "sort_number": 232,
+              "title": "string(9)",
+              "created_at": "string(19)",
+              "is_ai_translated": false,
+              "url": "string(42)"
+            },
+            "categories": {
+              "length": 4,
+              "sample": {
+                "id": "object",
+                "name": "string",
+                "slug": "string"
+              }
+            },
+            "url": "string(32)"
+          },
+          "chapter": {
+            "id": 56172,
+            "slug": "string(7)",
+            "number": 2,
+            "display_number": "string(1)",
+            "sort_number": 2,
+            "title": "string(7)",
+            "created_at": "string(19)",
+            "progress": 0,
+            "completed": false,
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "pages": {
+            "length": 26,
+            "sample": {
+              "id": 1389365,
+              "page_number": 1,
+              "image_url": "string(72)",
+              "image_width": 1520,
+              "image_height": 2400
+            }
+          },
+          "all_chapters": {
+            "length": 234,
+            "sample": {
+              "id": 56171,
+              "slug": "string(7)",
+              "number": 1,
+              "display_number": "string(1)",
+              "sort_number": 1,
+              "title": "string(7)",
+              "created_at": "string(19)",
+              "progress": 0,
+              "completed": false,
+              "is_ai_translated": false,
+              "url": "string(40)"
+            }
+          },
+          "prev_chapter": {
+            "id": 56171,
+            "slug": "string(7)",
+            "number": 1,
+            "display_number": "string(1)",
+            "sort_number": 1,
+            "title": "string(7)",
+            "created_at": "string(19)",
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "next_chapter": {
+            "id": 56173,
+            "slug": "string(7)",
+            "number": 3,
+            "display_number": "string(1)",
+            "sort_number": 3,
+            "title": "string(7)",
+            "created_at": "string(19)",
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "comments": {
+            "length": 0,
+            "sample": null
+          },
+          "comment_total": 0,
+          "reader_settings": {
+            "reading_mode": "string(7)",
+            "manga_page_fit": "string(5)",
+            "manga_direction": "string(4)",
+            "click_scroll_enabled": false,
+            "click_scroll_amount": 70,
+            "auto_scroll_speed": 3,
+            "auto_scroll_remember": false,
+            "night_mode_enabled": false,
+            "night_dim": 40,
+            "night_warmth": 40,
+            "theme": null
+          },
+          "reader_policy": {
+            "completion_threshold_percent": 75,
+            "progress_save_interval_percent": 5
+          },
+          "progress_by_chapter": {},
+          "in_library": false,
+          "source_credit": null,
+          "translation_feedback": {
+            "good": 3,
+            "bad": 0,
+            "my_vote": null,
+            "ai_reported": false,
+            "can_vote": false,
+            "can_report_ai": false
+          }
         }
       },
-      "status": 404,
+      "status": 200,
       "challenge": null,
       "type": "application/json",
-      "bytes": 71,
+      "bytes": 64727,
       "webp": false,
       "json": true,
-      "generic404": true
+      "generic404": false,
+      "pageCount": 26,
+      "images": [
+        {
+          "index": 0,
+          "pageNumber": 1,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 393396,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 13,
+          "pageNumber": 14,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 492924,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 25,
+          "pageNumber": 26,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 507470,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        }
+      ]
     },
     {
-      "path": "/api/v1/reader/chainsaw-man/bolum-1",
+      "path": "/api/v1/series/one-piece/chapters/bolum-1197",
       "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
+        "data": {
+          "series": {
+            "id": 502,
+            "title": "string(9)",
+            "alt_title": "string(98)",
+            "slug": "string(9)",
+            "author": "string(12)",
+            "type": "string(5)",
+            "status": "string(7)",
+            "is_ai_translated": false,
+            "description_text": "string(1290)",
+            "cover_url": "string(61)",
+            "headline_url": "string(61)",
+            "headline_video_url": null,
+            "view_count": 54806,
+            "rating_avg": 4.8,
+            "rating_count": 45,
+            "chapter_count": 1225,
+            "published_at": "string(19)",
+            "first_chapter": null,
+            "latest_chapter": {
+              "slug": "string(10)",
+              "number": 1197,
+              "display_number": "string(4)",
+              "sort_number": 1197,
+              "title": "string(10)",
+              "created_at": "string(19)",
+              "is_ai_translated": false,
+              "url": "string(40)"
+            },
+            "categories": {
+              "length": 9,
+              "sample": {
+                "id": "object",
+                "name": "string",
+                "slug": "string"
+              }
+            },
+            "url": "string(29)"
+          },
+          "chapter": {
+            "id": 138546,
+            "slug": "string(10)",
+            "number": 1197,
+            "display_number": "string(4)",
+            "sort_number": 1197,
+            "title": "string(10)",
+            "created_at": "string(19)",
+            "progress": 0,
+            "completed": false,
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "pages": {
+            "length": 16,
+            "sample": {
+              "id": 3257450,
+              "page_number": 1,
+              "image_url": "string(84)",
+              "image_width": 1096,
+              "image_height": 1600
+            }
+          },
+          "all_chapters": {
+            "length": 1225,
+            "sample": {
+              "id": 55000,
+              "slug": "string(7)",
+              "number": 1,
+              "display_number": "string(1)",
+              "sort_number": 1,
+              "title": "string(7)",
+              "created_at": "string(19)",
+              "progress": 0,
+              "completed": false,
+              "is_ai_translated": false,
+              "url": "string(37)"
+            }
+          },
+          "prev_chapter": {
+            "id": 136205,
+            "slug": "string(10)",
+            "number": 1196,
+            "display_number": "string(4)",
+            "sort_number": 1196,
+            "title": "string(10)",
+            "created_at": "string(19)",
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "next_chapter": null,
+          "comments": {
+            "length": 9,
+            "sample": {
+              "id": 155036,
+              "user_id": 18824,
+              "parent_id": null,
+              "parent_username": null,
+              "reply_to": null,
+              "username": "string(11)",
+              "avatar_url": "string(53)",
+              "profile_url": "string(32)",
+              "is_admin": false,
+              "is_premium": false,
+              "avatar_decoration_url": "string(87)",
+              "avatar_decoration_static_url": "string(77)",
+              "name_color": null,
+              "hide_role_ring": false,
+              "body": "string(39)",
+              "body_bbcode": "string(46)",
+              "body_html": "string(46)",
+              "body_preview": "string(39)",
+              "review_score": null,
+              "is_rating_only": false,
+              "is_review": false,
+              "is_pinned": false,
+              "created_at": "string(19)",
+              "updated_at": "string(19)",
+              "edited": false,
+              "like_count": 3,
+              "like_preview": {
+                "length": 3,
+                "sample": "object"
+              },
+              "liked_by_current_user": false,
+              "can_delete": false,
+              "can_edit": false,
+              "reply_total": 0,
+              "reply_count": 0,
+              "thread_reply_total": 0,
+              "images": {
+                "length": 0,
+                "sample": null
+              },
+              "cards": {
+                "length": 0,
+                "sample": null
+              },
+              "replies": {
+                "length": 0,
+                "sample": null
+              }
+            }
+          },
+          "comment_total": 9,
+          "reader_settings": {
+            "reading_mode": "string(7)",
+            "manga_page_fit": "string(5)",
+            "manga_direction": "string(4)",
+            "click_scroll_enabled": false,
+            "click_scroll_amount": 70,
+            "auto_scroll_speed": 3,
+            "auto_scroll_remember": false,
+            "night_mode_enabled": false,
+            "night_dim": 40,
+            "night_warmth": 40,
+            "theme": null
+          },
+          "reader_policy": {
+            "completion_threshold_percent": 75,
+            "progress_save_interval_percent": 5
+          },
+          "progress_by_chapter": {},
+          "in_library": false,
+          "source_credit": {
+            "name": "string(14)",
+            "logo_url": "string(53)",
+            "url": "string(42)",
+            "host": "string(17)"
+          },
+          "translation_feedback": {
+            "good": 19,
+            "bad": 0,
+            "my_vote": null,
+            "ai_reported": false,
+            "can_vote": false,
+            "can_report_ai": false
+          }
         }
       },
-      "status": 404,
+      "status": 200,
       "challenge": null,
       "type": "application/json",
-      "bytes": 71,
+      "bytes": 337126,
       "webp": false,
       "json": true,
-      "generic404": true
-    },
-    {
-      "path": "/api/v1/reader/56171",
-      "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
+      "generic404": false,
+      "pageCount": 16,
+      "images": [
+        {
+          "index": 0,
+          "pageNumber": 1,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 310970,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 8,
+          "pageNumber": 9,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 433794,
+          "webp": true,
+          "json": false,
+          "generic404": false
+        },
+        {
+          "index": 15,
+          "pageNumber": 16,
+          "scheme": "https:",
+          "host": "cdn.okutoon.com",
+          "extension": "webp",
+          "status": 200,
+          "challenge": null,
+          "type": "image/webp",
+          "bytes": 331206,
+          "webp": true,
+          "json": false,
+          "generic404": false
         }
-      },
-      "status": 404,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 71,
-      "webp": false,
-      "json": true,
-      "generic404": true
-    },
-    {
-      "path": "/api/v1/chapters/chainsaw-man/bolum-1",
-      "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
-        }
-      },
-      "status": 404,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 71,
-      "webp": false,
-      "json": true,
-      "generic404": true
-    },
-    {
-      "path": "/api/v1/chapter/chainsaw-man/bolum-1",
-      "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
-        }
-      },
-      "status": 404,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 71,
-      "webp": false,
-      "json": true,
-      "generic404": true
-    },
-    {
-      "path": "/api/v1/chapter/56171",
-      "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(26)"
-        }
-      },
-      "status": 404,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 71,
-      "webp": false,
-      "json": true,
-      "generic404": true
-    },
-    {
-      "path": "/api/v1/series/503/chapters/56171",
-      "schema": {
-        "error": {
-          "code": "string(9)",
-          "message": "string(16)"
-        }
-      },
-      "status": 404,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 60,
-      "webp": false,
-      "json": true,
-      "generic404": true
+      ]
     }
   ],
   "browser": {
