@@ -9,3 +9,4 @@ tr/korelimanga
 tr/turkcemangaoku
 tr/amangaplanet
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
+# tr/mangitto — 1.6.2 APK derlenince mangitto-release iş akışı etkinleştirir.
