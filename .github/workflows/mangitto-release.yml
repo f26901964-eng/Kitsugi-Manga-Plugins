@@ -3,7 +3,7 @@ name: Mangitto verified APK and activation
 on:
   workflow_dispatch:
   push:
-    branches: [arena/480f8724-kitsugi-manga-plugins]
+    branches: [arena/92206a20-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/mangitto/**
       - docs/mangitto/**
@@ -59,5 +59,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/mangitto prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m 'mangitto: activate verified 1.6.2 APK [skip ci]'
+          git commit -m 'mangitto: publish verified Mangitto APK [skip ci]'
           git push origin "HEAD:${GITHUB_REF_NAME}"

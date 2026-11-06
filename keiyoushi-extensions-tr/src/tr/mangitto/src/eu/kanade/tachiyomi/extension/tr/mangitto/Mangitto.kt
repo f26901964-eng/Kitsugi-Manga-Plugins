@@ -13,11 +13,12 @@ import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
-import keiyoushi.utils.getString
 import keiyoushi.utils.parseAs
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.contentOrNull
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -126,7 +127,12 @@ abstract class Mangitto : KeiSource() {
 
     override fun getMangaUrl(manga: SManga): String = "$baseUrl/manga/${manga.url}"
 
-    override fun getChapterUrl(chapter: SChapter): String = "$baseUrl/manga/${chapter.memo.getString("mangaSlug")}/${chapter.url}"
+    private fun chapterAddress(chapter: SChapter) = MangittoChapterAddress.parse(
+        chapter.url,
+        (chapter.memo["mangaSlug"] as? JsonPrimitive)?.contentOrNull,
+    )
+
+    override fun getChapterUrl(chapter: SChapter): String = baseUrl + chapterAddress(chapter).path
 
     override suspend fun fetchMangaUpdate(
         manga: SManga,
@@ -166,18 +172,20 @@ abstract class Mangitto : KeiSource() {
     }
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
-        val slug = chapter.memo.getString("mangaSlug")
-        val document = client.get(getChapterUrl(chapter)).asJsoup()
-        val images = MangittoHtml.readerImages(document, slug, chapter.url)
+        val address = chapterAddress(chapter)
+        val slug = address.slug
+        val number = address.number
+        val document = client.get(baseUrl + address.path).asJsoup()
+        val images = MangittoHtml.readerImages(document, slug, number)
         if (images.isNotEmpty()) return images.mapIndexed { index, url -> Page(index, imageUrl = url) }
 
         // Client-rendered readers can omit images; retain the existing upload API.
-        val data = client.get("$apiUrl/$slug/${chapter.url}").parseAs<MangttoPageData>()
+        val data = client.get("$apiUrl/$slug/$number").parseAs<MangttoPageData>()
         val upload = data.uploads.firstOrNull { it.fileLength > 0 }
             ?: error("Mangitto: bu bölüm için okunabilir görsel bulunamadı")
 
         return (1..upload.fileLength).map { pageNum ->
-            Page(pageNum - 1, imageUrl = "${data.cdn.trimEnd('/')}/manga/$slug/${chapter.url}/$pageNum-${upload.fansubId}.webp")
+            Page(pageNum - 1, imageUrl = "${data.cdn.trimEnd('/')}/manga/$slug/$number/$pageNum-${upload.fansubId}.webp")
         }
     }
 
