@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-11-06T12:43:07Z",
-  "passed": 11,
-  "total": 11,
+  "generatedAt": "2026-11-06T14:00:28Z",
+  "passed": 22,
+  "total": 22,
   "checks": [
     {
       "name": "okutoon: catalogue answers 200",
@@ -35,7 +35,7 @@
         "page2": 24,
         "firstOfEach": [
           "One Piece",
-          "I Married the Dragon I Killed"
+          "The Youngest Has Much to Hide"
         ]
       }
     },
@@ -103,13 +103,111 @@
       }
     },
     {
-      "name": "okutoon: reader is behind a Cloudflare challenge for bots (known limitation)",
+      "name": "okutoon: chainsaw-man/bolum-1 API returns validated pages",
       "ok": true,
       "detail": {
-        "url": "https://okutoon.com/one-piece/bolum-1197",
-        "status": 403,
-        "mitigated": "challenge",
-        "dumpsCoverTheMarkup": "docs/html-dumps/okutoon/message-73.txt"
+        "status": 200,
+        "mitigated": null,
+        "count": 53
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 393396
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 27 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 565898
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-1 page 53 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 555076
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 API returns validated pages",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "mitigated": null,
+        "count": 26
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 393396
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 14 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 492924
+      }
+    },
+    {
+      "name": "okutoon: chainsaw-man/bolum-2 page 26 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 507470
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 API returns validated pages",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "mitigated": null,
+        "count": 16
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 1 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 310970
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 9 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 433794
+      }
+    },
+    {
+      "name": "okutoon: one-piece/bolum-1197 page 16 returns image bytes",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "kind": "webp",
+        "bytes": 331206
       }
     }
   ]
