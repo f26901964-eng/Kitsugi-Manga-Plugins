@@ -1,0 +1,37 @@
+keiyoushi.source.Generated
+keiyoushi.source.UrlActivity
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData: eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData: eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse: eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$$serializer: kotlinx.serialization.descriptors.SerialDescriptor descriptor
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto: eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion Companion
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion: kotlinx.serialization.KSerializer serializer(kotlinx.serialization.KSerializer)
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion: kotlinx.serialization.KSerializer serializer()
+keiyoushi.source.UrlActivity: UrlActivity()
+keiyoushi.source.Generated: Generated()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion: kotlinx.serialization.KSerializer serializer()
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion: kotlinx.serialization.KSerializer serializer()

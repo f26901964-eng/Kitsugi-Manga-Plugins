@@ -1,0 +1,103 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/common/AndroidManifest.xml:2:1-13
+MERGED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/common/AndroidManifest.xml:2:1-13
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:3:1-30:12
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:3:1-30:12
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:3:1-30:12
+MERGED from [:core] /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/core/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:3:11-69
+uses-feature#tachiyomi.extension
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:4:5-56
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:4:19-53
+application
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:5:5-29:19
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:5:5-29:19
+	android:extractNativeLibs
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+	android:label
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:8:9-47
+	android:icon
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:7:9-43
+	android:allowBackup
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:6:9-36
+meta-data#tachiyomix.name
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:9:9-81
+	android:value
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:9:51-78
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:9:20-50
+meta-data#tachiyomi.extension.class
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:10:9-106
+	android:value
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:10:61-103
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:10:20-60
+meta-data#tachiyomi.extension.nsfw
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:11:9-80
+	android:value
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:11:60-77
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:11:20-59
+meta-data#tachiyomix.contentWarning
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:12:9-81
+	android:value
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:12:61-78
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:12:20-60
+meta-data#tachiyomix.extensionLib
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:13:9-81
+	android:value
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:13:59-78
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:13:20-58
+activity#keiyoushi.source.UrlActivity
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:14:9-28:20
+	android:excludeFromRecents
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:16:13-46
+	android:exported
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:17:13-36
+	android:theme
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:18:13-59
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:15:13-56
+intent-filter#action:name:android.intent.action.VIEW+category:name:android.intent.category.BROWSABLE+category:name:android.intent.category.DEFAULT+data:host:mangadenizi.net+data:pathPattern:/manga/..*+data:scheme:http+data:scheme:https
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:19:13-27:29
+action#android.intent.action.VIEW
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:20:17-69
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:20:25-66
+category#android.intent.category.DEFAULT
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:21:17-76
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:21:27-73
+category#android.intent.category.BROWSABLE
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:22:17-78
+	android:name
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:22:27-75
+data
+ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:23:17-48
+	android:host
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:25:23-53
+	android:scheme
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:23:23-45
+	android:pathPattern
+		ADDED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml:26:23-55
+uses-sdk
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+MERGED from [:core] /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/core/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+MERGED from [:core] /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/core/build/intermediates/merged_manifest/release/processReleaseManifest/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/manifests/generateExtensionManifest/AndroidManifest.xml
