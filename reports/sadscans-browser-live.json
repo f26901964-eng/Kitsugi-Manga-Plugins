@@ -9,5 +9,5 @@
   ],
   "network": [],
   "workers": 0,
-  "error": "Error: SadScans bu tarayıcı bağlantısını engelledi."
+  "error": "Error: SadScans bu bağlantıyı engelledi (Cloudflare). Siteyi tarayıcıda bir kez açıp tekrar deneyin."
 }
