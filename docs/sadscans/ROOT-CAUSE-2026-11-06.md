@@ -45,3 +45,4 @@ Do not merge/publish this candidate solely because compilation succeeds. Update 
 - Exact DOM-script tests pass locally, including explicit no-results vs loading, schema-only reader rejection, canonical chapter href, pagination stale-row rejection and React hydration readiness.
 - Current frontend live run `42254821232` fails at the first catalogue page with explicit hard block, zero Worker/API observations. The signer claim remains externally reported, not independently confirmed on this connection.
 - The candidate is v1.6.6 on the working branch only. Main/app publication is still v1.6.5; no new release has been claimed as a working fix.
+- Final current-head candidate build `42255232045` completed successfully, including artifact save. APK `tachiyomi-tr.sadscans-v1.6.6.apk` is 52,075 bytes. This supersedes the earlier artifact-save failure; live Android acceptance remains unverified. No merge or app-channel publication was performed.
