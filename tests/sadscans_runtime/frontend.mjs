@@ -14,6 +14,9 @@ function environment(html, path='/seriler') {
   window.__sadscansFrontend = undefined;
   window.__sadscansDetails = undefined;
   window.__sadscansReader = undefined;
+  window.document.querySelectorAll('input').forEach(input => {
+    input.__reactPropsFixture = {onChange:()=>{}};
+  });
   let scrolls=0;
   const context = vm.createContext({window, document:window.document, location:{pathname:path,href:'https://sadscans.net'+path}, HTMLInputElement:window.HTMLInputElement,Event:window.Event,Date:{now:()=>clock},URL,Map,Set,JSON});
   window.scrollTo=()=>scrolls++;
@@ -88,3 +91,8 @@ stale.window.document.querySelector('h3').textContent='2. Bölüm';
 assert.equal(stale.run(detail2),null);
 assert.equal(JSON.parse(stale.run(detail2)).chapters[0].chap_id,'hash2');
 console.log('PASS: loading vs empty, schema-only rejection, stale chapter-pagination rejection');
+
+const unhydrated=environment('<html><body><input placeholder="Aramak istediğiniz seriyi yazın"></body></html>');
+delete unhydrated.window.document.querySelector('input').__reactPropsFixture;
+assert.equal(unhydrated.run(list),null,'SSR controls without React handlers must wait');
+console.log('PASS: do not submit search before React hydration');

@@ -16,6 +16,9 @@ internal object SadscansFrontend {
                 if (location.pathname !== '/seriler') return null;
                 const input = document.querySelector('input[placeholder="Aramak istediğiniz seriyi yazın"]');
                 if (!input) return null;
+                // SSR controls may exist before React attaches their change handler.
+                const hydrated = Object.keys(input).some(key => key.startsWith('__reactProps') && typeof input[key].onChange === 'function');
+                if (!hydrated) return null;
                 let state = window.__sadscansFrontend;
                 if (!state) {
                     state = {started: Date.now(), phase: 0, fingerprint: '', changed: Date.now()};
