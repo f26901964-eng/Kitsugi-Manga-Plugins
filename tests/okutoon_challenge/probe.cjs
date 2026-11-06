@@ -9,11 +9,14 @@ const chapter = `${origin}/chainsaw-man/bolum-1`;
 const image = 'https://om-cdn.okutoon.com/chapters/503/56171/chainsaw-man_bolum-1_001.webp';
 const ua = 'Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36';
 const candidates = [
-  '/api/v1/series/chainsaw-man',
-  '/api/v1/series/chainsaw-man/chapters',
-  '/api/v1/chapters/56171',
-  '/api/v1/chapters/56171/pages',
-  '/api/v1/series/chainsaw-man/chapters/1',
+  '/api/v1/series/chainsaw-man/chapters/bolum-1',
+  '/api/v1/series/chainsaw-man/chapter/bolum-1',
+  '/api/v1/reader/chainsaw-man/bolum-1',
+  '/api/v1/reader/56171',
+  '/api/v1/chapters/chainsaw-man/bolum-1',
+  '/api/v1/chapter/chainsaw-man/bolum-1',
+  '/api/v1/chapter/56171',
+  '/api/v1/series/503/chapters/56171',
 ];
 const report = { date: new Date().toISOString(), note: 'Hosted CI IP; desktop Chromium is not Android WebView. No cookies captured.', http: [], browser: {} };
 async function request(url, headers) {
