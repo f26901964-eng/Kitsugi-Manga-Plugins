@@ -413,10 +413,11 @@ class Probe:
         if not slug:
             self.record("web-routes", False, reason="no slug")
             return
-        for label, path, marker in (
-            ("series-page", f"/series/{slug}", b"/api/series/"),
-            ("reader-page", f"/seri/{slug}/bolum/1", b"/api/chapters/"),
+        for label, path in (
+            ("series-page", f"/series/{slug}"),
+            ("reader-page", f"/seri/{slug}/bolum/1"),
         ):
+            marker = b"/api/"
             try:
                 response = self.session.get(BASE + path, timeout=TIMEOUT)
             except requests.RequestException as exc:

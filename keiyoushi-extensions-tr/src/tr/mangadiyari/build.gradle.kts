@@ -37,7 +37,8 @@ keiyoushi {
     name = "Manga Diyarı"
     // 2: chapter and reader fixes for the current site (number based reader route, optional fields).
     // 3: live-verified against the 2026-11 API contract (empty chapter lists, CDN covers, TR genres).
-    versionCode = 3
+    // 4: genre filters send the label the site actually stores; unopenable rows are skipped.
+    versionCode = 4
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
 
