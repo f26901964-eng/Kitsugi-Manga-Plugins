@@ -51,12 +51,13 @@ jobs:
         run: |
           python3 tools/prepare_extension_release.py merlinscans
           python3 -m unittest discover -s tests -v
-          tar -czf /tmp/merlintoon-artifacts.tar.gz enabled_plugins.txt prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.5.apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          tar -czf /tmp/merlintoon-artifacts.tar.gz enabled_plugins.txt prebuilt/apk/tachiyomi-tr.merlinscans-v*.apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
       - uses: actions/upload-artifact@v4
         with:
           name: merlintoon-artifacts
           path: /tmp/merlintoon-artifacts.tar.gz
       - name: Save verified APK and catalog on this branch
+        if: github.ref == 'refs/heads/arena/513348c3-kitsugi-manga-plugins'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
