@@ -8,7 +8,7 @@ on:
       - arena/e222c71c-kitsugi-manga-plugins
       - main
     paths:
-      - tools/capture_sadscans_live.py
+      - tools/capture_sadscans_live.mjs
       - .github/workflows/sadscans-capture.yml
 
 permissions:
@@ -22,17 +22,19 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.ref_name }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-node@v4
         with:
-          python-version: '3.12'
+          node-version: '20'
       - name: Install Playwright
-        timeout-minutes: 4
+        timeout-minutes: 5
         run: |
-          python -m pip install --quiet playwright==1.56.1
-          python -m playwright install --with-deps chromium
+          set -euo pipefail
+          npm install --no-save --package-lock=false --registry=https://registry.npmjs.org \
+            playwright@1.56.1 2>&1 | tail -5
+          npx --no-install playwright install chromium 2>&1 | tail -5
       - name: Capture the live site
-        timeout-minutes: 10
-        run: python tools/capture_sadscans_live.py || true
+        timeout-minutes: 12
+        run: node tools/capture_sadscans_live.mjs || true
       - name: Save the evidence
         if: always()
         run: |
