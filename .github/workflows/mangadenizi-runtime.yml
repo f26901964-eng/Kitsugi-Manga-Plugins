@@ -30,15 +30,15 @@ jobs:
       - name: Run the ported MangaDenizi logic against the live site
         env:
           REPORT: reports/mangadenizi-runtime.json
-        run: node tests/mangadenizi_runtime/run.mjs 2>&1 | tee /tmp/mangadenizi-runtime.log
+        run: |
+          set -o pipefail
+          node tests/mangadenizi_runtime/run.mjs 2>&1 | tee /tmp/mangadenizi-runtime.log
       - name: Keep the evidence in the repository
         if: always()
         run: |
           set -euo pipefail
           mkdir -p reports
-          if [ ! -s reports/mangadenizi-runtime.json ]; then
-            printf '{"passed":0,"total":0,"checks":[{"name":"report-missing","ok":false}]}\n' > reports/mangadenizi-runtime.json
-          fi
+          python3 tools/record_runtime_failure.py
           cat reports/mangadenizi-runtime.json
           git config user.name kitsugi-runtime-probe
           git config user.email kitsugi-runtime-probe@users.noreply.github.com
