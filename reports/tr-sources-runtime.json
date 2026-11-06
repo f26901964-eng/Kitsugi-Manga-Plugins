@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-06T10:12:00Z",
+  "generatedAt": "2026-11-06T10:13:46Z",
   "passed": 14,
   "total": 16,
   "checks": [
@@ -28,14 +28,21 @@
       "name": "hayalistic: chapter list uses li.wp-manga-chapter",
       "ok": false,
       "detail": {
+        "seriesUrl": "https://hayalistic.site/manga/feed/",
+        "bytes": 14682,
+        "hasChapterWord": false,
+        "bolumRefs": 0,
         "items": 0,
-        "links": 0
+        "links": 0,
+        "source": "ajax:404"
       }
     },
     {
       "name": "hayalistic: chapter dates use span.chapter-release-date",
       "ok": false,
-      "detail": {}
+      "detail": {
+        "source": "ajax:404"
+      }
     },
     {
       "name": "korelimanga: home answers 200",
@@ -120,8 +127,8 @@
       "ok": true,
       "detail": {
         "status": 200,
-        "kind": "png",
-        "bytes": 16588
+        "kind": "jpeg",
+        "bytes": 8425
       }
     }
   ]
