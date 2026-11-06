@@ -10,9 +10,11 @@ import eu.kanade.tachiyomi.source.model.SMangaUpdate
 import keiyoushi.annotation.Source
 import keiyoushi.network.get
 import keiyoushi.source.KeiSource
+import keiyoushi.utils.WebViewTimeoutException
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
+import keiyoushi.utils.runWebView
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -30,8 +32,11 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 /**
@@ -55,6 +60,15 @@ abstract class Sadscans : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient() = apply {
         addInterceptor(CommonHeadersInterceptor())
+    }
+
+    // Do not let the host retry a challenged JSON URL in WebView. Bootstrap the HTML
+    // page and execute fetch there instead; clearance is bound to browser identity.
+    private val apiClient: OkHttpClient by lazy {
+        client.newBuilder().apply {
+            interceptors().removeAll { it.javaClass.simpleName == "CloudflareInterceptor" }
+            callTimeout(10, TimeUnit.SECONDS)
+        }.build()
     }
 
     private val apiHeaders: Headers by lazy {
@@ -96,10 +110,52 @@ abstract class Sadscans : KeiSource() {
             .addQueryParameter("batch", "1")
             .addQueryParameter("input", inputParam)
             .build()
-        val batch = client.get(url, apiHeaders).parseAs<List<TrpcBatchItem>>()
+        val direct = try {
+            apiClient.get(url, apiHeaders, ensureSuccess = false).use { response ->
+                val body = response.body.string()
+                when {
+                    response.header("cf-mitigated") == "challenge" -> null
+
+                    response.code in listOf(403, 429, 503) &&
+                        (body.contains("cloudflare", ignoreCase = true) || body.contains("cf-chl-")) -> null
+
+                    !response.isSuccessful -> throw IOException("SadScans API HTTP ${response.code}: $procedure")
+
+                    else -> body
+                }
+            }
+        } catch (_: java.net.SocketTimeoutException) {
+            null
+        }
+        val body = direct ?: browserApiCall(url)
+        val batch = trpcJson.decodeFromString<List<TrpcBatchItem>>(body)
         val payload = batch.firstOrNull()?.result?.data?.json
             ?: error("SadScans: tRPC yanıtı boş: $procedure")
         return payload
+    }
+
+    private suspend fun browserApiCall(url: HttpUrl): String = try {
+        runWebView(timeout = 35.seconds) {
+            onReceivedError { request, _ ->
+                if (request.isForMainFrame) reject(IOException("SadScans tarayıcı bağlantısı başarısız."))
+            }
+            val script = SadscansBrowser.script(url.encodedPath + "?" + url.encodedQuery.orEmpty())
+            poll(1.seconds) {
+                evaluateJs(script) { value ->
+                    val raw = value.parseAs<String?>() ?: return@evaluateJs
+                    val result = trpcJson.parseToJsonElement(raw).jsonObject
+                    val status = result["status"]?.jsonPrimitive?.content?.toIntOrNull()
+                    if (status == 200) {
+                        resolve(result["body"]?.jsonPrimitive?.content.orEmpty())
+                    } else {
+                        reject(IOException("SadScans tarayıcı API HTTP $status. Siteyi WebView'de açıp doğrulamayı tamamlayın."))
+                    }
+                }
+            }
+            loadUrl("$baseUrl/seriler")
+        }
+    } catch (_: WebViewTimeoutException) {
+        throw IOException("SadScans tarayıcı doğrulaması zaman aşımına uğradı. Siteyi WebView'de açıp tekrar deneyin.")
     }
 
     private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray = trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
@@ -110,7 +166,7 @@ abstract class Sadscans : KeiSource() {
 
     override suspend fun getPopularManga(page: Int): MangasPage = fetchSeries(page, "-views", null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchSeries(page, "-updatedAt", null)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchSeries(page, "name", null)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val sort = filters.firstInstanceOrNull<SortFilter>()?.selected ?: "-views"
@@ -128,7 +184,14 @@ abstract class Sadscans : KeiSource() {
         }
         val items = trpcCallArray("$seriesListRouter.getSeries", input)
             .map { it.jsonObject }
-            .mapNotNull { runCatching { trpcJson.decodeFromJsonElement(SeriesItemDto.serializer(), it) }.getOrNull() }
+            .map { item ->
+                // Counts are presentation-only. A decimal/string count must never discard a series.
+                SeriesItemDto(
+                    href = item["href"].stringOrNull() ?: item["slug"].stringOrNull()?.let { "/seriler/$it" },
+                    name = item["name"].stringOrNull(),
+                    thumb = item["thumb"].stringOrNull(),
+                )
+            }
             .filter { !it.href.isNullOrBlank() && !it.name.isNullOrBlank() }
         val mangas = items.map { it.toSManga() }
         return MangasPage(mangas, mangas.size >= PAGE_SIZE)
@@ -211,9 +274,10 @@ abstract class Sadscans : KeiSource() {
             put("page", JsonPrimitive(page))
             put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
         }
-        return runCatching {
-            trpcJson.decodeFromJsonElement(SeriesDataDto.serializer(), trpcCallObject("$seriesDetailRouter.getSeriesData", input))
-        }.getOrNull()
+        return trpcJson.decodeFromJsonElement(
+            SeriesDataDto.serializer(),
+            trpcCallObject("$seriesDetailRouter.getSeriesData", input),
+        )
     }
 
     private suspend fun fetchChapters(slug: String): List<SChapter> {
@@ -363,8 +427,8 @@ abstract class Sadscans : KeiSource() {
         val selected: String
             get() = when (state) {
                 0 -> "-views"
-                1 -> "-updatedAt"
-                2 -> "-id"
+                1 -> "name"
+                2 -> "name"
                 3 -> "name"
                 else -> "-name"
             }
@@ -382,6 +446,6 @@ abstract class Sadscans : KeiSource() {
 
     companion object {
         private const val PAGE_SIZE = 15
-        private const val CHAPTER_PAGE_LIMIT = 50
+        private const val CHAPTER_PAGE_LIMIT = 10
     }
 }

@@ -167,10 +167,10 @@ internal abstract class IkenParser(
 
 	protected open fun sortByParam(order: SortOrder): String = when (order) {
 		SortOrder.POPULARITY -> "-views"
-		SortOrder.NEWEST -> "-id"
+		SortOrder.NEWEST -> "name"
 		SortOrder.ALPHABETICAL -> "name"
 		SortOrder.ALPHABETICAL_DESC -> "-name"
-		SortOrder.UPDATED -> "-updatedAt"
+		SortOrder.UPDATED -> "name"
 		else -> "-views"
 	}
 
@@ -227,7 +227,7 @@ internal abstract class IkenParser(
 
 	// ============================== Details + chapters ==============================
 
-	protected open val chapterPageLimit: Int = 50
+	protected open val chapterPageLimit: Int = 10
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val slug = manga.url.removePrefix("/$seriesPath/").substringBefore('/').trimEnd('/')

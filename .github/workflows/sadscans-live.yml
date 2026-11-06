@@ -1,0 +1,53 @@
+name: SadScans live request verification
+on:
+  push:
+    branches: [arena/f1c29b94-kitsugi-manga-plugins]
+    paths:
+      - tools/probe_sadscans.py
+      - .github/workflows/sadscans-live.yml
+      - tests/sadscans_runtime/**
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify live list search and chapters
+        run: python tools/probe_sadscans.py
+      - name: Test exact browser script
+        if: always()
+        run: node tests/sadscans_runtime/browser.mjs
+      - name: Install browser test dependency
+        if: always()
+        timeout-minutes: 2
+        run: npm install --no-save --package-lock=false --registry=https://registry.npmjs.org --fetch-retries=1 --fetch-timeout=30000 playwright@1.56.1
+      - name: Install Chromium
+        if: always()
+        timeout-minutes: 2
+        run: npx --no-install playwright install chromium
+      - name: Verify same-browser API transport live
+        if: always()
+        timeout-minutes: 2
+        run: node tests/sadscans_runtime/live.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sadscans-live-evidence
+          path: reports/sadscans*live.json
+      - name: Save live evidence
+        if: always()
+        run: |
+          if [ ! -s reports/sadscans-live.json ]; then exit 1; fi
+          git config user.name github-actions\[bot\]
+          git config user.email 41898282+github-actions\[bot\]@users.noreply.github.com
+          git add reports/sadscans*live.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'sadscans: record live HTTP verification [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
