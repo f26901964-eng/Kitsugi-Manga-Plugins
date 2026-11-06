@@ -47,6 +47,15 @@ class MangaTRLiveTest {
         val client = gateClient.newBuilder()
             .addInterceptor(DDoSGuardInterceptor(gateClient))
             .build()
+        client.newCall(
+            Request.Builder()
+                .url("$BASE_URL/manga-zootopia-i-will-survive.html")
+                .headers(navigationHeaders())
+                .get()
+                .build(),
+        ).execute().use { response ->
+            assertEquals("Initial series detail failed", 200, response.code)
+        }
         val seed = client.newCall(
             Request.Builder()
                 .url("$BASE_URL/app/manga/themes/default/assets/css/mtr.min.css")
