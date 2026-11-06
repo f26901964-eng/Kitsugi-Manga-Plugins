@@ -396,7 +396,7 @@
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangitto.png"
   },
   {
-    "name": "Merlin Scans",
+    "name": "MerlinToon",
     "pkg": "eu.kanade.tachiyomi.extension.tr.merlinscans",
     "apk": "tachiyomi-tr.merlinscans-v1.6.8.apk",
     "lang": "tr",

@@ -146,7 +146,7 @@
         ]
       },
       {
-        "name": "Merlin Scans",
+        "name": "MerlinToon",
         "packageName": "eu.kanade.tachiyomi.extension.tr.merlinscans",
         "versionName": "1.6.8",
         "versionCode": "106008",
@@ -157,7 +157,7 @@
         },
         "sources": [
           {
-            "name": "Merlin Scans",
+            "name": "MerlinToon",
             "language": "tr",
             "type": "manga"
           }
