@@ -728,12 +728,12 @@
   {
     "name": "Tortuga Ceviri",
     "pkg": "eu.kanade.tachiyomi.extension.tr.tortugaceviri",
-    "apk": "tachiyomi-tr.tortugaceviri-v1.6.57.apk",
+    "apk": "tachiyomi-tr.tortugaceviri-v1.6.58.apk",
     "lang": "tr",
-    "code": 106057,
-    "version": "1.6.57",
+    "code": 106058,
+    "version": "1.6.58",
     "nsfw": 0,
-    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.tortugaceviri-v1.6.57.apk",
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.tortugaceviri-v1.6.58.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.tortugaceviri.png"
   },
   {
