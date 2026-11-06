@@ -39,6 +39,20 @@ jobs:
           rm -f mangatr/live/browser/kotlin-live-failure.txt
           set -o pipefail
           xvfb-run -a -s '-screen 0 1280x720x24' python3 tools/mangatr_browser_orientation.py 2>&1 | tee /tmp/mangatr-browser.log
+      - name: Capture reported-series parser fixtures
+        run: |
+          captured=0
+          for attempt in 1 2 3; do
+            echo "Live fixture capture attempt $attempt/3"
+            rm -rf /tmp/mangatr-kotlin-live-fixture/reported
+            if python3 tools/mangatr_regression_probe.py \
+              --fixture-dir /tmp/mangatr-kotlin-live-fixture/reported --require-live; then
+              captured=1
+              break
+            fi
+            sleep 5
+          done
+          test "$captured" = 1
       - name: Verify live gates and configs with the production Kotlin contract
         working-directory: keiyoushi-extensions-tr
         env:
