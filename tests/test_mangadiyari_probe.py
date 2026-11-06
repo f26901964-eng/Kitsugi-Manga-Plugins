@@ -23,6 +23,10 @@ def kotlin_genre_values():
     return re.findall(r'GenreCheckBox\("([^"]+)", "([^"]+)"\)', body)
 
 
+@unittest.skipUnless(
+    PROBE.is_file() and FILTERS.is_file(),
+    "Manga Diyarı devre dışı: sonda/kaynak dosyaları yok",
+)
 class ProbeContractTest(unittest.TestCase):
     """Sonda eklentinin uçlarını ve listelerini kopyalar; ikisi sessizce ayrışmamalı."""
 

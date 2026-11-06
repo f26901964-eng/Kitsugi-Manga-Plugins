@@ -27,12 +27,25 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+
+      - name: Skip when Manga Diyarı is disabled
+        id: enabled
+        run: |
+          if grep -qx 'tr/mangadiyari' enabled_plugins.txt; then
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "Manga Diyarı devre dışı (enabled_plugins.txt); iş atlandı."
+          fi
+
       - uses: actions/setup-java@v5
+        if: steps.enabled.outputs.enabled == 'true'
         with:
           distribution: temurin
           java-version: 17
 
       - name: Probe the live API contract from the runner
+        if: steps.enabled.outputs.enabled == 'true'
         run: |
           python3 -m pip install requests pillow
           set -o pipefail
@@ -97,12 +110,14 @@ jobs:
           PY
 
       - name: Apply the repository Kotlin formatter
+        if: steps.enabled.outputs.enabled == 'true'
         working-directory: keiyoushi-extensions-tr
         run: |
           set -o pipefail
           ./gradlew :src:tr:mangadiyari:spotlessApply 2>&1 | tee /tmp/mangadiyari-gradle.log
 
       - name: Save formatter-only changes
+        if: steps.enabled.outputs.enabled == 'true'
         run: |
           if git diff --quiet; then
             exit 0
@@ -114,6 +129,7 @@ jobs:
           git push origin HEAD:${GITHUB_REF_NAME}
 
       - name: Run contract tests and build the release APK
+        if: steps.enabled.outputs.enabled == 'true'
         working-directory: keiyoushi-extensions-tr
         env:
           # Opt in to the live contract gate; the probe report is written by the step above.
@@ -124,7 +140,7 @@ jobs:
           ./gradlew :src:tr:mangadiyari:testDebugUnitTest :src:tr:mangadiyari:assembleRelease 2>&1 | tee /tmp/mangadiyari-gradle.log
 
       - name: Expose failures in the check annotations
-        if: failure()
+        if: failure() && steps.enabled.outputs.enabled == 'true'
         run: |
           python3 - <<'PY'
           import pathlib
@@ -140,7 +156,7 @@ jobs:
           PY
 
       - name: Upload the probe report and test results
-        if: always()
+        if: always() && steps.enabled.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: mangadiyari-probe-and-tests
@@ -150,6 +166,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload the release APK
+        if: steps.enabled.outputs.enabled == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: mangadiyari-release-apk
