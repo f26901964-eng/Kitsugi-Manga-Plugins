@@ -1,0 +1,4 @@
+#Fri Nov 06 23:20:35 UTC 2026
+base.0=/home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/intermediates/dex/release/minifyReleaseWithR8/classes.dex
+renamed.0=classes.dex
+path.0=classes.dex

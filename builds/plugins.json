@@ -75,5 +75,16 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.tortugaceviri-v1.6.58.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.tortugaceviri.png"
+  },
+  {
+    "name": "MangaDenizi",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.mangadenizi",
+    "apk": "tachiyomi-tr.mangadenizi-v1.6.9.apk",
+    "lang": "tr",
+    "code": 106009,
+    "version": "1.6.9",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadenizi-v1.6.9.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadenizi.png"
   }
 ]

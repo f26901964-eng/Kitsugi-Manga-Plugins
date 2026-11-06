@@ -1,0 +1,1338 @@
+# compiler: R8
+# compiler_version: 9.4.24
+# min_api: 26
+# common_typos_disable
+# {"id":"com.android.tools.r8.mapping","version":"2.2"}
+# pg_map_id: fafb89e3d348f8f96a9c156b4b3827e350f99d92922fedab448e5eb49e746045
+# pg_map_hash: SHA-256 fafb89e3d348f8f96a9c156b4b3827e350f99d92922fedab448e5eb49e746045
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto -> c:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lb;"}
+    java.lang.String name -> a
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion.<init>():72:72 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    6:20:void <init>(int,java.lang.String,kotlinx.serialization.internal.SerializationConstructorMarker):72:72 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/String;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$$serializer -> a:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"La;"}
+    3:5:void <init>():72:72 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:24:void <clinit>():72:72 -> <clinit>
+    2:9:kotlinx.serialization.KSerializer[] childSerializers():72:72 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):72 -> deserialize
+    4:60:eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto deserialize(kotlinx.serialization.encoding.Decoder):72:72 -> deserialize
+    4:60:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):72 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):72:72 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):72 -> serialize
+    9:15:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):72:72 -> serialize
+    9:15:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):72 -> serialize
+    16:20:void eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):72:72 -> serialize
+    16:20:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):72 -> serialize
+    16:20:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):72 -> serialize
+    21:24:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):72:72 -> serialize
+    21:24:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):72 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto$Companion -> b:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():72:72 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto -> g:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lf;"}
+    java.lang.String name -> a
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion.<init>():67:67 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    6:20:void <init>(int,java.lang.String,kotlinx.serialization.internal.SerializationConstructorMarker):67:67 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/String;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$$serializer -> e:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Le;"}
+    3:5:void <init>():67:67 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:24:void <clinit>():67:67 -> <clinit>
+    2:9:kotlinx.serialization.KSerializer[] childSerializers():67:67 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):67 -> deserialize
+    4:60:eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto deserialize(kotlinx.serialization.encoding.Decoder):67:67 -> deserialize
+    4:60:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):67 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):67:67 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):67 -> serialize
+    9:15:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto):67:67 -> serialize
+    9:15:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):67 -> serialize
+    16:20:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):67:67 -> serialize
+    16:20:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto):67 -> serialize
+    16:20:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):67 -> serialize
+    21:24:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto):67:67 -> serialize
+    21:24:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):67 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto$Companion -> f:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():67:67 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter -> h:
+# {"id":"sourceFile","fileName":"Filters.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto -> k:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lj;"}
+    kotlinx.serialization.json.JsonElement number -> a
+    java.lang.String title -> b
+    java.lang.String slug -> c
+    java.lang.String publishedAt -> d
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion.<init>():77:77 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    1:1:void <init>(int,kotlinx.serialization.json.JsonElement,java.lang.String,java.lang.String,java.lang.String,kotlinx.serialization.internal.SerializationConstructorMarker):77:77 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILkotlinx/serialization/json/JsonElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$$serializer -> i:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Li;"}
+    3:5:void <init>():77:77 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:40:void <clinit>():77:77 -> <clinit>
+    1:28:kotlinx.serialization.KSerializer[] childSerializers():77:77 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):77 -> deserialize
+    4:144:eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto deserialize(kotlinx.serialization.encoding.Decoder):77:77 -> deserialize
+    4:144:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):77 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):77:77 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):77 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto):77:77 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):77 -> serialize
+    15:62:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):77:77 -> serialize
+    15:62:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto):77 -> serialize
+    15:62:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):77 -> serialize
+    63:66:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto):77:77 -> serialize
+    63:66:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):77 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto$Companion -> j:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():77:77 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter -> l:
+# {"id":"sourceFile","fileName":"Filters.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse -> u:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lt;"}
+    java.lang.Object data -> a
+    kotlinx.serialization.descriptors.SerialDescriptor $cachedDescriptor -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkotlinx/serialization/internal/PluginGeneratedSerialDescriptor;"}
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion.<init>():15:15 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:25:void <clinit>():15:15 -> <clinit>
+    6:16:void <init>(int,java.lang.Object,kotlinx.serialization.internal.SerializationConstructorMarker):15:15 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/Object;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$$serializer -> s:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    kotlinx.serialization.KSerializer typeSerial0 -> a
+    4:22:void <init>():15:15 -> <init>
+    4:22:void <init>(kotlinx.serialization.KSerializer):15 -> <init>
+    23:25:void <init>(kotlinx.serialization.KSerializer):15:15 -> <init>
+    2:9:kotlinx.serialization.KSerializer[] childSerializers():15:15 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):15 -> deserialize
+    4:68:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse deserialize(kotlinx.serialization.encoding.Decoder):15:15 -> deserialize
+    4:68:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):15 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):15:15 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):15 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse):15:15 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):15 -> serialize
+    15:24:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor,kotlinx.serialization.KSerializer):15:15 -> serialize
+    15:24:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse):15 -> serialize
+    15:24:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):15 -> serialize
+    25:28:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse):15:15 -> serialize
+    25:28:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):15 -> serialize
+    2:9:kotlinx.serialization.KSerializer[] typeParametersSerializers():15:15 -> typeParametersSerializers
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse$Companion -> t:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    4:9:kotlinx.serialization.KSerializer serializer(kotlinx.serialization.KSerializer):15:15 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi -> R8$$REMOVED$$CLASS$$0:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$fetchMangaUpdate$1 -> v:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object L$1 -> b
+    java.lang.Object L$2 -> c
+    java.lang.Object L$3 -> d
+    java.lang.Object result -> e
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> f
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> g
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/jvm/internal/ContinuationImpl;)V"}
+    1:21:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$getLatestUpdates$1 -> w:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object result -> b
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> c
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> d
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$getMangaByUrl$1 -> x:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object L$1 -> b
+    java.lang.Object L$2 -> c
+    java.lang.Object L$3 -> d
+    java.lang.Object result -> e
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> f
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> g
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/jvm/internal/ContinuationImpl;)V"}
+    1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$getPageList$1 -> y:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    java.lang.Object L$1 -> b
+    java.lang.Object L$2 -> c
+    java.lang.Object L$3 -> d
+    java.lang.Object L$4 -> e
+    java.lang.Object result -> f
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> g
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> h
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$getPopularManga$1 -> z:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object result -> b
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> c
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> d
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:17:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi$getSearchMangaList$1 -> a0:
+# {"id":"sourceFile","fileName":"MangaDenizi.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object L$1 -> b
+    java.lang.Object L$2 -> c
+    java.lang.Object L$3 -> d
+    java.lang.Object result -> e
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi this$0 -> f
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> g
+    1:6:void <init>(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:18:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData -> d0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lc0;"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto manga -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Li0;"}
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion.<init>():25:25 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    6:20:void <init>(int,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.internal.SerializationConstructorMarker):25:25 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILi0;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$$serializer -> b0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lb0;"}
+    3:5:void <init>():25:25 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:24:void <clinit>():25:25 -> <clinit>
+    2:9:kotlinx.serialization.KSerializer[] childSerializers():25:25 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):25 -> deserialize
+    4:69:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData deserialize(kotlinx.serialization.encoding.Decoder):25:25 -> deserialize
+    4:69:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):25 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):25:25 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):25 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData):25:25 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):25 -> serialize
+    15:22:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):25:25 -> serialize
+    15:22:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData):25 -> serialize
+    15:22:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):25 -> serialize
+    23:26:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData):25:25 -> serialize
+    23:26:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):25 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData$Companion -> c0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():25:25 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto -> i0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lh0;"}
+    java.lang.String title -> a
+    java.lang.String slug -> b
+    java.lang.String coverUrl -> c
+    java.lang.String coverThumbUrl -> d
+    java.lang.String description -> e
+    java.lang.String status -> f
+    java.util.List categories -> g
+    java.util.List genres -> h
+    java.util.List authors -> i
+    java.util.List chapters -> j
+    kotlin.Lazy[] $childSerializers -> k
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion.<init>():37:37 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:85:void <clinit>():37:37 -> <clinit>
+    1:1:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):37:37 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Ljava/util/List;Ljava/util/List;Ljava/util/List;)V"}
+    2:2:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):45:45 -> <init>
+    3:3:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):37:37 -> <init>
+    4:4:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):46:46 -> <init>
+    5:5:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):37:37 -> <init>
+    6:6:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):47:47 -> <init>
+    7:7:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):37:37 -> <init>
+    8:8:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):48:48 -> <init>
+    9:9:void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.util.List,java.util.List,java.util.List,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):37:37 -> <init>
+    1:6:eu.kanade.tachiyomi.source.model.SManga toSManga():50:50 -> a
+    7:11:eu.kanade.tachiyomi.source.model.SManga toSManga():51:51 -> a
+    12:30:eu.kanade.tachiyomi.source.model.SManga toSManga():52:52 -> a
+    31:39:eu.kanade.tachiyomi.source.model.SManga toSManga():53:53 -> a
+    40:44:eu.kanade.tachiyomi.source.model.SManga toSManga():54:54 -> a
+    45:104:eu.kanade.tachiyomi.source.model.SManga toSManga():55:55 -> a
+    105:112:eu.kanade.tachiyomi.source.model.SManga toSManga():62:62 -> a
+    113:123:eu.kanade.tachiyomi.source.model.SManga toSManga():127:127 -> a
+    124:137:eu.kanade.tachiyomi.source.model.SManga toSManga():128:128 -> a
+    138:139:eu.kanade.tachiyomi.source.model.SManga toSManga():129:129 -> a
+    140:141:java.lang.String eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryDto.getName():69:69 -> a
+    140:141:eu.kanade.tachiyomi.source.model.SManga toSManga():62 -> a
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    142:145:eu.kanade.tachiyomi.source.model.SManga toSManga():129:129 -> a
+    146:165:eu.kanade.tachiyomi.source.model.SManga toSManga():62:62 -> a
+    166:186:eu.kanade.tachiyomi.source.model.SManga toSManga():63:63 -> a
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$$ExternalSyntheticLambda0 -> e0:
+# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
+# {"id":"com.android.tools.r8.synthesized"}
+    byte MangaDto$$ExternalSyntheticLambda0.$r8$classId -> a
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:6:void MangaDto$$ExternalSyntheticLambda0.<init>(byte):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+    6:13:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto._childSerializers$_anonymous_():0:0 -> invoke
+      # {"id":"com.android.tools.r8.residualsignature","signature":"()Ljava/lang/Object;"}
+    14:21:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto._childSerializers$_anonymous_():0:0 -> invoke
+    22:29:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto._childSerializers$_anonymous_$2():0:0 -> invoke
+    30:37:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto._childSerializers$_anonymous_$1():0:0 -> invoke
+    38:45:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto._childSerializers$_anonymous_$0():0:0 -> invoke
+    46:54:kotlinx.serialization.KSerializer eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto._childSerializers$_anonymous_():0:0 -> invoke
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$$ExternalSyntheticLambda4 -> f0:
+# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
+# {"id":"com.android.tools.r8.synthesized"}
+    3:5:java.lang.CharSequence eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.toSManga$lambda$0$1(eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):0:0 -> invoke
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/Object;)Ljava/lang/Object;"}
+    6:8:java.lang.String eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto.getName():74:74 -> invoke
+    6:8:java.lang.CharSequence eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.toSManga$lambda$0$1(eu.kanade.tachiyomi.extension.tr.mangadenizi.AuthorDto):63 -> invoke
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$$serializer -> g0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lg0;"}
+    3:5:void <init>():37:37 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:71:void <clinit>():37:37 -> <clinit>
+    1:4:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.access$get$childSerializers$cp():37:37 -> childSerializers
+    1:4:kotlinx.serialization.KSerializer[] childSerializers():37 -> childSerializers
+    5:81:kotlinx.serialization.KSerializer[] childSerializers():37:37 -> childSerializers
+    1:1:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:1:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):37 -> deserialize
+    2:2:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto deserialize(kotlinx.serialization.encoding.Decoder):37:37 -> deserialize
+    2:2:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):37 -> deserialize
+    3:3:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.access$get$childSerializers$cp():37:37 -> deserialize
+    3:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto deserialize(kotlinx.serialization.encoding.Decoder):37 -> deserialize
+    3:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):37 -> deserialize
+    4:4:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto deserialize(kotlinx.serialization.encoding.Decoder):37:37 -> deserialize
+    4:4:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):37 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37:37 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37:37 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    15:112:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):37:37 -> serialize
+    15:112:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    15:112:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    113:116:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):45:45 -> serialize
+    113:116:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    113:116:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    117:141:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):37:37 -> serialize
+    117:141:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    117:141:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    142:145:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):46:46 -> serialize
+    142:145:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    142:145:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    146:171:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):37:37 -> serialize
+    146:171:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    146:171:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    172:175:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):47:47 -> serialize
+    172:175:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    172:175:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    176:201:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):37:37 -> serialize
+    176:201:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    176:201:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    202:205:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):48:48 -> serialize
+    202:205:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    202:205:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    206:222:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):37:37 -> serialize
+    206:222:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37 -> serialize
+    206:222:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+    223:226:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto):37:37 -> serialize
+    223:226:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):37 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto$Companion -> h0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():37:37 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData -> l0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lk0;"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto manga -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lo0;"}
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion.<init>():20:20 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    6:20:void <init>(int,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto,kotlinx.serialization.internal.SerializationConstructorMarker):20:20 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILo0;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$$serializer -> j0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lj0;"}
+    3:5:void <init>():20:20 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:24:void <clinit>():20:20 -> <clinit>
+    2:9:kotlinx.serialization.KSerializer[] childSerializers():20:20 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):20 -> deserialize
+    4:69:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData deserialize(kotlinx.serialization.encoding.Decoder):20:20 -> deserialize
+    4:69:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):20 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):20:20 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):20 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData):20:20 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):20 -> serialize
+    15:22:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):20:20 -> serialize
+    15:22:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData):20 -> serialize
+    15:22:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):20 -> serialize
+    23:26:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData):20:20 -> serialize
+    23:26:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):20 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData$Companion -> k0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():20:20 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto -> o0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Ln0;"}
+    java.util.List data -> a
+    int currentPage -> b
+    int lastPage -> c
+    kotlin.Lazy[] $childSerializers -> d
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion.<init>():30:30 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:35:void <clinit>():30:30 -> <clinit>
+    6:24:void <init>(int,java.util.List,int,int,kotlinx.serialization.internal.SerializationConstructorMarker):30:30 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/util/List;II)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$$serializer -> m0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lm0;"}
+    3:5:void <init>():30:30 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:34:void <clinit>():30:30 -> <clinit>
+    1:3:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.access$get$childSerializers$cp():30:30 -> childSerializers
+    1:3:kotlinx.serialization.KSerializer[] childSerializers():30 -> childSerializers
+    4:23:kotlinx.serialization.KSerializer[] childSerializers():30:30 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):30 -> deserialize
+    4:9:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto deserialize(kotlinx.serialization.encoding.Decoder):30:30 -> deserialize
+    4:9:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):30 -> deserialize
+    10:11:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.access$get$childSerializers$cp():30:30 -> deserialize
+    10:11:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto deserialize(kotlinx.serialization.encoding.Decoder):30 -> deserialize
+    10:11:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):30 -> deserialize
+    12:116:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto deserialize(kotlinx.serialization.encoding.Decoder):30:30 -> deserialize
+    12:116:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):30 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):30:30 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):30 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto):30:30 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):30 -> serialize
+    15:42:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):30:30 -> serialize
+    15:42:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto):30 -> serialize
+    15:42:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):30 -> serialize
+    43:46:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto):30:30 -> serialize
+    43:46:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):30 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto$Companion -> n0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():30:30 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto -> s0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lr0;"}
+    java.util.List pages -> a
+    kotlin.Lazy[] $childSerializers -> b
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion.<init>():95:95 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:28:void <clinit>():95:95 -> <clinit>
+    1:7:void <init>(int,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):95:95 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/util/List;)V"}
+    8:11:void <init>(int,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):97:97 -> <init>
+    12:17:void <init>(int,java.util.List,kotlinx.serialization.internal.SerializationConstructorMarker):95:95 -> <init>
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$$serializer -> q0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lq0;"}
+    3:5:void <init>():95:95 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:23:void <clinit>():95:95 -> <clinit>
+    1:3:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.access$get$childSerializers$cp():95:95 -> childSerializers
+    1:3:kotlinx.serialization.KSerializer[] childSerializers():95 -> childSerializers
+    4:15:kotlinx.serialization.KSerializer[] childSerializers():95:95 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):95 -> deserialize
+    4:9:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto deserialize(kotlinx.serialization.encoding.Decoder):95:95 -> deserialize
+    4:9:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):95 -> deserialize
+    10:11:kotlin.Lazy[] eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.access$get$childSerializers$cp():95:95 -> deserialize
+    10:11:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto deserialize(kotlinx.serialization.encoding.Decoder):95 -> deserialize
+    10:11:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):95 -> deserialize
+    12:83:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto deserialize(kotlinx.serialization.encoding.Decoder):95:95 -> deserialize
+    12:83:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):95 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95:95 -> serialize
+    3:10:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):0:0 -> serialize
+    3:10:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+    11:16:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):95:95 -> serialize
+    11:16:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+    17:26:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):95:95 -> serialize
+    17:26:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):95 -> serialize
+    17:26:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+    27:30:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):97:97 -> serialize
+    27:30:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):95 -> serialize
+    27:30:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+    31:47:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):95:95 -> serialize
+    31:47:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):95 -> serialize
+    31:47:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+    48:51:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto):95:95 -> serialize
+    48:51:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):95 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto$Companion -> r0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():95:95 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto -> v0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lu0;"}
+    java.lang.String url -> a
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto scramble -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Ly0;"}
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion.<init>():100:100 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    1:1:void <init>(int,java.lang.String,eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto,kotlinx.serialization.internal.SerializationConstructorMarker):100:100 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/String;Ly0;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$$serializer -> t0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lt0;"}
+    3:5:void <init>():100:100 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:30:void <clinit>():100:100 -> <clinit>
+    1:18:kotlinx.serialization.KSerializer[] childSerializers():100:100 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):100 -> deserialize
+    4:86:eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto deserialize(kotlinx.serialization.encoding.Decoder):100:100 -> deserialize
+    4:86:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):100 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):100:100 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto):0:0 -> serialize
+    3:8:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):100 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto):100:100 -> serialize
+    9:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):100 -> serialize
+    15:37:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):100:100 -> serialize
+    15:37:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto):100 -> serialize
+    15:37:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):100 -> serialize
+    38:41:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto):100:100 -> serialize
+    38:41:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):100 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto$Companion -> u0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():100:100 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto -> y0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion Companion -> Companion
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lx0;"}
+    java.lang.String method -> a
+    java.lang.Integer grid -> b
+    java.lang.Long seed -> c
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion.<init>():120:120 -> <clinit>
+    3:5:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion.<init>(kotlin.jvm.internal.DefaultConstructorMarker):0 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:8:void <clinit>():0:0 -> <clinit>
+    1:32:void <init>(int,java.lang.String,java.lang.Integer,java.lang.Long,kotlinx.serialization.internal.SerializationConstructorMarker):120:120 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(ILjava/lang/String;Ljava/lang/Integer;Ljava/lang/Long;)V"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$$serializer -> w0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$$serializer INSTANCE -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lw0;"}
+    3:5:void <init>():120:120 -> <clinit>
+    3:5:void <clinit>():0 -> <clinit>
+    6:7:void <clinit>():0:0 -> <clinit>
+    8:34:void <clinit>():120:120 -> <clinit>
+    1:31:kotlinx.serialization.KSerializer[] childSerializers():120:120 -> childSerializers
+    1:3:eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto deserialize(kotlinx.serialization.encoding.Decoder):0:0 -> deserialize
+    1:3:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):120 -> deserialize
+    4:118:eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto deserialize(kotlinx.serialization.encoding.Decoder):120:120 -> deserialize
+    4:118:java.lang.Object deserialize(kotlinx.serialization.encoding.Decoder):120 -> deserialize
+    1:3:kotlinx.serialization.descriptors.SerialDescriptor getDescriptor():0:0 -> getDescriptor
+    1:2:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):120:120 -> serialize
+    3:14:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto):0:0 -> serialize
+    3:14:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):120 -> serialize
+    15:21:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto):120:120 -> serialize
+    15:21:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):120 -> serialize
+    22:65:void eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto.write$Self$mangadenizi(eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto,kotlinx.serialization.encoding.CompositeEncoder,kotlinx.serialization.descriptors.SerialDescriptor):120:120 -> serialize
+    22:65:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto):120 -> serialize
+    22:65:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):120 -> serialize
+    66:69:void serialize(kotlinx.serialization.encoding.Encoder,eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto):120:120 -> serialize
+    66:69:void serialize(kotlinx.serialization.encoding.Encoder,java.lang.Object):120 -> serialize
+eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto$Companion -> x0:
+# {"id":"sourceFile","fileName":"Dto.kt"}
+    1:3:kotlinx.serialization.KSerializer serializer():120:120 -> serializer
+eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter -> z0:
+# {"id":"sourceFile","fileName":"Filters.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter -> a1:
+# {"id":"sourceFile","fileName":"Filters.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion -> c1:
+# {"id":"sourceFile","fileName":"UnscramblerInterceptor.kt"}
+    2:5:java.util.List createSlices(int,int):51:51 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(II)Ljava/util/ArrayList;"}
+    6:14:java.util.List createSlices(int,int):52:52 -> a
+    15:18:java.util.List createSlices(int,int):53:53 -> a
+    19:29:java.util.List createSlices(int,int):134:134 -> a
+    30:48:java.util.List createSlices(int,int):135:135 -> a
+    49:51:java.util.List createSlices(int,int):54:54 -> a
+    52:53:java.util.List createSlices(int,int):55:56 -> a
+    54:62:java.util.List createSlices(int,int):56:56 -> a
+    63:67:java.util.List createSlices(int,int):136:136 -> a
+    1:6:java.util.List mapSlices(java.util.List,int[]):138:138 -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/util/ArrayList;[I)Ljava/util/ArrayList;"}
+    7:15:java.util.List mapSlices(java.util.List,int[]):139:139 -> b
+    16:27:java.util.List mapSlices(java.util.List,int[]):63:63 -> b
+    28:31:int eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice.getLength():48:48 -> b
+    28:31:java.util.List mapSlices(java.util.List,int[]):63 -> b
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    32:37:java.util.List mapSlices(java.util.List,int[]):64:64 -> b
+    38:44:java.util.List mapSlices(java.util.List,int[]):140:140 -> b
+    2:21:int[] shuffle(int,long):37:37 -> c
+    22:70:void eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$XorShift.<init>(long):26:26 -> c
+    22:70:int[] shuffle(int,long):38 -> c
+    71:73:int[] shuffle(int,long):40:40 -> c
+    74:75:int[] shuffle(int,long):41:41 -> c
+    76:79:int[] shuffle(int,long):42:42 -> c
+    80:85:int[] shuffle(int,long):43:43 -> c
+eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice -> b1:
+# {"id":"sourceFile","fileName":"UnscramblerInterceptor.kt"}
+    int offset -> a
+    int length -> b
+    1:8:void <init>(int,int):48:48 -> <init>
+eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$XorShift -> R8$$REMOVED$$CLASS$$1:
+# {"id":"sourceFile","fileName":"UnscramblerInterceptor.kt"}
+eu.kanade.tachiyomi.extension.tr.mangadenizi.UriPartFilter -> d1:
+# {"id":"sourceFile","fileName":"Filters.kt"}
+    kotlin.Pair[] vals -> a
+    1:6:void <init>(java.lang.String,kotlin.Pair[],int):81:81 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Ljava/lang/String;[Lkotlin/Pair;)V"}
+    7:13:void <init>(java.lang.String,kotlin.Pair[],int):82:82 -> <init>
+    14:19:void <init>(java.lang.String,kotlin.Pair[],int):9:9 -> <init>
+    20:25:void <init>(java.lang.String,kotlin.Pair[],int):83:83 -> <init>
+    26:31:void <init>(java.lang.String,kotlin.Pair[],int):86:86 -> <init>
+    32:34:void <init>(java.lang.String,kotlin.Pair[],int):5:5 -> <init>
+    35:37:void <init>(java.lang.String,kotlin.Pair[],int):7:7 -> <init>
+    1:21:java.lang.String toUriPart():10:10 -> a
+keiyoushi.network.CacheControlInterceptor -> d:
+# {"id":"sourceFile","fileName":"CacheControlInterceptor.kt"}
+    byte CacheControlInterceptor.$r8$classId -> a
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:6:void CacheControlInterceptor.<init>(byte):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:2:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):93:94 -> a
+    3:5:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):97:99 -> a
+    6:6:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$createSlices(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,int,int):15:15 -> a
+    6:6:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):101 -> a
+    7:7:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$createSlices(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,int,int):15:15 -> a
+    7:7:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):102 -> a
+    8:8:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):103:103 -> a
+    9:9:int[] eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$shuffle(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,int,long):15:15 -> a
+    9:9:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):103 -> a
+    10:10:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):104:104 -> a
+    11:11:int[] eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$shuffle(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,int,long):15:15 -> a
+    11:11:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):104 -> a
+    12:12:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$mapSlices(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,java.util.List,int[]):15:15 -> a
+    12:12:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):105 -> a
+    13:13:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion.access$mapSlices(eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion,java.util.List,int[]):15:15 -> a
+    13:13:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):106 -> a
+    14:15:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):108:109 -> a
+    16:18:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):112:114 -> a
+    19:21:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):116:118 -> a
+    22:22:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):120:120 -> a
+    23:23:int eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice.getOffset():48:48 -> a
+    23:23:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):120 -> a
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    24:24:int eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice.getLength():48:48 -> a
+    24:24:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):120 -> a
+    25:26:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):120:121 -> a
+    27:27:int eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice.getOffset():48:48 -> a
+    27:27:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):121 -> a
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    28:28:int eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor$Companion$Slice.getLength():48:48 -> a
+    28:28:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):121 -> a
+    29:30:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):121:122 -> a
+    31:31:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):126:126 -> a
+    32:33:okio.Buffer eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.descramble(java.io.InputStream,int,long):128:129 -> a
+    10:13:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):72:72 -> intercept
+    14:31:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):73:73 -> intercept
+    32:54:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):74:74 -> intercept
+    55:62:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):80:80 -> intercept
+    63:66:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):81:81 -> intercept
+    67:70:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):82:82 -> intercept
+    71:74:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):83:83 -> intercept
+    75:86:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):84:84 -> intercept
+    87:90:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):85:85 -> intercept
+    91:113:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):87:87 -> intercept
+    114:131:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):88:88 -> intercept
+    132:146:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):89:89 -> intercept
+    147:152:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):87:87 -> intercept
+    153:157:okhttp3.Response eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.intercept(okhttp3.Interceptor$Chain):77:77 -> intercept
+    158:161:okhttp3.Response intercept(okhttp3.Interceptor$Chain):12:12 -> intercept
+    162:165:okhttp3.Response intercept(okhttp3.Interceptor$Chain):13:13 -> intercept
+    166:173:okhttp3.Response intercept(okhttp3.Interceptor$Chain):15:15 -> intercept
+    174:182:okhttp3.Response intercept(okhttp3.Interceptor$Chain):16:16 -> intercept
+    183:190:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17:17 -> intercept
+    191:204:boolean shouldOverride(java.lang.String):27:27 -> intercept
+    191:204:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    205:215:boolean shouldOverride(java.lang.String):34:34 -> intercept
+    205:215:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    216:229:boolean shouldOverride(java.lang.String):35:35 -> intercept
+    216:229:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    230:231:boolean shouldOverride(java.lang.String):36:36 -> intercept
+    230:231:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    232:248:boolean shouldOverride(java.lang.String):27:27 -> intercept
+    232:248:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    249:252:boolean shouldOverride(java.lang.String):36:36 -> intercept
+    249:252:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    253:260:boolean shouldOverride(java.lang.String):38:38 -> intercept
+    253:260:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    261:275:boolean shouldOverride(java.lang.String):39:39 -> intercept
+    261:275:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    276:300:boolean shouldOverride(java.lang.String):28:28 -> intercept
+    276:300:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    301:307:boolean shouldOverride(java.lang.String):41:41 -> intercept
+    301:307:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    308:322:boolean shouldOverride(java.lang.String):42:42 -> intercept
+    308:322:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    323:331:boolean shouldOverride(java.lang.String):29:29 -> intercept
+    323:331:okhttp3.Response intercept(okhttp3.Interceptor$Chain):17 -> intercept
+    332:335:okhttp3.Response intercept(okhttp3.Interceptor$Chain):21:21 -> intercept
+    336:353:okhttp3.Response intercept(okhttp3.Interceptor$Chain):22:22 -> intercept
+    354:358:okhttp3.Response intercept(okhttp3.Interceptor$Chain):23:23 -> intercept
+keiyoushi.network.OkHttpKt -> p0:
+# {"id":"sourceFile","fileName":"OkHttp.kt"}
+    okhttp3.CacheControl DEFAULT_CACHE_CONTROL -> a
+    1:26:void <clinit>():19:19 -> <clinit>
+    1:6:java.lang.Object get(okhttp3.OkHttpClient,okhttp3.HttpUrl,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation):36:41 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lokhttp3/OkHttpClient;Lokhttp3/HttpUrl;Lokhttp3/Headers;Lokhttp3/CacheControl;Lkotlin/coroutines/jvm/internal/ContinuationImpl;)Ljava/lang/Object;"}
+    7:7:java.lang.Object get(okhttp3.OkHttpClient,okhttp3.HttpUrl,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation):44:44 -> a
+    1:13:java.lang.Object get(okhttp3.OkHttpClient,java.lang.String,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation):64:64 -> b
+    1:13:java.lang.Object get$default(okhttp3.OkHttpClient,java.lang.String,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation,int,java.lang.Object):59 -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lokhttp3/OkHttpClient;Ljava/lang/String;Lokhttp3/Headers;Lkotlin/coroutines/jvm/internal/ContinuationImpl;)Ljava/lang/Object;"}
+keiyoushi.source.Generated -> keiyoushi.source.Generated:
+# {"id":"sourceFile","fileName":"Generated.kt"}
+    kotlin.Lazy keiyoushi.source.KeiSource.client$delegate -> a
+    java.util.concurrent.ConcurrentHashMap keiyoushi.source.KeiSource.updatesInFlight -> b
+    1:3:void keiyoushi.source.KeiSource.<init>():47:47 -> <init>
+    1:3:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    1:3:void <init>():7 -> <init>
+    4:8:void keiyoushi.source.KeiSource.<init>():51:51 -> <init>
+    4:8:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    4:8:void <init>():7 -> <init>
+    9:17:void keiyoushi.source.KeiSource.<init>():56:56 -> <init>
+    9:17:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    9:17:void <init>():7 -> <init>
+    18:20:void keiyoushi.source.KeiSource.<init>():57:57 -> <init>
+    18:20:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    18:20:void <init>():7 -> <init>
+    21:23:void keiyoushi.source.KeiSource.<init>():58:58 -> <init>
+    21:23:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    21:23:void <init>():7 -> <init>
+    24:34:void keiyoushi.source.KeiSource.<init>():68:68 -> <init>
+    24:34:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    24:34:void <init>():7 -> <init>
+    35:40:void keiyoushi.source.KeiSource.<init>():208:208 -> <init>
+    35:40:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    35:40:void <init>():7 -> <init>
+    41:45:void keiyoushi.source.KeiSource.<init>():209:209 -> <init>
+    41:45:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    41:45:void <init>():7 -> <init>
+    46:53:void keiyoushi.source.KeiSource.<init>():361:361 -> <init>
+    46:53:void eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.<init>():19 -> <init>
+    46:53:void <init>():7 -> <init>
+    1:12:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):69:69 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;)Lokhttp3/OkHttpClient;"}
+    13:18:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):70:70 -> a
+    19:24:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):450:450 -> a
+    25:40:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):451:451 -> a
+    41:56:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):72:72 -> a
+    57:62:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):453:453 -> a
+    63:78:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):454:454 -> a
+    79:94:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):78:78 -> a
+    95:100:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):456:456 -> a
+    101:116:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):457:457 -> a
+    117:132:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):84:84 -> a
+    133:138:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):90:90 -> a
+    139:145:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):459:459 -> a
+    146:161:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):460:460 -> a
+    162:178:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):92:92 -> a
+    179:188:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):91:91 -> a
+    189:195:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):462:462 -> a
+    196:211:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):463:463 -> a
+    212:216:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):98:98 -> a
+    217:224:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):97:97 -> a
+    225:227:okhttp3.OkHttpClient$Builder eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.configureClient(okhttp3.OkHttpClient$Builder):21:21 -> a
+    225:227:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):104 -> a
+    228:230:void eu.kanade.tachiyomi.extension.tr.mangadenizi.UnscramblerInterceptor.<init>():14:14 -> a
+    228:230:okhttp3.OkHttpClient$Builder eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.configureClient(okhttp3.OkHttpClient$Builder):21 -> a
+    228:230:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):104 -> a
+    231:233:okhttp3.OkHttpClient$Builder eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.configureClient(okhttp3.OkHttpClient$Builder):21:21 -> a
+    231:233:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):104 -> a
+    234:237:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):107:107 -> a
+    238:254:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):465:465 -> a
+    255:274:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):109:109 -> a
+    275:277:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):111:111 -> a
+    278:280:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):112:112 -> a
+    281:305:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):117:117 -> a
+    306:307:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):120:120 -> a
+    308:310:void keiyoushi.network.CacheControlInterceptor.<init>():10:10 -> a
+    308:310:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):120 -> a
+    311:313:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):120:120 -> a
+    314:317:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):123:123 -> a
+    318:331:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):468:468 -> a
+    332:336:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):130:130 -> a
+    337:344:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):83:83 -> a
+    345:352:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):77:77 -> a
+    353:360:okhttp3.OkHttpClient keiyoushi.source.KeiSource.client_delegate$lambda$0(keiyoushi.source.KeiSource):71:71 -> a
+    1:1:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):109:109 -> b
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Leu/kanade/tachiyomi/source/model/SManga;Ljava/util/List;ZZLkotlin/coroutines/jvm/internal/ContinuationImpl;)Ljava/lang/Object;"}
+    2:3:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):115:116 -> b
+    4:4:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):109:109 -> b
+    5:5:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> b
+    5:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):170 -> b
+    6:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):171:171 -> b
+    7:7:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):170:170 -> b
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):172:172 -> b
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.getData():17:17 -> b
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):117 -> b
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    10:10:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):117:117 -> b
+    11:11:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData.getManga():27:27 -> b
+    11:11:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):117 -> b
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    12:12:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):118:118 -> b
+    13:13:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.getChapters():48:48 -> b
+    13:13:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    14:16:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):173:175 -> b
+    17:17:java.lang.String eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto.getSlug():40:40 -> b
+    17:17:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    18:18:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):0:0 -> b
+    18:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    19:21:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):84:86 -> b
+    19:21:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    22:25:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):88:91 -> b
+    22:25:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    26:26:long keiyoushi.utils.DateKt.tryParse(kotlin.time.Instant$Companion,java.lang.String):0:0 -> b
+    26:26:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):91 -> b
+    26:26:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    27:27:long keiyoushi.utils.DateKt.tryParse(kotlin.time.Instant$Companion,java.lang.String):106:106 -> b
+    27:27:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):91 -> b
+    27:27:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    28:28:eu.kanade.tachiyomi.source.model.SChapter eu.kanade.tachiyomi.extension.tr.mangadenizi.ChapterDto.toSChapter(java.lang.String):91:91 -> b
+    28:28:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):119 -> b
+    29:29:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):175:175 -> b
+    30:30:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):120:120 -> b
+    31:31:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):170:170 -> b
+    1:4:okhttp3.Headers eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getApiHeaders():24:24 -> c
+    5:12:okhttp3.Headers eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getApiHeaders():25:25 -> c
+    13:20:okhttp3.Headers eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getApiHeaders():26:26 -> c
+    21:25:okhttp3.Headers eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getApiHeaders():27:27 -> c
+    1:2:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):41:42 -> d
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;"}
+    3:3:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):41:41 -> d
+    4:4:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> d
+    4:4:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):151 -> d
+    5:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):152:152 -> d
+    6:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):151:151 -> d
+    7:7:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):153:153 -> d
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.getData():17:17 -> d
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):43 -> d
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):43:43 -> d
+    10:10:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData.getManga():22:22 -> d
+    10:10:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):43 -> d
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    11:11:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getData():32:32 -> d
+    11:11:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):44 -> d
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    12:14:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):154:156 -> d
+    15:15:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):44:44 -> d
+    16:16:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):156:156 -> d
+    17:17:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getCurrentPage():33:33 -> d
+    17:17:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):45 -> d
+    18:18:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getLastPage():34:34 -> d
+    18:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):45 -> d
+    19:19:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):46:46 -> d
+    20:20:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):151:151 -> d
+    1:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):97:102 -> e
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lokhttp3/HttpUrl;Lkotlin/coroutines/jvm/internal/ContinuationImpl;)Ljava/lang/Object;"}
+    7:7:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):97:97 -> e
+    8:8:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> e
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):167 -> e
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):168:168 -> e
+    10:10:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):167:167 -> e
+    11:11:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):169:169 -> e
+    12:12:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.getData():17:17 -> e
+    12:12:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):103 -> e
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    13:13:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):103:103 -> e
+    14:14:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDto eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDetailsData.getManga():27:27 -> e
+    14:14:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):103 -> e
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    15:15:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):104:104 -> e
+    16:16:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,okhttp3.HttpUrl,kotlin.coroutines.Continuation):167:167 -> e
+    1:2:java.lang.Object keiyoushi.source.KeiSource.getMangasByUrl$suspendImpl(keiyoushi.source.KeiSource,okhttp3.HttpUrl,int,kotlin.coroutines.Continuation):194:195 -> f
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lokhttp3/HttpUrl;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;"}
+    3:3:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getMangaByUrl(okhttp3.HttpUrl,kotlin.coroutines.Continuation):0:0 -> f
+    3:3:java.lang.Object keiyoushi.source.KeiSource.getMangasByUrl$suspendImpl(keiyoushi.source.KeiSource,okhttp3.HttpUrl,int,kotlin.coroutines.Continuation):195 -> f
+    4:4:java.lang.Object keiyoushi.source.KeiSource.getMangasByUrl$suspendImpl(keiyoushi.source.KeiSource,okhttp3.HttpUrl,int,kotlin.coroutines.Continuation):194:194 -> f
+    5:5:java.lang.Object keiyoushi.source.KeiSource.getMangasByUrl$suspendImpl(keiyoushi.source.KeiSource,okhttp3.HttpUrl,int,kotlin.coroutines.Continuation):197:197 -> f
+    1:5:java.lang.Object keiyoushi.source.KeiSource.fetchRelatedMangaList$suspendImpl(keiyoushi.source.KeiSource,eu.kanade.tachiyomi.source.model.SManga,kotlin.coroutines.Continuation):413:413 -> fetchRelatedMangaList
+    1:5:java.lang.Object keiyoushi.source.KeiSource.fetchRelatedMangaList(eu.kanade.tachiyomi.source.model.SManga,kotlin.coroutines.Continuation):0 -> fetchRelatedMangaList
+    1:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):125:129 -> g
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Leu/kanade/tachiyomi/source/model/SChapter;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;"}
+    6:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):125:125 -> g
+    7:7:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> g
+    7:7:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):177 -> g
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):178:178 -> g
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):177:177 -> g
+    10:10:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):130:130 -> g
+    11:11:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderDto.getPages():97:97 -> g
+    11:11:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    12:12:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):180:180 -> g
+    13:14:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):182:183 -> g
+    15:15:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131:131 -> g
+    16:16:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):0:0 -> g
+    16:16:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    17:17:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):107:107 -> g
+    17:17:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    18:18:java.lang.String eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto.getMethod():122:122 -> g
+    18:18:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):108 -> g
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    18:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    19:19:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):108:108 -> g
+    19:19:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    20:20:java.lang.Integer eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto.getGrid():123:123 -> g
+    20:20:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):108 -> g
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    20:20:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    21:21:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):109:109 -> g
+    21:21:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    22:22:java.lang.Integer eu.kanade.tachiyomi.extension.tr.mangadenizi.ScrambleDto.getGrid():123:123 -> g
+    22:22:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):110 -> g
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    22:22:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    23:25:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):110:112 -> g
+    23:25:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    26:26:eu.kanade.tachiyomi.source.model.Page eu.kanade.tachiyomi.extension.tr.mangadenizi.ReaderPageDto.toPage(int,java.lang.String):116:116 -> g
+    26:26:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):131 -> g
+    27:27:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):183:183 -> g
+    28:28:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):177:177 -> g
+    1:3:java.lang.String getBaseUrl():21:21 -> getBaseUrl
+    4:27:java.lang.String keiyoushi.source.KeiSource.getChapterUrl(eu.kanade.tachiyomi.source.model.SChapter):431:431 -> getChapterUrl
+    1:9:okhttp3.OkHttpClient keiyoushi.source.KeiSource.getClient():68:68 -> getClient
+    1:2:boolean keiyoushi.source.KeiSource.getDisableRelatedMangas():403:403 -> getDisableRelatedMangas
+    1:2:boolean keiyoushi.source.KeiSource.getDisableRelatedMangasBySearch():400:400 -> getDisableRelatedMangasBySearch
+    1:2:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):136:136 -> getFilterList
+    1:2:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    3:4:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137:137 -> getFilterList
+    3:4:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    5:13:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):17:17 -> getFilterList
+    5:13:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    5:13:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    5:13:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    14:22:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):18:18 -> getFilterList
+    14:22:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    14:22:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    14:22:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    23:31:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):19:19 -> getFilterList
+    23:31:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    23:31:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    23:31:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    32:40:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):20:20 -> getFilterList
+    32:40:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    32:40:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    32:40:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    41:49:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):21:21 -> getFilterList
+    41:49:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    41:49:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    41:49:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    50:62:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):22:22 -> getFilterList
+    50:62:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    50:62:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    50:62:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    63:67:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int):13:13 -> getFilterList
+    63:67:void eu.kanade.tachiyomi.extension.tr.mangadenizi.SortFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):13 -> getFilterList
+    63:67:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):137 -> getFilterList
+    63:67:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    68:69:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138:138 -> getFilterList
+    68:69:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    70:76:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):31:31 -> getFilterList
+    70:76:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    70:76:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    70:76:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    77:85:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):32:32 -> getFilterList
+    77:85:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    77:85:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    77:85:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    86:94:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):33:33 -> getFilterList
+    86:94:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    86:94:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    86:94:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    95:103:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):34:34 -> getFilterList
+    95:103:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    95:103:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    95:103:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    104:116:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):35:35 -> getFilterList
+    104:116:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    104:116:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    104:116:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    117:121:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int):27:27 -> getFilterList
+    117:121:void eu.kanade.tachiyomi.extension.tr.mangadenizi.StatusFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):27 -> getFilterList
+    117:121:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):138 -> getFilterList
+    117:121:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    122:123:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139:139 -> getFilterList
+    122:123:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    124:128:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):44:44 -> getFilterList
+    124:128:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    124:128:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    124:128:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    129:137:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):45:45 -> getFilterList
+    129:137:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    129:137:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    129:137:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    138:146:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):46:46 -> getFilterList
+    138:146:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    138:146:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    138:146:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    147:155:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):47:47 -> getFilterList
+    147:155:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    147:155:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    147:155:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    156:164:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):48:48 -> getFilterList
+    156:164:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    156:164:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    156:164:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    165:173:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):49:49 -> getFilterList
+    165:173:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    165:173:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    165:173:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    174:182:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):50:50 -> getFilterList
+    174:182:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    174:182:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    174:182:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    183:191:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):51:51 -> getFilterList
+    183:191:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    183:191:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    183:191:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    192:202:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):52:52 -> getFilterList
+    192:202:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    192:202:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    192:202:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    203:213:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):53:53 -> getFilterList
+    203:213:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    203:213:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    203:213:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    214:224:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):54:54 -> getFilterList
+    214:224:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    214:224:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    214:224:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    225:235:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):55:55 -> getFilterList
+    225:235:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    225:235:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    225:235:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    236:246:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):56:56 -> getFilterList
+    236:246:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    236:246:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    236:246:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    247:257:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):57:57 -> getFilterList
+    247:257:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    247:257:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    247:257:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    258:268:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):58:58 -> getFilterList
+    258:268:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    258:268:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    258:268:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    269:279:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):59:59 -> getFilterList
+    269:279:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    269:279:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    269:279:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    280:290:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):60:60 -> getFilterList
+    280:290:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    280:290:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    280:290:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    291:301:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):61:61 -> getFilterList
+    291:301:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    291:301:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    291:301:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    302:322:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):62:62 -> getFilterList
+    302:322:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    302:322:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    302:322:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    323:327:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int):40:40 -> getFilterList
+    323:327:void eu.kanade.tachiyomi.extension.tr.mangadenizi.CategoryFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):40 -> getFilterList
+    323:327:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):139 -> getFilterList
+    323:327:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    328:329:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140:140 -> getFilterList
+    328:329:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    330:334:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):71:71 -> getFilterList
+    330:334:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    330:334:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    330:334:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    335:343:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):72:72 -> getFilterList
+    335:343:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    335:343:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    335:343:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    344:352:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):73:73 -> getFilterList
+    344:352:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    344:352:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    344:352:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    353:361:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):74:74 -> getFilterList
+    353:361:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    353:361:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    353:361:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    362:370:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):75:75 -> getFilterList
+    362:370:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    362:370:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    362:370:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    371:383:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):76:76 -> getFilterList
+    371:383:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    371:383:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    371:383:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    384:389:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int):67:67 -> getFilterList
+    384:389:void eu.kanade.tachiyomi.extension.tr.mangadenizi.DemographicFilter.<init>(int,int,kotlin.jvm.internal.DefaultConstructorMarker):67 -> getFilterList
+    384:389:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140 -> getFilterList
+    384:389:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    390:403:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):140:140 -> getFilterList
+    390:403:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    404:407:eu.kanade.tachiyomi.source.model.FilterList eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getFilterList(kotlinx.serialization.json.JsonElement):136:136 -> getFilterList
+    404:407:eu.kanade.tachiyomi.source.model.FilterList keiyoushi.source.KeiSource.getFilterList():252 -> getFilterList
+    1:6:long getId():0:0 -> getId
+    1:3:java.lang.String getLang():15:15 -> getLang
+    1:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getLatestUpdates(int,kotlin.coroutines.Continuation):0:0 -> getLatestUpdates
+    1:1:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):363:363 -> getMangaUpdate
+    2:2:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):369:369 -> getMangaUpdate
+    3:3:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):371:371 -> getMangaUpdate
+    4:4:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):374:374 -> getMangaUpdate
+    5:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.fetchMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):0:0 -> getMangaUpdate
+    5:5:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):374 -> getMangaUpdate
+    6:6:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):363:363 -> getMangaUpdate
+    7:8:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):377:378 -> getMangaUpdate
+    9:9:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):376:376 -> getMangaUpdate
+    10:10:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):381:381 -> getMangaUpdate
+    11:11:java.lang.Object keiyoushi.source.KeiSource.getMangaUpdate(eu.kanade.tachiyomi.source.model.SManga,java.util.List,boolean,boolean,kotlin.coroutines.Continuation):371:371 -> getMangaUpdate
+    4:27:java.lang.String keiyoushi.source.KeiSource.getMangaUrl(eu.kanade.tachiyomi.source.model.SManga):422:422 -> getMangaUrl
+    1:3:java.lang.String getName():12:12 -> getName
+    1:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPageList(eu.kanade.tachiyomi.source.model.SChapter,kotlin.coroutines.Continuation):0:0 -> getPageList
+    1:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga(int,kotlin.coroutines.Continuation):0:0 -> getPopularManga
+    1:8:java.lang.Object keiyoushi.source.KeiSource.getSearchManga(int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):201:201 -> getSearchManga
+    9:13:java.lang.Object keiyoushi.source.KeiSource.getMangasByUrl(okhttp3.HttpUrl,int,kotlin.coroutines.Continuation):0:0 -> getSearchManga
+    9:13:java.lang.Object keiyoushi.source.KeiSource.getSearchManga(int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):202 -> getSearchManga
+    14:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList(int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):0:0 -> getSearchManga
+    14:18:java.lang.Object keiyoushi.source.KeiSource.getSearchManga(int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):205 -> getSearchManga
+    1:2:boolean keiyoushi.source.KeiSource.getSupportsLatest():157:157 -> getSupportsLatest
+    1:2:boolean keiyoushi.source.KeiSource.getSupportsRelatedMangas():390:390 -> getSupportsRelatedMangas
+    1:2:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):31:32 -> h
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;"}
+    3:3:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):31:31 -> h
+    4:4:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> h
+    4:4:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):144 -> h
+    5:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):145:145 -> h
+    6:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):144:144 -> h
+    7:7:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):146:146 -> h
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.getData():17:17 -> h
+    8:8:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):33 -> h
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    9:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):33:33 -> h
+    10:10:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData.getManga():22:22 -> h
+    10:10:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):33 -> h
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    11:11:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getData():32:32 -> h
+    11:11:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):34 -> h
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    12:14:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):147:149 -> h
+    15:15:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):34:34 -> h
+    16:16:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):149:149 -> h
+    17:17:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getCurrentPage():33:33 -> h
+    17:17:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):35 -> h
+    18:18:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getLastPage():34:34 -> h
+    18:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):35 -> h
+    19:19:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):36:36 -> h
+    20:20:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getPopularManga$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,kotlin.coroutines.Continuation):144:144 -> h
+    1:4:okhttp3.Headers$Builder keiyoushi.source.KeiSource.headersBuilder():141:141 -> headersBuilder
+    5:31:okhttp3.Headers$Builder keiyoushi.source.KeiSource.headersBuilder():142:142 -> headersBuilder
+    32:41:okhttp3.Headers$Builder keiyoushi.source.KeiSource.headersBuilder():143:143 -> headersBuilder
+    42:45:okhttp3.Headers$Builder keiyoushi.source.KeiSource.configureHeaders(okhttp3.Headers$Builder):0:0 -> headersBuilder
+    42:45:okhttp3.Headers$Builder keiyoushi.source.KeiSource.headersBuilder():144 -> headersBuilder
+    1:5:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):51:55 -> i
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;ILjava/lang/String;Leu/kanade/tachiyomi/source/model/FilterList;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;"}
+    6:6:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):158:158 -> i
+    7:9:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):59:61 -> i
+    10:12:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):65:67 -> i
+    13:15:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):71:73 -> i
+    16:18:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):77:79 -> i
+    19:19:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):86:86 -> i
+    20:20:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):88:88 -> i
+    21:21:java.lang.Object keiyoushi.network.OkHttpKt.get$default(okhttp3.OkHttpClient,okhttp3.HttpUrl,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation,int,java.lang.Object):33:33 -> i
+    21:21:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):88 -> i
+    22:22:java.lang.Object keiyoushi.network.OkHttpKt.get$default(okhttp3.OkHttpClient,okhttp3.HttpUrl,okhttp3.Headers,okhttp3.CacheControl,boolean,kotlin.coroutines.Continuation,int,java.lang.Object):30:30 -> i
+    22:22:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):88 -> i
+    23:23:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):51:51 -> i
+    24:24:kotlinx.serialization.json.Json keiyoushi.utils.JsonKt.getJsonInstance():18:18 -> i
+    24:24:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):160 -> i
+    25:25:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):161:161 -> i
+    26:26:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):160:160 -> i
+    27:27:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):162:162 -> i
+    28:28:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaApiResponse.getData():17:17 -> i
+    28:28:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):89 -> i
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    29:29:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):89:89 -> i
+    30:30:eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaIndexData.getManga():22:22 -> i
+    30:30:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):89 -> i
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    31:31:java.util.List eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getData():32:32 -> i
+    31:31:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):90 -> i
+      # {"id":"com.android.tools.r8.rewriteFrame","conditions":["throws(Ljava/lang/NullPointerException;)"],"actions":["removeInnerFrames(1)"]}
+    32:34:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):163:165 -> i
+    35:35:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):90:90 -> i
+    36:36:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):165:165 -> i
+    37:37:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getCurrentPage():33:33 -> i
+    37:37:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):91 -> i
+    38:38:int eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaListDataDto.getLastPage():34:34 -> i
+    38:38:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):91 -> i
+    39:39:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):92:92 -> i
+    40:40:java.lang.Object eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi.getSearchMangaList$suspendImpl(eu.kanade.tachiyomi.extension.tr.mangadenizi.MangaDenizi,int,java.lang.String,eu.kanade.tachiyomi.source.model.FilterList,kotlin.coroutines.Continuation):160:160 -> i
+    4:8:okhttp3.Request keiyoushi.source.KeiSource.imageRequest(eu.kanade.tachiyomi.source.model.Page):442:442 -> imageRequest
+    9:19:okhttp3.Request keiyoushi.source.KeiSource.imageRequest(eu.kanade.tachiyomi.source.model.Page):443:443 -> imageRequest
+    20:27:okhttp3.Request keiyoushi.source.KeiSource.imageRequest(eu.kanade.tachiyomi.source.model.Page):444:444 -> imageRequest
+    28:31:okhttp3.Request keiyoushi.source.KeiSource.imageRequest(eu.kanade.tachiyomi.source.model.Page):445:445 -> imageRequest
+    32:36:okhttp3.Request keiyoushi.source.KeiSource.imageRequest(eu.kanade.tachiyomi.source.model.Page):446:446 -> imageRequest
+keiyoushi.source.KeiSource$$ExternalSyntheticLambda0 -> o:
+# {"id":"sourceFile","fileName":"R8$$SyntheticClass"}
+# {"id":"com.android.tools.r8.synthesized"}
+    keiyoushi.source.KeiSource keiyoushi.source.KeiSource$$InternalSyntheticLambda$1$daf0d72822e9485d2531a746bc3152c3de4b00f33de78b31460bae62ba0c3212$0.f$0 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:6:void KeiSource$$ExternalSyntheticLambda0.<init>(keiyoushi.source.Generated):0:0 -> <init>
+      # {"id":"com.android.tools.r8.synthesized"}
+    1:7:java.lang.Object KeiSource$$ExternalSyntheticLambda0.invoke():0:0 -> invoke
+      # {"id":"com.android.tools.r8.synthesized"}
+keiyoushi.source.KeiSource$delegate$1 -> p:
+# {"id":"sourceFile","fileName":"KeiSource.kt"}
+    keiyoushi.source.KeiSource this$0 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    1:3:void <init>(keiyoushi.source.KeiSource):51:51 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;)V"}
+    4:6:void <init>(keiyoushi.source.KeiSource):0:0 -> <init>
+    1:11:okhttp3.Headers getValue():52:52 -> getValue
+    1:11:java.lang.Object getValue():51 -> getValue
+    1:2:boolean isInitialized():53:53 -> isInitialized
+keiyoushi.source.KeiSource$getMangaUpdate$1 -> q:
+# {"id":"sourceFile","fileName":"KeiSource.kt"}
+    java.lang.Object L$0 -> a
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Leu/kanade/tachiyomi/source/model/SManga;"}
+    java.lang.Object L$1 -> b
+    java.lang.Object result -> c
+    keiyoushi.source.KeiSource this$0 -> d
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> e
+    1:6:void <init>(keiyoushi.source.KeiSource,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:21:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+keiyoushi.source.KeiSource$getMangasByUrl$1 -> r:
+# {"id":"sourceFile","fileName":"KeiSource.kt"}
+    java.lang.Object L$0 -> a
+    java.lang.Object L$1 -> b
+    java.lang.Object result -> c
+    keiyoushi.source.KeiSource this$0 -> d
+      # {"id":"com.android.tools.r8.residualsignature","signature":"Lkeiyoushi/source/Generated;"}
+    int label -> e
+    1:6:void <init>(keiyoushi.source.KeiSource,kotlin.coroutines.Continuation):0:0 -> <init>
+      # {"id":"com.android.tools.r8.residualsignature","signature":"(Lkeiyoushi/source/Generated;Lkotlin/coroutines/Continuation;)V"}
+    1:18:java.lang.Object invokeSuspend(java.lang.Object):0:0 -> invokeSuspend
+keiyoushi.source.UrlActivity -> keiyoushi.source.UrlActivity:
+# {"id":"sourceFile","fileName":"UrlActivity.kt"}
+    1:4:void <init>():10:10 -> <init>
+    1:3:void onCreate(android.os.Bundle):12:12 -> onCreate
+    4:13:void onCreate(android.os.Bundle):13:13 -> onCreate
+    14:18:void onCreate(android.os.Bundle):15:15 -> onCreate
+    19:23:void onCreate(android.os.Bundle):16:16 -> onCreate
+    24:32:void onCreate(android.os.Bundle):17:17 -> onCreate
+    33:41:void onCreate(android.os.Bundle):18:18 -> onCreate
+    42:46:void onCreate(android.os.Bundle):21:21 -> onCreate
+    47:55:void onCreate(android.os.Bundle):23:23 -> onCreate
+    56:59:void onCreate(android.os.Bundle):26:26 -> onCreate
+    60:70:void onCreate(android.os.Bundle):27:27 -> onCreate
+keiyoushi.utils.DateKt -> R8$$REMOVED$$CLASS$$2:
+# {"id":"sourceFile","fileName":"Date.kt"}
+keiyoushi.utils.JsonKt -> n:
+# {"id":"sourceFile","fileName":"Json.kt"}
+    kotlinx.serialization.json.Json jsonInstance -> a
+    1:4:void <clinit>():18:18 -> <clinit>
+    5:9:void <clinit>():105:105 -> <clinit>
+    10:19:void <clinit>():104:104 -> <clinit>
+    20:21:void <clinit>():18:18 -> <clinit>
+    22:29:void <clinit>():20:20 -> <clinit>
+keiyoushi.utils.JsonKt$special$$inlined$get$1 -> m:
+# {"id":"sourceFile","fileName":"TypeInfo.kt"}
+    1:4:void <init>():27:27 -> <init>

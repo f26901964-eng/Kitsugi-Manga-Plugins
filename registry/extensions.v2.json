@@ -544,11 +544,11 @@
       {
         "name": "MangaDenizi",
         "packageName": "eu.kanade.tachiyomi.extension.tr.mangadenizi",
-        "versionName": "1.6.8",
-        "versionCode": "106008",
+        "versionName": "1.6.9",
+        "versionCode": "106009",
         "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadenizi-v1.6.8.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangadenizi-v1.6.9.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangadenizi.png"
         },
         "sources": [

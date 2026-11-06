@@ -1,0 +1,8 @@
+eu.kanade.tachiyomi.extension.mangadenizi-pngs-0 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/res/pngs/release
+eu.kanade.tachiyomi.extension.mangadenizi-updated_navigation_xml-1 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/generated/updated_navigation_xml/release
+eu.kanade.tachiyomi.extension.mangadenizi-packageReleaseResources-2 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/intermediates/incremental/release/packageReleaseResources/merged.dir
+eu.kanade.tachiyomi.extension.mangadenizi-packageReleaseResources-3 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/intermediates/incremental/release/packageReleaseResources/stripped.dir
+eu.kanade.tachiyomi.extension.mangadenizi-release-4 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/build/intermediates/merged_res/release/mergeReleaseResources
+eu.kanade.tachiyomi.extension.mangadenizi-mangadenizi-5 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/res
+eu.kanade.tachiyomi.extension.mangadenizi-release-6 /home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/mangadenizi/src/release/res
+gradleHome-0 /home/runner/.gradle
