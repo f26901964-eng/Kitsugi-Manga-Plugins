@@ -15,7 +15,7 @@ Yayın betiği (`tools/prepare_extension_release.py`) şu iki durumda **durur**:
 
 ## Etkin eklentiler
 
-Mevcut genel `builds` dağıtım dalında hâlen dört eklenti var; bu özellik dalında beşinci kaynak olan Turkmanga etkinleştirildi. GitHub Actions `1.6.1` (`106001`) APK'sını derleyip parser testlerini ve katalog senkronizasyonunu başarıyla tamamladı. APK ile güncel katalog dosyaları bu dala kaydedildi; genel `builds` dağıtımı için değişikliklerin `main` dalına alınması ve ana katalog iş akışının çalışması gerekir.
+Bu dal, `main`deki beş kaynağı (SadScans dahil) koruyup Turkmanga'yı altıncı olarak etkinleştirir. GitHub Actions `1.6.2` (`106002`) APK'sını derleyip parser testlerini ve altı kaynaklı katalog senkronizasyonunu başarıyla tamamladı. APK ile katalog dosyaları bu dala kaydedildi; genel `builds` dağıtımını `main` dalındaki katalog yayın iş akışı günceller.
 
 | Eklenti | Site | Sürüm | Kod |
 |---|---|---|---|
@@ -23,11 +23,12 @@ Mevcut genel `builds` dağıtım dalında hâlen dört eklenti var; bu özellik 
 | MangaciX | https://mangacix.com | 1.6.2 | 106002 |
 | Mangitto | https://mangtto.com | 1.6.3 | 106003 |
 | OkuToon | https://okutoon.com | 1.6.11 | 106011 |
-| Turkmanga | https://turkmanga.org | 1.6.1 (CI doğrulandı) | 106001 |
+| SadScans | https://sadscans.net | 1.6.1 | 106001 |
+| Turkmanga | https://turkmanga.org | 1.6.2 (CI doğrulandı) | 106002 |
 
 ## Turkmanga CI doğrulaması
 
-[Turkmanga parser verification and APK release](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42239309902) çalışması başarılı oldu: parser birim testleri ve APK derlemesi geçti; katalog senkronizasyonu ve depo testleri de tamamlandı. APK `prebuilt/apk/tachiyomi-tr.turkmanga-v1.6.1.apk` yolunda bulunur (SHA-256 `b3d36ea77bc7c0efed116539d66db04dde30be10773ba5d4b64192221df4a9c3`). Testler paylaşılan HTML biçimlerinden alınan fixtures üzerindedir; canlı siteye veya uygulama cihazına uçtan uca istek yapılmadı.
+[Turkmanga parser verification and APK release](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42241616480) çalışması başarılı oldu: parser birim testleri ve APK derlemesi geçti; altı kaynaklı katalog senkronizasyonu ve depo testleri tamamlandı. APK `prebuilt/apk/tachiyomi-tr.turkmanga-v1.6.2.apk` yolunda bulunur (SHA-256 `1e6d06e1f73c0f716bcc9d0467843f88ce705a176c0887aba910a8ff906b4b77`). Testler paylaşılan HTML biçimlerinden alınan fixtures üzerindedir; canlı siteye veya uygulama cihazına uçtan uca istek yapılmadı.
 
 ## Canlı doğrulama
 
