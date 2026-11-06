@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.sadscans
 
+import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -12,13 +13,16 @@ import keiyoushi.source.KeiSource
 import keiyoushi.utils.asJsoup
 import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
-import keiyoushi.utils.tryParse
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -33,14 +37,18 @@ import kotlin.time.Instant
 /**
  * SadScans (https://sadscans.net) — Next.js + tRPC tabanlı "iken" manga platformu.
  *
- * Güncel site yapısı:
- *  - Seri listesi / arama: `GET /api/query?page=&perPage=&searchTerm=&orderBy=&orderDirection=`
- *  - Seri detayları:        `GET /api/post?postSlug={slug}`
- *  - Bölüm listesi:        `GET /api/chapters?postId={id}&skip=0&take=900&order=desc&userid=`
- *  - Sayfa resimleri:      `GET /api/chapter?chapterId={id}` (yedek: okuyucu sayfasındaki
- *    NEXT/RSC gömülü JSON'u veya HTML img etiketleri)
- *  - Web adresleri: `/seriler/{slug}` ve `/reader/{seri}/{bolum}/{id}`
- *  - Görseller `/api/uploads/assets/...` altında; site Cloudflare arkasında.
+ * Güncel site yapısı (canlı siteden çıkarılan JS chunk'ları + HTML dökümleri):
+ *  - Seri listesi / arama: `GET /api/trpc/_s4d7g2k9m0.getSeries?batch=1&input={"0":{"json":{"search":...,"page":...,"limit":15}}}`
+ *    -> `[{result:{data:{json:[{id,href,thumb,name,status,views,ratingAverage,ratingCount,type}]}}}]`
+ *  - Türler:               `GET /api/trpc/tur.getAll` -> `[{id,name,slug}]`
+ *  - Seri detay + bölümler: `GET /api/trpc/_n3p6q1v8x5.getSeriesData?batch=1&input={"0":{"json":{"sef":<slug>,"page":1,"limit":50}}}`
+ *    -> `{series:{...}, chapters:[{chap_id,name,no,...}], pagination:{totalPages,...}}`
+ *  - Bölüm okuma: `/reader/{seriesSlug}/{chapterSlug}/{chapterId}` (kısa form `/reader/{chapterId}` de çalışır)
+ *  - Görseller `/api/uploads/assets/series/{seriesId}/{chapterId}/images/...` altında; site Cloudflare arkasında.
+ *
+ * tRPC batch zarfı: `?batch=1&input=<urlencoded {"0":{"json":...}}>`, yanıt `[{result:{data:{json:...}}}]`.
+ * Router adları canlı sitede build-time hash; chapter görselleri için birden fazla aday
+ * endpoint sırayla denenir (bkz. [chapterImageProcedures]), yedek olarak okuyucu HTML'i kazınır.
  */
 @Source
 abstract class Sadscans : KeiSource() {
@@ -56,37 +64,73 @@ abstract class Sadscans : KeiSource() {
             .build()
     }
 
+    // ============================== tRPC plumbing ==============================
+
+    private val trpcJson = Json { ignoreUnknownKeys = true }
+
+    /** `<searchRouter>.getSeries` — canlı sitede build hash'i `_s4d7g2k9m0`. */
+    protected open val seriesListRouter: String = "_s4d7g2k9m0"
+
+    /** `<detailRouter>.getSeriesData` — canlı sitede build hash'i `_n3p6q1v8x5`. */
+    protected open val seriesDetailRouter: String = "_n3p6q1v8x5"
+
+    protected open val genreRouter: String = "tur"
+
+    protected open val chapterImageProcedures: List<String> = listOf(
+        "$seriesDetailRouter.getChapterData",
+        "$seriesDetailRouter.getChapter",
+        "$seriesDetailRouter.getPages",
+        "$seriesListRouter.getChapterData",
+        "chapterSingle.getChapterData",
+        "chapterSingle.getChapter",
+        "chapter.getChapterData",
+        "chapter.getById",
+        "chapters.getById",
+    )
+
+    private suspend fun trpcCall(procedure: String, input: JsonElement?): JsonElement {
+        val inputParam = buildJsonObject {
+            put("0", buildJsonObject { put("json", input ?: JsonNull) })
+        }.toString()
+        val url = "$baseUrl/api/trpc/$procedure".toHttpUrl().newBuilder()
+            .addQueryParameter("batch", "1")
+            .addQueryParameter("input", inputParam)
+            .build()
+        val batch = client.get(url, apiHeaders).parseAs<List<TrpcBatchItem>>()
+        val payload = batch.firstOrNull()?.result?.data?.json
+            ?: error("SadScans: tRPC yanıtı boş: $procedure")
+        return payload
+    }
+
+    private suspend fun trpcCallArray(procedure: String, input: JsonElement?): JsonArray = trpcCall(procedure, input) as? JsonArray ?: error("SadScans: tRPC dizi bekleniyordu: $procedure")
+
+    private suspend fun trpcCallObject(procedure: String, input: JsonElement?): JsonObject = trpcCall(procedure, input) as? JsonObject ?: error("SadScans: tRPC nesne bekleniyordu: $procedure")
+
     // ============================== Popular / Latest / Search ==============================
 
-    override suspend fun getPopularManga(page: Int): MangasPage = fetchQuery(page, "totalViews", "desc", null)
+    override suspend fun getPopularManga(page: Int): MangasPage = fetchSeries(page, "-views", null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchQuery(page, "updatedAt", "desc", null)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = fetchSeries(page, "-updatedAt", null)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
-        val (orderBy, orderDirection) = filters.firstInstanceOrNull<SortFilter>()?.selected
-            ?: ("updatedAt" to "desc")
-        return fetchQuery(page, orderBy, orderDirection, query.trim().ifBlank { null })
+        val sort = filters.firstInstanceOrNull<SortFilter>()?.selected ?: "-views"
+        return fetchSeries(page, sort, query.trim().ifBlank { null })
     }
 
     override fun getFilterList(data: JsonElement?): FilterList = FilterList(SortFilter())
 
-    private suspend fun fetchQuery(
-        page: Int,
-        orderBy: String,
-        orderDirection: String,
-        query: String?,
-    ): MangasPage {
-        val url = "$baseUrl/api/query".toHttpUrl().newBuilder().apply {
-            addQueryParameter("page", page.toString())
-            addQueryParameter("perPage", PAGE_SIZE.toString())
-            addQueryParameter("searchTerm", query.orEmpty())
-            addQueryParameter("orderBy", orderBy)
-            addQueryParameter("orderDirection", orderDirection)
-        }.build()
-        val dto = client.get(url, apiHeaders).parseAs<QueryResponseDto>()
-        val mangas = dto.posts
-            .filter { !it.isNovelEntry && !it.slug.isNullOrBlank() }
-            .map { it.toSManga() }
+    private suspend fun fetchSeries(page: Int, sortBy: String, query: String?): MangasPage {
+        val input = buildJsonObject {
+            put("page", JsonPrimitive(page))
+            put("limit", JsonPrimitive(PAGE_SIZE))
+            put("sortBy", JsonPrimitive(sortBy))
+            if (query != null) put("search", JsonPrimitive(query))
+        }
+        val items = trpcCallArray("$seriesListRouter.getSeries", input)
+            .map { it.jsonObject }
+            .mapNotNull { runCatching { trpcJson.decodeFromJsonElement(SeriesItemDto.serializer(), it) }.getOrNull() }
+            .filter { !it.href.isNullOrBlank() && !it.name.isNullOrBlank() }
+        val mangas = items.map { it.toSManga() }
         return MangasPage(mangas, mangas.size >= PAGE_SIZE)
     }
 
@@ -108,31 +152,82 @@ abstract class Sadscans : KeiSource() {
         fetchChapters: Boolean,
     ): SMangaUpdate {
         val slug = manga.url.removePrefix("/seriler/").substringBefore('/')
-        val post = client.get(
-            "$baseUrl/api/post".toHttpUrl().newBuilder()
-                .addQueryParameter("postSlug", slug)
-                .build(),
-            apiHeaders,
-        ).parseAs<PostResponseDto>().post ?: error("SadScans: seri bulunamadı: $slug")
-
-        val details = if (fetchDetails) post.toSMangaDetails(slug) else manga
-        val chapterList = if (fetchChapters) fetchChapters(slug, post.idString) else chapters
+        val details = if (fetchDetails) fetchDetails(slug, manga) else manga
+        val chapterList = if (fetchChapters) fetchChapters(slug) else chapters
         return SMangaUpdate(details.apply { url = manga.url }, chapterList)
     }
 
-    private suspend fun fetchChapters(seriesSlug: String, postId: String?): List<SChapter> {
-        if (postId.isNullOrBlank()) return emptyList()
-        val url = "$baseUrl/api/chapters".toHttpUrl().newBuilder().apply {
-            addQueryParameter("postId", postId)
-            addQueryParameter("skip", "0")
-            addQueryParameter("take", "900")
-            addQueryParameter("order", "desc")
-            addQueryParameter("userid", "")
-        }.build()
-        val dto = client.get(url, apiHeaders).parseAs<ChaptersResponseDto>()
-        val chapters = dto.post?.chapters.orEmpty()
-            .filter { !it.locked && !it.slug.isNullOrBlank() }
-        return chapters.sortedByDescending { it.number ?: 0f }.map { it.toSChapter(seriesSlug) }
+    private suspend fun fetchDetails(slug: String, fallback: SManga): SManga {
+        val data = fetchSeriesDataPage(slug, 1)
+        val series = data?.series ?: return fallback
+        return SManga.create().apply {
+            url = "/seriler/${series["slug"]?.stringOrNull()?.ifBlank { null } ?: slug}"
+            title = series["name"]?.stringOrNull()?.trim()?.ifBlank { null }
+                ?: series["title"]?.stringOrNull()?.trim()?.ifBlank { null }
+                ?: fallback.title
+            thumbnail_url = listOf("cover", "thumb", "image", "featuredImage")
+                .firstNotNullOfOrNull { series[it]?.stringOrNull()?.ifBlank { null } }
+                ?.let(::absolute)
+                ?: fallback.thumbnail_url
+            description = listOf("description", "desc", "content", "summary")
+                .firstNotNullOfOrNull { series[it]?.stringOrNull()?.ifBlank { null } }
+                ?: fallback.description
+            author = listOfNotNull(
+                series["author"]?.stringOrNull()?.trim()?.ifBlank { null },
+                series["artist"]?.stringOrNull()?.trim()?.ifBlank { null },
+            ).joinToString().ifBlank { null }
+            genre = parseGenres(series).joinToString().ifBlank { null }
+            status = parseStatus(series["status"]?.stringOrNull() ?: series["durum"]?.stringOrNull())
+        }
+    }
+
+    private fun parseGenres(series: JsonObject): List<String> {
+        val arr = series["genres"] ?: series["turs"] ?: series["turler"] ?: series["tags"] ?: return emptyList()
+        if (arr !is JsonArray) return emptyList()
+        return arr.mapNotNull { item ->
+            when (item) {
+                is JsonObject -> item["name"]?.stringOrNull()?.trim()?.ifBlank { null }
+                else -> item.contentOrNullOrNull()?.ifBlank { null }
+            }
+        }.distinct()
+    }
+
+    private fun parseStatus(status: String?): Int {
+        if (status.isNullOrBlank()) return SManga.UNKNOWN
+        val n = status.trim().lowercase(Locale("tr"))
+        return when {
+            n.contains("devam") -> SManga.ONGOING
+            n.contains("tamamland") || n == "completed" -> SManga.COMPLETED
+            n.contains("birak") || n == "dropped" || n == "cancelled" -> SManga.CANCELLED
+            n.contains("ara ver") || n.contains("hiatus") || n.contains("bekle") -> SManga.ON_HIATUS
+            n.contains("yakında") || n == "coming_soon" -> SManga.UNKNOWN
+            else -> SManga.UNKNOWN
+        }
+    }
+
+    private suspend fun fetchSeriesDataPage(slug: String, page: Int): SeriesDataDto? {
+        val input = buildJsonObject {
+            put("sef", JsonPrimitive(slug))
+            put("page", JsonPrimitive(page))
+            put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
+        }
+        return runCatching {
+            trpcJson.decodeFromJsonElement(SeriesDataDto.serializer(), trpcCallObject("$seriesDetailRouter.getSeriesData", input))
+        }.getOrNull()
+    }
+
+    private suspend fun fetchChapters(slug: String): List<SChapter> {
+        val all = mutableListOf<ChapterItemDto>()
+        var page = 1
+        while (true) {
+            val data = fetchSeriesDataPage(slug, page) ?: break
+            all += data.chapters
+            val totalPages = data.pagination?.totalPages ?: 1
+            if (page >= totalPages || data.chapters.isEmpty()) break
+            page++
+        }
+        return all.mapNotNull { it.toSChapter(slug) }
+            .sortedByDescending { it.chapter_number }
     }
 
     // ============================== Reader pages ==============================
@@ -141,121 +236,139 @@ abstract class Sadscans : KeiSource() {
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val chapterId = chapter.url.substringAfterLast('/')
+        val seriesSlug = chapter.url.removePrefix("/reader/").substringBefore('/')
+        val chapterSlug = chapter.url.removePrefix("/reader/$seriesSlug/").substringBefore('/')
 
-        // 1) JSON API
-        val apiImages = runCatching {
-            val url = "$baseUrl/api/chapter".toHttpUrl().newBuilder()
-                .addQueryParameter("chapterId", chapterId)
-                .build()
-            client.get(url, apiHeaders).parseAs<ChapterResponseDto>().chapter
-        }.getOrNull()
-        if (apiImages != null) {
-            if (apiImages.isLocked == true || apiImages.isAccessible == false) {
-                error("SadScans: bu bölümün kilidi açılmamış")
-            }
-            val urls = apiImages.images.sortedBy { it.order ?: Int.MAX_VALUE }
-                .mapNotNull { it.anyUrl?.let(::absolute) }
-            if (urls.isNotEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
+        // 1) tRPC chapter endpoint candidates
+        for (procedure in chapterImageProcedures) {
+            val urls = runCatching {
+                fetchChapterImages(procedure, chapterId, chapterSlug)
+            }.getOrNull()
+            if (!urls.isNullOrEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
         }
 
-        // 2) Okuyucu sayfası: NEXT/RSC gömülü JSON'u
+        // 2) Reader page HTML / RSC payload fallback
         val doc = client.get(getChapterUrl(chapter)).asJsoup()
-        embeddedImages(doc)?.let { urls ->
-            if (urls.isNotEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
-        }
-
-        // 3) HTML içindeki img etiketleri
-        val imgUrls = doc.select("img[src*='/api/uploads']")
+        val urls = doc.select("img.reader-img, main img[src*='/api/uploads']")
             .mapNotNull { img -> img.attr("src").ifBlank { img.attr("data-src") }.takeIf { it.isNotBlank() }?.let(::absolute) }
+            .ifEmpty {
+                doc.select("script").flatMap { s ->
+                    Regex("/api/uploads/assets/[^\"\\\\ ]+").findAll(s.data()).map { it.value }.toList()
+                }.map(::absolute)
+            }
             .distinct()
-        if (imgUrls.isNotEmpty()) return imgUrls.mapIndexed { index, u -> Page(index, imageUrl = u) }
+        if (urls.isNotEmpty()) return urls.mapIndexed { index, u -> Page(index, imageUrl = u) }
 
         error("SadScans: bölüm görselleri bulunamadı: ${chapter.url}")
     }
 
-    /** Okuyucu sayfasındaki script bloklarında "images" anahtarından sonraki JSON dizisini çıkarır. */
-    private fun embeddedImages(doc: org.jsoup.nodes.Document): List<String>? {
-        val script = doc.select("script").firstOrNull { it.data().contains("images") } ?: return null
-        val data = script.data()
-        val keyIndex = data.indexOf("images")
-        val start = data.indexOf('[', keyIndex)
-        if (start == -1) return null
-        var depth = 1
-        var i = start + 1
-        while (i < data.length && depth > 0) {
-            when (data[i]) {
-                '[' -> depth++
-                ']' -> depth--
+    private suspend fun fetchChapterImages(procedure: String, chapterId: String, chapterSlug: String): List<String> {
+        val inputVariants = listOf(
+            buildJsonObject { put("id", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("chap_id", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("chapterId", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("sef", JsonPrimitive(chapterSlug)) },
+        )
+        for (input in inputVariants) {
+            val payload = runCatching { trpcCall(procedure, input) }.getOrNull() ?: continue
+            val urls = extractImageUrls(payload)
+            if (urls.isNotEmpty()) return urls
+        }
+        return emptyList()
+    }
+
+    private fun extractImageUrls(payload: JsonElement?): List<String> = when (payload) {
+        is JsonArray -> payload.mapNotNull { imageUrlFromJson(it) }
+
+        is JsonObject -> {
+            for (key in listOf("images", "pages", "files")) {
+                val arr = payload[key] as? JsonArray ?: continue
+                val urls = arr.mapNotNull { imageUrlFromJson(it) }
+                if (urls.isNotEmpty()) return urls
             }
-            i++
+            payload.values.filter { it is JsonObject || it is JsonArray }
+                .flatMap { extractImageUrls(it) }
         }
-        val json = data.substring(start, i).replace("\\/", "/").replace("\\\"", "\"")
-        val element = runCatching { Json.parseToJsonElement(json) }.getOrNull() ?: return null
-        return when (element) {
-            is JsonArray -> element.mapNotNull { item -> item.imageUrl()?.let(::absolute) }
-            is JsonObject -> element["images"]?.imageUrlList()?.map(::absolute)
-            else -> null
-        }
+
+        else -> emptyList()
     }
 
-    private fun JsonElement.imageUrl(): String? = when (this) {
-        is JsonObject -> (this["url"] ?: this["src"] ?: this["image"])?.jsonPrimitive?.contentOrNull
-        is JsonPrimitive -> contentOrNull?.takeIf { it.startsWith("http") || it.startsWith("/") }
-        else -> null
-    }
+    private fun imageUrlFromJson(item: JsonElement): String? = when (item) {
+        is JsonObject -> listOf("url", "src", "image", "path", "file")
+            .firstNotNullOfOrNull { item[it]?.contentOrNullOrNull()?.takeIf { s -> s.startsWith("http") || s.startsWith("/") } }
+            ?.let(::absolute)
 
-    private fun JsonElement.imageUrlList(): List<String>? = when (this) {
-        is JsonArray -> mapNotNull { it.imageUrl() }
+        is JsonPrimitive -> item.contentOrNull?.takeIf { it.startsWith("http") || it.startsWith("/") }?.let(::absolute)
+
         else -> null
     }
 
     // ============================== Helpers ==============================
+
+    private fun JsonElement?.stringOrNull(): String? = (this as? JsonPrimitive)?.contentOrNull
+
+    private fun JsonElement?.contentOrNullOrNull(): String? = (this as? JsonPrimitive)?.contentOrNull
 
     private fun absolute(path: String): String = when {
         path.startsWith("http") -> path
         else -> baseUrl.trimEnd('/') + "/" + path.trimStart('/')
     }
 
-    private fun PostDto.toSManga(): SManga = SManga.create().apply {
-        url = "/seriler/$slug"
-        title = postTitle?.trim().orEmpty()
-        thumbnail_url = featuredImage?.let(::absolute)
+    private fun SeriesItemDto.toSManga(): SManga = SManga.create().apply {
+        val slugPath = href?.trimStart('/') ?: "seriler/$slug"
+        url = if (slugPath.startsWith("seriler/")) "/$slugPath" else "/seriler/${slug ?: slugPath.substringAfterLast('/')}"
+        title = name.orEmpty()
+        thumbnail_url = thumb?.let(::absolute)
     }
 
-    private fun PostDto.toSMangaDetails(fallbackSlug: String): SManga = SManga.create().apply {
-        url = "/seriler/${slug ?: fallbackSlug}"
-        title = postTitle?.trim()?.ifBlank { null } ?: fallbackSlug
-        thumbnail_url = featuredImage?.let(::absolute)
-        description = this@toSMangaDetails.postContent ?: this@toSMangaDetails.description
-        author = listOfNotNull(
-            this@toSMangaDetails.author?.trim()?.ifBlank { null },
-            this@toSMangaDetails.artist?.trim()?.ifBlank { null },
-        ).joinToString().ifBlank { null }
-        val genreNames = this@toSMangaDetails.genres.orEmpty().mapNotNull { it.name?.trim()?.ifBlank { null } }.distinct()
-        if (genreNames.isNotEmpty()) genre = genreNames.joinToString()
-        status = when (this@toSMangaDetails.seriesStatus?.uppercase()) {
-            "ONGOING" -> SManga.ONGOING
-            "COMPLETED" -> SManga.COMPLETED
-            "HIATUS" -> SManga.ON_HIATUS
-            "DROPPED", "CANCELLED" -> SManga.CANCELLED
-            else -> SManga.UNKNOWN
+    private fun ChapterItemDto.toSChapter(seriesSlug: String): SChapter? {
+        val id = idString ?: return null
+        val num = numberValue ?: 0f
+        val chSlug = slug?.ifBlank { null }
+            ?: href?.substringAfterLast('/')?.ifBlank { null }
+            ?: slugifyChapter(num, name)
+        return SChapter.create().apply {
+            url = "/reader/$seriesSlug/$chSlug/$id"
+            name = name?.trim()?.ifBlank { null } ?: "Bölüm ${num.trimNumber()}"
+            chapter_number = num
+            date_upload = listOfNotNull(createdAt, date).firstNotNullOfOrNull { raw ->
+                runCatching { Instant.parse(raw).toEpochMilliseconds() }.getOrNull()
+                    ?: runCatching { SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(raw.substringBefore('T'))?.time }.getOrNull()
+            } ?: 0L
         }
     }
 
-    private fun ChapterDto.toSChapter(seriesSlug: String): SChapter = SChapter.create().apply {
-        val chapterSlug = slug.orEmpty()
-        url = "/reader/$seriesSlug/$chapterSlug/${idString.orEmpty()}"
-        val num = number ?: 0f
-        name = title?.trim()?.ifBlank { null } ?: "Bölüm ${num.trimNumber()}"
-        chapter_number = num
-        date_upload = createdAt?.let { raw ->
-            Instant.tryParse(raw)
-                ?: SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH).parse(raw.substringBefore('T'))?.time
-                ?: 0L
-        } ?: 0L
+    private fun slugifyChapter(no: Float, title: String?): String {
+        val base = buildString {
+            append(no.trimNumber())
+            if (!title.isNullOrBlank()) append(" - ").append(title.trim())
+        }
+        return base.lowercase(Locale("tr"))
+            .replace(Regex("[^a-z0-9\\s-]"), "")
+            .trim()
+            .replace(Regex("\\s+"), "-")
+            .replace(Regex("-+"), "-")
+            .trim('-')
+            .ifBlank { "bolum-${no.trimNumber()}" }
     }
 
     private fun Float.trimNumber(): String = if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
+
+    private class SortFilter(state: Int = 0) :
+        Filter.Select<String>(
+            "Sırala",
+            arrayOf("Popüler", "Güncel", "Yeni", "İsim (A-Z)", "İsim (Z-A)"),
+            state,
+        ) {
+        val selected: String
+            get() = when (state) {
+                0 -> "-views"
+                1 -> "-updatedAt"
+                2 -> "-id"
+                3 -> "name"
+                else -> "-name"
+            }
+    }
 
     private class CommonHeadersInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
@@ -268,6 +381,7 @@ abstract class Sadscans : KeiSource() {
     }
 
     companion object {
-        private const val PAGE_SIZE = 24
+        private const val PAGE_SIZE = 15
+        private const val CHAPTER_PAGE_LIMIT = 50
     }
 }
