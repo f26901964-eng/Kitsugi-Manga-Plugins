@@ -42,7 +42,7 @@ abstract class Turkmanga : KeiSource() {
         val parsed = TurkmangaParser.parseMangaList(client.get(url).asJsoup(), baseUrl, page, newestFirst)
         val mangas = parsed.mangas.map { summary ->
             SManga.create().apply {
-                url = summary.url
+                this.url = summary.url
                 title = summary.title
                 thumbnail_url = summary.thumbnailUrl
                 description = summary.description

@@ -241,7 +241,7 @@ internal object TurkmangaParser {
         baseUrl: String,
         mangaSlug: String,
         defaultTranslator: String?,
-    ): SChapter? {
+    ): ChapterSummary? {
         val obj = element as? JsonObject ?: return null
         val rawUrl = obj.string("url") ?: obj.string("@id")
             ?: obj.string("slug")?.let { "$baseUrl/manga/$mangaSlug/$it" }
