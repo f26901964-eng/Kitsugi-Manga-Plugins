@@ -1,0 +1,99 @@
+{
+  "generatedAt": "2026-11-06T10:53:04Z",
+  "passed": 7,
+  "total": 10,
+  "checks": [
+    {
+      "name": "okutoon: search page answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "url": "https://okutoon.com/tur?q=solo+leveling&sayfa=1"
+      }
+    },
+    {
+      "name": "okutoon: listing uses .series-grid .series-card",
+      "ok": true,
+      "detail": {
+        "grid": 1,
+        "cards": 12
+      }
+    },
+    {
+      "name": "okutoon: .series-card-title yields manga names",
+      "ok": true,
+      "detail": {
+        "titles": [
+          "Solo Leveling: Ragnarok",
+          "Solo Leveling"
+        ]
+      }
+    },
+    {
+      "name": "okutoon: searching \"solo leveling\" finds the series",
+      "ok": true,
+      "detail": {
+        "soloMentions": 8
+      }
+    },
+    {
+      "name": "okutoon: series links are readable from the cards",
+      "ok": false,
+      "detail": {
+        "first": null
+      }
+    },
+    {
+      "name": "okutoon: pagination markup exists (nav.pagination + Sonraki)",
+      "ok": false,
+      "detail": {
+        "pager": 0,
+        "sonraki": 0
+      }
+    },
+    {
+      "name": "okutoon: series page answers 200",
+      "ok": true,
+      "detail": {
+        "status": 200,
+        "url": "https://okutoon.com/solo-leveling"
+      }
+    },
+    {
+      "name": "okutoon: series detail selectors are present",
+      "ok": true,
+      "detail": {
+        "title": 1,
+        "author": 1,
+        "cover": 1,
+        "genres": 1,
+        "status": 1,
+        "description": 1
+      }
+    },
+    {
+      "name": "okutoon: chapter rows use .chapter-item > a.chapter-item-link",
+      "ok": false,
+      "detail": {
+        "rows": 402,
+        "links": 0,
+        "firstTitle": "Bölüm 200",
+        "firstDate": "26 Mart 2026"
+      }
+    },
+    {
+      "name": "okutoon: .chapter-title / .chapter-date are usable",
+      "ok": true,
+      "detail": {
+        "titles": [
+          "Bölüm 200",
+          "Bölüm 199",
+          "Bölüm 198"
+        ],
+        "dates": [
+          "26 Mart 2026"
+        ]
+      }
+    }
+  ]
+}
