@@ -9,7 +9,7 @@ on:
       - .github/workflows/merlintoon-verify.yml
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   verify:
@@ -56,3 +56,12 @@ jobs:
         with:
           name: merlintoon-artifacts
           path: /tmp/merlintoon-artifacts.tar.gz
+      - name: Save verified APK and catalog on this branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/merlinscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'merlintoon: activate verified APK and catalogs [skip ci]'
+          git push origin HEAD:arena/513348c3-kitsugi-manga-plugins
