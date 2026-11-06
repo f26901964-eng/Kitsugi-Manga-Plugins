@@ -1,7 +1,7 @@
 name: SadScans live request verification
 on:
   push:
-    branches: [arena/9e5cc01a-kitsugi-manga-plugins]
+    branches: [arena/9e5cc01a-kitsugi-manga-plugins, arena/e222c71c-kitsugi-manga-plugins]
     paths:
       - tools/probe_sadscans.py
       - .github/workflows/sadscans-live.yml
