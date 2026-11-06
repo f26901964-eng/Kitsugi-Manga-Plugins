@@ -81,17 +81,19 @@ internal object SadscansFrontend {
                 let state = window.__sadscansDetails;
                 if (!state) {
                     if (!rows.length && !text.includes('Henüz bölüm eklenmemiş.')) return null;
+                    const before = rows.map(el => el.href).join('|');
                     if (target > 1) {
                         const button = document.querySelector('button[aria-label="Sayfa ' + target + '"]');
                         if (!button) return JSON.stringify({error:'SadScans bölüm sayfası bulunamadı.'});
                         button.click();
                     }
-                    state = {changed:Date.now(), fingerprint:''};
+                    state = {changed:Date.now(), fingerprint:'', before:before};
                     window.__sadscansDetails = state;
                     return null;
                 }
                 if (Date.now() - state.changed < 1500) return null;
                 if (!rows.length && !text.includes('Henüz bölüm eklenmemiş.')) return null;
+                if (target > 1 && rows.map(el => el.href).join('|') === state.before) return null;
                 const chapters = rows.map(el => {
                     const url = new URL(el.href);
                     const parts = url.pathname.split('/').filter(Boolean);

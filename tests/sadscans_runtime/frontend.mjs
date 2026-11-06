@@ -10,6 +10,10 @@ const list = templates[0].replace('$options', JSON.stringify({query:'Chainsaw "M
 let clock = 0;
 function environment(html, path='/seriler') {
   const {window} = parseHTML(html);
+  // linkedom's window proxy falls back to the Node global; reset per fixture.
+  window.__sadscansFrontend = undefined;
+  window.__sadscansDetails = undefined;
+  window.__sadscansReader = undefined;
   let scrolls=0;
   const context = vm.createContext({window, document:window.document, location:{pathname:path,href:'https://sadscans.net'+path}, HTMLInputElement:window.HTMLInputElement,Event:window.Event,Date:{now:()=>clock},URL,Map,Set,JSON});
   window.scrollTo=()=>scrolls++;
@@ -66,3 +70,21 @@ assert.equal(details.chapters[0].no,'1');
 assert.equal(details.chapters[0].href,'/reader/chainsaw-man/1-bolum-kopek-ve-testere/hash1');
 assert.equal(details.pagination.totalPages,2);
 console.log('PASS: detail title, canonical reader URL, chapter number and pagination');
+const loading=environment('<html><body><input placeholder="Aramak istediğiniz seriyi yazın"><div class="animate-pulse"></div></body></html>');
+loading.window.__sadscansFrontend={phase:2,changed:0,fingerprint:''};
+assert.equal(loading.run(list),null,'loading must not become an empty success');
+const empty=environment('<html><body><input placeholder="Aramak istediğiniz seriyi yazın">Seçilen filtreler için sonuç bulunamadı</body></html>');
+empty.window.__sadscansFrontend={phase:2,changed:0,fingerprint:'[]'};
+assert.equal(JSON.parse(empty.run(list)).items.length,0);
+const schemaOnly=environment('<html><body><script type="application/ld+json">{"image":"https://sadscans.net/api/uploads/assets/series/a/chapter123/images/cover.jpg"}</script></body></html>','/reader/s/c/chapter123');
+assert.equal(schemaOnly.run(reader),null);
+assert.equal(schemaOnly.run(reader),null,'schema-only HTML must not become reader success');
+const detail2=templates[1].replace('$page','2');
+const stale=environment(`<html><body><h1>Test</h1><a href="https://sadscans.net/reader/s/c/hash1"><h3>1. Bölüm</h3></a><button aria-label="Sayfa 2"></button></body></html>`,'/seriler/test');
+assert.equal(stale.run(detail2),null);
+assert.equal(stale.run(detail2),null,'must not relabel page 1 chapters as page 2');
+stale.window.document.querySelector('a').setAttribute('href','https://sadscans.net/reader/s/c/hash2');
+stale.window.document.querySelector('h3').textContent='2. Bölüm';
+assert.equal(stale.run(detail2),null);
+assert.equal(JSON.parse(stale.run(detail2)).chapters[0].chap_id,'hash2');
+console.log('PASS: loading vs empty, schema-only rejection, stale chapter-pagination rejection');

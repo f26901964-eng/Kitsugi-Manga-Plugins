@@ -54,4 +54,5 @@ jobs:
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/sadscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'sadscans: publish verified SadScans APK [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
           git push origin "HEAD:${GITHUB_REF_NAME}"
