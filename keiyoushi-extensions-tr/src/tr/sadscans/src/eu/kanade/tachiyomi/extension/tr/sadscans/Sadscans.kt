@@ -123,10 +123,10 @@ abstract class Sadscans : KeiSource() {
 
     private suspend fun fetchSeries(page: Int, sortBy: String, query: String?): MangasPage {
         val input = buildJsonObject {
-            put("page", page)
-            put("limit", PAGE_SIZE)
-            put("sortBy", sortBy)
-            if (query != null) put("search", query)
+            put("page", JsonPrimitive(page))
+            put("limit", JsonPrimitive(PAGE_SIZE))
+            put("sortBy", JsonPrimitive(sortBy))
+            if (query != null) put("search", JsonPrimitive(query))
         }
         val items = trpcCallArray("$seriesListRouter.getSeries", input)
             .map { it.jsonObject }
@@ -202,16 +202,16 @@ abstract class Sadscans : KeiSource() {
             n.contains("tamamland") || n == "completed" -> SManga.COMPLETED
             n.contains("birak") || n == "dropped" || n == "cancelled" -> SManga.CANCELLED
             n.contains("ara ver") || n.contains("hiatus") || n.contains("bekle") -> SManga.ON_HIATUS
-            n.contains("yakında") || n == "coming_soon" -> SManga.UPCOMING
+            n.contains("yakında") || n == "coming_soon" -> SManga.UNKNOWN
             else -> SManga.UNKNOWN
         }
     }
 
     private suspend fun fetchSeriesDataPage(slug: String, page: Int): SeriesDataDto? {
         val input = buildJsonObject {
-            put("sef", slug)
-            put("page", page)
-            put("limit", CHAPTER_PAGE_LIMIT)
+            put("sef", JsonPrimitive(slug))
+            put("page", JsonPrimitive(page))
+            put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
         }
         return runCatching {
             trpcJson.decodeFromJsonElement(SeriesDataDto.serializer(), trpcCallObject("$seriesDetailRouter.getSeriesData", input))
@@ -266,10 +266,10 @@ abstract class Sadscans : KeiSource() {
 
     private suspend fun fetchChapterImages(procedure: String, chapterId: String, chapterSlug: String): List<String> {
         val inputVariants = listOf(
-            buildJsonObject { put("id", chapterId) },
-            buildJsonObject { put("chap_id", chapterId) },
-            buildJsonObject { put("chapterId", chapterId) },
-            buildJsonObject { put("sef", chapterSlug) },
+            buildJsonObject { put("id", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("chap_id", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("chapterId", JsonPrimitive(chapterId)) },
+            buildJsonObject { put("sef", JsonPrimitive(chapterSlug)) },
         )
         for (input in inputVariants) {
             val payload = runCatching { trpcCall(procedure, input) }.getOrNull() ?: continue
@@ -352,10 +352,10 @@ abstract class Sadscans : KeiSource() {
 
     private fun Float.trimNumber(): String = if (this == this.toLong().toFloat()) this.toLong().toString() else this.toString()
 
-    private class SortFilter : keiyoushi.source.model.Filter.Sort(
+    private class SortFilter(state: Int = 0) : Filter.Sort(
         "Sırala",
         arrayOf("Popüler", "Güncel", "Yeni", "İsim (A-Z)", "İsim (Z-A)"),
-        default = 0,
+        state,
     ) {
         val selected: String
             get() = when (state) {
