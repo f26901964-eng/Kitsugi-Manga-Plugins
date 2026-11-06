@@ -8,7 +8,7 @@ Yeni kaynak kodu yalnız bölüm HTML isteğinde host'un Cloudflare interceptor'
 
 `tests/okutoon_runtime/run.mjs` doğrudan HTTP testidir; challenge alması artık başarı sayılmaz. Android WebView doğrulamasını test etmez. `OkuToonReaderTest` kaydedilmiş HTML, URL tercihleri ve challenge tespitini test eder; sürümleme ve yayın iş akışı Gradle testinden sonra APK üretir. Gerçek cihazda WebView, çerezler, uygulama uyumu ve ilk/orta/son sayfa görüntüleme ayrıca doğrulanmalıdır.
 
-Kaynak sürümü 1.6.10'a yükseltilmiştir. Yeni APK derlenip yayımlanmadan cihazdaki 1.6.9 değişmez; bu checkout'taki mevcut katalog ve APK'lar eski sürümdür. Yayın sürecinde derleme sonrası `tools/prepare_extension_release.py okutoon` katalogları gerçek APK manifestiyle günceller; derlenmemiş bir APK adına katalog oluşturulmamalıdır.
+Kaynak sürümü 1.6.10'a yükseltilmiş ve APK [Actions 42227421827](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42227421827) ile derlenip oturum dalına eklenmiştir. Aynı iş Kotlin testlerini ve APK manifestiyle katalog eşleşmesini doğrular. Bu henüz ana yayın veya `builds` dalı değildir: katalogdaki builds adresi ancak yayın iş akışı çalıştırıldıktan sonra yeni APK'ya erişir. Cihazdaki 1.6.9 kendiliğinden değişmez.
 
 ## Araştırma ve sınırlar
 
