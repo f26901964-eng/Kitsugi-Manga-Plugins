@@ -32,6 +32,26 @@ jobs:
           npm install --no-save --package-lock=false --registry=https://registry.npmjs.org \
             playwright@1.56.1 2>&1 | tail -5
           npx --no-install playwright install chromium 2>&1 | tail -5
+      - name: Capture through a rendering proxy (r.jina.ai)
+        timeout-minutes: 6
+        run: |
+          set +e
+          mkdir -p docs/html-dumps/sadscans
+          fetch() {
+            name="$1"; url="$2"; fmt="$3"
+            if [ "$fmt" = html ]; then
+              curl -sS -m 90 -H 'X-Return-Format: html' -H 'X-Timeout: 60' "https://r.jina.ai/$url" \
+                -o "docs/html-dumps/sadscans/jina-$name.html"
+            else
+              curl -sS -m 90 "https://r.jina.ai/$url" -o "docs/html-dumps/sadscans/jina-$name.md"
+            fi
+            echo "== $name: $(wc -c < "docs/html-dumps/sadscans/jina-$name.$fmt")"
+          }
+          fetch seriler 'https://sadscans.net/seriler' html
+          fetch seriler-md 'https://sadscans.net/seriler' md
+          fetch detay 'https://sadscans.net/seriler/chainsaw-man' html
+          fetch okuyucu 'https://sadscans.net/reader/grand-blue/107-bolum-afrodizyak/cAcn3x8HP661h' html
+          ls -la docs/html-dumps/sadscans
       - name: Capture the live site
         timeout-minutes: 12
         run: node tools/capture_sadscans_live.mjs || true
