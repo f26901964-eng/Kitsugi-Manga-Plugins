@@ -2,12 +2,12 @@
   {
     "name": "Manga-TR",
     "pkg": "eu.kanade.tachiyomi.extension.tr.mangatr",
-    "apk": "tachiyomi-tr.mangatr-v1.6.34.apk",
+    "apk": "tachiyomi-tr.mangatr-v1.6.35.apk",
     "lang": "tr",
-    "code": 106034,
-    "version": "1.6.34",
+    "code": 106035,
+    "version": "1.6.35",
     "nsfw": 0,
-    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangatr-v1.6.34.apk",
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.mangatr-v1.6.35.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.mangatr.png"
   },
   {
