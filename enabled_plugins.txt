@@ -3,10 +3,10 @@
 # main dalındaki değişiklikler GitHub Actions ile builds kataloğuna yayınlanır.
 tr/mangatr
 tr/mangacix
-tr/mangadenizi
-tr/hayalistic
-tr/korelimanga
-tr/turkcemangaoku
-tr/amangaplanet
+# tr/mangadenizi — kullanıcı isteğiyle devre dışı.
+# tr/hayalistic — kullanıcı isteğiyle devre dışı.
+# tr/korelimanga — kullanıcı isteğiyle devre dışı.
+# tr/turkcemangaoku — kullanıcı isteğiyle devre dışı.
+# tr/amangaplanet — kullanıcı isteğiyle devre dışı.
 # tr/mangadiyari — devre dışı: site orijinal adlarla arama yapmıyor, katalogda adı bulunamıyor.
 tr/mangitto
