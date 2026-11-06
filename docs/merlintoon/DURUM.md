@@ -1,8 +1,8 @@
-# MerlinToon — 1.6.8 (106008)
+# MerlinToon — 1.6.9 (106009)
 
 `tr/merlinscans` bu çalışma dalının etkin listesine ve kataloglarına eklendi. Paket kimliği
-`eu.kanade.tachiyomi.extension.tr.merlinscans` ve eski kaynak kimliği korunur; katalog adı
-MerlinToon'dur. APK `apk/tachiyomi-tr.merlinscans-v1.6.8.apk` dosyasıdır. Ana dağıtımın
+`eu.kanade.tachiyomi.extension.tr.merlinscans` ve eski DSL adından hesaplanan kaynak kimliği açıkça sabitlenmiştir; katalog adı
+MerlinToon'dur. APK `apk/tachiyomi-tr.merlinscans-v1.6.9.apk` dosyasıdır. Ana dağıtımın
 `builds` dalındaki katalog otomatik olarak bu çalışma dalını okumaz: main'e alınıp katalog
 yayın iş akışı çalışmalıdır. Bu çalışma hiçbir cihazda kurulum yapmadı.
 
@@ -24,7 +24,7 @@ InitManga davranışı korunur; giriş veya ücret gerektiren içeriğe erişim 
 
 ## Doğrulama ve sınırlar
 
-- [GitHub Actions derleme/test çalışması](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42313892142) Kotlin/JUnit testlerini, release APK derlemesini ve katalog testlerini geçirdi. Test HTML'leri küçük, örneklerden türetilmiş parçalar; bütün Drive belgeleri veya Android üzerinde gerçek cihaz testi değildir.
+- [GitHub Actions derleme/test çalışması](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42314400910) Kotlin/JUnit testlerini, release APK derlemesini ve katalog testlerini geçirdi. Test HTML'leri küçük, örneklerden türetilmiş parçalar; bütün Drive belgeleri veya Android üzerinde gerçek cihaz testi değildir.
 - Yerel `python3 -m unittest discover -s tests`: 64 test, 12 atlandı.
 - [Canlı ağ kontrolü](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42314139686): arşiv, arama, seri detayı, bölüm API'si ve okuyucu GitHub runner'ına HTTP 403 döndürdü. Dolayısıyla canlı arama, tam bölüm listesi ve resim indirme doğrulanamadı. Kullanıcının ağında ve uygulamanın Cloudflare oturumunda sonuç farklı olabilir; çalışma garantisi verilmez.
 - Bölüm API'si, farklı seri/arama sayfaları ve sonraki sayfalar gerçek sunucuda ayrıca sınanmalı. APK'nın eski arşiv sürümüyle imza uyumluluğu ve Android/Kitsugi kurulumu doğrulanmadı; farklı imzalı eski kurulum güncellemeyi reddedebilir. Kaldırma işlemi yerel verileri etkileyebilir.

@@ -4,7 +4,7 @@ Etkin eklenti listesinde **Manga-TR**, **MangaciX**, **Mangitto**, **OkuToon**, 
 
 ## MerlinToon
 
-Bu çalışma dalında MerlinToon `1.6.8` etkinleştirildi; arama ve dilimli okuyucu
+Bu çalışma dalında MerlinToon `1.6.9` etkinleştirildi; arama ve dilimli okuyucu
 HTML'i için uyarlama yapıldı ve APK CI'da derlendi. Canlı site kontrolü GitHub
 runner'ında HTTP 403 aldığı için gerçek cihazda çalışma henüz doğrulanmadı.
 Katalog yayını ve ayrıntılar: [MerlinToon durumu](docs/merlintoon/DURUM.md).
