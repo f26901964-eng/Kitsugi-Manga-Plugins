@@ -367,4 +367,21 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   console.log('PASS: tarayıcı doğrulaması ayrı ele alınıyor');
 }
 
+
+// ---------------------------------------------------------------------------
+// 12. Kart başlığı h3 değilse de kart okunur
+// ---------------------------------------------------------------------------
+{
+  const env = environment(`<html><body><input placeholder="Aramak istediğiniz seriyi yazın">
+    <a href="https://sadscans.net/seriler/dandadan"><div class="card-title">Dandadan</div></a>
+    <a href="https://sadscans.net/seriler/centuria"><img alt="Centuria"></a>
+    </body></html>`, {fetchImpl: () => Promise.reject(new Error('blocked'))});
+  env.window.document.querySelector('input').__reactPropsFixture = {onChange: () => {}};
+  const raw = await drive(env, listScript({query: '', sort: 'views', type: null, status: null, page: 1}), 80);
+  const result = JSON.parse(raw);
+  const titles = result.items.map(item => item.name).sort();
+  assert.deepEqual(titles, ['Centuria', 'Dandadan']);
+  console.log('PASS: h3 olmayan kartlar da başlıklandırılıyor');
+}
+
 console.log('Tüm SadScans frontend sözleşme testleri geçti.');

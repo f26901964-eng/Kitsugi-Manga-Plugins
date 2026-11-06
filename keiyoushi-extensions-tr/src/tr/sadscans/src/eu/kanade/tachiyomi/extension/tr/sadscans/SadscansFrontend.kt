@@ -42,7 +42,7 @@ internal object SadscansFrontend {
                 return out({error: 'SadScans tarayıcı doğrulaması istiyor. Uygulama içi tarayıcıda sadscans.net adresini açıp doğrulamayı geçin, sonra tekrar deneyin.'});
               }
               var route = location.pathname.replace(/\/+$/, '');
-              if (route !== '/seriler') return null;
+              if (route !== '/seriler' && route.indexOf('/seriler/') !== 0) return null;
 
               // Arama kutusu tRPC kademesi için gerekli değil: kutu adı değişse bile arama
               // çalışsın diye kutu yalnızca arayüz yedeğinde ve esnek biçimde aranır.
@@ -187,17 +187,22 @@ internal object SadscansFrontend {
                 var seen = {};
                 for (var i = 0; i < anchors.length; i++) {
                   var anchor = anchors[i];
-                  var title = anchor.querySelector('h3');
-                  if (!title) continue;
                   var path;
                   try { path = new URL(anchor.href, location.href).pathname; } catch (e) { continue; }
                   if (path.indexOf('/seriler/') !== 0) continue;
+                  if (path.split('/').filter(Boolean).length < 2) continue;
                   if (seen[path]) continue;
-                  seen[path] = 1;
+                  // Başlık her zaman h3 olmayabilir; sırayla denenir.
+                  var label = anchor.querySelector('h3, h2, h4, [class*="title"], [class*="Title"]');
+                  var name = label ? label.textContent.trim() : '';
+                  if (!name) name = (anchor.getAttribute('title') || anchor.getAttribute('aria-label') || '').trim();
                   var image = anchor.querySelector('img');
+                  if (!name && image) name = (image.getAttribute('alt') || '').trim();
+                  if (!name) continue;
+                  seen[path] = 1;
                   result.push({
                     href: path,
-                    name: title.textContent.trim(),
+                    name: name,
                     thumb: image ? (image.currentSrc || image.src || null) : null
                   });
                 }
