@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-06T13:47:14.243Z",
+  "date": "2026-11-06T13:48:44.857Z",
   "note": "Hosted CI IP; desktop Chromium is not Android WebView. No cookies captured.",
   "http": [
     {
@@ -23,27 +23,49 @@
       "generic404": false
     },
     {
-      "path": "/api/v1/series/chainsaw-man",
+      "path": "/api/v1/series/chainsaw-man/chapters/bolum-1",
       "schema": {
         "data": {
-          "id": 503,
-          "title": "string(12)",
-          "alt_title": "string(33)",
-          "slug": "string(12)",
-          "author": "string(16)",
-          "type": "string(5)",
-          "status": "string(7)",
-          "is_ai_translated": false,
-          "description_text": "string(422)",
-          "cover_url": "string(61)",
-          "headline_url": "string(61)",
-          "headline_video_url": null,
-          "view_count": 15432,
-          "rating_avg": 4.8,
-          "rating_count": 35,
-          "chapter_count": 234,
-          "published_at": "string(19)",
-          "first_chapter": {
+          "series": {
+            "id": 503,
+            "title": "string(12)",
+            "alt_title": "string(33)",
+            "slug": "string(12)",
+            "author": "string(16)",
+            "type": "string(5)",
+            "status": "string(7)",
+            "is_ai_translated": false,
+            "description_text": "string(422)",
+            "cover_url": "string(61)",
+            "headline_url": "string(61)",
+            "headline_video_url": null,
+            "view_count": 15432,
+            "rating_avg": 4.8,
+            "rating_count": 35,
+            "chapter_count": 234,
+            "published_at": "string(19)",
+            "first_chapter": null,
+            "latest_chapter": {
+              "slug": "string(9)",
+              "number": 232,
+              "display_number": "string(3)",
+              "sort_number": 232,
+              "title": "string(9)",
+              "created_at": "string(19)",
+              "is_ai_translated": false,
+              "url": "string(42)"
+            },
+            "categories": {
+              "length": 4,
+              "sample": {
+                "id": "object",
+                "name": "string",
+                "slug": "string"
+              }
+            },
+            "url": "string(32)"
+          },
+          "chapter": {
             "id": 56171,
             "slug": "string(7)",
             "number": 1,
@@ -56,273 +78,138 @@
             "is_ai_translated": false,
             "url": "string(40)"
           },
-          "latest_chapter": {
-            "slug": "string(9)",
-            "number": 232,
-            "display_number": "string(3)",
-            "sort_number": 232,
-            "title": "string(9)",
-            "created_at": "string(19)",
-            "is_ai_translated": false,
-            "url": "string(42)"
-          },
-          "categories": {
-            "length": 4,
+          "pages": {
+            "length": 53,
             "sample": {
-              "id": 10,
-              "name": "string(7)",
-              "slug": "string(7)",
-              "description": "string(974)",
-              "series_count": null
+              "id": 1389312,
+              "page_number": 1,
+              "image_url": "string(72)",
+              "image_width": 1520,
+              "image_height": 2400
             }
           },
-          "url": "string(32)",
-          "description_html": "string(453)",
-          "translation_status": null,
-          "ai_chapter_count": 0,
-          "translation_status_label": null,
-          "chapters": {
+          "all_chapters": {
             "length": 234,
             "sample": {
-              "id": 85233,
-              "slug": "string(9)",
-              "number": 232,
-              "display_number": "string(3)",
-              "sort_number": 232,
-              "title": "string(9)",
-              "created_at": "string(19)",
-              "progress": 0,
-              "completed": false,
-              "is_ai_translated": false,
-              "url": "string(42)"
-            }
-          },
-          "comments": {
-            "length": 20,
-            "sample": {
-              "id": 1862,
-              "user_id": 246,
-              "parent_id": null,
-              "parent_username": null,
-              "reply_to": null,
-              "username": "string(11)",
-              "avatar_url": null,
-              "profile_url": "string(32)",
-              "is_admin": false,
-              "is_premium": false,
-              "avatar_decoration_url": null,
-              "avatar_decoration_static_url": null,
-              "name_color": null,
-              "hide_role_ring": false,
-              "body": "string(20)",
-              "body_bbcode": "string(0)",
-              "body_html": "string(27)",
-              "body_preview": "string(0)",
-              "review_score": 5,
-              "is_rating_only": true,
-              "is_review": true,
-              "is_pinned": false,
-              "created_at": "string(19)",
-              "updated_at": "string(19)",
-              "edited": true,
-              "like_count": 0,
-              "like_preview": {
-                "length": 0,
-                "sample": null
-              },
-              "liked_by_current_user": false,
-              "can_delete": false,
-              "can_edit": false,
-              "reply_total": 0,
-              "reply_count": 0,
-              "thread_reply_total": 0,
-              "images": {
-                "length": 0,
-                "sample": null
-              },
-              "cards": {
-                "length": 0,
-                "sample": null
-              },
-              "replies": {
-                "length": 0,
-                "sample": null
-              }
-            }
-          },
-          "comment_total": 35,
-          "reviews": {
-            "length": 20,
-            "sample": {
-              "id": 1862,
-              "user_id": 246,
-              "parent_id": null,
-              "parent_username": null,
-              "reply_to": null,
-              "username": "string(11)",
-              "avatar_url": null,
-              "profile_url": "string(32)",
-              "is_admin": false,
-              "is_premium": false,
-              "avatar_decoration_url": null,
-              "avatar_decoration_static_url": null,
-              "name_color": null,
-              "hide_role_ring": false,
-              "body": "string(20)",
-              "body_bbcode": "string(0)",
-              "body_html": "string(27)",
-              "body_preview": "string(0)",
-              "review_score": 5,
-              "is_rating_only": true,
-              "is_review": true,
-              "is_pinned": false,
-              "created_at": "string(19)",
-              "updated_at": "string(19)",
-              "edited": true,
-              "like_count": 0,
-              "like_preview": {
-                "length": 0,
-                "sample": null
-              },
-              "liked_by_current_user": false,
-              "can_delete": false,
-              "can_edit": false,
-              "reply_total": 0,
-              "reply_count": 0,
-              "thread_reply_total": 0,
-              "images": {
-                "length": 0,
-                "sample": null
-              },
-              "cards": {
-                "length": 0,
-                "sample": null
-              },
-              "replies": {
-                "length": 0,
-                "sample": null
-              }
-            }
-          },
-          "review_total": 35,
-          "in_library": false,
-          "library_count": 485,
-          "library_preview": {
-            "length": 3,
-            "sample": {
-              "id": 31304,
-              "username": "string(4)",
-              "avatar_url": null,
-              "profile_url": "string(25)",
-              "is_admin": false,
-              "is_premium": false,
-              "followed_at": "string(19)"
-            }
-          },
-          "followers_url": "string(56)",
-          "user_rating": null,
-          "progress_by_chapter": {},
-          "progress_summary": {
-            "total_chapters": 234,
-            "completed_chapters": 0,
-            "started_chapters": 0,
-            "remaining_chapters": 234,
-            "overall_percent": 0,
-            "has_started": false,
-            "is_complete": false,
-            "active_chapter": null,
-            "resume_chapter": {
               "id": 56171,
               "slug": "string(7)",
               "number": 1,
               "display_number": "string(1)",
               "sort_number": 1,
               "title": "string(7)",
-              "progress": null,
+              "created_at": "string(19)",
+              "progress": 0,
               "completed": false,
+              "is_ai_translated": false,
               "url": "string(40)"
-            },
-            "resume_label": "string(13)",
-            "resume_url": "string(40)"
+            }
+          },
+          "prev_chapter": null,
+          "next_chapter": {
+            "id": 56172,
+            "slug": "string(7)",
+            "number": 2,
+            "display_number": "string(1)",
+            "sort_number": 2,
+            "title": "string(7)",
+            "created_at": "string(19)",
+            "is_ai_translated": false,
+            "url": "string(40)"
+          },
+          "comments": {
+            "length": 5,
+            "sample": {
+              "id": 14178,
+              "user_id": 4828,
+              "parent_id": null,
+              "parent_username": null,
+              "reply_to": null,
+              "username": "string(11)",
+              "avatar_url": null,
+              "profile_url": "string(32)",
+              "is_admin": false,
+              "is_premium": false,
+              "avatar_decoration_url": null,
+              "avatar_decoration_static_url": null,
+              "name_color": null,
+              "hide_role_ring": false,
+              "body": "string(14)",
+              "body_bbcode": "string(21)",
+              "body_html": "string(21)",
+              "body_preview": "string(14)",
+              "review_score": null,
+              "is_rating_only": false,
+              "is_review": false,
+              "is_pinned": false,
+              "created_at": "string(19)",
+              "updated_at": "string(19)",
+              "edited": false,
+              "like_count": 4,
+              "like_preview": {
+                "length": 3,
+                "sample": "object"
+              },
+              "liked_by_current_user": false,
+              "can_delete": false,
+              "can_edit": false,
+              "reply_total": 0,
+              "reply_count": 0,
+              "thread_reply_total": 0,
+              "images": {
+                "length": 0,
+                "sample": null
+              },
+              "cards": {
+                "length": 0,
+                "sample": null
+              },
+              "replies": {
+                "length": 0,
+                "sample": null
+              }
+            }
+          },
+          "comment_total": 5,
+          "reader_settings": {
+            "reading_mode": "string(7)",
+            "manga_page_fit": "string(5)",
+            "manga_direction": "string(4)",
+            "click_scroll_enabled": false,
+            "click_scroll_amount": 70,
+            "auto_scroll_speed": 3,
+            "auto_scroll_remember": false,
+            "night_mode_enabled": false,
+            "night_dim": 40,
+            "night_warmth": 40,
+            "theme": null
           },
           "reader_policy": {
             "completion_threshold_percent": 75,
             "progress_save_interval_percent": 5
           },
+          "progress_by_chapter": {},
+          "in_library": false,
           "source_credit": null,
-          "translation_quality": {
-            "good": 577,
-            "bad": 3,
-            "total": 580,
-            "percent_good": 99
-          },
-          "user_review": null,
-          "notices": {
-            "length": 0,
-            "sample": null
-          },
-          "my_lists": {
-            "length": 0,
-            "sample": null
-          },
-          "all_time_rank": 33,
-          "live_readers": {
-            "count": 0,
-            "users": {
-              "length": 0,
-              "sample": null
-            }
+          "translation_feedback": {
+            "good": 8,
+            "bad": 0,
+            "my_vote": null,
+            "ai_reported": false,
+            "can_vote": false,
+            "can_report_ai": false
           }
         }
       },
       "status": 200,
       "challenge": null,
       "type": "application/json",
-      "bytes": 127055,
+      "bytes": 74929,
       "webp": false,
       "json": true,
       "generic404": false
     },
     {
-      "path": "/api/v1/series/chainsaw-man/chapters",
-      "schema": {
-        "data": {
-          "length": 20,
-          "sample": {
-            "id": 85233,
-            "slug": "string(9)",
-            "number": 232,
-            "display_number": "string(3)",
-            "sort_number": 232,
-            "title": "string(9)",
-            "created_at": "string(19)",
-            "progress": 0,
-            "completed": false,
-            "is_ai_translated": false,
-            "url": "string(42)"
-          }
-        },
-        "meta": {
-          "offset": 20,
-          "start_offset": 0,
-          "limit": 20,
-          "total": 234,
-          "has_previous": false,
-          "has_more": true,
-          "sort": "string(4)",
-          "anchor": null
-        }
-      },
-      "status": 200,
-      "challenge": null,
-      "type": "application/json",
-      "bytes": 5136,
-      "webp": false,
-      "json": true,
-      "generic404": false
-    },
-    {
-      "path": "/api/v1/chapters/56171",
+      "path": "/api/v1/series/chainsaw-man/chapter/bolum-1",
       "schema": {
         "error": {
           "code": "string(9)",
@@ -338,7 +225,7 @@
       "generic404": true
     },
     {
-      "path": "/api/v1/chapters/56171/pages",
+      "path": "/api/v1/reader/chainsaw-man/bolum-1",
       "schema": {
         "error": {
           "code": "string(9)",
@@ -354,17 +241,81 @@
       "generic404": true
     },
     {
-      "path": "/api/v1/series/chainsaw-man/chapters/1",
+      "path": "/api/v1/reader/56171",
       "schema": {
         "error": {
           "code": "string(9)",
-          "message": "string(17)"
+          "message": "string(26)"
         }
       },
       "status": 404,
       "challenge": null,
       "type": "application/json",
-      "bytes": 63,
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/chapters/chainsaw-man/bolum-1",
+      "schema": {
+        "error": {
+          "code": "string(9)",
+          "message": "string(26)"
+        }
+      },
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/chapter/chainsaw-man/bolum-1",
+      "schema": {
+        "error": {
+          "code": "string(9)",
+          "message": "string(26)"
+        }
+      },
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/chapter/56171",
+      "schema": {
+        "error": {
+          "code": "string(9)",
+          "message": "string(26)"
+        }
+      },
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 71,
+      "webp": false,
+      "json": true,
+      "generic404": true
+    },
+    {
+      "path": "/api/v1/series/503/chapters/56171",
+      "schema": {
+        "error": {
+          "code": "string(9)",
+          "message": "string(16)"
+        }
+      },
+      "status": 404,
+      "challenge": null,
+      "type": "application/json",
+      "bytes": 60,
       "webp": false,
       "json": true,
       "generic404": true
