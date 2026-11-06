@@ -35,7 +35,23 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Parser tests and release APK
         working-directory: keiyoushi-extensions-tr
-        run: ./gradlew :src:tr:turkmanga:spotlessApply :src:tr:turkmanga:testDebugUnitTest :src:tr:turkmanga:assembleRelease --stacktrace
+        shell: bash
+        run: |
+          set +e
+          ./gradlew :src:tr:turkmanga:spotlessApply :src:tr:turkmanga:testDebugUnitTest :src:tr:turkmanga:assembleRelease --stacktrace --console=plain > /tmp/turkmanga-gradle.log 2>&1
+          result=$?
+          set -e
+          tail -n 80 /tmp/turkmanga-gradle.log
+          if [ "$result" -ne 0 ]; then
+            mapfile -t diagnostics < <(grep -E '(^e: |^FAILURE:|^> Task .*FAILED|^What went wrong:|Unresolved reference|AssertionError|Compilation error)' /tmp/turkmanga-gradle.log | tail -n 20)
+            if [ "${#diagnostics[@]}" -eq 0 ]; then mapfile -t diagnostics < <(tail -n 20 /tmp/turkmanga-gradle.log); fi
+            for line in "${diagnostics[@]}"; do
+              line=${line//'%'/'%25'}
+              line=${line//$'\r'/'%0D'}
+              echo "::error title=Gradle diagnostic::${line}"
+            done
+            exit "$result"
+          fi
       - name: Register APK and synchronize the catalog
         run: |
           python3 tools/prepare_extension_release.py turkmanga
