@@ -17,9 +17,10 @@ def probe_genre_values():
 
 
 def kotlin_genre_values():
+    """`GenreCheckBox("Aksiyon", "Aksiyon,Action")` -> ilk (Türkçe) değer."""
     text = FILTERS.read_text(encoding='utf-8')
     body = text.split('class GenreFilter', 1)[1]
-    return [value for _, value in re.findall(r'"([^"]+)" to "([^"]+)"', body)]
+    return [value.split(',')[0] for value in re.findall(r'GenreCheckBox\("[^"]+", "([^"]+)"\)', body)]
 
 
 class ProbeContractTest(unittest.TestCase):
@@ -27,6 +28,18 @@ class ProbeContractTest(unittest.TestCase):
 
     def test_probe_genres_match_the_filter(self):
         self.assertEqual(probe_genre_values(), kotlin_genre_values())
+
+    def test_filter_sends_a_turkish_and_an_english_label(self):
+        text = FILTERS.read_text(encoding='utf-8')
+        body = text.split('class GenreFilter', 1)[1]
+        pairs = re.findall(r'GenreCheckBox\("([^"]+)", "([^"]+)"\)', body)
+        self.assertEqual(35, len(pairs))
+        # Her grup Türkçe etiketle başlar; İngilizcesi olan gruplarda ikinci etiket de gönderilir.
+        # Görünen ad Türkçe olabilir (Fantastik); gönderilen ilk değer sitenin Türkçe etiketi.
+        for _, value in pairs:
+            self.assertTrue(value.strip())
+        self.assertIn("Aksiyon,Action", [value for _, value in pairs])
+        self.assertIn("Dram,Drama", [value for _, value in pairs])
 
     def test_probe_hits_the_same_endpoints_as_the_source(self):
         probe = PROBE.read_text(encoding='utf-8')
