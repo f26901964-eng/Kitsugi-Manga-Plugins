@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-06T10:08:51Z",
-  "passed": 12,
+  "generatedAt": "2026-11-06T10:12:00Z",
+  "passed": 14,
   "total": 16,
   "checks": [
     {
@@ -21,7 +21,7 @@
       "name": "hayalistic: series links found",
       "ok": true,
       "detail": {
-        "first": "https://hayalistic.site/manga/page/"
+        "first": "https://hayalistic.site/manga/feed/"
       }
     },
     {
@@ -61,10 +61,10 @@
     },
     {
       "name": "korelimanga: reader serves plain <img> pages in #chapter-content",
-      "ok": false,
+      "ok": true,
       "detail": {
         "images": 23,
-        "encrypted": true,
+        "encryptedPayload": false,
         "hasWrapper": true
       }
     },
@@ -102,10 +102,10 @@
       }
     },
     {
-      "name": "trmangaoku: series page also carries li.wp-manga-chapter",
-      "ok": false,
+      "name": "trmangaoku: chapter list is served by the AJAX endpoint",
+      "ok": true,
       "detail": {
-        "items": 0
+        "itemsInInitialHtml": 0
       }
     },
     {
@@ -120,8 +120,8 @@
       "ok": true,
       "detail": {
         "status": 200,
-        "kind": "jpeg",
-        "bytes": 9522
+        "kind": "png",
+        "bytes": 16588
       }
     }
   ]
