@@ -44,7 +44,7 @@ jobs:
         if: always()
         run: |
           mkdir -p docs/build-logs
-          { echo "commit: ${GITHUB_SHA}"; grep -iE "^e: |error:|Unresolved|Cannot|FAILURE|What went wrong|^> " /tmp/gradle.log || true; echo '--- tail ---'; tail -50 /tmp/gradle.log; } > docs/build-logs/okutoon-build.log || true
+          { echo "commit: ${GITHUB_SHA}"; echo '--- publish ---'; cat /tmp/publish.log 2>/dev/null || true; echo '--- build tail ---'; grep -iE "^e: |error:|Unresolved|Cannot|FAILURE|What went wrong" /tmp/gradle.log || true; tail -20 /tmp/gradle.log; } > docs/build-logs/okutoon-build.log || true
           git config user.name kitsugi-tr-runtime
           git config user.email kitsugi-tr-runtime@users.noreply.github.com
           git add -f docs/build-logs/okutoon-build.log
