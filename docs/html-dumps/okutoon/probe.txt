@@ -1,74 +1,18 @@
-series status 200 bytes 318088
 
-===== chapter item (chapter-item) index=35513 =====
-n class="tv-bar-bad" style="width: 3%"></span></div>
-                <div class="translation-quality-legend"><span class="is-good">%97 iyi</span><span>%3 kötü</span></div>
-            </div>
-        
-                                                        <div class="chapter-list-items" data-chapter-list data-show-limit="20">
-                                                            <div class="chapter-item"
-         data-chapter-id="39635"
-         data-chapter-number="200.000"
-         data-chapter-number-label="200">
-        <a href="/solo-leveling/bolum-200" class="chapter-item-link" aria-label="Bölüm 200: Bölüm 200"></a>
-        <span class="chapter-number"><span>200</span></span>
-        <span class="chapter-main">
-            <span class="chapter-title">Bölüm 200</span>
-            <span class="chapter-date">26 Mart 2026</span>
-        </span>
-        <span class="chapter-progress" data-progress-id="39635">
-                                </span>
-    </div>
+### chapter status 403 bytes 5801
 
-                                                            <div class="chapter-item"
-         data-chapter-id="39634"
-         data-chapter-number="199.000"
-         data-chapter-number-label="199">
-        <a href="/solo-leveling/bolum-199" class="chapter-item-link" aria-label="Bölüm 199: Bölüm 199"></a>
-        <span class="chapter-number"><span>199</span></span>
-        <span class="chapter-main">
-            <span class="chapter-title">Bölüm 199</span>
-            <span class="chapter-date">26 Mart 2026</spa
+===== readerPages (readerPages) index=-1 =====
 
-===== chapter-date (chapter-date) index=35928 =====
-200: Bölüm 200"></a>
-        <span class="chapter-number"><span>200</span></span>
-        <span class="chapter-main">
-            <span class="chapter-title">Bölüm 200</span>
-            <span class="chapter-date">26 Mart 2026</span>
-        </span>
-        <span class="chapter-progress" data-progress-id="39635">
-                                </span>
-    </div>
+===== reader-page (reader-page) index=-1 =====
 
-                                                            <div class="chapter-item"
-         data-chapter-id="39634"
-         data-
+===== pages payload (pages) index=-1 =====
 
-search status 200 bytes 47468
-
-===== series card (series-card) index=34679 =====
-ef="/tur" class="chip browse-chip browse-chip--reset">Tümünü temizle</a>
-        </div>
-    
-            <div class="series-grid">
-                            <a href="/solo-leveling-ragnarok" class="series-card">
-    <div class="series-card-cover">
-                    <img src="https://om-cdn.okutoon.com/covers/cover_1791499011_c4773598.webp" alt="Solo Leveling: Ragnarok" loading="lazy">
-                                    </div>
-    <div class="series-card-body">
-        <h3 class="series-card-title">Solo Leveling: Ragnarok</h3>
-        <p class="series-card-author">Bilinmiyor</p>                    <p class="series-card-meta">
-                <span class="stat stat-rating"><i data-lucide="star" class="stat-icon stat-icon--star"></i>5</span>
-                                    <span class="dot-sep">·</span>
-                    <span>67 bölüm</span>
-                            </p>
-            </div>
-</a>
-                            <a href="/solo-leveling" class="series-card">
-    <div class="series-card-cover">
-                    <img src="https://om-cdn.okutoon.com/covers/cover_
-
-===== pagination (pagination) index=-1 =====
-
-===== sayfa (sayfa=2) index=-1 =====
+### listing page1 cards 24 page2 cards 24 same? false
+page1: Reiko: Mutluluğun Kayıp Yolu | Bleach One-Shot | Dirt Cheap | Save the Sunfish Princess!
+page2: My Father Is the Enemy of My Past Life? | Salute for Laurel | Infinite Titles | Hanlim Gym
+listing contains "Sonraki": index=55280
+listing contains "pagination": index=54512
+listing contains "load-more": index=-1
+listing contains "Daha fazla": index=-1
+listing contains "data-page": index=-1
+listing contains "data-has-more": index=-1
