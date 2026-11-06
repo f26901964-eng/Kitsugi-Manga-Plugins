@@ -1,0 +1,141 @@
+{
+  "generatedAt": "2026-11-06T09:34:44+00:00",
+  "candidates": {
+    "mangadenizi": {
+      "name": "MangaDenizi",
+      "theme": "json-api",
+      "baseUrl": "https://mangadenizi.net",
+      "listing": {
+        "status": 200,
+        "bytes": 75459,
+        "contentType": "application/json",
+        "seriesFound": 15,
+        "lastPage": 8
+      },
+      "series": {
+        "status": 200,
+        "slug": "black-clover",
+        "title": "Black Clover",
+        "chapters": 3,
+        "chaptersCount": "393",
+        "detailStatus": 200,
+        "detailChapters": 393
+      },
+      "chapter": {
+        "status": 200,
+        "pagesInApi": 20,
+        "scrambledPages": 20,
+        "lockMarkers": [],
+        "imagesInDom": 20,
+        "imageProbe": [
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 1149874,
+            "size": "1486x2100",
+            "format": "WEBP",
+            "host": "img.mangadenizi.net",
+            "name": "page1"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 1135928,
+            "size": "1486x2100",
+            "format": "WEBP",
+            "host": "img.mangadenizi.net",
+            "name": "page2"
+          },
+          {
+            "ok": true,
+            "status": 200,
+            "contentType": "image/webp",
+            "bytes": 765448,
+            "size": "1486x2100",
+            "format": "WEBP",
+            "host": "img.mangadenizi.net",
+            "name": "page3"
+          }
+        ],
+        "imageProbeWithReferer": {
+          "ok": true,
+          "status": 200,
+          "contentType": "image/webp",
+          "bytes": 1149874,
+          "size": "1486x2100",
+          "format": "WEBP",
+          "name": "page1+referer"
+        }
+      },
+      "ok": true
+    },
+    "hayalistic": {
+      "name": "Hayalistic",
+      "theme": "madara",
+      "baseUrl": "https://hayalistic.online",
+      "listing": {
+        "status": 403,
+        "bytes": 5700,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "ok": false
+    },
+    "shijiescans": {
+      "name": "Shijie Scans",
+      "theme": "mangathemesia",
+      "baseUrl": "https://shijiescans.com",
+      "listing": {
+        "status": 200,
+        "bytes": 130693,
+        "contentType": "text/html; charset=UTF-8",
+        "seriesFound": 36
+      },
+      "series": {
+        "status": 200,
+        "slug": "2-seviye-savas-tanrisi",
+        "title": "2. Seviye Savaş Tanrısı",
+        "chapterLinksFound": 46
+      },
+      "chapter": {
+        "status": 200,
+        "bytes": 53796,
+        "lockMarkers": [],
+        "imagesInDom": 1,
+        "lazyPlaceholders": 0,
+        "imageProbe": [
+          {
+            "ok": false,
+            "status": 200,
+            "contentType": "image/svg+xml",
+            "bytes": 1058,
+            "size": null,
+            "host": "shijiescans.com",
+            "name": "page1"
+          }
+        ],
+        "imageProbeWithReferer": {
+          "ok": false,
+          "status": 200,
+          "contentType": "image/svg+xml",
+          "bytes": 1058,
+          "size": null,
+          "name": "page1+referer"
+        }
+      },
+      "ok": true
+    },
+    "mangaruhu": {
+      "name": "MangaRuhu",
+      "theme": "initmanga",
+      "baseUrl": "https://mangaruhu.com",
+      "listing": {
+        "status": 403,
+        "bytes": 5603,
+        "contentType": "text/html; charset=UTF-8"
+      },
+      "ok": false
+    }
+  }
+}
