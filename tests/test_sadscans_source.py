@@ -85,7 +85,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 8', gradle)
+        self.assertIn('versionCode = 9', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

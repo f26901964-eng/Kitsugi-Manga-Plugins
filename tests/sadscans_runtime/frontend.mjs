@@ -269,4 +269,34 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   console.log('PASS: okuyucu — bölüm kapsamı, lazy yükleme, JSON-LD/logo dışlama');
 }
 
+
+// ---------------------------------------------------------------------------
+// 8. Sayfalama sınırı: hasMore yalnızca tam sayfa dolduysa true
+// ---------------------------------------------------------------------------
+{
+  const cards = count => Array.from({length: count}, (_, index) =>
+    `<a href="https://sadscans.net/seriler/seri-${index}"><h3>Seri ${index}</h3></a>`).join('');
+  const page = (count) => `<html><body><input placeholder="Aramak istediğiniz seriyi yazın">
+    ${cards(count)}<div aria-hidden="true" class="h-px w-full"></div></body></html>`;
+
+  const full = environment(page(20), {fetchImpl: () => Promise.reject(new Error('blocked'))});
+  full.window.document.querySelector('input').__reactPropsFixture = {onChange: () => {}};
+  const fullResult = JSON.parse(await drive(full, listScript({query: '', sort: 'views', type: null, status: null, page: 1}), 80));
+  assert.equal(fullResult.items.length, 20);
+  assert.equal(fullResult.hasMore, true, 'tam sayfa + sentinel varken devam etmeli');
+
+  const partial = environment(page(4), {fetchImpl: () => Promise.reject(new Error('blocked'))});
+  partial.window.document.querySelector('input').__reactPropsFixture = {onChange: () => {}};
+  const partialResult = JSON.parse(await drive(partial, listScript({query: '', sort: 'views', type: null, status: null, page: 1}), 80));
+  assert.equal(partialResult.items.length, 4);
+  assert.equal(partialResult.hasMore, false, 'eksik sayfada sonsuz sayfalama olmamalı');
+
+  const second = environment(page(30), {fetchImpl: () => Promise.reject(new Error('blocked'))});
+  second.window.document.querySelector('input').__reactPropsFixture = {onChange: () => {}};
+  const secondResult = JSON.parse(await drive(second, listScript({query: '', sort: 'views', type: null, status: null, page: 2}), 120));
+  assert.equal(secondResult.items.length, 30);
+  assert.equal(secondResult.hasMore, true, 'ikinci sayfada da tam sayfa dolduğunda devam etmeli');
+  console.log('PASS: sayfalama sınırı — eksik sayfada hasMore false');
+}
+
 console.log('Tüm SadScans frontend sözleşme testleri geçti.');

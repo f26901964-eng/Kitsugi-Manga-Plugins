@@ -308,7 +308,10 @@ internal object SadscansFrontend {
                 if (now - state.t0 < 20000) return null;
                 return out({error: 'SadScans arama sonuçlarını yükleyemedi.'});
               }
-              return out({items: items, hasMore: items.length > start + 15 || !!sentinel, page: options.page, source: 'dom'});
+              // hasMore yalnızca tam bir sayfa dolduysa true olabilir; aksi hâlde uygulama
+              // sonsuz sayfalama isteğine girer (boş sayfa → tekrar istek).
+              var full = items.length >= options.page * 15;
+              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom'});
             })();
         """.trimIndent()
     }

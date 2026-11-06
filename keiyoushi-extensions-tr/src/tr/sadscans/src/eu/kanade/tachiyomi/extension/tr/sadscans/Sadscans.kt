@@ -410,7 +410,7 @@ abstract class Sadscans : KeiSource() {
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val chapterUrl = getChapterUrl(chapter)
-        val chapterId = chapter.url.substringAfterLast('/').substringBefore('?')
+        val chapterId = chapter.url.substringBefore('?').trimEnd('/').substringAfterLast('/')
         if (chapterId.isBlank()) throw IOException("SadScans bölüm kimliği okunamadı.")
 
         val result = frontendPage(
