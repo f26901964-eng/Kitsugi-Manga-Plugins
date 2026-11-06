@@ -1,0 +1,54 @@
+name: TR extension APK release
+
+on:
+  workflow_dispatch:
+    inputs:
+      module:
+        description: 'Extension module under src/tr (e.g. hayalistic)'
+        required: true
+        default: 'hayalistic'
+  push:
+    branches: [arena/5be02cb8-kitsugi-manga-plugins]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/hayalistic/build.gradle.kts
+      - tools/prepare_extension_release.py
+      - .github/workflows/tr-extension-release.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tr-extension-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: Build the release APK for the changed extension
+        working-directory: keiyoushi-extensions-tr
+        run: ./gradlew :src:tr:hayalistic:assembleRelease
+      - name: Publish the APK and synchronize the catalogs
+        run: |
+          set -o pipefail
+          python3 tools/prepare_extension_release.py hayalistic
+          python3 -m unittest discover -s tests
+      - name: Commit the published artifacts
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+          if git diff --cached --quiet; then
+            echo 'Yayın zaten güncel.'
+            exit 0
+          fi
+          git commit -m 'hayalistic: publish the fixed APK and catalogs [skip ci]'
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
