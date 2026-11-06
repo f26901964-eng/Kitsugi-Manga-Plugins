@@ -3,7 +3,7 @@ name: SadScans verified APK and activation
 on:
   workflow_dispatch:
   push:
-    branches: [arena/f1c29b94-kitsugi-manga-plugins, main]
+    branches: [arena/9e5cc01a-kitsugi-manga-plugins, main]
     paths:
       - keiyoushi-extensions-tr/src/tr/sadscans/**
       - enabled_plugins.txt

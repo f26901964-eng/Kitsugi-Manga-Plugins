@@ -33,3 +33,14 @@ class SadscansSourceTests(unittest.TestCase):
     def test_observed_chapter_limit(self):
         self.assertIn('CHAPTER_PAGE_LIMIT = 10', KEI.read_text())
         self.assertIn('chapterPageLimit: Int = 10', IKEN.read_text())
+
+    def test_no_speculative_reader_endpoints_or_schema_images(self):
+        source = KEI.read_text()
+        reader = source.split('override suspend fun getPageList(', 1)[1].split('// ============================== Helpers', 1)[0]
+        self.assertNotIn('chapterImageProcedures', source)
+        self.assertNotIn('getChapterData', reader)
+        self.assertNotIn('select("script")', reader)
+        self.assertIn('SadscansFrontend.readerScript', reader)
+
+    def test_canonical_chapter_href_is_preserved(self):
+        self.assertIn('url = readerPath ?: ', KEI.read_text())

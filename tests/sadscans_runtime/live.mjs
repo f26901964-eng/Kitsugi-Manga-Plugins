@@ -1,48 +1,51 @@
 import fs from 'node:fs';
-import { chromium } from 'playwright';
-const source = fs.readFileSync('keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/SadscansBrowser.kt', 'utf8');
-const template = source.split('return """')[1].split('""".trimIndent()')[0];
-const report = {passed: false, scope: 'Chromium browser transport; not Android WebView', steps: []};
+import {chromium} from 'playwright';
+const source = fs.readFileSync('keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/SadscansFrontend.kt','utf8');
+const templates = [...source.matchAll(/return """([\s\S]*?)"""\.trimIndent\(\)/g)].map(x=>x[1]);
+const report={passed:false,scope:'Chromium frontend integration, not Android WebView',steps:[],network:[],workers:0};
 let browser;
 try {
-  browser = await chromium.launch({headless: true});
-  const page = await browser.newPage();
-  await page.goto('https://sadscans.net/seriler', {waitUntil: 'domcontentloaded', timeout: 45000});
-  async function call(proc, input) {
-    const path = '/api/trpc/' + proc + '?' + new URLSearchParams({batch: '1', input: JSON.stringify({'0': {json: input}})});
-    const script = template.replace('$target', JSON.stringify(path));
-    const step = {proc, input}; report.steps.push(step);
-    const deadline = Date.now() + 35000;
-    while (Date.now() < deadline) {
-      const raw = await page.evaluate(script);
-      if (raw) {
-        const result = JSON.parse(raw);
-        step.status = result.status; step.bodyPreview = result.body.slice(0, 1500);
-        if (result.status !== 200) throw new Error(`Browser API HTTP ${result.status}`);
-        const data = JSON.parse(result.body)[0].result.data.json;
-        if (Array.isArray(data)) step.count = data.length;
-        return data;
-      }
+  browser=await chromium.launch({headless:true});
+  const page=await browser.newPage();
+  page.on('worker',()=>report.workers++);
+  page.on('response',response=>{
+    const url=new URL(response.url());
+    if(url.hostname==='sadscans.net' && url.pathname.startsWith('/api/')) report.network.push({path:url.pathname,status:response.status()});
+  });
+  async function read(stage,url,script){
+    const step={stage,url};report.steps.push(step);
+    await page.goto(url,{waitUntil:'domcontentloaded',timeout:45000});
+    const deadline=Date.now()+35000;
+    while(Date.now()<deadline){
+      const raw=await page.evaluate(script);
+      if(raw){const result=JSON.parse(raw);if(result.error)throw new Error(result.error);return result;}
       await page.waitForTimeout(1000);
     }
-    step.pageTitle = await page.title();
-    step.pagePreview = (await page.locator('body').innerText()).slice(0, 1500);
-    throw new Error('Browser verification timeout');
+    step.title=await page.title();step.preview=(await page.locator('body').innerText()).slice(0,1200);
+    throw new Error(stage+': frontend timeout');
   }
-  const list = await call('_s4d7g2k9m0.getSeries', {page: 1, limit: 15, sortBy: '-views'});
-  const item = list.find(x => x.href && x.name);
-  if (!item) throw new Error('Empty list');
-  const found = await call('_s4d7g2k9m0.getSeries', {page: 1, limit: 15, sortBy: '-views', search: item.name});
-  if (!found.some(x => x.href === item.href)) throw new Error('Search missing selected series');
-  const detail = await call('_n3p6q1v8x5.getSeriesData', {sef: item.href.split('/').pop(), page: 1, limit: 10});
-  if (!detail.series || !detail.chapters?.length) throw new Error('No details/chapters');
-  report.passed = true;
-} catch (error) {
-  report.error = String(error);
-} finally {
-  await browser?.close();
-  fs.mkdirSync('reports', {recursive: true});
-  fs.writeFileSync('reports/sadscans-browser-live.json', JSON.stringify(report, null, 2));
-  console.log(JSON.stringify(report, null, 2));
+  const base='https://sadscans.net';
+  const listing=query=>templates[0].replace('$options',JSON.stringify({query,sort:'-views',page:1}));
+  const popular=await read('popular',base+'/seriler',listing(''));
+  report.steps.at(-1).count=popular.items.length;
+  const item=popular.items[0];if(!item)throw new Error('No popular series');
+  const search=await read('search',base+'/seriler',listing(item.name));
+  if(!search.items.some(x=>x.href===item.href))throw new Error('Search did not return selected title');
+  report.steps.at(-1).count=search.items.length;
+  const detail=await read('details',base+item.href,templates[1].replace('$page','1'));
+  report.steps.at(-1).chapterCount=detail.chapters.length;
+  report.steps.at(-1).totalPages=detail.pagination.totalPages;
+  const chapter=detail.chapters[0];if(!chapter)throw new Error('No chapters');
+  const pages=await read('reader',base+chapter.href,templates[2].replace('$id',JSON.stringify(chapter.chap_id)));
+  report.steps.at(-1).count=pages.urls.length;
+  if(!pages.urls.length)throw new Error('No reader pages');
+  const image=await page.request.get(pages.urls[0],{headers:{Referer:base+chapter.href}});
+  report.steps.push({stage:'first-image',status:image.status(),bytes:(await image.body()).length});
+  if(!image.ok())throw new Error('Image request failed');
+  report.passed=true;
+}catch(error){report.error=String(error);}
+finally{
+  await browser?.close();fs.mkdirSync('reports',{recursive:true});
+  fs.writeFileSync('reports/sadscans-browser-live.json',JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
 }
-process.exitCode = report.passed ? 0 : 1;
+process.exitCode=report.passed?0:1;
