@@ -52,7 +52,7 @@ abstract class MerlinScans : InitManga() {
         // to plain HTML; otherwise a single preload image can mask the other pages.
         val pages = super.pageListParse(document, chapterUrl)
         if (pages.isEmpty()) {
-            throw IOException("Bölüm görselleri alınamadı; site koruması veya okuyucu biçimi değişmiş olabilir.")
+            throw IOException("MerlinToon 1.6.12: Bölüm görselleri alınamadı; site koruması veya okuyucu biçimi değişmiş olabilir.")
         }
         return pages
     }

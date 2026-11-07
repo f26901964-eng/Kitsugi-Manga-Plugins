@@ -1,0 +1,185 @@
+diff -ruN old/app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt new/app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt	1970-01-01 00:00:00.000000000 +0000
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt	2026-11-07 00:51:01.136640278 +0000
+@@ -0,0 +1,34 @@
++package com.kitsugi.animelist.data.manga
++
++import java.io.File
++import java.util.Locale
++
++/** One APK and the source instances produced by its class loader. */
++internal data class LoadedMangaExtension<T>(
++    val path: String,
++    val packageName: String,
++    val versionCode: Long,
++    val sources: List<T>,
++)
++
++/**
++ * A legacy filename and a canonical package filename can both contain the same
++ * APK package. Pick the newest successfully loaded APK, independent of map or
++ * filesystem iteration order. Do not collapse distinct sources in one APK, or
++ * unrelated native extensions without a package name. This does not delete files.
++ */
++internal fun <T> preferredLoadedMangaSources(bundles: Collection<LoadedMangaExtension<T>>): List<T> {
++    val sorted = bundles.sortedWith(
++        compareByDescending<LoadedMangaExtension<T>> { it.versionCode }
++            .thenByDescending { bundle ->
++                bundle.packageName.isNotBlank() &&
++                    File(bundle.path).name == bundle.packageName.replace('.', '_') + ".apk"
++            }
++            .thenBy { it.path },
++    )
++    val seen = mutableSetOf<String>()
++    return sorted.flatMap { bundle ->
++        val key = bundle.packageName.trim().lowercase(Locale.ROOT)
++        if (key.isEmpty() || seen.add(key)) bundle.sources else emptyList()
++    }
++}
+diff -ruN old/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt new/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt	2026-11-07 00:51:01.120640106 +0000
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/MangaExtensionLoader.kt	2026-11-07 00:51:01.132640235 +0000
+@@ -47,7 +47,7 @@
+     private const val MIHON_EXTENSION_META_KEY = "tachiyomi.extension.class"
+ 
+     /** Yüklü kaynak örneklerini tutar: filePath -> List<MangaSource> (birden fazla source içerebilir) */
+-    private val loadedSources = ConcurrentHashMap<String, List<MangaSource>>()
++    private val loadedSources = ConcurrentHashMap<String, LoadedMangaExtension<MangaSource>>()
+ 
+     /** Son kurulum/indirme denemesinin kullanıcıya anlamlı hata açıklaması (extensionId -> mesaj). */
+     private val lastInstallErrors = ConcurrentHashMap<String, String>()
+@@ -84,7 +84,7 @@
+         notifyLoadComplete()
+     }
+ 
+-    fun getExternalSourcesSnapshot(): List<MangaSource> = loadedSources.values.flatten()
++    fun getExternalSourcesSnapshot(): List<MangaSource> = preferredLoadedMangaSources(loadedSources.values.toList())
+ 
+     // ─── Yüklü Kaynakları Sorgulama ─────────────────────────────────────────
+ 
+@@ -96,7 +96,7 @@
+      * Kaynak listesi, tüm sisteme tek noktadan erişim sağlar.
+      */
+     fun getLoadedSources(): List<MangaSource> {
+-        val apkMexSources = loadedSources.values.flatten()
++        val apkMexSources = getExternalSourcesSnapshot()
+         // Sadece aktif dillerdeki Kotatsu kaynakları — Futon mantığıyla aynı
+         val kotatsuSources = KotatsuExtensionAdapter.getActiveSources()
+         return if (kotatsuSources.isEmpty()) apkMexSources
+@@ -106,16 +106,20 @@
+     fun getSource(extensionId: String, context: Context): MangaSource? {
+         val apkFile = apkFile(context, extensionId)
+         val mexFile = mexFile(context, extensionId)
+-        return loadedSources[apkFile.absolutePath]?.firstOrNull()
+-            ?: loadedSources[mexFile.absolutePath]?.firstOrNull()
++        return loadedSources[apkFile.absolutePath]?.sources?.firstOrNull()
++            ?: loadedSources[mexFile.absolutePath]?.sources?.firstOrNull()
+     }
+ 
+     fun getExtensionIdForSource(source: MangaSource): String? {
+         val targetKey = source.stableSourceKey()
+-        val entry = loadedSources.entries.find { (_, list) ->
+-            list.any {
+-                it === source ||
+-                    it.stableSourceKey() == targetKey ||
++        // Find the actual selected instance first: an older APK with the same package
++        // may still exist under its old filename. Deleting/updating the selected
++        // source must not accidentally target that other file.
++        val entry = loadedSources.entries.find { (_, bundle) ->
++            bundle.sources.any { it === source }
++        } ?: loadedSources.entries.find { (_, bundle) ->
++            bundle.sources.any {
++                it.stableSourceKey() == targetKey ||
+                     (source.pkgName.isNotBlank() && it.pkgName.equals(source.pkgName, ignoreCase = true))
+             }
+         } ?: return source.pkgName.takeIf { it.isNotBlank() }?.replace(".", "_")
+@@ -371,7 +375,7 @@
+         trustSignature: Boolean,
+     ): MangaSource? {
+         // Önbellekten döndür (ilk source'u ver)
+-        loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
++        loadedSources[file.absolutePath]?.let { return it.sources.firstOrNull() }
+ 
+         return try {
+             // Existing installations may predate Android 14's read-only DEX requirement.
+@@ -470,7 +474,7 @@
+                 MihonSourceWrapper(source, context, packageName, engine)
+             }
+ 
+-            loadedSources[file.absolutePath] = wrappers
++            loadedSources[file.absolutePath] = LoadedMangaExtension(file.absolutePath, packageName, getInstalledVersionCode(context, file), wrappers)
+             Log.i(TAG, "$extensionId [APK] yüklendi: ${wrappers.size} kaynak (pkg=$packageName): ${wrappers.joinToString { "${it.name}[${it.lang}]" }}")
+             notifySourceChanged()
+ 
+@@ -519,7 +523,7 @@
+      * Kitsugi native .mex yükleyici (eski format, manifest.json tabanlı).
+      */
+     private fun loadNativeMex(context: Context, extensionId: String, file: File): MangaSource? {
+-        loadedSources[file.absolutePath]?.let { return it.firstOrNull() }
++        loadedSources[file.absolutePath]?.let { return it.sources.firstOrNull() }
+ 
+         return try {
+             val valid = try { ZipFile(file).use { true } } catch (_: Exception) { false }
+@@ -535,7 +539,7 @@
+             val clazz = loader.loadClass(className)
+             val instance = clazz.getDeclaredConstructor().newInstance() as MangaSource
+ 
+-            loadedSources[file.absolutePath] = listOf(instance)
++            loadedSources[file.absolutePath] = LoadedMangaExtension(file.absolutePath, "", -1, listOf(instance))
+             Log.i(TAG, "$extensionId [MEX] yüklendi: ${instance.name} [${instance.lang}]")
+             instance
+         } catch (e: Exception) {
+@@ -587,7 +591,7 @@
+ 
+     /** Belleğe yüklenmiş eklentilerin "kimlik -> kaynaklar" anlık görüntüsü. */
+     fun getLoadedExtensions(): Map<String, List<MangaSource>> =
+-        loadedSources.mapKeys { (path, _) -> File(path).nameWithoutExtension }
++        loadedSources.map { (path, bundle) -> File(path).nameWithoutExtension to bundle.sources }.toMap()
+ 
+     /**
+      * Uygulama içine gömülü Kotatsu kaynakları. Bunların diske yazılmış bir
+@@ -617,7 +621,7 @@
+     }
+ 
+     /** Yüklü source sayısını döndürür (debug amaçlı) */
+-    fun getLoadedSourceCount(): Int = loadedSources.values.sumOf { it.size }
++    fun getLoadedSourceCount(): Int = getExternalSourcesSnapshot().size
+ 
+     /**
+      * Tüm .apk ve .mex eklentilerini tarayarak yükler.
+diff -ruN old/app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt new/app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt
+--- a/app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt	1970-01-01 00:00:00.000000000 +0000
++++ b/app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt	2026-11-07 00:51:01.136640278 +0000
+@@ -0,0 +1,32 @@
++package com.kitsugi.animelist.data.manga
++
++import org.junit.Assert.assertEquals
++import org.junit.Test
++
++class LoadedMangaExtensionTest {
++    @Test
++    fun newestApkWinsRegardlessOfFilenameAndIterationOrder() {
++        val old = LoadedMangaExtension("/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk", "eu.kanade.merlin", 106009, listOf("old"))
++        val current = LoadedMangaExtension("/manga_extensions/eu_kanade_merlin.apk", "eu.kanade.merlin", 106011, listOf("new"))
++        assertEquals(listOf("new"), preferredLoadedMangaSources(listOf(old, current)))
++        assertEquals(listOf("new"), preferredLoadedMangaSources(listOf(current, old)))
++    }
++
++    @Test
++    fun equalVersionsPreferCanonicalFileAndPreserveAllSourcesInThatApk() {
++        val legacy = LoadedMangaExtension("/x/old.apk", "eu.test", 100, listOf("stale"))
++        val canonical = LoadedMangaExtension("/x/eu_test.apk", "eu.test", 100, listOf("a", "b"))
++        assertEquals(listOf("a", "b"), preferredLoadedMangaSources(listOf(legacy, canonical)))
++    }
++
++    @Test
++    fun independentPackagesAndUnidentifiedNativeFilesAreNotCollapsed() {
++        val entries = listOf(
++            LoadedMangaExtension("/a", "one", 5, listOf("one")),
++            LoadedMangaExtension("/b", "two", 5, listOf("two")),
++            LoadedMangaExtension("/c", "", -1, listOf("native1")),
++            LoadedMangaExtension("/d", "", -1, listOf("native2")),
++        )
++        assertEquals(listOf("one", "two", "native1", "native2"), preferredLoadedMangaSources(entries))
++    }
++}

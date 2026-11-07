@@ -2,27 +2,42 @@ name: MerlinToon live probe
 on:
   workflow_dispatch:
   push:
-    branches: [arena/513348c3-kitsugi-manga-plugins]
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
     paths:
-      - tools/merlintoon_live_probe.py
+      - tools/merlintoon_browser_probe.py
       - .github/workflows/merlintoon-live.yml
 permissions:
   contents: read
 jobs:
   probe:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: Public pages, chapter API and image
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install browser and TLS client
+        run: |
+          python -m pip install playwright curl_cffi
+          python -m playwright install --with-deps chromium firefox
+      - name: Try real browser sessions and capture the public reader response
         shell: bash
         run: |
           set +e
-          python3 tools/merlintoon_live_probe.py > /tmp/probe.log 2>&1
-          result=$?
-          cat /tmp/probe.log
+          xvfb-run -a python tools/merlintoon_browser_probe.py 2>&1 | tee /tmp/browser-probe.log
+          result=${PIPESTATUS[0]}
           while IFS= read -r line; do
             line=${line//'%'/'%25'}
-            echo "::notice title=MerlinToon live probe::$line"
-          done < /tmp/probe.log
+            echo "::notice title=Browser probe::$line"
+          done < /tmp/browser-probe.log
+          cat /tmp/browser-probe.log >> "$GITHUB_STEP_SUMMARY"
           exit "$result"
+      - name: Upload public response for temporary offline testing, if obtained
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merlintoon-live-public-reader
+          path: /tmp/merlintoon-live-reader.html
+          if-no-files-found: ignore
+          retention-days: 1

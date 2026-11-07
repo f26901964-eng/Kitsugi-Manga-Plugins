@@ -9,6 +9,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Assume.assumeTrue
 import org.junit.Test
 import java.io.File
+import java.io.IOException
 
 /** Optional integration test using the original Drive chapter saved outside the repository. */
 class MerlinRealReaderTest {
@@ -16,6 +17,21 @@ class MerlinRealReaderTest {
         override val baseUrl get() = "https://merlintoon.com"
         override val name get() = "MerlinToon"
         override val lang get() = "tr"
+    }
+
+    @Test
+    fun emptyReaderReportsTheActiveSourceVersion() = runBlocking {
+        val field = sun.misc.Unsafe::class.java.getDeclaredField("theUnsafe").apply { isAccessible = true }
+        val unsafe = field.get(null) as sun.misc.Unsafe
+        val source = unsafe.allocateInstance(TestMerlin::class.java) as TestMerlin
+        val document = Jsoup.parse("<div id='chapter-content'></div>", "https://merlintoon.com/seri/test/bolum-1/")
+        try {
+            source.pageListParse(document)
+            throw AssertionError("An empty reader must not return an empty page list")
+        } catch (error: IOException) {
+            assertTrue(error.message.orEmpty().startsWith("MerlinToon 1.6.12:"))
+            assertTrue(error.message.orEmpty().contains("Bölüm görselleri alınamadı"))
+        }
     }
 
     @Test

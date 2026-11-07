@@ -24,7 +24,7 @@ tasks.matching { it.name.startsWith("ksp") && it.name.endsWith("UnitTestKotlin")
 
 keiyoushi {
     name = "MerlinToon"
-    versionCode = 8
+    versionCode = 9
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
     theme = "initmanga"

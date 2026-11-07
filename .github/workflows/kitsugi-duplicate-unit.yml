@@ -1,0 +1,87 @@
+name: Kitsugi duplicate selection unit test
+
+on:
+  push:
+    branches: ['arena/e4d8654c-kitsugi-manga-plugins']
+    paths:
+      - 'tools/kitsugi-beta-duplicate-extensions.patch'
+      - 'tools/kitsugi-beta-domain-recursion.patch'
+      - '.github/workflows/kitsugi-duplicate-unit.yml'
+  workflow_dispatch:
+
+jobs:
+  selection-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: f26901964-eng/Kitsugi-Beta
+          ref: eba224032635c7a3e95949c0bbbe7231ee374c6c
+          path: kitsugi-beta
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Apply candidate patch and test its real selection code in a minimal JVM project
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd kitsugi-beta
+          git apply ../tools/kitsugi-beta-duplicate-extensions.patch
+          git apply ../tools/kitsugi-beta-domain-recursion.patch
+          dir="$RUNNER_TEMP/duplicate-selection"
+          mkdir -p "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga" "$dir/src/test/kotlin/com/kitsugi/animelist/data/manga"
+          cp app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga/"
+          cp app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt "$dir/src/test/kotlin/com/kitsugi/animelist/data/manga/"
+          cp app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga/"
+          cp app/src/test/java/com/kitsugi/animelist/data/manga/SourceConfigRecursionTest.kt "$dir/src/test/kotlin/com/kitsugi/animelist/data/manga/"
+          cat > "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga/TestStubs.kt" <<'EOF'
+          package com.kitsugi.animelist.data.manga
+          interface MangaSource { val pkgName: String; val baseUrl: String; val originalBaseUrl: String }
+          fun MangaSource.stableSourceKey(): String = pkgName.lowercase()
+          fun isMangaTrHost(host: String): Boolean = host.equals("manga-tr.com", ignoreCase = true)
+          object MangaTrCompat {
+              const val PACKAGE_NAME = "eu.kanade.tachiyomi.extension.tr.mangatr"
+              fun isMangaTr(source: MangaSource) = source.pkgName.equals(PACKAGE_NAME, true) || isMangaTrBaseUrl(source.baseUrl)
+              fun isMangaTrBaseUrl(baseUrl: String) = runCatching { isMangaTrHost(java.net.URI(baseUrl).host ?: "") }.getOrDefault(false)
+          }
+          EOF
+          cat > "$dir/settings.gradle.kts" <<'EOF'
+          pluginManagement { repositories { gradlePluginPortal(); mavenCentral() } }
+          rootProject.name = "duplicate-selection"
+          EOF
+          cat > "$dir/build.gradle.kts" <<'EOF'
+          plugins { kotlin("jvm") version "2.0.21" }
+          repositories { mavenCentral() }
+          dependencies {
+              implementation("com.google.android:android:4.1.1.4")
+              testImplementation("junit:junit:4.13.2")
+              testImplementation("org.mockito:mockito-core:5.11.0")
+          }
+          EOF
+          set +e
+          ./gradlew -p "$dir" test --no-daemon --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1g > "$RUNNER_TEMP/unit.log" 2>&1
+          status=$?
+          set -e
+          tail -80 "$RUNNER_TEMP/unit.log"
+          if [ "$status" -ne 0 ]; then
+            tail -40 "$RUNNER_TEMP/unit.log" | while IFS= read -r line; do echo "::error title=Selection unit::$line"; done
+            exit "$status"
+          fi
+          echo '::notice title=Unit tests::Duplicate selection and domain recursion tests passed using patched v2.4.455 source files and JVM stubs.'
+          # Verify the recursion test fails on the unpatched released source too.
+          git apply -R ../tools/kitsugi-beta-domain-recursion.patch
+          cp app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga/"
+          set +e
+          ./gradlew -p "$dir" test --tests '*SourceConfigRecursionTest' --no-daemon --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1g > "$RUNNER_TEMP/unit-negative.log" 2>&1
+          status=$?
+          set -e
+          tail -25 "$RUNNER_TEMP/unit-negative.log"
+          if [ "$status" -eq 0 ] || ! grep -q 'StackOverflowError' "$dir/build/test-results/test/TEST-com.kitsugi.animelist.data.manga.SourceConfigRecursionTest.xml"; then
+            echo '::error::The negative control did not fail with StackOverflowError.'
+            exit 1
+          fi
+          echo '::notice title=Negative control::Released source reproduces StackOverflowError; patched source passes.'
