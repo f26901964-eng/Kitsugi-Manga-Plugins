@@ -449,8 +449,7 @@ abstract class InitliseNext : KeiSource() {
                         evaluateJs(READER_SCAN_SCRIPT) { value ->
                             val raw = runCatching { value.parseAs<String?>() }.getOrNull()
                                 ?: return@evaluateJs
-                            fun field(name: String): Int =
-                                Regex(""""$name":(\d+)""").find(raw)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+                            fun field(name: String): Int = Regex(""""$name":(\d+)""").find(raw)?.groupValues?.get(1)?.toIntOrNull() ?: 0
                             counts = intArrayOf(field("total"), field("http"), field("blob"), field("canvas"))
                             val urls = Regex(""""(https?://[^"]+)"""")
                                 .findAll(raw.substringAfter("\"urls\":[", "]").substringBefore("]"))
