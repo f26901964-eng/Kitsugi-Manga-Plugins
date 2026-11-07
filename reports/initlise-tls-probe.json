@@ -1,11 +1,67 @@
 {
-  "probedAt": "2026-11-07T15:54:40.879493+00:00",
+  "probedAt": "2026-11-07T15:56:46.337302+00:00",
   "sites": {
     "duckscans": {
-      "error": "imzalı URL alınamadı"
+      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum 48/001.jpg",
+      "python-requests": {
+        "status": 200,
+        "curlCode": 0,
+        "type": "",
+        "bytes": 118,
+        "head": "4552522055524c2063616e277420636f6e746169"
+      },
+      "curl-plain": {
+        "status": 200,
+        "curlCode": 3,
+        "type": "",
+        "bytes": 6,
+        "head": "303030203020"
+      },
+      "curl-chrome116": {
+        "status": 200,
+        "curlCode": 3,
+        "type": "",
+        "bytes": 6,
+        "head": "303030203020"
+      },
+      "curl-chrome116-cookies": {
+        "status": 200,
+        "curlCode": 3,
+        "type": "",
+        "bytes": 6,
+        "head": "303030203020"
+      }
     },
     "oblivionscans": {
-      "error": "imzalı URL alınamadı"
+      "signedUrl": "https://oblivionscans.com/uploads/seri/wp-content/uploads/init-manga/1879/79/0001.jpg",
+      "python-requests": {
+        "status": 200,
+        "curlCode": 0,
+        "type": "",
+        "bytes": 30,
+        "head": "4552522048545450204572726f72203430333a20"
+      },
+      "curl-plain": {
+        "status": 200,
+        "curlCode": 0,
+        "type": "",
+        "bytes": 6,
+        "head": "343033203020"
+      },
+      "curl-chrome116": {
+        "status": 200,
+        "curlCode": 0,
+        "type": "",
+        "bytes": 6,
+        "head": "343033203020"
+      },
+      "curl-chrome116-cookies": {
+        "status": 200,
+        "curlCode": 0,
+        "type": "",
+        "bytes": 6,
+        "head": "343033203020"
+      }
     }
   }
 }
