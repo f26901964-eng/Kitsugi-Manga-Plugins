@@ -38,7 +38,7 @@ SERIES_PATTERNS = (
     r"/serie/([a-z0-9][a-z0-9-]{1,80})/?$",
     r"/mangas?/([a-z0-9][a-z0-9-]{1,80})/?$",
 )
-CHAPTER_HINTS = ("/bolum-", "-bolum-", "/chapter-", "-chapter-", "/cilt-", "/episode-")
+CHAPTER_HINTS = ("/bolum-", "-bolum-", "/bolum/", "/chapter-", "-chapter-", "/cilt-", "/episode-")
 LOCK_MARKERS = (
     "kilitli bölüm",
     "giriş yapınız",
@@ -47,7 +47,7 @@ LOCK_MARKERS = (
     "login to read",
     "members only",
 )
-BAD_IMAGE_HINTS = ("logo", "banner", "avatar", "icon", "favicon", "placeholder", "spinner")
+BAD_IMAGE_HINTS = ("logo", "banner", "avatar", "icon", "favicon", "placeholder", "spinner", "seri-kapak", "seri-banner", "tepkiler", "mascot", "og-image")
 
 
 @dataclass
@@ -162,7 +162,10 @@ def find_page_images(soup: BeautifulSoup, chapter_url: str) -> list[str]:
         "div#chapter-content img, div.reading-content img, div.entry-content img, "
         "div#readerarea img, div.chapter-content img, div.reader-area img, "
         "div#readerarea p img, .reading-content .page-break img, div#images img, "
-        "section#chapterbody img, div.chapter-images img, p img"
+        "section#chapterbody img, div.chapter-images img, p img, "
+        # Initlise-Next reader shells render images after hydration; try the
+        # common container names seen across those deployments.
+        "div[class*=reader] img, div[class*=chapter] img, main img"
     )
     for img in candidates:
         for attr in ("src", "data-src", "data-lazy-src", "data-original", "data-url"):
@@ -174,6 +177,16 @@ def find_page_images(soup: BeautifulSoup, chapter_url: str) -> list[str]:
                 continue
             urls.append(urljoin(chapter_url, src))
             break
+    if not urls:
+        # Initlise-Next deployments embed the reader payload in the Next.js
+        # flight data instead of <img> tags; scan the raw markup for page-sized
+        # image URLs so the probe can still verify those sites.
+        raw = str(soup)
+        for match in re.finditer(r"https?://[^\"'\\\s<>]+?\.(?:webp|jpe?g|png)(?:\?[^\"'\\\s<>]*)?", raw, re.I):
+            low = match.group(0).lower()
+            if any(b in low for b in BAD_IMAGE_HINTS):
+                continue
+            urls.append(match.group(0))
     # de-duplicate, keep order
     seen, ordered = set(), []
     for u in urls:

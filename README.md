@@ -59,3 +59,15 @@ onu yeniden listeler. Teknik ayrıntılar: `docs/mangadiyari/DURUM-VE-KANIT.md`.
 - Kök nedenler, yapılan düzeltmeler, testler ve dürüst sınırlar: `docs/sadscans/COZUM-2026-11-06.md`.
 - Derleme CI'da yeşil; APK `prebuilt/apk/tachiyomi-tr.sadscans-v1.6.10.apk` (60.463 bayt),
   katalog kayıtları `1.6.10` / `106010`.
+
+## Yeni kaynak araştırması (7 Kasım 2026)
+
+Aktif 9 kaynağın kapsamadığı 17 Türkçe site incelendi (manga/manhwa/webtoon + 11 novel adayı).
+Hiçbiri bugün **çalışır durumda** kataloğa eklenemedi: DuckScans okumayı girişe kapattı,
+Oblivion/Ailura okuyucu görsellerini JavaScript + reader-guard arkasından yüklüyor (WebView
+katmanı gerekiyor), Lunari/MTL/Shadow doğrulanamadı, novel için depoda metin kaynağı altyapısı
+yok. Kanıtlar, platform çözümlemesi (Initlise-Next) ve Faz 2 planı:
+`docs/yeni-kaynaklar/2026-11-07-ARASTIRMA.md`. Ham HTML kanıtları
+`docs/html-dumps/{oblivionscans,duckscans}/`, yakalama aracı
+`tools/yeni_kaynak_capture.py` (+ `yeni-kaynak-capture.yml` iş akışı).
+
