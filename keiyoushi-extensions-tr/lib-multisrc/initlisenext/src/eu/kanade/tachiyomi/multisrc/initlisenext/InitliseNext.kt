@@ -11,6 +11,7 @@ import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.parseAs
 import kotlinx.serialization.json.JsonElement
+import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
@@ -18,7 +19,6 @@ import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.Jsoup
 import java.time.Instant
-import kotlin.math.abs
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -39,11 +39,29 @@ import kotlin.time.Duration.Companion.seconds
  */
 abstract class InitliseNext : KeiSource() {
 
-    override fun OkHttpClient.Builder.configureClient() = rateLimit(2, 1.seconds)
+    /**
+     * Cloudflare clearance çerezi User-Agent'a bağlıdır; tüm istekler (API +
+     * görsel) aynı tarayıcı UA'sını taşır, aksi hâlde 403 düşer.
+     */
+    override fun OkHttpClient.Builder.configureClient(): OkHttpClient.Builder {
+        addInterceptor { chain ->
+            val request = chain.request().newBuilder()
+                .apply {
+                    val ua = header("User-Agent")
+                    if (ua.isNullOrEmpty() || ua.startsWith("okhttp", ignoreCase = true)) {
+                        header("User-Agent", USER_AGENT)
+                    }
+                }
+                .build()
+            chain.proceed(request)
+        }
+        return rateLimit(2, 1.seconds)
+    }
 
     /** Görsel CDN'leri site referansı bekler; KeiSource headersBuilder'ı finaldir. */
     override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
         .header("Referer", "$baseUrl/")
+        .header("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8")
         .build()
 
     protected open val seriesPath = "seri"
@@ -235,37 +253,61 @@ abstract class InitliseNext : KeiSource() {
 
     // ============================== Sayfalar ==============================
 
+    /**
+     * Sitenin okuyucusuyla birebir aynı akış (reader chunk kanıtı
+     * docs/html-dumps/duckscans/chunks/): /api/chapters imzalı sayfa yolları
+     * döner (?v=…&t=…&s=…&k=…&sv=5). İmzasız yollar 403 yer; bu yüzden seri
+     * sayfası uçuşundaki düz `pages` yolları görüntü için KULLANILMAZ.
+     */
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         val segments = chapter.url.trim('/').split('/')
         if (segments.size < 2 || segments[0] != seriesPath) {
             throw Exception("Beklenmeyen bölüm adresi: ${chapter.url}")
         }
         val seriesSlug = segments[1]
-        val response = client.get("$baseUrl/$seriesPath/$seriesSlug/")
+
+        val apiUrl = "$baseUrl/api/chapters".toHttpUrl().newBuilder()
+            .addQueryParameter("series", seriesSlug)
+            .addQueryParameter("chapter", formatNumber(chapter.chapter_number))
+            .addQueryParameter("includepages", "true")
+            .addQueryParameter("limit", "1")
+            .build()
+
+        val response = client.get(apiUrl, apiHeaders(chapter.url), ensureSuccess = false)
         if (response.code == 403) {
-            throw Exception("Site koruması isteği engelledi (403).")
+            throw Exception("Site koruması isteği engelledi (403). Kaynağa bir kez daha denemek için dokunun.")
         }
-        val flight = flightOf(response.body?.string().orEmpty())
-        val array = flightArray(flight, "initialChapters")
-            ?: throw Exception("Bölüm verisi bulunamadı; site arayüzü değişmiş olabilir.")
 
-        val dtos = array.parseAs<List<ChapterDto>>()
-        val target = dtos.firstOrNull { dto ->
-            dto.chapterNumber != null && abs(dto.chapterNumber - chapter.chapter_number) < 0.001f
-        } ?: dtos.firstOrNull { it.slug != null && chapter.url.contains(it.slug) }
+        if (response.isSuccessful) {
+            val pages = response.parseAs<ChaptersApiDto>()
+                .data
+                .firstOrNull { it.pages.isNotEmpty() }
+                ?.pages
+                ?.filter { it.isNotBlank() }
+            if (!pages.isNullOrEmpty()) {
+                return pages.mapIndexed { index, path ->
+                    val imageUrl = if (path.startsWith("http")) path else baseUrl + path
+                    Page(index, imageUrl = imageUrl)
+                }
+            }
+        }
 
-        val pages = target?.pages?.filter { it.isNotBlank() }.orEmpty()
-        if (pages.isEmpty()) {
-            throw Exception(
-                "Bu bölümün sayfaları sitede kilitli görünüyor (coin/VIP). " +
-                    "Siteyi tarayıcıda açıp kontrol edin; sorun sürüyorsa kaynağın durumunu bildirin.",
-            )
-        }
-        return pages.mapIndexed { index, path ->
-            val imageUrl = if (path.startsWith("http")) path else baseUrl + path
-            Page(index, imageUrl = imageUrl.replace(" ", "%20"))
-        }
+        throw Exception(
+            "Bu bölümün görselleri sitede korumalı (oturum veya coin gerekiyor). " +
+                "Uygulamada kaynağın WebView'ını açıp Discord ile giriş yapın; çerezler " +
+                "otomatik kullanılır. Girişten sonra bölümü yeniden açın.",
+        )
     }
+
+    /** Okuyucu API'sinin beklediği CORS/origin başlık seti. */
+    private fun apiHeaders(refererPath: String): Headers = Headers.Builder()
+        .add("Referer", baseUrl + refererPath)
+        .add("Origin", baseUrl)
+        .add("Accept", "*/*")
+        .add("Sec-Fetch-Dest", "empty")
+        .add("Sec-Fetch-Mode", "cors")
+        .add("Sec-Fetch-Site", "same-origin")
+        .build()
 
     // ======================= Uçuş verisi yardımcıları =====================
 
@@ -419,4 +461,10 @@ abstract class InitliseNext : KeiSource() {
     }
 
     private fun String.substringOrNull(start: Int, end: Int): String? = if (start in indices && end <= length && start < end) substring(start, end) else null
+
+    companion object {
+        private const val USER_AGENT =
+            "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) " +
+                "Chrome/131.0.0.0 Mobile Safari/537.36"
+    }
 }
