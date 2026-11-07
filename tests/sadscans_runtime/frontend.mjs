@@ -11,7 +11,11 @@ const require = createRequire(import.meta.url);
 const {parseHTML} = require(process.env.SADSCANS_LINKEDOM || 'linkedom');
 
 const source = fs.readFileSync('keiyoushi-extensions-tr/src/tr/sadscans/src/eu/kanade/tachiyomi/extension/tr/sadscans/SadscansFrontend.kt', 'utf8');
-const templates = [...source.matchAll(/return """([\s\S]*?)"""\.trimIndent\(\)/g)].map(x => x[1]);
+// CF_PRELUDE ayrı bir sabit; şablonlara ${CF_PRELUDE} olarak giriyor, burada yerine konur.
+const preludeMatch = source.match(/private val CF_PRELUDE = """\n([\s\S]*?)\n"""/);
+const prelude = preludeMatch ? preludeMatch[1] + '\n' : '';
+const templates = [...source.matchAll(/return """([\s\S]*?)"""\.trimIndent\(\)/g)]
+  .map(x => x[1].replaceAll('${CF_PRELUDE}', prelude));
 assert.equal(templates.length, 3, 'list/detail/reader script şablonları bulunmalı');
 
 let clock = 0;
@@ -38,6 +42,7 @@ function environment(html, {path = '/seriler', fetchImpl = null} = {}) {
     Map,
     Set,
     JSON,
+    navigator: {userAgent: 'Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Mobile Safari/537.36'},
     fetch: fetchImpl || undefined,
   });
   return {
@@ -361,10 +366,45 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
 // 11. Tarayıcı doğrulaması (challenge) ayrı ve anlaşılır hata verir
 // ---------------------------------------------------------------------------
 {
+  // Cloudflare JS challenge'ı gerçek WebView'de 2-5 sn'de kendiliğinden geçer.
+  // Script hemen hata vermemeli: önce bekler (null), süre dolarsa anlaşılır hata verir.
   const env = environment('<html><body>Just a moment... Checking your browser</body></html>');
+  const script = listScript({query: 'a', sort: 'name', type: null, status: null, page: 1});
+  const early = env.run(script);
+  assert.equal(early, null, 'ilk yoklamada hata değil, bekleme dönmeli');
+  const after5s = [];
+  for (let i = 0; i < 3; i++) {
+    clock += 1000;
+    after5s.push(env.run(script));
+  }
+  assert.ok(after5s.every(v => v === null), '5 sn içinde hâlâ beklemeli');
+  const late = await drive(env, script, 12, v => !!v && JSON.parse(v).error);
+  assert.match(JSON.parse(late).error, /doğrulama/);
+  console.log('PASS: Cloudflare doğrulaması bekleniyor, sonra anlaşılır hata veriliyor');
+}
+
+// ---------------------------------------------------------------------------
+// 11b. Sert WAF bloğu beklemeden raporlanır
+// ---------------------------------------------------------------------------
+{
+  const env = environment('<html><body>Sorry, you have been blocked</body></html>');
   const raw = await drive(env, listScript({query: 'a', sort: 'name', type: null, status: null, page: 1}), 3);
-  assert.match(JSON.parse(raw).error, /doğrulama/);
-  console.log('PASS: tarayıcı doğrulaması ayrı ele alınıyor');
+  const parsed = JSON.parse(raw);
+  assert.equal(parsed.blocked, true);
+  assert.match(parsed.error, /WAF/);
+  console.log('PASS: sert WAF bloğu ayrı raporlanıyor');
+}
+
+// ---------------------------------------------------------------------------
+// 11c. Başarılı yanıt WebView UA'sını bildirir (cf_clearance bu UA'ya bağlı)
+// ---------------------------------------------------------------------------
+{
+  const env = environment(`<html><body><input placeholder="Aramak istediğiniz seriyi yazın">
+    <a href="/seriler/a"><h3>A</h3></a></body></html>`);
+  const raw = await drive(env, listScript({query: '', sort: 'name', type: null, status: null, page: 1}), 30);
+  const parsed = JSON.parse(raw);
+  assert.ok(parsed.ua && parsed.ua.includes('Chrome'), 'WebView UA dönmeli');
+  console.log('PASS: WebView UA bildiriliyor');
 }
 
 

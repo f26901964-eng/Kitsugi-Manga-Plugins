@@ -69,11 +69,18 @@ abstract class Sadscans : KeiSource() {
      * tarayıcısı gibi görünür (çalışan MangaTR kaynağındaki setin aynısı).
      */
     override fun Headers.Builder.configureHeaders() = apply {
-        set("User-Agent", USER_AGENT)
         set("Accept-Language", "tr-TR,tr;q=0.9,en-US;q=0.8,en;q=0.7")
-        set("Sec-Ch-Ua", "\"Chromium\";v=\"131\", \"Google Chrome\";v=\"131\", \"Not_A Brand\";v=\"24\"")
-        set("Sec-Ch-Ua-Mobile", "?1")
-        set("Sec-Ch-Ua-Platform", "\"Android\"")
+        val webViewUa = webViewUserAgent
+        if (webViewUa != null) {
+            // Cloudflare `cf_clearance` çerezi UA'ya bağlıdır; doğrulamayı geçen WebView'in
+            // UA'sı birebir kullanılmalı. Client hint'ler o UA ile uyuşmayacağı için eklenmez.
+            set("User-Agent", webViewUa)
+        } else {
+            set("User-Agent", USER_AGENT)
+            set("Sec-Ch-Ua", "\"Chromium\";v=\"131\", \"Google Chrome\";v=\"131\", \"Not_A Brand\";v=\"24\"")
+            set("Sec-Ch-Ua-Mobile", "?1")
+            set("Sec-Ch-Ua-Platform", "\"Android\"")
+        }
     }
 
     override fun OkHttpClient.Builder.configureClient() = apply {
@@ -90,10 +97,10 @@ abstract class Sadscans : KeiSource() {
      */
     private val apiClient: OkHttpClient by lazy {
         client.newBuilder()
-            .connectTimeout(5, TimeUnit.SECONDS)
-            .readTimeout(6, TimeUnit.SECONDS)
-            .writeTimeout(6, TimeUnit.SECONDS)
-            .callTimeout(6, TimeUnit.SECONDS)
+            .connectTimeout(4, TimeUnit.SECONDS)
+            .readTimeout(5, TimeUnit.SECONDS)
+            .writeTimeout(5, TimeUnit.SECONDS)
+            .callTimeout(5, TimeUnit.SECONDS)
             .build()
     }
 
@@ -117,12 +124,28 @@ abstract class Sadscans : KeiSource() {
 
     private val locRegex = Regex("<loc>\\s*([^<\\s]+)\\s*</loc>", RegexOption.IGNORE_CASE)
 
-    private val apiHeaders: Headers by lazy {
-        Headers.Builder()
-            .add("Accept", "application/json, text/plain, */*")
-            .add("Referer", "$baseUrl/seriler")
-            .build()
-    }
+    /**
+     * Cloudflare `cf_clearance` çerezini üreten WebView'in User-Agent'ı.
+     * Çerez bu UA'ya bağlıdır: farklı UA ile API çağrısı 403 döner.
+     */
+    @Volatile
+    private var webViewUserAgent: String? = null
+
+    private val apiHeaders: Headers
+        get() = Headers.Builder().apply {
+            val ua = webViewUserAgent
+            if (ua != null) {
+                // WebView UA'sı ile birebir aynı olmalı; client hint'ler farklı olduğundan eklenmez.
+                add("User-Agent", ua)
+            } else {
+                add("User-Agent", USER_AGENT)
+                add("Sec-Ch-Ua", "\"Chromium\";v=\"131\", \"Google Chrome\";v=\"131\", \"Not_A Brand\";v=\"24\"")
+                add("Sec-Ch-Ua-Mobile", "?1")
+                add("Sec-Ch-Ua-Platform", "\"Android\"")
+            }
+            add("Accept", "application/json, text/plain, */*")
+            add("Referer", "$baseUrl/seriler")
+        }.build()
 
     private val trpcJson = Json {
         ignoreUnknownKeys = true
@@ -190,6 +213,18 @@ abstract class Sadscans : KeiSource() {
         put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
     }
 
+
+    /** Cloudflare doğrulaması bu oturumda geçilmiş mi? (cf_clearance çerezi paylaşılan kavanozda) */
+    private fun hasClearance(): Boolean = runCatching {
+        client.cookieJar.loadForRequest("$baseUrl/".toHttpUrl())
+            .any { it.name == "cf_clearance" && it.value.isNotBlank() }
+    }.getOrDefault(false)
+
+    /** WebView başarılı bir sayfa döndürdüyse UA'sını sakla; sonraki API çağrıları onunla gider. */
+    private fun rememberUserAgent(result: JsonObject) {
+        result["ua"].stringOrNull()?.takeIf { it.isNotBlank() }?.let { webViewUserAgent = it }
+    }
+
     // ============================== Liste / arama ==============================
 
     override suspend fun getPopularManga(page: Int): MangasPage = fetchSeries(page, "views", null, null, null)
@@ -218,15 +253,22 @@ abstract class Sadscans : KeiSource() {
             if (same && cached.fresh()) return MangasPage(cached.items, cached.hasMore)
         }
 
-        val direct = attempt {
-            val normalized = query?.let { normalizeSearch(it) }
-            val first = directSeries(page, sort, normalized, type, status)
-            if (first.isNotEmpty()) return@attempt first
-            if (!query.isNullOrBlank() && normalized != query) {
-                directSeries(page, sort, query, type, status)
-            } else {
-                first
+        // tRPC kademesi yalnızca Cloudflare doğrulaması geçilmişse denenir. Aksi hâlde ilk istek
+        // challenge'a takılır: uygulamanın CloudflareInterceptor'ı WebView açar, 25 sn'lik arama
+        // bütçesi biter. Çerez yoksa doğrudan WebView kademesine gidilir (çerez oradan kazanılır).
+        val direct = if (hasClearance()) {
+            attempt {
+                val normalized = query?.let { normalizeSearch(it) }
+                val first = directSeries(page, sort, normalized, type, status)
+                if (first.isNotEmpty()) return@attempt first
+                if (!query.isNullOrBlank() && normalized != query) {
+                    directSeries(page, sort, query, type, status)
+                } else {
+                    first
+                }
             }
+        } else {
+            null
         }
         if (!direct.isNullOrEmpty()) {
             val hasMore = direct.size >= PAGE_SIZE
@@ -247,8 +289,9 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             "$baseUrl/seriler",
             SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page),
-            timeout = 13.seconds,
+            timeout = 18.seconds,
         )
+        rememberUserAgent(result)
         val rows = result["items"] as? JsonArray ?: throw IOException("SadScans arama sonuçları okunamadı.")
         val loaded = parseSeriesItems(rows)
         val fromDom = result["source"].stringOrNull() == "dom"
@@ -426,7 +469,7 @@ abstract class Sadscans : KeiSource() {
                 )
             }
         }
-        val direct = attempt { fetchAllViaApi(slug) }
+        val direct = if (hasClearance()) attempt { fetchAllViaApi(slug) } else null
         if (direct != null && direct.chapters.isNotEmpty()) {
             chapterCache[slug] = ChapterCache(direct.series, direct.chapters, System.currentTimeMillis())
             return direct
@@ -435,8 +478,8 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             "$baseUrl/seriler/$slug",
             SadscansFrontend.detailsScript(1),
-            timeout = 25.seconds,
-        )
+            timeout = 18.seconds,
+        ).also { rememberUserAgent(it) }
         val merged = result["merged"].stringOrNull() == "true"
         val dto = decodeFrontend(result)
         if (merged || dto.chapters.isEmpty()) return dto
@@ -451,8 +494,8 @@ abstract class Sadscans : KeiSource() {
                     frontendPage(
                         "$baseUrl/seriler/$slug",
                         SadscansFrontend.detailsScript(page),
-                        timeout = 20.seconds,
-                    ),
+                        timeout = 12.seconds,
+                    ).also { rememberUserAgent(it) },
                 )
             } ?: break
             if (next.chapters.isEmpty()) break
@@ -563,7 +606,7 @@ abstract class Sadscans : KeiSource() {
             chapterUrl,
             SadscansFrontend.readerScript(chapterId),
             timeout = 35.seconds,
-        )
+        ).also { rememberUserAgent(it) }
         val urls = (result["urls"] as? JsonArray)
             ?.mapNotNull { it.stringOrNull()?.trim()?.ifBlank { null } }
             .orEmpty()
