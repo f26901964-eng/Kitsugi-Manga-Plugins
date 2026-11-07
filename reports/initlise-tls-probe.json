@@ -1,0 +1,11 @@
+{
+  "probedAt": "2026-11-07T15:54:40.879493+00:00",
+  "sites": {
+    "duckscans": {
+      "error": "imzalı URL alınamadı"
+    },
+    "oblivionscans": {
+      "error": "imzalı URL alınamadı"
+    }
+  }
+}
