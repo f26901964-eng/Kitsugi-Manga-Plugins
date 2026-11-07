@@ -3,9 +3,10 @@ name: MerlinToon verification
 on:
   workflow_dispatch:
   push:
-    branches: [arena/513348c3-kitsugi-manga-plugins]
+    branches: [arena/e9a87096-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/merlinscans/**
+      - keiyoushi-extensions-tr/lib-multisrc/initmanga/**
       - .github/workflows/merlintoon-verify.yml
 
 permissions:
@@ -47,6 +48,29 @@ jobs:
           PYCODE
             exit "$result"
           fi
+      - name: Verify update signing certificate
+        run: |
+          python3 - <<'PYCODE'
+          from pathlib import Path
+          from tools.verify_mangadiyari_signature import signing_block_certificate
+          old, = Path('prebuilt/apk').glob('tachiyomi-tr.merlinscans-v*.apk')
+          new = next(Path('keiyoushi-extensions-tr/src/tr/merlinscans/build/outputs/apk/release').glob('*.apk'))
+          if signing_block_certificate(old) != signing_block_certificate(new):
+              raise SystemExit('New APK certificate does not match the installed catalog APK')
+          print('New APK certificate matches the installed catalog APK')
+          PYCODE
+      - name: Probe reported chapter (informational)
+        run: |
+          python3 - <<'PYCODE'
+          from urllib.request import Request, urlopen
+          from urllib.error import HTTPError, URLError
+          url = 'https://merlintoon.com/seri/buyucu-coban/bolum-1/'
+          try:
+              with urlopen(Request(url, headers={'User-Agent': 'Mozilla/5.0', 'Referer': 'https://merlintoon.com/'}), timeout=30) as response:
+                  print(f'::notice title=Live chapter::HTTP {response.status}; reachability only, reader and images are not verified')
+          except (HTTPError, URLError, OSError) as exc:
+              print(f'::warning title=Live chapter::Unable to verify reported chapter: {exc}')
+          PYCODE
       - name: Prepare catalog
         run: |
           python3 tools/prepare_extension_release.py merlinscans
@@ -57,7 +81,7 @@ jobs:
           name: merlintoon-artifacts
           path: /tmp/merlintoon-artifacts.tar.gz
       - name: Save verified APK and catalog on this branch
-        if: github.ref == 'refs/heads/arena/513348c3-kitsugi-manga-plugins'
+        if: github.ref == 'refs/heads/arena/e9a87096-kitsugi-manga-plugins'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -65,4 +89,4 @@ jobs:
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/merlinscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'merlintoon: activate verified APK and catalogs [skip ci]'
-          git push origin HEAD:arena/513348c3-kitsugi-manga-plugins
+          git push origin HEAD:arena/e9a87096-kitsugi-manga-plugins

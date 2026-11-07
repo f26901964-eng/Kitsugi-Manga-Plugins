@@ -28,3 +28,9 @@ InitManga davranışı korunur; giriş veya ücret gerektiren içeriğe erişim 
 - Yerel `python3 -m unittest discover -s tests`: 64 test, 12 atlandı.
 - [Canlı ağ kontrolü](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42314139686): arşiv, arama, seri detayı, bölüm API'si ve okuyucu GitHub runner'ına HTTP 403 döndürdü. Dolayısıyla canlı arama, tam bölüm listesi ve resim indirme doğrulanamadı. Kullanıcının ağında ve uygulamanın Cloudflare oturumunda sonuç farklı olabilir; çalışma garantisi verilmez.
 - Bölüm API'si, farklı seri/arama sayfaları ve sonraki sayfalar gerçek sunucuda ayrıca sınanmalı. Eski arşivdeki 1.6.4 APK ile yeni 1.6.9 APK v2 sertifikaları karşılaştırıldı ve farklı bulundu. Eski sürüm cihazda kuruluysa Android 1.6.9'u üzerine güncelleme olarak kabul etmez. Sertifika SHA-256 değerleri sırasıyla `a53115764ff5e259e0e5acec3c58a85166e88aad110cd8a20674eefea5d6c016` ve `a12ba4b532bd7fa9c6f2e7eb05c841bca6560ffa871252e915ba72c429fe9dba`. Android/Kitsugi kurulumu ayrıca doğrulanmadı. Eski sürümü kaldırmak yerel verileri etkileyebilir; önce uygun yedekleme yapılmalı.
+
+### 1.6.10 okuyucu düzeltmesi
+
+- InitManga'nın bilinen korumalı `canvas[data-enc]` okuyucu biçimi ve normal/lazy görseller DOM sırasıyla okunur; şifrelenmiş içerikte de aynı ayrıştırıcı kullanılır. İlgisiz base64 scriptleri artık bölüm verisi sanılmaz.
+- Testler bu biçimleri sentetik örneklerle doğrular. Büyücü Çoban Bölüm 1'in HTML'i veya görselleri bu ortamda doğrulanamadı: GitHub Actions isteği Cloudflare HTTP 403 döndürdü. Bu nedenle ilgili bölümdeki hatanın kesin nedeninin bu olduğu veya cihazda çözüldüğü henüz doğrulanmış değildir.
+- 1.6.10 APK imza sertifikası, CI'da 1.6.9 ile karşılaştırılarak eşleşti.

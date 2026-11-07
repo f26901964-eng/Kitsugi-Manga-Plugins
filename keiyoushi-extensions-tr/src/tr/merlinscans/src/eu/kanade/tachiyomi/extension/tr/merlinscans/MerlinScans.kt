@@ -10,6 +10,7 @@ import keiyoushi.network.get
 import keiyoushi.utils.asJsoup
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
+import java.io.IOException
 
 @Source
 abstract class MerlinScans : InitManga() {
@@ -47,13 +48,13 @@ abstract class MerlinScans : InitManga() {
     }
 
     override suspend fun pageListParse(document: Document, chapterUrl: String): List<Page> {
-        // Keep the theme's lock handling and encrypted-reader support. The normal
-        // reader exposes ordered image slices in data-original-src.
-        if (document.selectFirst("div.lock-card, div.imc-locked") != null) {
-            return super.pageListParse(document, chapterUrl)
+        // Let the theme decode the complete encrypted payload before falling back
+        // to plain HTML; otherwise a single preload image can mask the other pages.
+        val pages = super.pageListParse(document, chapterUrl)
+        if (pages.isEmpty()) {
+            throw IOException("Bölüm görselleri alınamadı; site koruması veya okuyucu biçimi değişmiş olabilir.")
         }
-        val pages = MerlinParser.readerPages(document)
-        return if (pages.isNotEmpty()) pages else super.pageListParse(document, chapterUrl)
+        return pages
     }
 
     override fun parseMangaDetails(document: Document): SManga = super.parseMangaDetails(document).apply {
