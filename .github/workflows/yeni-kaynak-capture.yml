@@ -1,0 +1,52 @@
+name: Yeni kaynak canlı yakalama (Initlise-Next adayları)
+
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: 'Comma separated sites (boş = hepsi)'
+        required: false
+        default: ''
+  push:
+    branches: [arena/f38c7f22-kitsugi-manga-plugins, main]
+    paths:
+      - tools/yeni_kaynak_capture.py
+      - .github/workflows/yeni-kaynak-capture.yml
+
+permissions:
+  contents: write
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install requests==2.32.5
+      - name: Aday sitelerin ham HTML'ini yakala
+        run: |
+          set -o pipefail
+          python tools/yeni_kaynak_capture.py --only "${{ github.event.inputs.only }}" 2>&1 | tee /tmp/yeni-kaynak-capture.log
+      - name: Kanıtları dala işle
+        if: always()
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          git config user.name kitsugi-yeni-kaynak
+          git config user.email kitsugi-yeni-kaynak@users.noreply.github.com
+          git add docs/html-dumps reports/yeni-kaynak-capture.json
+          if git diff --cached --quiet; then
+            echo 'Yeni kanıt yok.'
+            exit 0
+          fi
+          git commit -m "chore(evidence): yeni kaynak canlı HTML yakalama [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase -q origin "$BRANCH" || true
+            if git push origin "HEAD:$BRANCH"; then exit 0; fi
+            sleep 4
+          done
+          exit 1
