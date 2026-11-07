@@ -1,6 +1,6 @@
 # Kitsugi Manga Plugins (TR)
 
-Etkin eklenti listesinde **Manga-TR**, **MangaciX**, **Mangitto**, **OkuToon**, **SadScans**, **Turkmanga**, **Tortuga Çeviri**, **MangaDenizi** ve **MerlinToon** vardır. Turkmanga kaynağı `turkmanga.org` içindir; aynı adlı olmayan `trmangaoku.com` eklentisiyle karıştırılmamalıdır. `Turkmanga parser verification and APK release` GitHub Actions çalışması başarılı oldu: parser testleri geçti, Turkmanga `1.6.2` (`106002`) APK'sı derlendi ve o çalışmada altı etkin kaynak için bu dala ait kataloglar eşitlendi. Genel `builds` dağıtım dalı, değişiklikler `main` dalına alınıp ana katalog yayın iş akışı çalışınca güncellenir. **Manga Diyarı devre dışıdır** (aşağıya bakın). Manga-TR, incelenen liste sayfasında 10.637 seri gösterdiği için geniş bir Türkçe arşiv adayı olarak seçildi; bu sayı manga dışı içerikleri de kapsayabilir ve zamanla değişir. Başka bir kaynağın daha büyük veya daha güvenilir olmadığı doğrulanmış değildir.
+Etkin eklenti listesinde **Manga-TR**, **MangaciX**, **Mangitto**, **OkuToon**, **SadScans**, **Turkmanga**, **Tortuga Çeviri**, **MangaDenizi**, **MerlinToon**, **DuckScans**, **LunariScans**, **AiluraScans** ve **Oblivion Scans** vardır. Turkmanga kaynağı `turkmanga.org` içindir; aynı adlı olmayan `trmangaoku.com` eklentisiyle karıştırılmamalıdır. `Turkmanga parser verification and APK release` GitHub Actions çalışması başarılı oldu: parser testleri geçti, Turkmanga `1.6.2` (`106002`) APK'sı derlendi ve o çalışmada altı etkin kaynak için bu dala ait kataloglar eşitlendi. Genel `builds` dağıtım dalı, değişiklikler `main` dalına alınıp ana katalog yayın iş akışı çalışınca güncellenir. **Manga Diyarı devre dışıdır** (aşağıya bakın). Manga-TR, incelenen liste sayfasında 10.637 seri gösterdiği için geniş bir Türkçe arşiv adayı olarak seçildi; bu sayı manga dışı içerikleri de kapsayabilir ve zamanla değişir. Başka bir kaynağın daha büyük veya daha güvenilir olmadığı doğrulanmış değildir.
 
 ## MerlinToon
 
@@ -59,3 +59,30 @@ onu yeniden listeler. Teknik ayrıntılar: `docs/mangadiyari/DURUM-VE-KANIT.md`.
 - Kök nedenler, yapılan düzeltmeler, testler ve dürüst sınırlar: `docs/sadscans/COZUM-2026-11-06.md`.
 - Derleme CI'da yeşil; APK `prebuilt/apk/tachiyomi-tr.sadscans-v1.6.10.apk` (60.463 bayt),
   katalog kayıtları `1.6.10` / `106010`.
+
+## Yeni kaynak araştırması ve Initlise-Next ailesi (7 Kasım 2026)
+
+Aktif 9 kaynağın kapsamadığı 17 Türkçe site incelendi; dördü aynı platform
+(Initlise-Next — Next.js App Router + `/api/series` REST ucu) olduğu için ortak
+`lib-multisrc/initlisenext` temasıyla **DuckScans, LunariScans, AiluraScans ve
+Oblivion Scans (NSFW)** eklendi ve derlendi (`1.6.2` / `106002`):
+
+- Katalog/arama: `/api/series?page=N`, `?sort=createdAt`, `?q=<sorgu>` — uçlar
+  GitHub runner'ından 200 ile doğrulandı.
+- Bölümler ve sayfalar: seri sayfasının Next.js uçuş verisindeki
+  `initialChapters` dizisi tüm bölümleri sayfa yollarıyla birlikte gömer.
+  Sitenin okuyucu kilidi ("Giriş Yapmanız Gerekiyor") yalnız okuyucu
+  arayüzünü ilgilendirir; gömülü veri anonim oturumda da gelir. Bu yüzden
+  Oblivion Scans için ayrı hesap girişi gerekmez — giriş Discord OAuth'a
+  bağlıdır ve yalnız coin ile kilitlenip uçuşta sayfası bulunmayan
+  bölümlerde açıklayıcı hata gösterilir.
+- Kanıtlar: `docs/html-dumps/{duckscans,lunariscans,ailurascans,oblivionscans}/browser`
+  (kullanıcının kendi tarayıcı kayıtları; 79 ve 114 bölümlük serilerde
+  sayfaların tam gömülmesi doğrulandı) ve `docs/yeni-kaynaklar/2026-11-07-ARASTIRMA.md`.
+- Sınırlar: AiluraScans ve LunariScans GitHub runner IP'sine 403 verir
+  (Cloudflare); derleme CI'da yeşildir, canlı doğrulama cihazdadır.
+  Novel siteleri için depoda metin kaynağı altyapısı yoktur (bkz. araştırma belgesi).
+- Yayın iş akışı: `initlise-release.yml` (spotlessApply → derleme+test →
+  `prepare_extension_release.py` çok modüllü yayın → katalog senkronu).
+
+

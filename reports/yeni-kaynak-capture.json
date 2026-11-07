@@ -1,0 +1,789 @@
+{
+  "capturedAt": "2026-11-07T14:58:47.800231+00:00",
+  "sites": {
+    "ailurascans": {
+      "baseUrl": "https://ailurascans.com",
+      "ua": "desktop",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 403,
+          "bytes": 5672,
+          "lockMarkers": []
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 403,
+          "bytes": 5690,
+          "lockMarkers": []
+        },
+        "series": {
+          "path": "/seri/hooky",
+          "status": 403,
+          "bytes": 5702,
+          "lockMarkers": []
+        },
+        "reader": {
+          "path": "/seri/hooky/bolum/1",
+          "status": 403,
+          "bytes": 5748,
+          "lockMarkers": []
+        }
+      },
+      "apiProbes": [
+        {
+          "path": "/api/series?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/manga/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series?page=1",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/list",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/all",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/browse/series",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/v1/series",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/home",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/latest",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/popular",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/settings",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/sitemap-series.xml",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        }
+      ],
+      "note": "mobile-UA reddi sonrası masaüstü UA denemesi"
+    },
+    "oblivionscans": {
+      "baseUrl": "https://oblivionscans.com",
+      "ua": "mobile",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 200,
+          "bytes": 65015,
+          "lockMarkers": [],
+          "chapterHrefCount": 0,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/oblivionscans/home.html",
+          "chunksScanned": 14,
+          "apiEndpoints": [
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series  <template?>",
+            "/api/series?limit=1000",
+            "/api/series?limit=20&sort=createdAt",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series?isSlider=true&limit=22&sort=rating&t=${Date.now()}",
+            "/api/series?limit=1000",
+            "/api/series?limit=20&sort=createdAt",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/connection-check.txt"
+          ]
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 200,
+          "bytes": 50363,
+          "lockMarkers": [],
+          "chapterHrefCount": 0,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/oblivionscans/series-list.html",
+          "chunksScanned": 12,
+          "apiEndpoints": [
+            "/api/admin/categories?names=true&active=true",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series  <template?>",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/admin/categories?names=true&active=true",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/connection-check.txt"
+          ]
+        },
+        "series": {
+          "path": "/seri/ts-cezasi",
+          "status": 200,
+          "bytes": 211907,
+          "lockMarkers": [],
+          "chapterHrefCount": 13,
+          "pageArrayCount": 13,
+          "dump": "docs/html-dumps/oblivionscans/series.html"
+        },
+        "reader": {
+          "path": "/seri/ts-cezasi/bolum/1",
+          "status": 200,
+          "bytes": 64953,
+          "lockMarkers": [],
+          "chapterHrefCount": 2,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/oblivionscans/reader.html",
+          "chunksScanned": 15,
+          "apiEndpoints": [
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/chapters  <template?>",
+            "/api/chapters/${e_}/view",
+            "/api/chapters?series=${t}&chapter=${r}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&limit=500",
+            "/api/coins/check-unlock?chapterId=${e_}",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/${e}",
+            "/api/comments/${e}/vote",
+            "/api/comments/upload-image",
+            "/api/comments?${e}",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/library",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/reactions",
+            "/api/reactions/config",
+            "/api/reactions?seriesId=${r}${e}",
+            "/api/reader-guard/verify",
+            "/api/reading-history",
+            "/api/reports",
+            "/api/series  <template?>",
+            "/api/series/${t}",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/stickers",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/chapters/${e_}/view",
+            "/api/chapters?series=${encodeURIComponent(r)}&chapter=${encodeURIComponent(String(a))}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&chapter=${r}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&limit=500",
+            "/api/coins/check-unlock?chapterId=${e_}",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/${e}",
+            "/api/comments/${e}/vote",
+            "/api/comments/upload-image",
+            "/api/comments?${e}",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/library"
+          ]
+        }
+      },
+      "apiProbes": [
+        {
+          "path": "/api/series?q=regres",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":[{\"_id\":\"6b26bc672e08baeae1b4fe99\",\"id\":13,\"title\":\"Çatı Katının Seks Kralı\",\"slug\":\"cati-katinin-seks-krali\",\"alternativeNames\":[\"Rooftop Sex King\",\"King of"
+        },
+        {
+          "path": "/api/series/search?q=regres",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/search?q=regres",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/manga/search?q=regres",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series?page=1",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":[{\"_id\":\"6b26bc672e08baeae1b4fe99\",\"id\":13,\"title\":\"Çatı Katının Seks Kralı\",\"slug\":\"cati-katinin-seks-krali\",\"alternativeNames\":[\"Rooftop Sex King\",\"King of"
+        },
+        {
+          "path": "/api/series/list",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/all",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/browse/series",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/v1/series",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/home",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/latest",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/popular",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/settings",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":{\"siteName\":\"\",\"scansName\":\"Oblivion Scans\",\"baseUrl\":\"https://oblivionscans.com\",\"description\":\"Oblivion Scans — Türkçe manga, manhwa ve webtoon okuma platf"
+        },
+        {
+          "path": "/sitemap-series.xml",
+          "status": 200,
+          "type": "application/xml; charset=utf-8",
+          "sample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">   <url>     <loc>https://oblivionscans.com/seri/alicein-sehvetli-radyosu</loc>  "
+        }
+      ]
+    },
+    "lunariscans": {
+      "baseUrl": "https://lunariscans.com",
+      "ua": "desktop",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 403,
+          "bytes": 5672,
+          "lockMarkers": []
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 403,
+          "bytes": 5690,
+          "lockMarkers": []
+        },
+        "series": {
+          "path": "/seri/bu-reenkarnasyonu-bozmaliyim",
+          "status": 403,
+          "bytes": 5814,
+          "lockMarkers": []
+        }
+      },
+      "apiProbes": [
+        {
+          "path": "/api/series?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/manga/search?q=regres",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series?page=1",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/list",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/all",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/browse/series",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/v1/series",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/home",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/latest",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/popular",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/settings",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        },
+        {
+          "path": "/sitemap-series.xml",
+          "status": 403,
+          "type": "text/html; charset=UTF-8",
+          "sample": ""
+        }
+      ],
+      "note": "mobile-UA reddi sonrası masaüstü UA denemesi"
+    },
+    "duckscans": {
+      "baseUrl": "https://duckscans.com",
+      "ua": "mobile",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 200,
+          "bytes": 76154,
+          "lockMarkers": [],
+          "chapterHrefCount": 0,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/duckscans/home.html",
+          "chunksScanned": 14,
+          "apiEndpoints": [
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series  <template?>",
+            "/api/series?limit=1000",
+            "/api/series?limit=20&sort=createdAt",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series?isSlider=true&limit=22&sort=rating&t=${Date.now()}",
+            "/api/series?limit=1000",
+            "/api/series?limit=20&sort=createdAt",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/connection-check.txt"
+          ]
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 200,
+          "bytes": 54161,
+          "lockMarkers": [],
+          "chapterHrefCount": 0,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/duckscans/series-list.html",
+          "chunksScanned": 12,
+          "apiEndpoints": [
+            "/api/admin/categories?names=true&active=true",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series  <template?>",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/admin/categories?names=true&active=true",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/connection-check.txt"
+          ]
+        },
+        "series": {
+          "path": "/seri/regresorun-kullanim-kilavuzu",
+          "status": 200,
+          "bytes": 417385,
+          "lockMarkers": [],
+          "chapterHrefCount": 114,
+          "pageArrayCount": 114,
+          "dump": "docs/html-dumps/duckscans/series.html"
+        },
+        "reader": {
+          "path": "/seri/regresorun-kullanim-kilavuzu/bolum/1",
+          "status": 200,
+          "bytes": 71039,
+          "lockMarkers": [],
+          "chapterHrefCount": 2,
+          "pageArrayCount": 0,
+          "dump": "docs/html-dumps/duckscans/reader.html",
+          "chunksScanned": 15,
+          "apiEndpoints": [
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/chapters  <template?>",
+            "/api/chapters/${e_}/view",
+            "/api/chapters?series=${t}&chapter=${r}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&limit=500",
+            "/api/coins/check-unlock?chapterId=${e_}",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/${e}",
+            "/api/comments/${e}/vote",
+            "/api/comments/upload-image",
+            "/api/comments?${e}",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/library",
+            "/api/notifications",
+            "/api/profile/me",
+            "/api/profile/preferences",
+            "/api/reactions",
+            "/api/reactions/config",
+            "/api/reactions?seriesId=${r}${e}",
+            "/api/reader-guard/verify",
+            "/api/reading-history",
+            "/api/reports",
+            "/api/series  <template?>",
+            "/api/series/${t}",
+            "/api/series?limit=1000",
+            "/api/settings",
+            "/api/stickers",
+            "/api/telemetry/web-vitals",
+            "/api/user/${u}/frame",
+            "/api/vip/status",
+            "/manga  <template?>",
+            "/search  <template?>",
+            "/series  <template?>"
+          ],
+          "fetchTargets": [
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/chapters/${e_}/view",
+            "/api/chapters?series=${encodeURIComponent(r)}&chapter=${encodeURIComponent(String(a))}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&chapter=${r}&includepages=true&limit=1",
+            "/api/chapters?series=${t}&limit=500",
+            "/api/coins/check-unlock?chapterId=${e_}",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/${e}",
+            "/api/comments/${e}/vote",
+            "/api/comments/upload-image",
+            "/api/comments?${e}",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily",
+            "/api/library"
+          ]
+        }
+      },
+      "apiProbes": [
+        {
+          "path": "/api/series?q=regres",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":[{\"_id\":\"6a402018a41d811c93b7cdd6\",\"id\":52,\"title\":\"Olgami\",\"slug\":\"olgami\",\"alternativeNames\":[\"Olgami\",\"Trapped\"],\"image\":\"/uploads/seri-kapak/olgami.webp?"
+        },
+        {
+          "path": "/api/series/search?q=regres",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/search?q=regres",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/manga/search?q=regres",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series?page=1",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":[{\"_id\":\"6a402018a41d811c93b7cdd6\",\"id\":52,\"title\":\"Olgami\",\"slug\":\"olgami\",\"alternativeNames\":[\"Olgami\",\"Trapped\"],\"image\":\"/uploads/seri-kapak/olgami.webp?"
+        },
+        {
+          "path": "/api/series/list",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/all",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/browse/series",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/v1/series",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/home",
+          "status": 404,
+          "type": "text/html; charset=utf-8",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/latest",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/series/popular",
+          "status": 404,
+          "type": "application/json",
+          "sample": ""
+        },
+        {
+          "path": "/api/settings",
+          "status": 200,
+          "type": "application/json",
+          "sample": "{\"success\":true,\"data\":{\"siteName\":\"\",\"scansName\":\"Duck Scans\",\"baseUrl\":\"https://duckscans.com\",\"description\":\"DuckScans'te güncel Türkçe webtoon, manhwa ve manga serilerini ücret"
+        },
+        {
+          "path": "/sitemap-series.xml",
+          "status": 200,
+          "type": "application/xml; charset=utf-8",
+          "sample": "<?xml version=\"1.0\" encoding=\"UTF-8\"?> <urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">   <url>     <loc>https://duckscans.com/seri/sword-demon-island</loc>     <lastmo"
+        }
+      ]
+    }
+  }
+}
