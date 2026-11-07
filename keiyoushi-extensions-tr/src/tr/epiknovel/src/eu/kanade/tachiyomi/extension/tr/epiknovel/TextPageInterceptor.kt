@@ -9,6 +9,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
+import android.text.TextPaint
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -148,11 +149,11 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
             val canvas = Canvas(bitmap)
             canvas.drawColor(Color.WHITE)
 
-            val titlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            val titlePaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = Color.rgb(24, 24, 24)
                 typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
             }
-            val bodyPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            val bodyPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
                 color = Color.rgb(32, 32, 32)
                 typeface = Typeface.SANS_SERIF
             }
@@ -164,7 +165,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
             val chapterTitle = cached.blocks.filterIsInstance<ContentBlock.Title>().firstOrNull()?.text
             val contentWidth = PAGE_WIDTH - 2 * PADDING_X
             val bottomLimit = PAGE_HEIGHT - PADDING_Y
-            var y = PADDING_Y
+            var y = PADDING_Y.toFloat()
 
             // Sayfa başlığı: bölüm adı + sayfa numarası (her sayfada okuma yönü için).
             val header = buildString {
@@ -242,8 +243,8 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
     }
 
     /** Metni sınıra sığdırmak için yazı boyutunu kademeli küçültür. */
-    private fun paragraphLayout(text: String, paint: Paint, width: Int, available: Int): StaticLayout? {
-        if (available <= 0) return null
+    private fun paragraphLayout(text: String, paint: TextPaint, width: Int, available: Float): StaticLayout? {
+        if (available <= 0f) return null
         for (size in floatArrayOf(38f, 34f, 30f, 26f, 22f, 18f, 14f)) {
             paint.textSize = size
             val layout = layoutFor(text, paint, width, 1.3f)
@@ -253,7 +254,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
         return layoutFor(text, paint, width, 1.3f)
     }
 
-    private fun layoutFor(text: String, paint: Paint, width: Int, spacing: Float): StaticLayout = StaticLayout(text, paint, width, Layout.Alignment.ALIGN_NORMAL, spacing, 0f, false)
+    private fun layoutFor(text: String, paint: TextPaint, width: Int, spacing: Float): StaticLayout = StaticLayout(text, paint, width, Layout.Alignment.ALIGN_NORMAL, spacing, 0f, false)
 
     private fun loadImage(url: String): Bitmap? {
         val request = Request.Builder()

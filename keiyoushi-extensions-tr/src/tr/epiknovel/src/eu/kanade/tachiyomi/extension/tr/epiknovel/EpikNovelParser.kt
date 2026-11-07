@@ -17,38 +17,92 @@ import java.util.Locale
  *   `ajax-loader.gif` yer tutucusudur — `data-src` tercih edilir.
  * - Seri: `h1#tables` (18+ rozeti `img` ile kaldırılır), `img.manga-cover`,
  *   `h4` alanları (`Çevirmen:`, `Durum:` + `durum=` bağlantısı), "Seri Özeti"
- *   başlığından sonra gelen paragraflar, `table.table` içinde `/seri/<slug>/bolum/<n>`
- *   satırları (sitede en eski → en yeni sıralı).
+ *   başlığından sonra gelen paragraflar, `table.table` içinde
+ *   `/seri/<slug>/bolum/<n>` satırları (sitede en eski → en yeni sıralı).
  * - Bölüm: `#icerik` içinde `center>h4>b` başlık + `<p>` metinleri; `script`,
  *   `ins`, `iframe` atlanır; boş `<p><br></p>` ayraçları düşer.
  */
+
+private const val SERIES_PREFIX = "/seri/"
+private const val LIST_PAGE_SIZE = 50
+
+private val SAYFA = Regex("Sayfa=(\\d+)")
+private val CHAPTER_NUMBER = Regex("Bölüm\\s*(\\d+)", RegexOption.IGNORE_CASE)
+private val RELATIVE_DATE = Regex(
+    "(\\d+)\\s*(dakika|saat|gün|hafta|ay|yıl)\\s*önce",
+    RegexOption.IGNORE_CASE,
+)
+
+private val SKIP_TAGS = setOf(
+    "script", "style", "ins", "iframe", "noscript", "svg", "button",
+    "form", "select", "textarea", "video", "audio", "object", "embed",
+    "canvas", "nav", "header", "footer", "aside",
+)
+private val INLINE_TAGS = setOf(
+    "a", "b", "i", "strong", "em", "u", "font", "span", "small", "sup",
+    "sub", "code", "mark", "del", "s", "cite", "q", "abbr", "time",
+    "label", "big", "tt", "var", "kbd", "samp",
+)
+
+/** NBSP temizliği + boşluk kırpma; boş metinlerde null. */
+private fun String.clean(): String? =
+    replace(' ', ' ')
+        .trim()
+        .takeIf { it.isNotEmpty() }
+
+/** Kapak görseli: `data-src` yer tutucusuz gerçek kaynak; `src` (ajax-loader) son çare. */
+private fun coverUrl(image: Element?): String? {
+    if (image == null) return null
+    return sequenceOf("data-src-retina", "data-src", "data-original", "src")
+        .mapNotNull { attr -> image.attr(attr).trim().takeIf { it.isNotEmpty() } }
+        .firstOrNull {
+            it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
+        }
+}
+
+/** İçerik görselleri: lazy-src önceliği, yer tutucu/data: atlanır, göreli mutlaklaşır. */
+private fun contentImageUrl(element: Element): String? =
+    sequenceOf("data-src-retina", "data-src", "data-original", "src")
+        .mapNotNull { attr ->
+            element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
+        }
+        .firstOrNull {
+            it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
+        }
+
+/** `/seri/<slug>` yolunu doğrular; bozuk kartları (`/seri/`) atlar. */
+private fun seriesPath(url: String): String? {
+    val index = url.indexOf(SERIES_PREFIX)
+    if (index < 0) return null
+    val slug = url.substring(index + SERIES_PREFIX.length)
+        .substringBefore('?')
+        .substringBefore('#')
+        .trim('/')
+    if (slug.isEmpty() || '/' in slug) return null
+    return "$SERIES_PREFIX$slug"
+}
+
+/** `/seri/<slug>/bolum/<n>` yolunu doğrular. */
+private fun chapterPath(url: String): String? {
+    val index = url.indexOf(SERIES_PREFIX)
+    if (index < 0) return null
+    val rest = url.substring(index + SERIES_PREFIX.length)
+        .substringBefore('?')
+        .substringBefore('#')
+        .trim('/')
+    val parts = rest.split('/')
+    if (parts.size != 3 || parts.any { it.isEmpty() }) return null
+    if (parts[1] != "bolum" || !parts[2].all { it.isDigit() }) return null
+    return "$SERIES_PREFIX${parts[0]}/bolum/${parts[2]}"
+}
+
 internal object EpikNovelParser {
-
-    private const val SERIES_PREFIX = "/seri/"
-    private const val PAGE_SIZE = 50
-
-    private val SAYFA = Regex("Sayfa=(\\d+)")
-    private val CHAPTER_NUMBER = Regex("Bölüm\\s*(\\d+)", RegexOption.IGNORE_CASE)
-    private val RELATIVE_DATE = Regex(
-        "(\\d+)\\s*(dakika|saat|gün|hafta|ay|yıl)\\s*önce",
-        RegexOption.IGNORE_CASE,
-    )
-
-    private val SKIP_TAGS = setOf(
-        "script", "style", "ins", "iframe", "noscript", "svg", "button",
-        "form", "select", "textarea", "video", "audio", "object", "embed",
-        "canvas", "nav", "header", "footer", "aside",
-    )
-    private val INLINE_TAGS = setOf(
-        "a", "b", "i", "strong", "em", "u", "font", "span", "small", "sup",
-        "sub", "code", "mark", "del", "s", "cite", "q", "abbr", "time",
-        "label", "big", "tt", "var", "kbd", "samp",
-    )
 
     // ---------------------------------------------------------------- list
 
     /** Liste/arama sayfasındaki kartlardan seri listesi. */
-    fun mangasFromListPage(document: Document): List<SManga> = document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
+    fun mangasFromListPage(document: Document): List<SManga> =
+        document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
 
     private fun mangaFromCard(card: Element): SManga? {
         val heading = card.selectFirst("h3.media-heading") ?: return null
@@ -76,7 +130,7 @@ internal object EpikNovelParser {
         val linked = document.select("ul.pagination a[href*=Sayfa]")
             .mapNotNull { SAYFA.find(it.attr("href"))?.groupValues?.get(1)?.toIntOrNull() }
         if (linked.isNotEmpty()) return linked.any { it > page }
-        return document.select("#pop-href div.media").size >= PAGE_SIZE
+        return document.select("#pop-href div.media").size >= LIST_PAGE_SIZE
     }
 
     // ------------------------------------------------------------- details
@@ -154,11 +208,9 @@ internal object EpikNovelParser {
                     element.text().clean()?.let(into::add)
                 }
             }
-
             element.tagName() in setOf("ul", "ol") -> {
                 element.select("li").forEach { li -> li.text().clean()?.let(into::add) }
             }
-
             else -> {
                 val paragraphs = element.select("p")
                 if (paragraphs.isNotEmpty()) {
@@ -213,134 +265,77 @@ internal object EpikNovelParser {
     /** Bölüm metnini başlık + paragraf/resim bloklarına çevirir. */
     fun chapterContent(document: Document): ChapterContent {
         val root = document.selectFirst("#icerik") ?: return ChapterContent(emptyList())
-        val walker = Walker()
+        val walker = ChapterWalker()
         root.childNodes().forEach(walker::walk)
         walker.flush()
         return ChapterContent(walker.blocks)
     }
+}
 
-    private class Walker {
-        val blocks = mutableListOf<ContentBlock>()
-        private var titleTaken = false
-        private val pending = StringBuilder()
+/** `#icerik` ağaç yürüyüşü: metin blokları, başlık, görseller, atlanan etiketler. */
+private class ChapterWalker {
+    val blocks = mutableListOf<ContentBlock>()
+    private var titleTaken = false
+    private val pending = StringBuilder()
 
-        fun walk(node: Node) {
-            when (node) {
-                is TextNode -> pending.append(node.text().replace(' ', ' '))
-                is Element -> walkElement(node)
-                else -> Unit // yorumlar vb.
-            }
+    fun walk(node: Node) {
+        when (node) {
+            is TextNode -> pending.append(node.text().replace(' ', ' '))
+            is Element -> walkElement(node)
+            else -> Unit // yorumlar vb.
         }
+    }
 
-        private fun walkElement(element: Element) {
-            val tag = element.tagName().lowercase(Locale.ROOT)
-            when {
-                tag in SKIP_TAGS -> Unit
-
-                tag == "br" -> flush()
-
-                tag == "img" -> picture(element)
-
-                tag in INLINE_TAGS -> element.childNodes().forEach(::walk)
-
-                tag == "p" || tag == "li" -> {
-                    flush()
-                    element.text().clean()?.let { blocks += ContentBlock.Paragraph(it) }
-                    element.select("img").forEach(::picture)
+    private fun walkElement(element: Element) {
+        val tag = element.tagName().lowercase(Locale.ROOT)
+        when {
+            tag in SKIP_TAGS -> Unit
+            tag == "br" -> flush()
+            tag == "img" -> picture(element)
+            tag in INLINE_TAGS -> element.childNodes().forEach(::walk)
+            tag == "p" || tag == "li" -> {
+                flush()
+                element.text().clean()?.let { blocks += ContentBlock.Paragraph(it) }
+                element.select("img").forEach(::picture)
+            }
+            tag.length == 2 && tag[0] == 'h' && tag[1] in '1'..'6' -> {
+                flush()
+                val text = element.text().clean() ?: return
+                if (!titleTaken) {
+                    titleTaken = true
+                    blocks += ContentBlock.Title(text)
+                } else {
+                    blocks += ContentBlock.Paragraph(text)
                 }
-
-                tag.length == 2 && tag[0] == 'h' && tag[1] in '1'..'6' -> {
-                    flush()
+            }
+            tag == "center" -> {
+                if (!titleTaken && element.selectFirst("h4, h5, h6") != null) {
                     val text = element.text().clean() ?: return
-                    if (!titleTaken) {
-                        titleTaken = true
-                        blocks += ContentBlock.Title(text)
-                    } else {
-                        blocks += ContentBlock.Paragraph(text)
-                    }
-                }
-
-                tag == "center" -> {
-                    if (!titleTaken && element.selectFirst("h4, h5, h6") != null) {
-                        val text = element.text().clean() ?: return
-                        titleTaken = true
-                        blocks += ContentBlock.Title(text)
-                    } else {
-                        flush()
-                        element.childNodes().forEach(::walk)
-                    }
-                }
-
-                else -> {
+                    titleTaken = true
+                    blocks += ContentBlock.Title(text)
+                } else {
                     flush()
                     element.childNodes().forEach(::walk)
                 }
             }
-        }
-
-        fun flush() {
-            val text = pending.toString().clean()
-            pending.clear()
-            if (text != null) blocks += ContentBlock.Paragraph(text)
-        }
-
-        private fun picture(element: Element) {
-            flush()
-            val url = contentImageUrl(element) ?: return
-            if (blocks.lastOrNull() != ContentBlock.Picture(url)) {
-                blocks += ContentBlock.Picture(url)
+            else -> {
+                flush()
+                element.childNodes().forEach(::walk)
             }
         }
     }
 
-    /** İçerik görselleri: lazy-src önceliği, yer tutucu/data: atlanır, göreli mutlaklaşır. */
-    private fun contentImageUrl(element: Element): String? = sequenceOf("data-src-retina", "data-src", "data-original", "src")
-        .mapNotNull { attr ->
-            element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
+    fun flush() {
+        val text = pending.toString().clean()
+        pending.clear()
+        if (text != null) blocks += ContentBlock.Paragraph(text)
+    }
+
+    private fun picture(element: Element) {
+        flush()
+        val url = contentImageUrl(element) ?: return
+        if (blocks.lastOrNull() != ContentBlock.Picture(url)) {
+            blocks += ContentBlock.Picture(url)
         }
-        .firstOrNull {
-            it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
-        }
-
-    // -------------------------------------------------------------- utils
-
-    /** Kapak görseli: `data-src` yer tutucusuz gerçek kaynak; `src` (ajax-loader) son çare. */
-    private fun coverUrl(image: Element?): String? {
-        if (image == null) return null
-        return sequenceOf("data-src-retina", "data-src", "data-original", "src")
-            .mapNotNull { attr -> image.attr(attr).trim().takeIf { it.isNotEmpty() } }
-            .firstOrNull {
-                it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
-            }
     }
-
-    /** `/seri/<slug>` yolunu doğrular; bozuk kartları (`/seri/`) atlar. */
-    private fun seriesPath(url: String): String? {
-        val index = url.indexOf(SERIES_PREFIX)
-        if (index < 0) return null
-        val slug = url.substring(index + SERIES_PREFIX.length)
-            .substringBefore('?')
-            .substringBefore('#')
-            .trim('/')
-        if (slug.isEmpty() || '/' in slug) return null
-        return "$SERIES_PREFIX$slug"
-    }
-
-    /** `/seri/<slug>/bolum/<n>` yolunu doğrular. */
-    private fun chapterPath(url: String): String? {
-        val index = url.indexOf(SERIES_PREFIX)
-        if (index < 0) return null
-        val rest = url.substring(index + SERIES_PREFIX.length)
-            .substringBefore('?')
-            .substringBefore('#')
-            .trim('/')
-        val parts = rest.split('/')
-        if (parts.size != 3 || parts.any { it.isEmpty() }) return null
-        if (parts[1] != "bolum" || !parts[2].all { it.isDigit() }) return null
-        return "$SERIES_PREFIX${parts[0]}/bolum/${parts[2]}"
-    }
-
-    private fun String.clean(): String? = replace(' ', ' ')
-        .trim()
-        .takeIf { it.isNotEmpty() }
 }
