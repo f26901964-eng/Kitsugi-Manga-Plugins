@@ -826,6 +826,7 @@ abstract class Sadscans : KeiSource() {
         private const val PAGE_SIZE = 15
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
         private const val BLOCK_COOLDOWN_MS = 10 * 60 * 1000L
+
         /** Site 2026-11 itibarıyla sadscans.org adresine taşınıyor. */
         private val MIRROR_BASES = listOf("https://sadscans.net", "https://sadscans.org")
         private const val BLOCKED_MESSAGE =
