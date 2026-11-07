@@ -36,3 +36,10 @@ data class ChapterDto(
     val createdAt: String? = null,
     val updatedAt: String? = null,
 )
+
+/** GET /api/chapters?series=<slug>&chapter=<no>&includepages=true yanıtı. */
+@Serializable
+data class ChaptersApiDto(
+    val success: Boolean = false,
+    val data: List<ChapterDto> = emptyList(),
+)

@@ -1,0 +1,315 @@
+{
+  "probedAt": "2026-11-07T15:37:50.638462+00:00",
+  "sites": {
+    "duckscans": {
+      "base": "https://duckscans.com",
+      "series": "hazbin-otelde-cinayet",
+      "seriesPage": {
+        "status": 200
+      },
+      "chapter": {
+        "number": 48,
+        "mongoId": "69e52923f4ac9dfee1b75f19",
+        "slug": "hazbin-otelde-cinayet-bolum-048",
+        "samplePath": "/uploads/seri/hazbin-otelde-cinayet/bolum 48/001.jpg",
+        "seriesMongo": "69dfcd6c1d3de4efa1773cf3",
+        "seriesNumeric": null
+      },
+      "apiMatrix": {
+        "slug+number": {
+          "query": "series=hazbin-otelde-cinayet&chapter=48",
+          "status": 200,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69dfcd6c1d3de4efa1773cf3\",\"slug\":\"hazbin-otelde-cinayet\",\"allowUnauthenticated\":true,\"title\":\"Hazbin Otel\\\\'de Cinayet\"},\"series_slug\":\"hazbin-otelde-cinayet\",\"chapterNumber\":48,\"titl",
+          "bodyBytes": 1416,
+          "pagesFieldHead": "\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066172&s=pJU5_jo1m8TgFQqGmm73Yf&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5\",\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066172&s=xbfeibayZ5JcapuGt6PLcs&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5\",\"/uploads/seri/haz",
+          "pageCandidates": [
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066172&s=pJU5_jo1m8TgFQqGmm73Yf&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5",
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066172&s=xbfeibayZ5JcapuGt6PLcs&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5",
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/003.jpg?v=1784402138794&t=1794066172&s=I3tVqLkTCb829E3soz-CdR&k=nafJiPd9PxZhVcyeq1GBec&sv=5"
+          ],
+          "signedMatrix": {
+            "no-headers": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bf59e06df67-DFW"
+              }
+            },
+            "referer-chapter": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bf9afeedf67-DFW"
+              }
+            },
+            "referer-series": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfacae9df67-DFW"
+              }
+            },
+            "referer-root": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfbfee3df67-DFW"
+              }
+            },
+            "origin-only": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfd2a76df67-DFW"
+              }
+            },
+            "range-only": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfe5d1bdf67-DFW"
+              }
+            },
+            "full-browser": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bff7821df67-DFW"
+              }
+            },
+            "browser-range": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6c008abedf67-DFW"
+              }
+            }
+          }
+        },
+        "slug+chslug": {
+          "query": "series=hazbin-otelde-cinayet&chapter=hazbin-otelde-cinayet-bolum-048",
+          "status": 400,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
+        },
+        "mongo+mongo": {
+          "query": "series=69dfcd6c1d3de4efa1773cf3&chapter=69e52923f4ac9dfee1b75f19",
+          "status": 400,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
+        }
+      },
+      "readerGuard": {
+        "GET": {
+          "status": 405,
+          "setCookie": "",
+          "body": ""
+        },
+        "POST": {
+          "status": 200,
+          "setCookie": "",
+          "body": "{\"success\":true,\"verified\":true}"
+        }
+      },
+      "imageAfterGuard": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c058fc2df67-DFW"
+        }
+      },
+      "readerChunksSaved": [
+        "3tldac6wxrrvc.js",
+        "22g9e7_wv23lw.js"
+      ],
+      "imageBrowserHeaders": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0d2ce0df67-DFW"
+        }
+      },
+      "imageOriginOnly": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0e2f97df67-DFW"
+        }
+      },
+      "imageOriginReferer": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0f2a45df67-DFW"
+        }
+      },
+      "imageOptimizer": {
+        "status": 400,
+        "type": "",
+        "bytes": 30,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "CF-RAY": "a56d6c102cb4df67-DFW"
+        }
+      }
+    },
+    "oblivionscans": {
+      "base": "https://oblivionscans.com",
+      "series": "patron-kizinizi-istiyorum",
+      "seriesPage": {
+        "status": 200
+      },
+      "chapter": {
+        "number": 79,
+        "mongoId": "0381abdab8b910d3e990c536",
+        "slug": "patron-kizinizi-istiyorum-bolum-79",
+        "samplePath": "/uploads/seri/wp-content/uploads/init-manga/1879/79/0001.jpg",
+        "seriesMongo": "ff98f474b146769cdca828ec",
+        "seriesNumeric": "6"
+      },
+      "apiMatrix": {
+        "slug+number": {
+          "query": "series=patron-kizinizi-istiyorum&chapter=79",
+          "status": 200,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"0381abdab8b910d3e990c536\",\"legacyWordPressId\":227,\"legacyGhostChapterId\":1960,\"seriesId\":{\"_id\":\"ff98f474b146769cdca828ec\",\"title\":\"Patron! Kızınızı İstiyorum!\",\"slug\":\"patron-kizinizi-istiyorum\",\"allowUnauthenticated\":false},\"s",
+          "bodyBytes": 791,
+          "pagesFieldHead": "",
+          "pageCandidates": []
+        },
+        "slug+chslug": {
+          "query": "series=patron-kizinizi-istiyorum&chapter=patron-kizinizi-istiyorum-bolum-79",
+          "status": 400,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
+        },
+        "mongo+mongo": {
+          "query": "series=ff98f474b146769cdca828ec&chapter=0381abdab8b910d3e990c536",
+          "status": 400,
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
+        }
+      },
+      "readerGuard": {
+        "GET": {
+          "status": 405,
+          "setCookie": "",
+          "body": ""
+        },
+        "POST": {
+          "status": 200,
+          "setCookie": "",
+          "body": "{\"success\":true,\"verified\":true}"
+        }
+      },
+      "imageAfterGuard": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c1dac4bd8c0-DFW"
+        }
+      },
+      "readerChunksSaved": [
+        "3tldac6wxrrvc.js",
+        "22g9e7_wv23lw.js"
+      ],
+      "imageBrowserHeaders": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c260d4bd8c0-DFW"
+        }
+      },
+      "imageOriginOnly": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c270ff2d8c0-DFW"
+        }
+      },
+      "imageOriginReferer": {
+        "status": 403,
+        "type": "",
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c282b47d8c0-DFW"
+        }
+      },
+      "imageOptimizer": {
+        "status": 400,
+        "type": "",
+        "bytes": 30,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "CF-RAY": "a56d6c293eb3d8c0-DFW"
+        }
+      }
+    },
+    "lunariscans": {
+      "base": "https://lunariscans.com",
+      "series": "ana-karakter-sagligima-takintili",
+      "seriesPage": {
+        "status": 403
+      }
+    },
+    "ailurascans": {
+      "base": "https://ailurascans.com",
+      "series": "hooky",
+      "seriesPage": {
+        "status": 403
+      }
+    }
+  }
+}
