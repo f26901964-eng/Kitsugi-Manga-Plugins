@@ -22,7 +22,17 @@ jobs:
           python -m pip install playwright curl_cffi
           python -m playwright install --with-deps chromium firefox
       - name: Try real browser sessions and capture the public reader response
-        run: xvfb-run -a python tools/merlintoon_browser_probe.py
+        shell: bash
+        run: |
+          set +e
+          xvfb-run -a python tools/merlintoon_browser_probe.py 2>&1 | tee /tmp/browser-probe.log
+          result=${PIPESTATUS[0]}
+          while IFS= read -r line; do
+            line=${line//'%'/'%25'}
+            echo "::notice title=Browser probe::$line"
+          done < /tmp/browser-probe.log
+          cat /tmp/browser-probe.log >> "$GITHUB_STEP_SUMMARY"
+          exit "$result"
       - name: Upload public response for temporary offline testing, if obtained
         if: always()
         uses: actions/upload-artifact@v4
