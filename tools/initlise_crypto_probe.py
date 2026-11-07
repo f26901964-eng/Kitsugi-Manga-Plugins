@@ -173,7 +173,7 @@ def main() -> int:
         except Exception as exc:  # noqa: BLE001
             report["sites"][name] = {
                 "error": f"{type(exc).__name__}: {exc}"[:200],
-                "trace": traceback.format_exc()[-600:],
+                "trace": traceback.format_exc()[-2600:],
             }
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=1))
