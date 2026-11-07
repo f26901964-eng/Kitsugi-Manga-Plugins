@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-11-07T00:40:58.203Z",
+  "generatedAt": "2026-11-07T00:48:59.494Z",
   "bases": [
     {
       "base": "https://sadscans.net",
@@ -8,14 +8,14 @@
           "path": "/",
           "status": 403,
           "finalUrl": "https://sadscans.net/",
-          "ms": 184,
+          "ms": 183,
           "kind": "waf-block",
           "bytes": 5552,
           "headers": {
             "server": "cloudflare",
             "content-type": "text/html; charset=UTF-8",
             "cf-mitigated": null,
-            "cf-ray": "a5684a246d109007-MSP",
+            "cf-ray": "a56855e4be63812b-MSP",
             "cf-cache-status": null,
             "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
             "access-control-allow-origin": null
@@ -26,14 +26,14 @@
           "path": "/seriler",
           "status": 403,
           "finalUrl": "https://sadscans.net/seriler",
-          "ms": 39,
+          "ms": 24,
           "kind": "waf-block",
           "bytes": 5552,
           "headers": {
             "server": "cloudflare",
             "content-type": "text/html; charset=UTF-8",
             "cf-mitigated": null,
-            "cf-ray": "a5684a24fa0f9007-MSP",
+            "cf-ray": "a56855e50844812b-MSP",
             "cf-cache-status": null,
             "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
             "access-control-allow-origin": null
@@ -65,14 +65,14 @@
           "path": "/",
           "status": 200,
           "finalUrl": "https://sadscans.org/",
-          "ms": 768,
+          "ms": 736,
           "kind": "html",
           "bytes": 8447,
           "headers": {
             "server": "cloudflare",
             "content-type": "text/html",
             "cf-mitigated": null,
-            "cf-ray": "a5684a2639254fa9-ORD",
+            "cf-ray": "a56855e63ad04848-ORD",
             "cf-cache-status": "DYNAMIC",
             "cache-control": "",
             "access-control-allow-origin": null
@@ -83,14 +83,14 @@
           "path": "/seriler",
           "status": 200,
           "finalUrl": "https://sadscans.org/seriler",
-          "ms": 242,
+          "ms": 223,
           "kind": "html",
           "bytes": 8447,
           "headers": {
             "server": "cloudflare",
             "content-type": "text/html",
             "cf-mitigated": null,
-            "cf-ray": "a5684a2a6dd14fa9-ORD",
+            "cf-ray": "a56855ea5c784848-ORD",
             "cf-cache-status": "DYNAMIC",
             "cache-control": "",
             "access-control-allow-origin": null
