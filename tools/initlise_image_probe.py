@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import json
 import pathlib
+import urllib.parse
 import re
 import sys
 from datetime import datetime, timezone
@@ -125,30 +126,83 @@ def probe_site(name: str, base: str, slug: str) -> dict:
         return out
 
     raw_path = first["pages"][0]
-    out["chapter"] = {"number": first.get("chapterNumber"), "id": first.get("_id"), "samplePath": raw_path}
-    series_id = re.search(r'"seriesId":"([a-f0-9]{24})"', flight).group(1)
+    series_mongo = re.search(r'"seriesId":"([a-f0-9]{24})"', flight).group(1)
+    series_num = re.search(r'"_id":"[a-f0-9]{24}","id":(\d+)', flight)
+    out["chapter"] = {
+        "number": first.get("chapterNumber"),
+        "mongoId": first.get("_id"),
+        "slug": first.get("slug"),
+        "samplePath": raw_path,
+        "seriesMongo": series_mongo,
+        "seriesNumeric": series_num.group(1) if series_num else None,
+    }
 
     chapter_url = f"{base}/seri/{slug}/bolum/{first.get('chapterNumber')}"
-    variants = {
-        "encoded-no-headers": (raw_path.replace(" ", "%20"), {}),
-        "encoded-root-referer": (raw_path.replace(" ", "%20"), {"Referer": f"{base}/"}),
-        "encoded-chapter-referer": (raw_path.replace(" ", "%20"), {"Referer": chapter_url}),
-        "raw-space-chapter-referer": (raw_path, {"Referer": chapter_url}),
+
+    # --- API parametre matrisi: okuyucunun includepages çağrısı hangi
+    #     kimlikle çalışıyor? (gövde ilk 200 bayt hata mesajını verir)
+    combos = {
+        "slug+chslug": f"series={slug}&chapter={first.get('slug')}",
+        "mongo+mongo": f"series={series_mongo}&chapter={first.get('_id')}",
+        "mongo+chslug": f"series={series_mongo}&chapter={first.get('slug')}",
+        "slug+mongo": f"series={slug}&chapter={first.get('_id')}",
     }
-    out["imageVariants"] = {label: try_get(s, base + path, headers) for label, (path, headers) in variants.items()}
+    api_out = {}
+    for label, q in combos.items():
+        info = try_get(s, f"{base}/api/chapters?{q}&includepages=true&limit=1", {"Referer": chapter_url})
+        if info.get("status") not in (None, 200):
+            try:
+                body = s.get(f"{base}/api/chapters?{q}&includepages=true&limit=1", timeout=TIMEOUT).text
+                info["body"] = body[:220]
+            except requests.RequestException:
+                pass
+        if info.get("status") == 200:
+            body = s.get(f"{base}/api/chapters?{q}&includepages=true&limit=1", timeout=TIMEOUT).text
+            info["body"] = body[:600]
+            m = re.search(r'https?://[^"\\\s]+?\.(?:webp|jpe?g|png)[^"\\\s]*', body)
+            if m:
+                info["signedUrlFound"] = True
+                info["signedUrlFetch"] = try_get(s, m.group(0), {"Referer": chapter_url})
+                out["apiSignedUrl"] = m.group(0)
+                out["apiSignedCombo"] = label
+        api_out[label] = info
+    out["apiMatrix"] = api_out
 
-    api = f"{base}/api/chapters?series={series_id}&chapter={first.get('_id')}&includepages=true&limit=1"
-    out["includePagesApi"] = try_get(s, api, {"Referer": chapter_url})
-    if out["includePagesApi"].get("status") == 200 and "image" not in out["includePagesApi"].get("type", ""):
-        body = s.get(api, timeout=TIMEOUT).text
-        out["includePagesApi"]["sample"] = body[:300]
-        m = re.search(r'https?://[^"\\\s]+?\.(?:webp|jpe?g|png)[^"\\\s]*', body)
-        if m:
-            out["apiImageUrl"] = m.group(0)
-            out["apiImageFetch"] = try_get(s, m.group(0), {"Referer": chapter_url})
+    # --- Okuyucu rotasının JS chunk'ını kanıt olarak indir; URL imzalama
+    #     mantığı yerel inceleme için burada olmalı.
+    reader = s.get(chapter_url, timeout=TIMEOUT)
+    if reader.status_code == 200:
+        chunks = re.findall(r'src="(/_next/static/chunks/[^"]+)"', reader.text)
+        saved = []
+        folder = ROOT / "docs" / "html-dumps" / name / "chunks"
+        folder.mkdir(parents=True, exist_ok=True)
+        for chunk in chunks[:24]:
+            try:
+                js = s.get(base + chunk, timeout=TIMEOUT).text
+            except requests.RequestException:
+                continue
+            if "includepages" in js or "uploads/" in js:
+                target = folder / chunk.split("/")[-1].split("?")[0]
+                target.write_text(js, encoding="utf-8")
+                saved.append(target.name)
+        out["readerChunksSaved"] = saved
 
-    cover = f"{base}/uploads/seri-kapak/{slug}.webp"
-    out["coverProbe"] = try_get(s, cover, {"Referer": f"{base}/"})
+    # --- Tarayıcı benzeri tam başlık seti + _next/image optimizer denemeleri
+    encoded = base + raw_path.replace(" ", "%20")
+    browser_headers = {
+        "Referer": chapter_url,
+        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+        "Sec-Fetch-Dest": "image",
+        "Sec-Fetch-Mode": "no-cors",
+        "Sec-Fetch-Site": "same-origin",
+        "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?1",
+        "sec-ch-ua-platform": '"Android"',
+    }
+    out["imageBrowserHeaders"] = try_get(s, encoded, browser_headers)
+
+    optimizer = f"{base}/_next/image?url={urllib.parse.quote(raw_path)}&w=828&q=75"
+    out["imageOptimizer"] = try_get(s, optimizer, {"Referer": chapter_url})
     return out
 
 
