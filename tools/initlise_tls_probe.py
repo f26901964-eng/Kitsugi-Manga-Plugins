@@ -167,9 +167,19 @@ def main() -> int:
             out["python-requests"] = {"http": rr.status_code, "bytes": len(rr.content), "ct": rr.headers.get("content-type", "")[:30]}
         except requests.RequestException as exc:
             out["python-requests"] = {"error": type(exc).__name__}
-        out["curl-plain"] = fetch_status(["curl", "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
-        out["curl-chrome116"] = fetch_status([str(chrome), "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url], workdir)
-        out["curl-chrome116-cookies"] = fetch_status([str(chrome), "-s", "-b", jar, "-c", jar, "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url], workdir)
+        try:
+            from curl_cffi import requests as creq
+
+            cr = creq.get(
+                url,
+                headers={"User-Agent": UA, "Referer": f"{cfg['base']}/seri/{cfg['series']}/"},
+                impersonate="chrome124",
+                timeout=30,
+                allow_redirects=False,
+            )
+            out["curlcffi-chrome124"] = {"http": cr.status_code, "bytes": len(cr.content), "ct": cr.headers.get("content-type", "")[:30]}
+        except Exception as exc:  # noqa: BLE001
+            out["curlcffi-chrome124"] = {"error": f"{type(exc).__name__}: {exc}"[:120]}
         report["sites"][name] = out
 
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
