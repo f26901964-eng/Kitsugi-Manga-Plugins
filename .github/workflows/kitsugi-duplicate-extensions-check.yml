@@ -31,6 +31,16 @@ jobs:
         run: |
           yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
           "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'cmake;3.22.1' >/dev/null
+      - name: Configure CI memory and workers
+        run: |
+          mkdir -p ~/.gradle
+          cat >> ~/.gradle/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4g -Xms512m -Xss16m -XX:+UseG1GC -Dfile.encoding=UTF-8
+          org.gradle.workers.max=1
+          org.gradle.parallel=false
+          kotlin.daemon.jvmargs=-Xmx4g -Xms512m -Xss16m -XX:+UseG1GC
+          kotlin.compiler.execution.strategy=daemon
+          EOF
       - name: Test and compile the patched app
         working-directory: kitsugi-beta
         shell: bash
