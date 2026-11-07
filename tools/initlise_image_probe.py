@@ -97,6 +97,14 @@ def try_get(session: requests.Session, url: str, headers: dict) -> dict:
     except requests.RequestException as exc:
         return {"error": type(exc).__name__}
     info = {"status": r.status_code, "type": r.headers.get("content-type", "")[:30], "bytes": len(r.content)}
+    if r.status_code >= 400 or r.status_code == 200:
+        interesting = {
+            k: v[:60]
+            for k, v in r.headers.items()
+            if k.lower() in ("server", "cf-ray", "cf-mitigated", "x-matched-path", "x-vercel-cache", "x-vercel-id", "set-cookie", "cache-control", "x-middleware")
+        }
+        if interesting:
+            info["respHeaders"] = interesting
     if r.status_code == 200 and "image" in r.headers.get("content-type", ""):
         info["ok"] = True
     elif r.status_code == 200:
@@ -200,8 +208,19 @@ def probe_site(name: str, base: str, slug: str) -> dict:
         entry["pageCandidates"] = candidates[:3]
         if candidates:
             cand = candidates[0]
-            url = cand if cand.startswith("http") else base + cand.replace(" ", "%20")
-            entry["pageFetch"] = try_get(s, url, browser_headers)
+            signed = cand if cand.startswith("http") else base + cand
+            series_ref = f"{base}/seri/{slug}/"
+            matrix = {
+                "no-headers": {},
+                "referer-chapter": {"Referer": chapter_url},
+                "referer-series": {"Referer": series_ref},
+                "referer-root": {"Referer": f"{base}/"},
+                "origin-only": {"Origin": base},
+                "range-only": {"Range": "bytes=0-"},
+                "full-browser": dict(browser_headers),
+                "browser-range": {**browser_headers, "Range": "bytes=0-"},
+            }
+            entry["signedMatrix"] = {k: try_get(s, signed, h) for k, h in matrix.items()}
         api_out[label] = entry
     out["apiMatrix"] = api_out
 
