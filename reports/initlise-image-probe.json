@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:31:39.570957+00:00",
+  "probedAt": "2026-11-07T15:32:45.404338+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -46,6 +46,16 @@
         "22g9e7_wv23lw.js"
       ],
       "imageBrowserHeaders": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
+      },
+      "imageOriginOnly": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
+      },
+      "imageOriginReferer": {
         "status": 403,
         "type": "",
         "bytes": 0
@@ -101,6 +111,16 @@
         "22g9e7_wv23lw.js"
       ],
       "imageBrowserHeaders": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
+      },
+      "imageOriginOnly": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
+      },
+      "imageOriginReferer": {
         "status": 403,
         "type": "",
         "bytes": 0
