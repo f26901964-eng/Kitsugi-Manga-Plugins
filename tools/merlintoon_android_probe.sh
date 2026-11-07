@@ -22,7 +22,10 @@ cat > /tmp/merlin-profile.xml <<'XML'
 <map><boolean name="repo_first_manga_profile_v2" value="true"/><boolean name="disabled_default_source_eu.kanade.tachiyomi.extension.tr.merlinscans" value="true"/></map>
 XML
 adb push /tmp/merlin-profile.xml /data/local/tmp/merlin-profile.xml
-adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/manga_extensions \$D/shared_prefs; cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; cp /data/local/tmp/merlin-trust.xml \$D/shared_prefs/security_trust.xml; cp /data/local/tmp/merlin-profile.xml \$D/shared_prefs/kitsugi_manga_default_profile.xml; chown -R \$U \$D/files/manga_extensions \$D/shared_prefs; restorecon -R \$D/files/manga_extensions \$D/shared_prefs"
+adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/manga_extensions \$D/shared_prefs; cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; cp /data/local/tmp/merlin-trust.xml \$D/shared_prefs/security_trust.xml; cp /data/local/tmp/merlin-profile.xml \$D/shared_prefs/kitsugi_manga_default_profile.xml; chown -R \$U \$D/files/manga_extensions \$D/shared_prefs; restorecon -R \$D/files/manga_extensions \$D/shared_prefs"
+if [[ "${TEST_MODE:-duplicate}" == duplicate ]]; then
+    adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; chown \$U \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; restorecon \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk"
+fi
 # Isolated synthetic fixture and CONNECT proxy, used only by the disposable emulator.
 openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/fixture.key -out /tmp/fixture.crt -days 1 -subj '/CN=merlintoon.com' >/dev/null 2>&1
 FIXTURE_KEY=/tmp/fixture.key FIXTURE_CERT=/tmp/fixture.crt python3 tools/merlintoon_android_fixture.py > /tmp/merlin-android/fixture.log 2>&1 &

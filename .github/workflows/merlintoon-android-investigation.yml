@@ -12,6 +12,10 @@ jobs:
   android:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        mode: [duplicate, single]
     steps:
       - uses: actions/checkout@v4
       - name: Download released Kitsugi APK
@@ -37,12 +41,12 @@ jobs:
           arch: x86_64
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: bash tools/merlintoon_android_probe.sh
+          script: TEST_MODE=${{ matrix.mode }} bash tools/merlintoon_android_probe.sh
       - name: Upload fresh-emulator diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: merlintoon-android-diagnostics
+          name: merlintoon-android-diagnostics-${{ matrix.mode }}
           path: /tmp/merlin-android/
           if-no-files-found: ignore
           retention-days: 1
