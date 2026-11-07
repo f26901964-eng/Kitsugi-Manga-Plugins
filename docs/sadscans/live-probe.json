@@ -1,0 +1,139 @@
+{
+  "generatedAt": "2026-11-07T00:40:58.203Z",
+  "bases": [
+    {
+      "base": "https://sadscans.net",
+      "pages": [
+        {
+          "path": "/",
+          "status": 403,
+          "finalUrl": "https://sadscans.net/",
+          "ms": 184,
+          "kind": "waf-block",
+          "bytes": 5552,
+          "headers": {
+            "server": "cloudflare",
+            "content-type": "text/html; charset=UTF-8",
+            "cf-mitigated": null,
+            "cf-ray": "a5684a246d109007-MSP",
+            "cf-cache-status": null,
+            "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+            "access-control-allow-origin": null
+          },
+          "bodyHead": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <di"
+        },
+        {
+          "path": "/seriler",
+          "status": 403,
+          "finalUrl": "https://sadscans.net/seriler",
+          "ms": 39,
+          "kind": "waf-block",
+          "bytes": 5552,
+          "headers": {
+            "server": "cloudflare",
+            "content-type": "text/html; charset=UTF-8",
+            "cf-mitigated": null,
+            "cf-ray": "a5684a24fa0f9007-MSP",
+            "cf-cache-status": null,
+            "cache-control": "private, max-age=0, no-store, no-cache, must-revalidate, post-check=0, pre-check=0",
+            "access-control-allow-origin": null
+          },
+          "bodyHead": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <di"
+        }
+      ],
+      "images": [],
+      "imageChecks": [],
+      "trpc": {
+        "status": 403,
+        "kind": "waf-block",
+        "bytes": 5191,
+        "bodyHead": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />\n<link rel=\"stylesheet\" id=\"cf_styles-css\" href=\"/cdn-cgi/styles/cf.errors.css\" />\n<!--[if lt IE 9]><link rel=\"stylesheet\" id='cf_styles-ie-css' href=\"/cdn-cgi/styles/cf.errors.ie.css\" /><![endif]-->\n<style>body{margin:0;padding:0}</style>\n\n\n<!--[if gte IE 10]><!-->\n<script>\n  if (!navigator.cookieEnabled) {\n    window.addEventListener('DOMContentLoaded', function () {\n      var cookieEl = document.getElementById('cookie-alert');\n      cookieEl.style.display = 'block';\n    })\n  }\n</script>\n<!--<![endif]-->\n\n</head>\n<body>\n  <div id=\"cf-wrapper\">\n    <div class=\"cf-alert cf-alert-error cf-cookie-error\" id=\"cookie-alert\" data-translate=\"enable_cookies\">Please enable cookies.</div>\n    <div id=\"cf-error-details\" class=\"cf-error-details-wrapper\">\n      <div class=\"cf-wrapper cf-header cf-error-overview\">\n        <h1 data-translate=\"block_headline\">Sor"
+      },
+      "sitemap": {
+        "status": 403,
+        "kind": "waf-block",
+        "bytes": 5552,
+        "bodyHead": "<!DOCTYPE html>\n<!--[if lt IE 7]> <html class=\"no-js ie6 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 7]>    <html class=\"no-js ie7 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if IE 8]>    <html class=\"no-js ie8 oldie\" lang=\"en-US\"> <![endif]-->\n<!--[if gt IE 8]><!--> <html class=\"no-js\" lang=\"en-US\"> <!--<![endif]-->\n<head>\n<title>Attention Required! | Cloudflare</title>\n<meta charset=\"UTF-8\" />\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta http-equiv=\"X-UA-Compatible\" content=\"IE=Edge\" />\n<meta name=\"robots\" content=\"noindex, nofollow\" />\n<meta name=\"viewport\" conten"
+      },
+      "sitemapFirstSlugs": [],
+      "imageHosts": []
+    },
+    {
+      "base": "https://sadscans.org",
+      "pages": [
+        {
+          "path": "/",
+          "status": 200,
+          "finalUrl": "https://sadscans.org/",
+          "ms": 768,
+          "kind": "html",
+          "bytes": 8447,
+          "headers": {
+            "server": "cloudflare",
+            "content-type": "text/html",
+            "cf-mitigated": null,
+            "cf-ray": "a5684a2639254fa9-ORD",
+            "cf-cache-status": "DYNAMIC",
+            "cache-control": "",
+            "access-control-allow-origin": null
+          },
+          "bodyHead": "<!DOCTYPE html><html lang=\"tr\" dir=\"ltr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><!-- Primary SEO --><title>SadScans – Şifresiz, Korumasız Türkçe Manga ve Webtoon | Yakında</title><meta name=\"description\" content=\"SadScans yakında sadscans.org'da! Bölüm koruması yok, kayıt yok, şifre yok. Tachiyomi ve mihon ile indir, istediğin yerden oku. Herkes için ücretsiz Türkçe manga.\"><meta name=\"keywords\" content=\"sadscans, sadscans hırsız, sadscans bölüm oku, sadscans.org, sadscans net, türkçe manga oku, ücretsiz manga indir, webtoon türkçe, manga tachiyomi, mihon manga, şifresiz manga\"><meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\"><meta name=\"author\" content=\"SadScans\"><meta name=\"language\" content=\"Turkish\"><meta name=\"revisit-after\" content=\"7 days\"><!-- Canonical --><link rel=\"canonical\" href=\"https://sadscans.org/\"><!-- Sitemap --><link rel=\"sitemap\" href=\"/sitemap-index.xml\"><!-- Open Graph --><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://sadscans.org/\"><meta property=\"og:title"
+        },
+        {
+          "path": "/seriler",
+          "status": 200,
+          "finalUrl": "https://sadscans.org/seriler",
+          "ms": 242,
+          "kind": "html",
+          "bytes": 8447,
+          "headers": {
+            "server": "cloudflare",
+            "content-type": "text/html",
+            "cf-mitigated": null,
+            "cf-ray": "a5684a2a6dd14fa9-ORD",
+            "cf-cache-status": "DYNAMIC",
+            "cache-control": "",
+            "access-control-allow-origin": null
+          },
+          "bodyHead": "<!DOCTYPE html><html lang=\"tr\" dir=\"ltr\"><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\"><!-- Primary SEO --><title>SadScans – Şifresiz, Korumasız Türkçe Manga ve Webtoon | Yakında</title><meta name=\"description\" content=\"SadScans yakında sadscans.org'da! Bölüm koruması yok, kayıt yok, şifre yok. Tachiyomi ve mihon ile indir, istediğin yerden oku. Herkes için ücretsiz Türkçe manga.\"><meta name=\"keywords\" content=\"sadscans, sadscans hırsız, sadscans bölüm oku, sadscans.org, sadscans net, türkçe manga oku, ücretsiz manga indir, webtoon türkçe, manga tachiyomi, mihon manga, şifresiz manga\"><meta name=\"robots\" content=\"index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1\"><meta name=\"author\" content=\"SadScans\"><meta name=\"language\" content=\"Turkish\"><meta name=\"revisit-after\" content=\"7 days\"><!-- Canonical --><link rel=\"canonical\" href=\"https://sadscans.org/\"><!-- Sitemap --><link rel=\"sitemap\" href=\"/sitemap-index.xml\"><!-- Open Graph --><meta property=\"og:type\" content=\"website\"><meta property=\"og:url\" content=\"https://sadscans.org/\"><meta property=\"og:title"
+        }
+      ],
+      "images": [
+        "https://sadscans.org/logo.png"
+      ],
+      "imageChecks": [
+        {
+          "url": "https://sadscans.org/logo.png",
+          "withoutReferer": {
+            "status": 200,
+            "type": "image/png",
+            "bytes": 216139,
+            "kind": "html"
+          },
+          "withReferer": {
+            "status": 200,
+            "type": "image/png",
+            "bytes": 216139,
+            "kind": "html"
+          }
+        }
+      ],
+      "trpc": {
+        "status": 405,
+        "kind": "html",
+        "bytes": 559,
+        "bodyHead": "<html>\r\n<head><title>405 Not Allowed</title></head>\r\n<body>\r\n<center><h1>405 Not Allowed</h1></center>\r\n<hr><center>nginx/1.31.3</center>\r\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n"
+      },
+      "sitemap": {
+        "status": 404,
+        "kind": "html",
+        "bytes": 922,
+        "bodyHead": "<html>\r\n<head><title>404 Not Found</title></head>\r\n<body>\r\n<center><h1>404 Not Found</h1></center>\r\n<hr><center>nginx/1.31.3</center>\r\n<script type=\"module\" src=\"https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092\" integrity=\"sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==\" data-cf-beacon='{\"version\":\"2024.11.0\",\"token\":\"4bfc1c19617a4aecb713584261c1408e\",\"r\":1,\"spa\":2}' crossorigin=\"anonymous\"></script>\n</body>\r\n</html>\r\n<!-- a padding to disable MSIE and Chrome friendly error page -->\r\n<!-- a paddin"
+      },
+      "sitemapFirstSlugs": [],
+      "imageHosts": [
+        "sadscans.org"
+      ]
+    }
+  ]
+}
