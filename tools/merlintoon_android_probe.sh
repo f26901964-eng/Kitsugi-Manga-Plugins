@@ -46,6 +46,7 @@ adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
 adb shell screencap -p /sdcard/screenshot.png
 adb pull /sdcard/screenshot.png /tmp/merlin-android/screenshot.png
 adb logcat -d -v time > /tmp/merlin-android/logcat.txt
+adb shell cat "/data/user/0/$PKG/files/crash_log.txt" > /tmp/merlin-android/crash.txt 2>/dev/null || true
 printf 'UI dump: ' && wc -c /tmp/merlin-android/window.xml
 python3 - <<'PY'
 import xml.etree.ElementTree as ET
@@ -57,6 +58,8 @@ for node in root.iter('node'):
         print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
 for line in open('/tmp/merlin-android/fixture.log', errors='replace'):
     print(f"::notice title=Synthetic fixture::{line.strip().replace('%', '%25')}")
+for line in open('/tmp/merlin-android/crash.txt', errors='replace').readlines()[:70]:
+    print(f"::warning title=Android crash::{line.strip().replace('%', '%25')}")
 lines = open('/tmp/merlin-android/logcat.txt', errors='replace').readlines()
 selected = [line for line in lines if any(tag in line.lower() for tag in ('merlinscans', 'merlintoon', 'mangaextensionloader'))]
 for line in selected[-35:]:
