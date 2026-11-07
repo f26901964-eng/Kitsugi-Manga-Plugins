@@ -107,9 +107,10 @@ jobs:
             cat /tmp/publish.log 2>/dev/null || true
             echo '--- artifacts ---'
             cat /tmp/artifacts.log 2>/dev/null || true
-            echo '--- build tail ---'
-            grep -iE "^e: |error:|Unresolved|Cannot|FAILURE|What went wrong" /tmp/gradle.log || true
-            tail -30 /tmp/gradle.log
+            echo '--- full gradle log (ham, son 200KB) ---'
+            tail -c 200000 /tmp/gradle.log 2>/dev/null || true
+            echo '--- test sonuç XMLleri (varsa) ---'
+            find keiyoushi-extensions-tr/src/tr/epiknovel/build/test-results -name '*.xml' -exec sh -c 'echo "== $1 =="; tail -c 8000 "$1"' _ {} \; 2>/dev/null || true
           } > docs/build-logs/epiknovel-build.log || true
           git config user.name 'kitsugi-buildlog'
           git config user.email 'kitsugi-buildlog@users.noreply.github.com'
