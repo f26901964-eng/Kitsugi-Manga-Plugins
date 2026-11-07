@@ -9,7 +9,13 @@ echo "Installed package: $PKG"
 adb root
 adb wait-for-device
 adb shell id
-adb push prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.11.apk /data/local/tmp/merlin.apk
+shopt -s nullglob
+current_apks=(prebuilt/apk/tachiyomi-tr.merlinscans-v*.apk)
+if [[ ${#current_apks[@]} -ne 1 ]]; then
+    echo '::error::Expected exactly one current MerlinToon APK in prebuilt/apk.'
+    exit 1
+fi
+adb push "${current_apks[0]}" /data/local/tmp/merlin.apk
 adb push /tmp/merlin-v1.6.9.apk /data/local/tmp/merlin-old.apk
 # Seed the published extension and its trusted signing hash inside the fresh emulator only.
 # This is equivalent to installing and accepting that signature in the test environment.

@@ -52,7 +52,7 @@ jobs:
           grep -q 'GET /seri/buyucu-coban/bolum-1/' /tmp/merlin-android/fixture.log
           grep -q '1 manga' /tmp/merlin-android/browse.xml
           grep -q 'Bölüm görselleri alınamadı' /tmp/merlin-android/window.xml
-          echo '::notice title=Patched Android app::With both APKs installed, the patched debug app reached the empty synthetic reader and displayed the newer 1.6.11 source error without the duplicate-key crash.'
+          echo '::notice title=Patched Android app::With both APKs installed, the patched debug app reached the empty synthetic reader and displayed the current source error without the duplicate-key crash.'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

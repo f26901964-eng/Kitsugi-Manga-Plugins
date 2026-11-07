@@ -59,14 +59,14 @@ jobs:
               test ! -s /tmp/merlin-android/crash.txt
               grep -q 'Manga page 1' /tmp/merlin-android/window.xml
               for page in 0001 0002 0003; do grep -q "GET /pages/$page.png" /tmp/merlin-android/fixture.log; done
-              echo '::notice::The released app and 1.6.11 loaded all three synthetic images.'
+              echo '::notice::The released app and current catalog APK loaded all three synthetic images.'
               ;;
             single-empty)
               test ! -s /tmp/merlin-android/crash.txt
               grep -q 'Bölüm görselleri alınamadı' /tmp/merlin-android/window.xml
               grep -q 'KTS-SRC-9008' /tmp/merlin-android/window.xml
               grep -q 'GET /seri/buyucu-coban/bolum-1/' /tmp/merlin-android/fixture.log
-              echo '::notice::The empty synthetic chapter displayed the 1.6.11 error and KTS-SRC-9008.'
+              echo '::notice::The empty synthetic chapter displayed the current source error and KTS-SRC-9008.'
               ;;
             legacy-empty)
               test ! -s /tmp/merlin-android/crash.txt

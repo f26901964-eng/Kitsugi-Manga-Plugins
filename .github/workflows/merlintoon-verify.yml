@@ -3,7 +3,7 @@ name: MerlinToon verification
 on:
   workflow_dispatch:
   push:
-    branches: [arena/27856512-kitsugi-manga-plugins]
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
     paths:
       - keiyoushi-extensions-tr/src/tr/merlinscans/**
       - keiyoushi-extensions-tr/lib-multisrc/initmanga/**
@@ -76,12 +76,33 @@ jobs:
           python3 tools/prepare_extension_release.py merlinscans
           python3 -m unittest discover -s tests -v
           tar -czf /tmp/merlintoon-artifacts.tar.gz enabled_plugins.txt prebuilt/apk/tachiyomi-tr.merlinscans-v*.apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
+      - name: Download published app and historical source for emulator test
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download v2.4.455 --repo f26901964-eng/Kitsugi-Beta --pattern '*-foss.apk' --dir /tmp/kitsugi
+          gh api 'repos/f26901964-eng/Kitsugi-Manga-Plugins/git/blobs/64baa8a80e72a025ae1ba53edff1809e14bba24f' --jq '.content' | base64 -d > /tmp/merlin-v1.6.9.apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Test release APK in Android against synthetic fixtures
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash tools/merlintoon_release_android_check.sh
       - uses: actions/upload-artifact@v4
         with:
           name: merlintoon-artifacts
           path: /tmp/merlintoon-artifacts.tar.gz
       - name: Save verified APK and catalog on this branch
-        if: github.ref == 'refs/heads/arena/27856512-kitsugi-manga-plugins'
+        if: github.ref == 'refs/heads/arena/e4d8654c-kitsugi-manga-plugins'
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -89,4 +110,4 @@ jobs:
           git add enabled_plugins.txt keiyoushi-extensions-tr/src/tr/merlinscans prebuilt/apk apk builds/apk index.json plugins.json builds/index.json builds/plugins.json builds/index.v2.json registry/extensions.json registry/extensions.v2.json
           if git diff --cached --quiet; then exit 0; fi
           git commit -m 'merlintoon: activate verified APK and catalogs [skip ci]'
-          git push origin HEAD:arena/27856512-kitsugi-manga-plugins
+          git push origin HEAD:arena/e4d8654c-kitsugi-manga-plugins

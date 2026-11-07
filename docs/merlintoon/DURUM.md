@@ -67,3 +67,14 @@ hakkında genelleştirilemez; kullanıcının sürümü ve hatanın gerçek nede
 Aynı şekilde yukarıdaki yalnız Keiyoushi otomatik güncelleyici tespiti `b78cbc4`
 main commit'i içindir; v2.4.455 yayımlı sürümün otomatik güncelleyicisi kullanıcı
 repolarını da kontrol eder ve özel repoya öncelik verir.
+
+### 1.6.12 — deneysel güncelleme ve sürüm teşhisi
+
+Bu sürüm, kullanıcının uygulama içinden yeni bir eklenti güncellemesi deneyebilmesi
+ve boş okuyucu hatasında gerçekten hangi eklenti kodunun çalıştığını ayırt edebilmesi
+için hazırlanmıştır. Boş sayfa hatası mesajı `MerlinToon 1.6.12:` ile başlar.
+Önceki okuyucu ayrıştırıcısının ve kaynak kimliğinin davranışı değiştirilmemiştir.
+Bu bir Cloudflare atlatması veya Büyücü Çoban hatasının düzeltildiğinin kanıtı değildir.
+Uygulamanın iki APK'yı aynı anda yüklemesine yönelik ayrı yama, eklentinin içine
+eklenerek dağıtılamaz; kurulu uygulamayı bu sürüm güncellemez. Gerçek bölüm HTML'i
+ve kullanıcının cihazındaki sonuç hâlâ doğrulanmamıştır.
