@@ -32,7 +32,7 @@ class Handler(BaseHTTPRequestHandler):
         elif path == '/seri/buyucu-coban/bolum-1/':
             # Both variants are synthetic. The empty case probes error propagation;
             # the full case probes actual page loading using test-only image bytes.
-            if os.environ.get('FIXTURE_READER') == 'single-empty':
+            if os.environ.get('FIXTURE_READER') in ('single-empty', 'legacy-empty'):
                 images = ''
             else:
                 images = ''.join(f'<img src="{BASE}/pages/{i:04}.png">' for i in range(1, 4))

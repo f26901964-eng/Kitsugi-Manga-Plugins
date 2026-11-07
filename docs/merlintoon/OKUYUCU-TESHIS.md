@@ -119,3 +119,25 @@ Alan adı özyineleme yaması için bağımsız JVM testinde yayınlanmış kodu
 doğrulandı ([42323291324](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42323291324)).
 Bu test Android çerçevesinin yerine JVM stub'ları kullanır; uygulama derlemesinin veya
 cihazda yamanın başarıyla çalışmasının yerine geçmez.
+
+## Yayımlanmış uygulama + 1.6.11 için sentetik uçtan uca okuyucu testi
+
+[42325040729](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42325040729)
+numaralı emülatör koşusunda yayımlanmış v2.4.455 ve 1.6.11 APK kullanıldı. Yalnız
+MerlinToon alan adına yanıt veren yerel HTTPS fixture ile iki ayrı senaryo çalıştırıldı:
+
+- Üç geçerli PNG içeren sentetik bölümde uygulama okuyucusu açıldı, arayüzde
+  `Manga page 1` ve 1/3 göstergesi görüldü, sunucu üç görselin isteklerini aldı.
+- Görselsiz sentetik bölümde uygulama `KTS-SRC-9008` kodunu ve **1.6.11'in**
+  `Bölüm görselleri alınamadı; site koruması veya okuyucu biçimi değişmiş olabilir.`
+  ham mesajını gösterdi. Bu kod dolayısıyla tek başına eski eklenti kullanıldığını
+  göstermez; ham mesaj ayrıca önemlidir.
+
+Bu fixture'daki HTML ve görseller tamamen sentetiktir. Gerçek Büyücü Çoban bölümünü,
+Cloudflare yanıtını, kullanıcının cihazındaki kurulu APK'ları veya hata nedenini
+kanıtlamaz. Kullanıcının bildirdiği farklı ham mesajın nereden geldiği hâlâ belirsizdir.
+
+[42325040773](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42325040773)
+numaralı ayrı emülatör testinde iki yama uygulanarak derlenmiş **debug** uygulamaya
+1.6.9 ve 1.6.11 birlikte yüklendi; keşif ekranı çift anahtar çökmesi olmadan açıldı
+ve sentetik sitedeki bir seri listelendi. Bu debug yapısı yayımlanmamıştır.

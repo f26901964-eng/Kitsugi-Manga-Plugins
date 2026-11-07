@@ -17,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [duplicate, single, single-empty]
+        mode: [duplicate, single, single-empty, legacy-empty]
     steps:
       - uses: actions/checkout@v4
       - name: Download released Kitsugi APK
@@ -44,6 +44,38 @@ jobs:
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           script: TEST_MODE=${{ matrix.mode }} bash tools/merlintoon_android_probe.sh
+      - name: Assert expected behavior in the disposable emulator
+        env:
+          MODE: ${{ matrix.mode }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          case "$MODE" in
+            duplicate)
+              grep -q 'Key "eu.kanade.tachiyomi.extension.tr.merlinscans" was already used' /tmp/merlin-android/crash.txt
+              echo '::notice::The unpatched app reproduced the duplicate-key crash.'
+              ;;
+            single)
+              test ! -s /tmp/merlin-android/crash.txt
+              grep -q 'Manga page 1' /tmp/merlin-android/window.xml
+              for page in 0001 0002 0003; do grep -q "GET /pages/$page.png" /tmp/merlin-android/fixture.log; done
+              echo '::notice::The released app and 1.6.11 loaded all three synthetic images.'
+              ;;
+            single-empty)
+              test ! -s /tmp/merlin-android/crash.txt
+              grep -q 'Bölüm görselleri alınamadı' /tmp/merlin-android/window.xml
+              grep -q 'KTS-SRC-9008' /tmp/merlin-android/window.xml
+              grep -q 'GET /seri/buyucu-coban/bolum-1/' /tmp/merlin-android/fixture.log
+              echo '::notice::The empty synthetic chapter displayed the 1.6.11 error and KTS-SRC-9008.'
+              ;;
+            legacy-empty)
+              test ! -s /tmp/merlin-android/crash.txt
+              grep -q 'Kaynak bu bölüm için sayfa döndürmedi' /tmp/merlin-android/window.xml
+              grep -q 'KTS-SRC-9008' /tmp/merlin-android/window.xml
+              grep -q 'GET /seri/buyucu-coban/bolum-1/' /tmp/merlin-android/fixture.log
+              echo '::notice::The legacy source reproduced the reported empty-page error against the synthetic fixture.'
+              ;;
+          esac
       - name: Upload fresh-emulator diagnostics
         if: always()
         uses: actions/upload-artifact@v4
