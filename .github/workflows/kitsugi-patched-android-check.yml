@@ -1,9 +1,5 @@
 name: Kitsugi patched app Android verification
 on:
-  push:
-    branches: [arena/e4d8654c-kitsugi-manga-plugins]
-    paths:
-      - .github/workflows/kitsugi-patched-android-check.yml
   workflow_dispatch:
     inputs:
       build_run_id:
@@ -24,7 +20,7 @@ jobs:
         with:
           name: kitsugi-duplicate-fix-debug-not-release
           path: /tmp/kitsugi
-          run-id: ${{ inputs.build_run_id || '42323291206' }}
+          run-id: ${{ inputs.build_run_id }}
           github-token: ${{ github.token }}
       - name: Download the historical source APK
         env:

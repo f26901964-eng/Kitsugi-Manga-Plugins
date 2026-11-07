@@ -141,3 +141,26 @@ kanıtlamaz. Kullanıcının bildirdiği farklı ham mesajın nereden geldiği h
 numaralı ayrı emülatör testinde iki yama uygulanarak derlenmiş **debug** uygulamaya
 1.6.9 ve 1.6.11 birlikte yüklendi; keşif ekranı çift anahtar çökmesi olmadan açıldı
 ve sentetik sitedeki bir seri listelendi. Bu debug yapısı yayımlanmamıştır.
+
+## 1.6.9 ile bildirilen ham mesajın yeniden üretimi
+
+[42325604918](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42325604918)
+içindeki `legacy-empty` denemesinde, yayımlı v2.4.455 uygulaması ile **yalnız**
+gerçek 1.6.9 APK'sı ve boş sentetik bölüm kullanıldığında kullanıcı bildirimiyle
+birebir aynı `Kaynak bu bölüm için sayfa döndürmedi` ve `KTS-SRC-9008` gösterildi.
+Aynı uygulama ve aynı boş fixture ile **yalnız 1.6.11**, `Bölüm görselleri
+alınamadı...` mesajını gösterdi. Bu sonuç, bildirilen ham mesajı eski kaynakla
+uyumlu kılar; aynı mesaj başka bir kaynak veya farklı uygulama sürümüyle de
+oluşabileceğinden kullanıcı cihazında eski APK bulunduğunu kanıtlamaz.
+
+[42325691744](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42325691744)
+numaralı testte aynı iki APK birlikteyken yamalı debug uygulama keşif ekranını
+çökmeden açtı ve **boş sentetik bölümde 1.6.11'in ham mesajını** gösterdi; böylece
+en yeni kaynak örneğinin gerçekten kullanıldığı da emülatörde kontrol edildi.
+Burada da Büyücü Çoban'ın gerçek HTML'i kullanılmadı. Yama henüz gerçek uygulama
+sürümüne dağıtılmadı ve kullanıcının canlı okuma sorunu çözülmüş sayılmaz.
+
+Ek bir otomatik erişim denemesinde, geçici bir Google Sheet içindeki `IMPORTXML`
+formülleri çalıştırıldı. Google Sheets dış URL'lere erişim için masaüstü
+onayı istedi (`#REF!`); istek başlatılmadığından bu deneme gerçek bölüm veya
+Cloudflare hakkında sonuç üretmedi. Geçici sayfa çöp kutusuna taşındı.
