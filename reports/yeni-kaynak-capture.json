@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-07T14:43:09.220276+00:00",
+  "capturedAt": "2026-11-07T14:44:48.797017+00:00",
   "sites": {
     "ailurascans": {
       "baseUrl": "https://ailurascans.com",
@@ -14,21 +14,21 @@
         "series-list": {
           "path": "/series",
           "status": 403,
-          "bytes": 5648,
+          "bytes": 5626,
           "finalUrl": "https://ailurascans.com/series",
           "lockMarkers": []
         },
         "series": {
           "path": "/seri/hooky",
           "status": 403,
-          "bytes": 5660,
+          "bytes": 5638,
           "finalUrl": "https://ailurascans.com/seri/hooky",
           "lockMarkers": []
         },
         "reader": {
           "path": "/seri/hooky/bolum/1",
           "status": 403,
-          "bytes": 5683,
+          "bytes": 5705,
           "finalUrl": "https://ailurascans.com/seri/hooky/bolum/1",
           "lockMarkers": []
         }
@@ -49,6 +49,7 @@
           "imageCandidateCount": 1,
           "chapterHrefSamples": [],
           "chapterHrefCount": 0,
+          "paginationSamples": [],
           "dump": "docs/html-dumps/oblivionscans/home.html"
         },
         "series-list": {
@@ -63,6 +64,7 @@
           "imageCandidateCount": 1,
           "chapterHrefSamples": [],
           "chapterHrefCount": 0,
+          "paginationSamples": [],
           "dump": "docs/html-dumps/oblivionscans/series-list.html"
         },
         "series": {
@@ -84,12 +86,14 @@
             "/seri/ts-cezasi/bolum/4"
           ],
           "chapterHrefCount": 13,
+          "paginationSamples": [],
+          "chapterContextSample": "w-full max-w-md\"><a class=\"flex-1 flex justify-center items-center h-12 gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-all rounded-xl font-semibold text-white\" href=\"/seri/ts-cezasi/bolum/1\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-book-open w-5\" aria-hidden=\"true\"><path d=\"M12 ",
           "dump": "docs/html-dumps/oblivionscans/series.html"
         },
         "reader": {
           "path": "/seri/ts-cezasi/bolum/1",
           "status": 200,
-          "bytes": 64951,
+          "bytes": 64953,
           "finalUrl": "https://oblivionscans.com/seri/ts-cezasi/bolum/1",
           "lockMarkers": [],
           "imageUrlSamples": [],
@@ -99,7 +103,50 @@
             "https://oblivionscans.com/seri/ts-cezasi/bolum/1"
           ],
           "chapterHrefCount": 2,
-          "dump": "docs/html-dumps/oblivionscans/reader.html"
+          "paginationSamples": [],
+          "dump": "docs/html-dumps/oblivionscans/reader.html",
+          "apiEndpointSamples": [
+            "\"/api/admin/comments\"",
+            "\"/api/auth/discord/sync\"",
+            "\"/api/auth/logout\"",
+            "\"/api/auth/profile\"",
+            "\"/api/coins/daily-check-in\"",
+            "\"/api/coins/unlock\"",
+            "\"/api/comments\"",
+            "\"/api/comments/upload-image\"",
+            "\"/api/creator/state\"",
+            "\"/api/custom-scripts\"",
+            "\"/api/halloween/daily\"",
+            "\"/api/library\"",
+            "\"/api/notifications\"",
+            "\"/api/profile/me\"",
+            "\"/api/profile/preferences\"",
+            "\"/api/reactions\"",
+            "\"/api/reactions/config\"",
+            "\"/api/reader-guard/verify\"",
+            "\"/api/reading-history\"",
+            "\"/api/reports\"",
+            "\"/api/settings\"",
+            "\"/api/stickers\"",
+            "\"/api/telemetry/web-vitals\"",
+            "\"/api/vip/status\"",
+            "\"chapter\"",
+            "\"chapterId\"",
+            "\"data-chapter-button\"",
+            "\"data-chapter-dropdown\"",
+            "\"new_chapter\"",
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/upload-image",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily"
+          ]
         }
       }
     },
@@ -109,21 +156,21 @@
         "home": {
           "path": "/",
           "status": 403,
-          "bytes": 5608,
+          "bytes": 5630,
           "finalUrl": "https://lunariscans.com/",
           "lockMarkers": []
         },
         "series-list": {
           "path": "/series",
           "status": 403,
-          "bytes": 5648,
+          "bytes": 5626,
           "finalUrl": "https://lunariscans.com/series",
           "lockMarkers": []
         },
         "series": {
           "path": "/seri/bu-reenkarnasyonu-bozmaliyim",
           "status": 403,
-          "bytes": 5771,
+          "bytes": 5749,
           "finalUrl": "https://lunariscans.com/seri/bu-reenkarnasyonu-bozmaliyim",
           "lockMarkers": []
         }
@@ -142,6 +189,7 @@
           "imageCandidateCount": 0,
           "chapterHrefSamples": [],
           "chapterHrefCount": 0,
+          "paginationSamples": [],
           "dump": "docs/html-dumps/duckscans/home.html"
         },
         "series": {
@@ -163,6 +211,8 @@
             "/seri/regresorun-kullanim-kilavuzu/bolum/105"
           ],
           "chapterHrefCount": 114,
+          "paginationSamples": [],
+          "chapterContextSample": " class=\"flex-1 flex justify-center items-center h-12 gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] transition-all rounded-xl font-semibold text-white\" href=\"/seri/regresorun-kullanim-kilavuzu/bolum/1\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-book-open w-5\" aria-hidden=\"true\"><path d=\"M12 ",
           "dump": "docs/html-dumps/duckscans/series.html"
         },
         "reader": {
@@ -178,7 +228,50 @@
             "https://duckscans.com/seri/regresorun-kullanim-kilavuzu/bolum/1"
           ],
           "chapterHrefCount": 2,
-          "dump": "docs/html-dumps/duckscans/reader.html"
+          "paginationSamples": [],
+          "dump": "docs/html-dumps/duckscans/reader.html",
+          "apiEndpointSamples": [
+            "\"/api/admin/comments\"",
+            "\"/api/auth/discord/sync\"",
+            "\"/api/auth/logout\"",
+            "\"/api/auth/profile\"",
+            "\"/api/coins/daily-check-in\"",
+            "\"/api/coins/unlock\"",
+            "\"/api/comments\"",
+            "\"/api/comments/upload-image\"",
+            "\"/api/creator/state\"",
+            "\"/api/custom-scripts\"",
+            "\"/api/halloween/daily\"",
+            "\"/api/library\"",
+            "\"/api/notifications\"",
+            "\"/api/profile/me\"",
+            "\"/api/profile/preferences\"",
+            "\"/api/reactions\"",
+            "\"/api/reactions/config\"",
+            "\"/api/reader-guard/verify\"",
+            "\"/api/reading-history\"",
+            "\"/api/reports\"",
+            "\"/api/settings\"",
+            "\"/api/stickers\"",
+            "\"/api/telemetry/web-vitals\"",
+            "\"/api/vip/status\"",
+            "\"chapter\"",
+            "\"chapterId\"",
+            "\"data-chapter-button\"",
+            "\"data-chapter-dropdown\"",
+            "\"new_chapter\"",
+            "/api/admin/comments",
+            "/api/auth/discord/sync",
+            "/api/auth/logout",
+            "/api/auth/profile",
+            "/api/coins/daily-check-in",
+            "/api/coins/unlock",
+            "/api/comments",
+            "/api/comments/upload-image",
+            "/api/creator/state",
+            "/api/custom-scripts",
+            "/api/halloween/daily"
+          ]
         }
       }
     }
