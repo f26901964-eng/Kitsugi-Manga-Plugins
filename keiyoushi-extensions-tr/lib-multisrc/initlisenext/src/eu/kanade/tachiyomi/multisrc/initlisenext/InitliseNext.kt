@@ -338,6 +338,8 @@ abstract class InitliseNext : KeiSource() {
         }
         val seriesSlug = segments[1]
         val chapterUrl = "$baseUrl/${chapter.url.trimStart('/')}"
+
+        val apiUrl = "$baseUrl/api/chapters".toHttpUrl().newBuilder()
             .addQueryParameter("series", seriesSlug)
             .addQueryParameter("chapter", formatNumber(chapter.chapter_number))
             .addQueryParameter("includepages", "true")
