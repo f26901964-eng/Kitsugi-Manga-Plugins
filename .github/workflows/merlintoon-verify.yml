@@ -53,11 +53,11 @@ jobs:
           python3 - <<'PYCODE'
           from pathlib import Path
           from tools.verify_mangadiyari_signature import signing_block_certificate
-          old = Path('prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.9.apk')
+          old, = Path('prebuilt/apk').glob('tachiyomi-tr.merlinscans-v*.apk')
           new = next(Path('keiyoushi-extensions-tr/src/tr/merlinscans/build/outputs/apk/release').glob('*.apk'))
           if signing_block_certificate(old) != signing_block_certificate(new):
-              raise SystemExit('New APK certificate does not match 1.6.9')
-          print('New APK certificate matches 1.6.9')
+              raise SystemExit('New APK certificate does not match the installed catalog APK')
+          print('New APK certificate matches the installed catalog APK')
           PYCODE
       - name: Probe reported chapter (informational)
         run: |
