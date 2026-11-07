@@ -102,9 +102,34 @@ def capture(site: str, base: str, pages: list[tuple[str, str]]) -> dict:
             hrefs = [h for h in HREF_RE.findall(body) if "/bolum" in h]
             entry["chapterHrefSamples"] = sorted(set(hrefs))[:8]
             entry["chapterHrefCount"] = len(set(hrefs))
+            # pagination links on listing pages
+            entry["paginationSamples"] = sorted({h for h in HREF_RE.findall(body) if re.search(r"(page|sayfa)=?\d*", h) and ("page" in h or "sayfa" in h)})[:6]
+            # chapter anchor context (to read the date/status markup next to it)
+            m = re.search(r'.{250}href="' + re.escape(path.rstrip("/")) + r'/bolum/\d+".{250}', body, re.S)
+            if m:
+                entry["chapterContextSample"] = m.group(0)[-460:]
             target = folder / f"{tag}.html"
             target.write_text(body, encoding="utf-8")
             entry["dump"] = str(target.relative_to(ROOT))
+            # Scan the client JS chunks for the API that serves reader images.
+            if tag == "reader":
+                chunks = re.findall(r'src="(/_next/static/chunks/[^"]+)"', body)[:14]
+                api_hits: set[str] = set()
+                for chunk in chunks:
+                    try:
+                        js = session.get(base + chunk, timeout=TIMEOUT).text
+                    except requests.RequestException:
+                        continue
+                    for pattern in (
+                        r'"/api/[a-zA-Z0-9/_.${}-]+"',
+                        r'`/api/[^`]+`',
+                        r'"[a-zA-Z0-9/_-]*chapter[a-zA-Z0-9/_-]*"',
+                        r'fetch\("([^"]+)"',
+                        r'"/trpc/[a-zA-Z0-9._,-]+"',
+                    ):
+                        for hit in re.findall(pattern, js)[:40]:
+                            api_hits.add(hit if isinstance(hit, str) else hit[0])
+                entry["apiEndpointSamples"] = sorted(api_hits)[:40]
         result["pages"][tag] = entry
     return result
 
