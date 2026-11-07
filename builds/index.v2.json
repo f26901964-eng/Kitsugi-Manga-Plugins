@@ -166,11 +166,11 @@
       {
         "name": "DuckScans",
         "packageName": "eu.kanade.tachiyomi.extension.tr.duckscans",
-        "versionName": "1.6.4",
-        "versionCode": "106004",
+        "versionName": "1.6.5",
+        "versionCode": "106005",
         "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.duckscans-v1.6.4.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.duckscans-v1.6.5.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.duckscans.png"
         },
         "sources": [
@@ -184,11 +184,11 @@
       {
         "name": "LunariScans",
         "packageName": "eu.kanade.tachiyomi.extension.tr.lunariscans",
-        "versionName": "1.6.4",
-        "versionCode": "106004",
+        "versionName": "1.6.5",
+        "versionCode": "106005",
         "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.lunariscans-v1.6.4.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.lunariscans-v1.6.5.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.lunariscans.png"
         },
         "sources": [
@@ -202,11 +202,11 @@
       {
         "name": "AiluraScans",
         "packageName": "eu.kanade.tachiyomi.extension.tr.ailurascans",
-        "versionName": "1.6.4",
-        "versionCode": "106004",
+        "versionName": "1.6.5",
+        "versionCode": "106005",
         "contentWarning": "CONTENT_WARNING_SAFE",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.ailurascans-v1.6.4.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.ailurascans-v1.6.5.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.ailurascans.png"
         },
         "sources": [
@@ -220,11 +220,11 @@
       {
         "name": "Oblivion Scans",
         "packageName": "eu.kanade.tachiyomi.extension.tr.oblivionscans",
-        "versionName": "1.6.4",
-        "versionCode": "106004",
+        "versionName": "1.6.5",
+        "versionCode": "106005",
         "contentWarning": "CONTENT_WARNING_NSFW",
         "resources": {
-          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.oblivionscans-v1.6.4.apk",
+          "apkUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.oblivionscans-v1.6.5.apk",
           "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.oblivionscans.png"
         },
         "sources": [
