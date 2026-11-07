@@ -1,0 +1,55 @@
+name: Kitsugi duplicate selection unit test
+
+on:
+  push:
+    branches: ['arena/e4d8654c-kitsugi-manga-plugins']
+    paths:
+      - 'tools/kitsugi-beta-duplicate-extensions.patch'
+      - '.github/workflows/kitsugi-duplicate-unit.yml'
+  workflow_dispatch:
+
+jobs:
+  selection-unit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: f26901964-eng/Kitsugi-Beta
+          ref: eba224032635c7a3e95949c0bbbe7231ee374c6c
+          path: kitsugi-beta
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Apply candidate patch and test its real selection code in a minimal JVM project
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd kitsugi-beta
+          git apply ../tools/kitsugi-beta-duplicate-extensions.patch
+          dir="$RUNNER_TEMP/duplicate-selection"
+          mkdir -p "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga" "$dir/src/test/kotlin/com/kitsugi/animelist/data/manga"
+          cp app/src/main/java/com/kitsugi/animelist/data/manga/LoadedMangaExtension.kt "$dir/src/main/kotlin/com/kitsugi/animelist/data/manga/"
+          cp app/src/test/java/com/kitsugi/animelist/data/manga/LoadedMangaExtensionTest.kt "$dir/src/test/kotlin/com/kitsugi/animelist/data/manga/"
+          cat > "$dir/settings.gradle.kts" <<'EOF'
+          pluginManagement { repositories { gradlePluginPortal(); mavenCentral() } }
+          rootProject.name = "duplicate-selection"
+          EOF
+          cat > "$dir/build.gradle.kts" <<'EOF'
+          plugins { kotlin("jvm") version "2.0.21" }
+          repositories { mavenCentral() }
+          dependencies { testImplementation("junit:junit:4.13.2") }
+          EOF
+          set +e
+          ./gradlew -p "$dir" test --no-daemon --max-workers=1 -Dorg.gradle.jvmargs=-Xmx1g > "$RUNNER_TEMP/unit.log" 2>&1
+          status=$?
+          set -e
+          tail -80 "$RUNNER_TEMP/unit.log"
+          if [ "$status" -ne 0 ]; then
+            tail -40 "$RUNNER_TEMP/unit.log" | while IFS= read -r line; do echo "::error title=Selection unit::$line"; done
+            exit "$status"
+          fi
+          echo '::notice title=Selection unit::Three tests passed on the exact helper from the patched v2.4.455 sources.'
