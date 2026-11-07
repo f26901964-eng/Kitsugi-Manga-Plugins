@@ -14,13 +14,17 @@ import java.io.File
  * Epik Novel parser testleri — docs/html-dumps/epiknovel/ gerçek dump'ları
  * üzerinden keşfet, arama, seri detayı (çevirmen/açıklama/durum), bölüm
  * listesi ve bölüm metni sözleşmesini doğrular.
+ *
+ * Not: `SManga.create()`/`SChapter.create()` birim testlerinde stub'tur;
+ * parser saf giriş tipleri (ParsedManga/ParsedDetails/ParsedChapter) döndürür.
  */
 class EpikNovelTest {
 
-    private fun fixture(name: String): String = File(System.getProperty("epiknovel.$name") ?: error("epiknovel.$name ayarlanmadı")).readText()
+    private fun fixture(name: String): String =
+        File(System.getProperty("epiknovel.$name") ?: error("epiknovel.$name ayarlanmadı")).readText()
 
-    private fun descriptionOf(manga: SManga): String {
-        val value = manga.description
+    private fun descriptionOf(details: ParsedDetails): String {
+        val value = details.description
         assertNotNull("description boş", value)
         return value!!
     }
@@ -37,8 +41,8 @@ class EpikNovelTest {
         assertEquals("Against The God", first.title)
         assertEquals("/seri/against-the-god", first.url)
         // Kullanıcının gördüğü görsel sorunu: src ajax-loader.gif, gerçek kapak data-src.
-        assertEquals("https://www.epiknovel.com/upload/cover/5929e018e06d0.gif", first.thumbnail_url)
-        assertTrue(mangas.all { it.thumbnail_url?.contains("ajax-loader") != true })
+        assertEquals("https://www.epiknovel.com/upload/cover/5929e018e06d0.gif", first.coverUrl)
+        assertTrue(mangas.all { it.coverUrl?.contains("ajax-loader") != true })
         assertTrue(mangas.all { it.url.startsWith("/seri/") && it.url.length > "/seri/".length })
         assertTrue(mangas.all { it.title.isNotBlank() })
     }
@@ -97,15 +101,15 @@ class EpikNovelTest {
     @Test
     fun detailsParseTitleTranslatorStatusAndSummary() {
         val doc = Jsoup.parse(fixture("series"), "https://www.epiknovel.com/seri/against-the-god")
-        val manga = EpikNovelParser.mangaFromDetails(doc)
+        val details = EpikNovelParser.mangaFromDetails(doc)
 
         // 18+ rozeti metne karışmaz.
-        assertEquals("Against The God", manga.title)
-        assertEquals("SEFIX", manga.author)
-        assertEquals(SManga.ONGOING, manga.status)
-        assertEquals("https://www.epiknovel.com/upload/cover/5929e018e06d0.gif", manga.thumbnail_url)
+        assertEquals("Against The God", details.title)
+        assertEquals("SEFIX", details.author)
+        assertEquals(SManga.ONGOING, details.status)
+        assertEquals("https://www.epiknovel.com/upload/cover/5929e018e06d0.gif", details.coverUrl)
 
-        val description = descriptionOf(manga)
+        val description = descriptionOf(details)
         assertTrue(description.startsWith("Çevirmen: SEFIX"))
         assertTrue(description.contains("Gökyüzü Zehir Sedefini"))
         // NBSP temizliği: dump'ta nbsp karakteri kalmamalı.
@@ -118,13 +122,13 @@ class EpikNovelTest {
             fixture("seriesCompleted"),
             "https://www.epiknovel.com/seri/dimensional-sovereign",
         )
-        val manga = EpikNovelParser.mangaFromDetails(doc)
+        val details = EpikNovelParser.mangaFromDetails(doc)
 
-        assertEquals("Dimensional Sovereign", manga.title)
-        assertEquals(SManga.COMPLETED, manga.status)
+        assertEquals("Dimensional Sovereign", details.title)
+        assertEquals(SManga.COMPLETED, details.status)
         // Çevirmen alanı boşsa imza satırı ve author üretilmez.
-        assertNull(manga.author)
-        val description = descriptionOf(manga)
+        assertNull(details.author)
+        val description = descriptionOf(details)
         assertFalse(description.startsWith("Çevirmen:"))
         assertTrue(description.isNotBlank())
     }
@@ -139,18 +143,18 @@ class EpikNovelTest {
         assertTrue(chapters.size >= 2000)
         assertEquals("Giriş", chapters.first().name)
         assertEquals("/seri/against-the-god/bolum/1730", chapters.first().url)
-        assertEquals(0f, chapters.first().chapter_number, 0.01f)
+        assertEquals(0f, chapters.first().number, 0.01f)
 
         val second = chapters[1]
         assertEquals("Bölüm 1: Yun Che, Xiao Che", second.name)
         assertEquals("/seri/against-the-god/bolum/1731", second.url)
-        assertEquals(1f, second.chapter_number, 0.01f)
+        assertEquals(1f, second.number, 0.01f)
 
         // Son bölüm: sitedeki sayısal karşılığı korunur.
-        assertEquals(2028f, chapters.last().chapter_number, 0.01f)
+        assertEquals(2028f, chapters.last().number, 0.01f)
         assertTrue(chapters.last().name.contains("Bölüm 2028"))
         // Göreli tarihler ("9 yıl önce") dönüşür.
-        assertTrue(chapters.count { it.date_upload > 0L } >= 2000)
+        assertTrue(chapters.count { it.dateUpload > 0L } >= 2000)
     }
 
     @Test

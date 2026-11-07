@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.extension.tr.epiknovel
 
-import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -21,7 +20,35 @@ import java.util.Locale
  *   `/seri/<slug>/bolum/<n>` satırları (sitede en eski → en yeni sıralı).
  * - Bölüm: `#icerik` içinde `center>h4>b` başlık + `<p>` metinleri; `script`,
  *   `ins`, `iframe` atlanır; boş `<p><br></p>` ayraçları düşer.
+ *
+ * DİKKAT: `SManga.create()` / `SChapter.create()` birim testlerinde stub'tur
+ * (bkz. MangaDiyariTest); parser saf giriş tipleri döndürür, model eşlemesi
+ * [EpikNovel] kaynak sınıfında (yalnız çalışma zamanı) yapılır.
  */
+
+/** Liste kartı. */
+internal data class ParsedManga(
+    val url: String,
+    val title: String,
+    val coverUrl: String?,
+)
+
+/** Seri detayı. `status` değerleri `SManga.ONGOING`/`COMPLETED`/`UNKNOWN` sabitleridir. */
+internal data class ParsedDetails(
+    val title: String,
+    val coverUrl: String?,
+    val author: String?,
+    val description: String?,
+    val status: Int,
+)
+
+/** Bölüm satırı. */
+internal data class ParsedChapter(
+    val url: String,
+    val name: String,
+    val number: Float,
+    val dateUpload: Long,
+)
 
 private const val SERIES_PREFIX = "/seri/"
 private const val LIST_PAGE_SIZE = 50
@@ -45,9 +72,10 @@ private val INLINE_TAGS = setOf(
 )
 
 /** NBSP temizliği + boşluk kırpma; boş metinlerde null. */
-private fun String.clean(): String? = replace(' ', ' ')
-    .trim()
-    .takeIf { it.isNotEmpty() }
+private fun String.clean(): String? =
+    replace(' ', ' ')
+        .trim()
+        .takeIf { it.isNotEmpty() }
 
 /** Kapak görseli: `data-src` yer tutucusuz gerçek kaynak; `src` (ajax-loader) son çare. */
 private fun coverUrl(image: Element?): String? {
@@ -60,13 +88,14 @@ private fun coverUrl(image: Element?): String? {
 }
 
 /** İçerik görselleri: lazy-src önceliği, yer tutucu/data: atlanır, göreli mutlaklaşır. */
-private fun contentImageUrl(element: Element): String? = sequenceOf("data-src-retina", "data-src", "data-original", "src")
-    .mapNotNull { attr ->
-        element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
-    }
-    .firstOrNull {
-        it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
-    }
+private fun contentImageUrl(element: Element): String? =
+    sequenceOf("data-src-retina", "data-src", "data-original", "src")
+        .mapNotNull { attr ->
+            element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
+        }
+        .firstOrNull {
+            it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
+        }
 
 /** `/seri/<slug>` yolunu doğrular; bozuk kartları (`/seri/`) atlar. */
 private fun seriesPath(url: String): String? {
@@ -99,9 +128,10 @@ internal object EpikNovelParser {
     // ---------------------------------------------------------------- list
 
     /** Liste/arama sayfasındaki kartlardan seri listesi. */
-    fun mangasFromListPage(document: Document): List<SManga> = document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
+    fun mangasFromListPage(document: Document): List<ParsedManga> =
+        document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
 
-    private fun mangaFromCard(card: Element): SManga? {
+    private fun mangaFromCard(card: Element): ParsedManga? {
         val heading = card.selectFirst("h3.media-heading") ?: return null
         val title = (heading.selectFirst("a") ?: heading).text().trim().takeIf { it.isNotEmpty() }
             ?: return null
@@ -109,13 +139,11 @@ internal object EpikNovelParser {
             ?: card.selectFirst("a.pull-left")?.attr("abs:href")?.trim()?.takeIf { it.isNotEmpty() }
             ?: return null
         val path = seriesPath(href) ?: return null
-        return SManga.create().apply {
-            // Yol zaten alansız ("/seri/…"); HttpSource.setUrlWithoutDomain
-            // yalnız nesne içinde çağrılabilir olduğu için doğrudan atanır.
-            url = path
-            this.title = title
-            thumbnail_url = coverUrl(card.selectFirst("img"))
-        }
+        return ParsedManga(
+            url = path,
+            title = title,
+            coverUrl = coverUrl(card.selectFirst("img")),
+        )
     }
 
     /**
@@ -132,25 +160,31 @@ internal object EpikNovelParser {
 
     // ------------------------------------------------------------- details
 
-    fun mangaFromDetails(document: Document): SManga = SManga.create().apply {
+    fun mangaFromDetails(document: Document): ParsedDetails {
         val heading = document.selectFirst("h1#tables") ?: document.selectFirst("h1")
-        title = heading?.let(::stripBadge)?.trim().orEmpty()
-        thumbnail_url = document.selectFirst("img.manga-cover")?.let(::coverUrl)
+        val title = heading?.let(::stripBadge)?.trim().orEmpty()
+        val cover = document.selectFirst("img.manga-cover")?.let(::coverUrl)
 
         val translator = h4Value(document, "Çevirmen")
         val writer = h4Value(document, "Yazar")
-        author = writer?.takeIf { it.isNotBlank() } ?: translator
+        val author = writer?.takeIf { it.isNotBlank() } ?: translator
 
         val summary = seriOzeti(document)
-        description = buildString {
+        val description = buildString {
             if (!translator.isNullOrBlank()) {
                 append("Çevirmen: ").append(translator).append("\n\n")
             }
             append(summary)
         }.trim().takeIf { it.isNotEmpty() }
 
-        status = parseStatus(document)
-        // Sitede güvenilir tür alanı yok (tür bağlantıları yalnız HTML yorumunda) → genre null.
+        // Sitede güvenilir tür alanı yok (tür bağlantıları yalnız HTML yorumunda).
+        return ParsedDetails(
+            title = title,
+            coverUrl = cover,
+            author = author,
+            description = description,
+            status = parseStatus(document),
+        )
     }
 
     /** 18+ rozeti gibi `<img>` öğelerini metinden temizler. */
@@ -205,11 +239,9 @@ internal object EpikNovelParser {
                     element.text().clean()?.let(into::add)
                 }
             }
-
             element.tagName() in setOf("ul", "ol") -> {
                 element.select("li").forEach { li -> li.text().clean()?.let(into::add) }
             }
-
             else -> {
                 val paragraphs = element.select("p")
                 if (paragraphs.isNotEmpty()) {
@@ -224,7 +256,7 @@ internal object EpikNovelParser {
     // ----------------------------------------------------------- chapters
 
     /** Bölüm tablosu (en eski → en yeni, sitedeki sıra korunur). */
-    fun chaptersFromDetails(document: Document): List<SChapter> {
+    fun chaptersFromDetails(document: Document): List<ParsedChapter> {
         val table = document.select("table.table").firstOrNull { candidate ->
             candidate.selectFirst("a[href*=bolum]") != null
         } ?: return emptyList()
@@ -234,12 +266,12 @@ internal object EpikNovelParser {
             val path = chapterPath(link.attr("abs:href").trim()) ?: return@mapNotNull null
             val name = link.text().trim().takeIf { it.isNotEmpty() } ?: return@mapNotNull null
             val dateText = row.select("td").getOrNull(2)?.text().orEmpty()
-            SChapter.create().apply {
-                url = path
-                this.name = name
-                chapter_number = CHAPTER_NUMBER.find(name)?.groupValues?.get(1)?.toFloatOrNull() ?: 0f
-                date_upload = relativeDateMillis(dateText)
-            }
+            ParsedChapter(
+                url = path,
+                name = name,
+                number = CHAPTER_NUMBER.find(name)?.groupValues?.get(1)?.toFloatOrNull() ?: 0f,
+                dateUpload = relativeDateMillis(dateText),
+            )
         }
     }
 
@@ -289,19 +321,14 @@ private class ChapterWalker {
         val tag = element.tagName().lowercase(Locale.ROOT)
         when {
             tag in SKIP_TAGS -> Unit
-
             tag == "br" -> flush()
-
             tag == "img" -> picture(element)
-
             tag in INLINE_TAGS -> element.childNodes().forEach(::walk)
-
             tag == "p" || tag == "li" -> {
                 flush()
                 element.text().clean()?.let { blocks += ContentBlock.Paragraph(it) }
                 element.select("img").forEach(::picture)
             }
-
             tag.length == 2 && tag[0] == 'h' && tag[1] in '1'..'6' -> {
                 flush()
                 val text = element.text().clean() ?: return
@@ -312,7 +339,6 @@ private class ChapterWalker {
                     blocks += ContentBlock.Paragraph(text)
                 }
             }
-
             tag == "center" -> {
                 if (!titleTaken && element.selectFirst("h4, h5, h6") != null) {
                     val text = element.text().clean() ?: return
@@ -323,7 +349,6 @@ private class ChapterWalker {
                     element.childNodes().forEach(::walk)
                 }
             }
-
             else -> {
                 flush()
                 element.childNodes().forEach(::walk)

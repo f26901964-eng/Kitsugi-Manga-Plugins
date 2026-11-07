@@ -72,8 +72,32 @@ abstract class EpikNovel : KeiSource() {
         status: String?,
     ): MangasPage {
         val document = client.get(listUrl(page, query, sort, direction, status)).asJsoup()
-        val mangas = EpikNovelParser.mangasFromListPage(document)
+        val mangas = EpikNovelParser.mangasFromListPage(document).map(::toManga)
         return MangasPage(mangas, EpikNovelParser.hasNextPage(document, page))
+    }
+
+    // Parser saf giriş tipleri döndürür; SManga/SChapter eşlemesi yalnız
+    // çalışma zamanında yapılır (create() birim testlerinde stub'tur).
+    private fun toManga(parsed: ParsedManga): SManga = SManga.create().apply {
+        url = parsed.url
+        title = parsed.title
+        thumbnail_url = parsed.coverUrl
+    }
+
+    private fun toDetails(parsed: ParsedDetails): SManga = SManga.create().apply {
+        // url çağıran tarafça verilir (detay ayrıştırıcısı bağlamı yoktur).
+        title = parsed.title
+        author = parsed.author
+        description = parsed.description
+        status = parsed.status
+        thumbnail_url = parsed.coverUrl
+    }
+
+    private fun toChapter(parsed: ParsedChapter): SChapter = SChapter.create().apply {
+        url = parsed.url
+        name = parsed.name
+        chapter_number = parsed.number
+        date_upload = parsed.dateUpload
     }
 
     private fun listUrl(
@@ -102,14 +126,15 @@ abstract class EpikNovel : KeiSource() {
         val document = client.get(url).asJsoup()
 
         val details = if (fetchDetails) {
-            EpikNovelParser.mangaFromDetails(document).also {
-                if (it.title.isBlank()) throw IOException("Epik Novel: seri sayfası okunamadı ($url)")
+            EpikNovelParser.mangaFromDetails(document).let { parsed ->
+                if (parsed.title.isBlank()) throw IOException("Epik Novel: seri sayfası okunamadı ($url)")
+                toDetails(parsed).also { it.url = manga.url }
             }
         } else {
             manga
         }
         val chapterList = if (fetchChapters) {
-            EpikNovelParser.chaptersFromDetails(document).ifEmpty {
+            EpikNovelParser.chaptersFromDetails(document).map(::toChapter).ifEmpty {
                 throw IOException("Epik Novel: bölüm listesi bulunamadı ($url)")
             }
         } else {
@@ -123,7 +148,11 @@ abstract class EpikNovel : KeiSource() {
         val segments = url.pathSegments.filter { it.isNotBlank() }
         if (segments.getOrNull(0) != "seri" || segments.size < 2) return null
         val document = client.get(url).asJsoup()
-        return EpikNovelParser.mangaFromDetails(document).takeIf { it.title.isNotBlank() }
+        return EpikNovelParser.mangaFromDetails(document)
+            .takeIf { it.title.isNotBlank() }
+            ?.let { parsed ->
+                toDetails(parsed).also { it.url = url.toString().removePrefix(baseUrl) }
+            }
     }
 
     // ------------------------------------------------------------ pages
