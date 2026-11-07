@@ -45,14 +45,13 @@ abstract class InitliseNext : KeiSource() {
      */
     override fun OkHttpClient.Builder.configureClient(): OkHttpClient.Builder {
         addInterceptor { chain ->
-            val request = chain.request().newBuilder()
-                .apply {
-                    val ua = header("User-Agent")
-                    if (ua.isNullOrEmpty() || ua.startsWith("okhttp", ignoreCase = true)) {
-                        header("User-Agent", USER_AGENT)
-                    }
-                }
-                .build()
+            val original = chain.request()
+            val ua = original.header("User-Agent")
+            val request = if (ua.isNullOrEmpty() || ua.startsWith("okhttp", ignoreCase = true)) {
+                original.newBuilder().header("User-Agent", USER_AGENT).build()
+            } else {
+                original
+            }
             chain.proceed(request)
         }
         return rateLimit(2, 1.seconds)
