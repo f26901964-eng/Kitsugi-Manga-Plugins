@@ -6,9 +6,11 @@ plugins {
 
 keiyoushi {
     name = "SadScans"
+    // 14: Kitsugi her aramayı 25 sn'de kesiyor; API denemesi 8 sn, WebView kademesi 18 sn
+    //     (eski 45+45 sn toplam uygulama tarafından kesiliyordu: "Kaynak araması zaman aşımı").
     // 13: kart başlığı h3 olmasa ve /seriler alt yola yönlense de arama/liste çalışır.
     // 12: arama kutusunun adı ve tRPC yönlendirici adı (build hash) değişse de çalışır.
-    versionCode = 13
+    versionCode = 14
     contentWarning = ContentWarning.MIXED
     libVersion = "1.6"
 

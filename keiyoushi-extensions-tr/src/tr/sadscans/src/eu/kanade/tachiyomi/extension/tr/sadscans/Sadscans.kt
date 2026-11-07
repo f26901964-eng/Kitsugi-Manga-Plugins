@@ -15,6 +15,8 @@ import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.runWebView
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -31,6 +33,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import java.io.IOException
+import java.text.Normalizer
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -80,12 +83,39 @@ abstract class Sadscans : KeiSource() {
     /**
      * CloudflareInterceptor **kaldırılmaz**: `/api/trpc` engellendiğinde WebView tabanlı çözümün
      * ürettiği `cf_clearance` çerezini kullanabilmek için istemcide kalması gerekir.
+     *
+     * Kitsugi (ve Mihon) her kaynak aramasını **25 saniyede** kesiyor
+     * (`MangaSourceRepository` → `withTimeoutOrNull(25_000)`, keşfet ekranında 30 s).
+     * Bu yüzden API denemesi kısa tutulur: API engelliyse vakit WebView kademesine kalır.
      */
     private val apiClient: OkHttpClient by lazy {
         client.newBuilder()
-            .callTimeout(45, TimeUnit.SECONDS)
+            .connectTimeout(5, TimeUnit.SECONDS)
+            .readTimeout(6, TimeUnit.SECONDS)
+            .writeTimeout(6, TimeUnit.SECONDS)
+            .callTimeout(6, TimeUnit.SECONDS)
             .build()
     }
+
+    /** SEO/sitemap istekleri: statik rota, JS ve Cloudflare challenge'ı gerektirmez. Kısa bütçe. */
+    private val seoClient: OkHttpClient by lazy {
+        client.newBuilder()
+            .connectTimeout(4, TimeUnit.SECONDS)
+            .readTimeout(4, TimeUnit.SECONDS)
+            .callTimeout(3, TimeUnit.SECONDS)
+            .build()
+    }
+
+    private data class SitemapEntry(val slug: String, val title: String)
+
+    @Volatile
+    private var sitemapCache: Pair<Long, List<SitemapEntry>>? = null
+
+    /** Sitemap ulaşılamadıysa 10 dk boyunca yeniden denenmez (her aramada 3 sn kaybetmemek için). */
+    @Volatile
+    private var sitemapFailedAt: Long = 0L
+
+    private val locRegex = Regex("<loc>\\s*([^<\\s]+)\\s*</loc>", RegexOption.IGNORE_CASE)
 
     private val apiHeaders: Headers by lazy {
         Headers.Builder()
@@ -204,9 +234,20 @@ abstract class Sadscans : KeiSource() {
             return MangasPage(direct, hasMore)
         }
 
+        // Kademe 2: sitemap (statik SEO rotası — Cloudflare/JS gerektirmez, ~300 ms).
+        // tRPC engelliyse arama yine de sonuç döndürür; detay sayfası WebView ile zenginleşir.
+        if (page == 1 && !query.isNullOrBlank()) {
+            val fromSitemap = attempt { sitemapSearch(query) }
+            if (!fromSitemap.isNullOrEmpty()) {
+                listCache = ListCache(query.orEmpty(), sort, type, status, page, fromSitemap, false, System.currentTimeMillis())
+                return MangasPage(fromSitemap, false)
+            }
+        }
+
         val result = frontendPage(
             "$baseUrl/seriler",
             SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page),
+            timeout = 13.seconds,
         )
         val rows = result["items"] as? JsonArray ?: throw IOException("SadScans arama sonuçları okunamadı.")
         val loaded = parseSeriesItems(rows)
@@ -218,6 +259,98 @@ abstract class Sadscans : KeiSource() {
             listCache = ListCache(query.orEmpty(), sort, type, status, page, items, hasMore, System.currentTimeMillis())
         }
         return MangasPage(items, hasMore)
+    }
+
+    /**
+     * Arama için JS'siz kademe: /sitemap.xml içindeki /seriler/<slug> adreslerini slug→başlık
+     * dönüşümüyle sorguya eşler. Site istemci tarafında render edildiği ve API Cloudflare
+     * arkasında olduğu için, engellenen ağlarda bile sonuç üretebilen tek hafif yol budur.
+     */
+    private suspend fun sitemapSearch(query: String): List<SManga> = withContext(Dispatchers.IO) {
+        val key = slugKey(query)
+        if (key.length < 3) return@withContext emptyList()
+        val entries = sitemapEntries()
+        if (entries.isEmpty()) return@withContext emptyList()
+        val hits = entries.mapNotNull { entry ->
+            val titleKey = slugKey(entry.title)
+            val score = when {
+                titleKey == key -> 0
+                titleKey.startsWith(key) -> 1
+                titleKey.contains(key) -> 2
+                else -> return@mapNotNull null
+            }
+            Triple(score, entry, titleKey.length)
+        }.sortedWith(compareBy({ it.first }, { it.third }, { it.second.title.length }))
+
+        hits.take(PAGE_SIZE).map { (_, entry, _) ->
+            SManga.create().apply {
+                url = "/seriler/${entry.slug}"
+                title = entry.title
+            }
+        }
+    }
+
+    private suspend fun sitemapEntries(): List<SitemapEntry> {
+        val now = System.currentTimeMillis()
+        sitemapCache?.let { (at, cached) ->
+            if (now - at < SITEMAP_TTL_MS) return cached
+        }
+        if (now - sitemapFailedAt < SITEMAP_RETRY_MS) return emptyList()
+        val root = fetchSitemapText("$baseUrl/sitemap.xml") ?: run {
+            sitemapFailedAt = now
+            return emptyList()
+        }
+        val children = locRegex.findAll(root).map { it.groupValues[1] }
+            .filter { it.endsWith(".xml", ignoreCase = true) }
+            .take(4).toList()
+        val documents = if (children.isEmpty()) listOf(root) else children.mapNotNull { fetchSitemapText(it) }
+        val found = LinkedHashMap<String, SitemapEntry>()
+        for (document in documents) {
+            for (match in locRegex.findAll(document)) {
+                val url = match.groupValues[1]
+                val index = url.indexOf("/seriler/", ignoreCase = true)
+                if (index < 0) continue
+                val slug = url.substring(index + "/seriler/".length)
+                    .substringBefore('?').substringBefore('#').trim('/').substringBefore('/')
+                if (slug.isBlank()) continue
+                found.putIfAbsent(slug, SitemapEntry(slug, slugToTitle(slug)))
+            }
+        }
+        val list = found.values.toList()
+        if (list.isNotEmpty()) sitemapCache = System.currentTimeMillis() to list
+        return list
+    }
+
+    private suspend fun fetchSitemapText(url: String): String? = try {
+        seoClient.get(url.toHttpUrl(), headers, ensureSuccess = false).use { response ->
+            if (!response.isSuccessful) {
+                null
+            } else {
+                response.body.string().takeIf { it.isNotBlank() && it.contains("<loc", ignoreCase = true) }
+            }
+        }
+    } catch (_: Throwable) {
+        null
+    }
+
+    private fun slugToTitle(slug: String): String = slug.split('-', '_')
+        .filter { it.isNotBlank() }
+        .joinToString(" ") { word ->
+            if (word.length <= 1) {
+                word.uppercase()
+            } else {
+                word[0].uppercase() + word.substring(1)
+            }
+        }
+
+    private fun slugKey(value: String): String {
+        val lowered = value.lowercase()
+            .replace('ı', 'i').replace('İ', 'i')
+            .replace('ş', 's').replace('ğ', 'g').replace('ç', 'c')
+            .replace('ö', 'o').replace('ü', 'u')
+        return Normalizer.normalize(lowered, Normalizer.Form.NFD)
+            .replace(Regex("\\p{Mn}+"), "")
+            .replace(Regex("[^a-z0-9]+"), "")
     }
 
     private suspend fun directSeries(
@@ -302,7 +435,7 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             "$baseUrl/seriler/$slug",
             SadscansFrontend.detailsScript(1),
-            timeout = 60.seconds,
+            timeout = 25.seconds,
         )
         val merged = result["merged"].stringOrNull() == "true"
         val dto = decodeFrontend(result)
@@ -318,7 +451,7 @@ abstract class Sadscans : KeiSource() {
                     frontendPage(
                         "$baseUrl/seriler/$slug",
                         SadscansFrontend.detailsScript(page),
-                        timeout = 60.seconds,
+                        timeout = 20.seconds,
                     ),
                 )
             } ?: break
@@ -429,7 +562,7 @@ abstract class Sadscans : KeiSource() {
         val result = frontendPage(
             chapterUrl,
             SadscansFrontend.readerScript(chapterId),
-            timeout = 90.seconds,
+            timeout = 35.seconds,
         )
         val urls = (result["urls"] as? JsonArray)
             ?.mapNotNull { it.stringOrNull()?.trim()?.ifBlank { null } }
@@ -448,7 +581,7 @@ abstract class Sadscans : KeiSource() {
     private suspend fun frontendPage(
         url: String,
         script: String,
-        timeout: Duration = 45.seconds,
+        timeout: Duration = 20.seconds,
     ): JsonObject {
         return try {
             runWebView(timeout = timeout) {
@@ -576,6 +709,8 @@ abstract class Sadscans : KeiSource() {
         private const val SERIES_ROUTER = "_s4d7g2k9m0"
         private const val DETAIL_ROUTER = "_n3p6q1v8x5"
         private const val PAGE_SIZE = 15
+        private const val SITEMAP_TTL_MS = 6 * 60 * 60 * 1000L
+        private const val SITEMAP_RETRY_MS = 10 * 60 * 1000L
         private const val CHAPTER_PAGE_LIMIT = 10
         private const val MAX_CHAPTER_PAGES = 200
         private const val MAX_DOM_CHAPTER_PAGES = 10

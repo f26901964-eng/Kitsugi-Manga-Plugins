@@ -263,7 +263,7 @@ internal object SadscansFrontend {
               if (state.phase === 'api') {
                 var api = state.api;
                 if (api.state === 'pending') {
-                  if (now - state.t0 < 12000) return null;
+                  if (now - state.t0 < 6000) return null;
                   api.state = 'bad';
                 }
                 if (api.state === 'ok' && api.items.length) {
@@ -271,7 +271,7 @@ internal object SadscansFrontend {
                 }
                 // Sabit yönlendirici adı işe yaramadıysa sayfadan öğrenilen adla bir kez dene.
                 if (!state.retried) {
-                  if (state.routers && state.routers.state === 'pending' && now - state.t0 < 15000) return null;
+                  if (state.routers && state.routers.state === 'pending' && now - state.t0 < 8000) return null;
                   var learned = routerName(state.routers);
                   state.retried = true;
                   if (learned !== DEFAULT_ROUTER) {
@@ -286,7 +286,7 @@ internal object SadscansFrontend {
                 }
                 if (state.raw) {
                   if (state.raw.state === 'pending') {
-                    if (now - state.rawAt < 12000) return null;
+                    if (now - state.rawAt < 5000) return null;
                     state.raw.state = 'bad';
                   }
                   if (state.raw.state === 'ok' && state.raw.items.length) {
@@ -305,14 +305,14 @@ internal object SadscansFrontend {
               if (dom.step === 'prepare') {
                 var input = searchInput();
                 if (!input) {
-                  if (now - state.t0 < 20000) return null;
+                  if (now - state.t0 < 10000) return null;
                   return out({error: 'SadScans arama kutusu bulunamadı; sayfa beklenen hâle gelmedi. Siteyi uygulama içi tarayıcıda açıp tekrar deneyin.'});
                 }
                 var hydrated = false;
                 for (var key in input) {
                   if (key.indexOf('__reactProps') === 0 || key.indexOf('__reactFiber') === 0) { hydrated = true; break; }
                 }
-                if (!hydrated && now - state.t0 < 15000) return null;
+                if (!hydrated && now - state.t0 < 7000) return null;
 
                 var wanted = wishlist();
                 for (var index = 0; index < wanted.length; index++) {
@@ -375,7 +375,7 @@ internal object SadscansFrontend {
 
               var start = (options.page - 1) * 15;
               var sentinel = document.querySelector('div[aria-hidden="true"].h-px.w-full');
-              if (items.length < options.page * 15 && sentinel && dom.scrolls < 60 && now - state.t0 < 30000) {
+              if (items.length < options.page * 15 && sentinel && dom.scrolls < 20 && now - state.t0 < 15000) {
                 if (now >= dom.changed + 900) {
                   window.scrollTo(0, document.body.scrollHeight);
                   dom.scrolls++;
@@ -386,7 +386,7 @@ internal object SadscansFrontend {
 
               var empty = text.indexOf('sonuç bulunamadı') >= 0 || text.indexOf("Database'yi koymayı") >= 0;
               if (!items.length && !empty) {
-                if (now - state.t0 < 20000) return null;
+                if (now - state.t0 < 12000) return null;
                 return out({error: 'SadScans arama sonuçlarını yükleyemedi.'});
               }
               // hasMore yalnızca tam bir sayfa dolduysa true olabilir; aksi hâlde uygulama
@@ -492,7 +492,7 @@ internal object SadscansFrontend {
                   var chapters = first.chapters.slice();
                   var next = 2;
                   function step() {
-                    if (next > total || next > 60 || Date.now() - started > 20000) {
+                    if (next > total || next > 60 || Date.now() - started > 12000) {
                       box.state = 'ok';
                       box.data = {
                         series: first.series || null,
@@ -554,7 +554,7 @@ internal object SadscansFrontend {
               if (state.phase === 'api') {
                 var api = state.api;
                 if (api.state === 'pending') {
-                  if (now - state.t0 < 25000) return null;
+                  if (now - state.t0 < 12000) return null;
                   api.state = 'bad';
                 }
                 if (api.state === 'ok' && api.data) return out(api.data);
@@ -566,7 +566,7 @@ internal object SadscansFrontend {
               var dom = state.dom;
               var current = rows();
               if (dom.step === 'boot') {
-                if (!current.length && text.indexOf('Henüz bölüm') < 0 && now - state.t0 < 15000) return null;
+                if (!current.length && text.indexOf('Henüz bölüm') < 0 && now - state.t0 < 8000) return null;
                 dom.before = current.map(function(row) { return row.href; }).join('|');
                 if (target > 1) {
                   var button = document.querySelector('button[aria-label="Sayfa ' + target + '"]');
@@ -579,7 +579,7 @@ internal object SadscansFrontend {
               }
 
               if (now < dom.changed + 1200) return null;
-              if (!current.length && text.indexOf('Henüz bölüm') < 0 && now - state.t0 < 18000) return null;
+              if (!current.length && text.indexOf('Henüz bölüm') < 0 && now - state.t0 < 12000) return null;
               var fingerprint = JSON.stringify(current);
               if (fingerprint !== dom.fingerprint) {
                 dom.fingerprint = fingerprint;
@@ -696,7 +696,7 @@ internal object SadscansFrontend {
                 state.stable++;
               }
 
-              if (state.stable < 2 && state.scrolls < 150) {
+              if (state.stable < 2 && state.scrolls < 60) {
                 var y = window.scrollY || window.pageYOffset || 0;
                 var stepSize = window.innerHeight || 900;
                 var height = (document.documentElement && document.documentElement.scrollHeight) || 0;
@@ -708,10 +708,10 @@ internal object SadscansFrontend {
               }
 
               if (!urls.length) {
-                if (now - state.t0 > 22000) return out({error: 'SadScans okuyucusunda bölüm görselleri bulunamadı.'});
+                if (now - state.t0 > 15000) return out({error: 'SadScans okuyucusunda bölüm görselleri bulunamadı.'});
                 return null;
               }
-              if (state.stable < 2 && now - state.t0 < 30000) return null;
+              if (state.stable < 2 && now - state.t0 < 20000) return null;
               return out({urls: urls});
             })();
         """.trimIndent()
