@@ -13,4 +13,12 @@ adb shell screencap -p /sdcard/screenshot.png
 adb pull /sdcard/screenshot.png /tmp/merlin-android/screenshot.png
 adb logcat -d -v time > /tmp/merlin-android/logcat.txt
 printf 'UI dump: ' && wc -c /tmp/merlin-android/window.xml
-cat /tmp/merlin-android/window.xml | head -c 12000
+python3 - <<'PY'
+import xml.etree.ElementTree as ET
+root = ET.parse('/tmp/merlin-android/window.xml').getroot()
+for node in root.iter('node'):
+    text = node.get('text') or node.get('content-desc')
+    if text:
+        safe = text.replace('%', '%25').replace('\n', ' ')
+        print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
+PY
