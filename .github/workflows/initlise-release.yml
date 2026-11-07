@@ -32,6 +32,32 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
+      - name: Biçimi otomatik düzelt (spotlessApply) ve işle
+        working-directory: keiyoushi-extensions-tr
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          ./gradlew :lib-multisrc:initlisenext:spotlessApply \
+            :src:tr:duckscans:spotlessApply :src:tr:lunariscans:spotlessApply \
+            :src:tr:ailurascans:spotlessApply :src:tr:oblivionscans:spotlessApply \
+            > /tmp/spotless.log 2>&1 || true
+          tail -5 /tmp/spotless.log
+          cd ..
+          git config user.name 'kitsugi-spotless'
+          git config user.email 'kitsugi-spotless@users.noreply.github.com'
+          git add keiyoushi-extensions-tr/lib-multisrc/initlisenext \
+            keiyoushi-extensions-tr/src/tr/duckscans \
+            keiyoushi-extensions-tr/src/tr/lunariscans \
+            keiyoushi-extensions-tr/src/tr/ailurascans \
+            keiyoushi-extensions-tr/src/tr/oblivionscans
+          if ! git diff --cached --quiet; then
+            git commit -m "style: spotlessApply (Initlise-Next) [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase -q origin "$BRANCH" || true
+              if git push origin "HEAD:$BRANCH"; then break; fi
+              sleep 4
+            done
+          fi
       - name: Dört Initlise-Next uzantısını derle ve test et
         working-directory: keiyoushi-extensions-tr
         run: |
