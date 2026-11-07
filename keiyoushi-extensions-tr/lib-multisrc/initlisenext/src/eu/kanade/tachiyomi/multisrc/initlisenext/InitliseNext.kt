@@ -42,10 +42,9 @@ abstract class InitliseNext : KeiSource() {
     override fun OkHttpClient.Builder.configureClient() = rateLimit(2, 1.seconds)
 
     /** Görsel CDN'leri site referansı bekler; KeiSource headersBuilder'ı finaldir. */
-    override fun imageRequest(page: Page): Request =
-        super.imageRequest(page).newBuilder()
-            .header("Referer", "$baseUrl/")
-            .build()
+    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
+        .header("Referer", "$baseUrl/")
+        .build()
 
     protected open val seriesPath = "seri"
 
