@@ -127,9 +127,12 @@ def signed_first_page(base: str, slug: str, jar_path: str) -> tuple[str | None, 
     return path, number
 
 
-def fetch_status(cmd: list[str]) -> dict:
+def fetch_status(cmd: list[str], workdir: Path | None = None) -> dict:
     write_out = "'{\"code\":%{http_code},\"size\":%{size_download},\"ct\":\"%{content_type}\"}'"
     try:
+        if workdir is not None:
+            # curl-impersonate sarmalayıcısı kendi libcurl'ünü bulmalı
+            cmd = ["bash", "-c", f'cd "{workdir}" && LD_LIBRARY_PATH="{workdir}" ' + " ".join(cmd)]
         proc = subprocess.run(cmd[:-1] + ["-w", write_out, "-o", "/dev/null"], capture_output=True, timeout=40, text=False)
         line = proc.stdout.decode(errors="replace").strip()
         try:
@@ -165,8 +168,8 @@ def main() -> int:
         except requests.RequestException as exc:
             out["python-requests"] = {"error": type(exc).__name__}
         out["curl-plain"] = fetch_status(["curl", "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
-        out["curl-chrome116"] = fetch_status([str(chrome), "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
-        out["curl-chrome116-cookies"] = fetch_status([str(chrome), "-s", "-b", jar, "-c", jar, "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
+        out["curl-chrome116"] = fetch_status([str(chrome), "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url], workdir)
+        out["curl-chrome116-cookies"] = fetch_status([str(chrome), "-s", "-b", jar, "-c", jar, "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url], workdir)
         report["sites"][name] = out
 
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
