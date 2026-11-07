@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:30:19.644280+00:00",
+  "probedAt": "2026-11-07T15:31:39.570957+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -9,41 +9,51 @@
       },
       "chapter": {
         "number": 48,
-        "id": "69e52923f4ac9dfee1b75f19",
-        "samplePath": "/uploads/seri/hazbin-otelde-cinayet/bolum 48/001.jpg"
+        "mongoId": "69e52923f4ac9dfee1b75f19",
+        "slug": "hazbin-otelde-cinayet-bolum-048",
+        "samplePath": "/uploads/seri/hazbin-otelde-cinayet/bolum 48/001.jpg",
+        "seriesMongo": "69dfcd6c1d3de4efa1773cf3",
+        "seriesNumeric": null
       },
-      "imageVariants": {
-        "encoded-no-headers": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+      "apiMatrix": {
+        "slug+chslug": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "encoded-root-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "mongo+mongo": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "encoded-chapter-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "mongo+chslug": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "raw-space-chapter-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "slug+mongo": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         }
       },
-      "includePagesApi": {
-        "status": 400,
-        "type": "application/json",
-        "bytes": 65
+      "readerChunksSaved": [
+        "3tldac6wxrrvc.js",
+        "22g9e7_wv23lw.js"
+      ],
+      "imageBrowserHeaders": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
       },
-      "coverProbe": {
-        "status": 200,
-        "type": "image/webp",
-        "bytes": 54776,
-        "ok": true
+      "imageOptimizer": {
+        "status": 400,
+        "type": "",
+        "bytes": 30
       }
     },
     "oblivionscans": {
@@ -54,40 +64,51 @@
       },
       "chapter": {
         "number": 79,
-        "id": "0381abdab8b910d3e990c536",
-        "samplePath": "/uploads/seri/wp-content/uploads/init-manga/1879/79/0001.jpg"
+        "mongoId": "0381abdab8b910d3e990c536",
+        "slug": "patron-kizinizi-istiyorum-bolum-79",
+        "samplePath": "/uploads/seri/wp-content/uploads/init-manga/1879/79/0001.jpg",
+        "seriesMongo": "ff98f474b146769cdca828ec",
+        "seriesNumeric": "6"
       },
-      "imageVariants": {
-        "encoded-no-headers": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+      "apiMatrix": {
+        "slug+chslug": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "encoded-root-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "mongo+mongo": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "encoded-chapter-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "mongo+chslug": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
-        "raw-space-chapter-referer": {
-          "status": 403,
-          "type": "",
-          "bytes": 0
+        "slug+mongo": {
+          "status": 400,
+          "type": "application/json",
+          "bytes": 65,
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         }
       },
-      "includePagesApi": {
-        "status": 400,
-        "type": "application/json",
-        "bytes": 65
-      },
-      "coverProbe": {
-        "status": 404,
+      "readerChunksSaved": [
+        "3tldac6wxrrvc.js",
+        "22g9e7_wv23lw.js"
+      ],
+      "imageBrowserHeaders": {
+        "status": 403,
         "type": "",
         "bytes": 0
+      },
+      "imageOptimizer": {
+        "status": 400,
+        "type": "",
+        "bytes": 30
       }
     },
     "lunariscans": {
