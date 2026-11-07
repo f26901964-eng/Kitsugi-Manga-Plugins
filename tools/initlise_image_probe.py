@@ -149,7 +149,11 @@ def probe_site(name: str, base: str, slug: str) -> dict:
     }
     api_out = {}
     for label, q in combos.items():
-        info = try_get(s, f"{base}/api/chapters?{q}&includepages=true&limit=1", {"Referer": chapter_url})
+        info = try_get(
+            s,
+            f"{base}/api/chapters?{q}&includepages=true&limit=1",
+            {"Referer": chapter_url, "Origin": base},
+        )
         if info.get("status") not in (None, 200):
             try:
                 body = s.get(f"{base}/api/chapters?{q}&includepages=true&limit=1", timeout=TIMEOUT).text
@@ -162,7 +166,7 @@ def probe_site(name: str, base: str, slug: str) -> dict:
             m = re.search(r'https?://[^"\\\s]+?\.(?:webp|jpe?g|png)[^"\\\s]*', body)
             if m:
                 info["signedUrlFound"] = True
-                info["signedUrlFetch"] = try_get(s, m.group(0), {"Referer": chapter_url})
+                info["signedUrlFetch"] = try_get(s, m.group(0), {"Referer": chapter_url, "Origin": base})
                 out["apiSignedUrl"] = m.group(0)
                 out["apiSignedCombo"] = label
         api_out[label] = info
@@ -191,6 +195,7 @@ def probe_site(name: str, base: str, slug: str) -> dict:
     encoded = base + raw_path.replace(" ", "%20")
     browser_headers = {
         "Referer": chapter_url,
+        "Origin": base,
         "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
         "Sec-Fetch-Dest": "image",
         "Sec-Fetch-Mode": "no-cors",
@@ -200,6 +205,8 @@ def probe_site(name: str, base: str, slug: str) -> dict:
         "sec-ch-ua-platform": '"Android"',
     }
     out["imageBrowserHeaders"] = try_get(s, encoded, browser_headers)
+    out["imageOriginOnly"] = try_get(s, encoded, {"Origin": base})
+    out["imageOriginReferer"] = try_get(s, encoded, {"Origin": base, "Referer": f"{base}/"})
 
     optimizer = f"{base}/_next/image?url={urllib.parse.quote(raw_path)}&w=828&q=75"
     out["imageOptimizer"] = try_get(s, optimizer, {"Referer": chapter_url})
