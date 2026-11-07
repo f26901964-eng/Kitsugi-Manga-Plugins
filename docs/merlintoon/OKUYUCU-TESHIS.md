@@ -81,3 +81,21 @@ ayrı bir uygulama yamasıdır: başarıyla yüklenmiş aynı paketli APK'lardan
 versionCode'lu olanı seçer, eşit sürümde kanonik adı tercih eder ve mevcut dosyaları
 silmez. Çok kaynaklı APK'nın tüm kaynaklarını korur. Bu depo uygulamanın kendisi
 değildir; yamanın burada bulunması kullanıcının yüklü Kitsugi APK'sını değiştirmez.
+
+## Ek bulgu: özel alan adı ayarında uygulama çökmesi
+
+Yayımlanmış v2.4.455, emülatörde test için `active_domain` ayarlandığında
+`SourceConfigStore.getActiveDomain → MangaTrCompat.isMangaTr →
+MihonSourceWrapper.baseUrl → SourceConfigStore.getPreferredBaseUrl →
+getActiveDomain` döngüsüne girdi ve uygulamanın kendi çökme raporunda yinelenen
+çağrılar görüldü ([Android denemesi 42322680286](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42322680286)).
+Bu, **test sırasında** keşfedilen ayrı bir uygulama kusurudur; kullanıcının
+cihazında alan adı ayarı bulunduğu veya bunun KTS-SRC-9008'e neden olduğu
+kanıtlanmadı. `tools/kitsugi-beta-domain-recursion.patch` bu kontrolün değiştirilebilir
+`baseUrl` yerine orijinal adresi kullanmasını önerir; uygulamaya dağıtılmış değildir.
+
+Çift APK seçme yardımcı kodunun üç JVM birim testi bağımsız çalıştırmada geçti
+([42323036793](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42323036793)).
+Tüm uygulama derlemesi ilk denemede bellek nedeniyle durdu, ikinci denemede Kotlin
+4 GB heap ile `OutOfMemoryError` verdi; Android derlemesi başarıyla doğrulanmış
+sayılmamalıdır. Ayrı JVM testleri uygulamanın cihazda çalıştığını kanıtlamaz.

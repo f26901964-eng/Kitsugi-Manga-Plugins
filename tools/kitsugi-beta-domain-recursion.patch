@@ -1,0 +1,44 @@
+diff -ruN old/app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt new/app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt
+--- a/app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt	2026-11-07 01:16:05.570673443 +0000
++++ b/app/src/main/java/com/kitsugi/animelist/data/manga/SourceConfigStore.kt	2026-11-07 01:16:05.582673571 +0000
+@@ -17,7 +17,10 @@
+         // Eski sürümlerde SourceMirrorResolver 403/503 yanıtlarını "erişilebilir"
+         // sayıp Manga-TR için mangatr.net / manga-tr.net gibi ilgisiz alan adlarını
+         // otomatik kaydetmişti. Kullanıcı elle girmediyse bu kirli kaydı temizle.
+-        if (MangaTrCompat.isMangaTr(source) &&
++        // baseUrl may itself call getPreferredBaseUrl -> getActiveDomain. Use the
++        // source's raw URL here to avoid infinite recursion for configured mirrors.
++        if ((source.pkgName.equals(MangaTrCompat.PACKAGE_NAME, ignoreCase = true) ||
++                MangaTrCompat.isMangaTrBaseUrl(source.originalBaseUrl)) &&
+             !isUserExplicitDomain(source) &&
+             !isMangaTrHost(stored)
+         ) {
+diff -ruN old/app/src/test/java/com/kitsugi/animelist/data/manga/SourceConfigRecursionTest.kt new/app/src/test/java/com/kitsugi/animelist/data/manga/SourceConfigRecursionTest.kt
+--- a/app/src/test/java/com/kitsugi/animelist/data/manga/SourceConfigRecursionTest.kt	1970-01-01 00:00:00.000000000 +0000
++++ b/app/src/test/java/com/kitsugi/animelist/data/manga/SourceConfigRecursionTest.kt	2026-11-07 01:16:05.586673614 +0000
+@@ -0,0 +1,25 @@
++package com.kitsugi.animelist.data.manga
++
++import android.content.Context
++import android.content.SharedPreferences
++import org.junit.Assert.assertEquals
++import org.junit.Test
++import org.mockito.Mockito.`when`
++import org.mockito.Mockito.mock
++
++class SourceConfigRecursionTest {
++    @Test
++    fun configuredDomainDoesNotReadTheRecursiveBaseUrlGetter() {
++        val context = mock(Context::class.java)
++        val prefs = mock(SharedPreferences::class.java)
++        `when`(context.getSharedPreferences("manga_source_config", Context.MODE_PRIVATE)).thenReturn(prefs)
++        val source = mock(MangaSource::class.java)
++        val pkg = "eu.kanade.tachiyomi.extension.tr.merlinscans"
++        `when`(source.pkgName).thenReturn(pkg)
++        `when`(source.originalBaseUrl).thenReturn("https://merlintoon.com")
++        `when`(prefs.getString("$pkg::active_domain", null)).thenReturn("mirror.example")
++        val store = SourceConfigStore(context)
++        `when`(source.baseUrl).thenAnswer { store.getPreferredBaseUrl(source, source.originalBaseUrl) }
++        assertEquals("https://mirror.example", source.baseUrl)
++    }
++}

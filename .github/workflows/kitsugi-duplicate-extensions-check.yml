@@ -5,6 +5,7 @@ on:
     branches: [arena/e4d8654c-kitsugi-manga-plugins]
     paths:
       - tools/kitsugi-beta-duplicate-extensions.patch
+      - tools/kitsugi-beta-domain-recursion.patch
       - .github/workflows/kitsugi-duplicate-extensions-check.yml
 permissions:
   contents: read
@@ -21,7 +22,11 @@ jobs:
           path: kitsugi-beta
       - name: Apply fix to released Android sources
         working-directory: kitsugi-beta
-        run: git apply --check "$GITHUB_WORKSPACE/tools/kitsugi-beta-duplicate-extensions.patch" && git apply "$GITHUB_WORKSPACE/tools/kitsugi-beta-duplicate-extensions.patch"
+        run: |
+          for patch in "$GITHUB_WORKSPACE/tools/kitsugi-beta-duplicate-extensions.patch" "$GITHUB_WORKSPACE/tools/kitsugi-beta-domain-recursion.patch"; do
+            git apply --check "$patch"
+            git apply "$patch"
+          done
       - uses: actions/setup-java@v5
         with:
           distribution: temurin
@@ -35,10 +40,10 @@ jobs:
         run: |
           mkdir -p ~/.gradle
           cat >> ~/.gradle/gradle.properties <<'EOF'
-          org.gradle.jvmargs=-Xmx4g -Xms512m -Xss16m -XX:+UseG1GC -Dfile.encoding=UTF-8
+          org.gradle.jvmargs=-Xmx2g -Xms512m -Xss16m -XX:+UseG1GC -Dfile.encoding=UTF-8
           org.gradle.workers.max=1
           org.gradle.parallel=false
-          kotlin.daemon.jvmargs=-Xmx4g -Xms512m -Xss16m -XX:+UseG1GC
+          kotlin.daemon.jvmargs=-Xmx10g -Xms512m -Xss16m -XX:+UseG1GC
           kotlin.compiler.execution.strategy=daemon
           EOF
       - name: Test and compile the patched app
@@ -46,7 +51,7 @@ jobs:
         shell: bash
         run: |
           set +e
-          ./gradlew :app:testFossDebugUnitTest --tests 'com.kitsugi.animelist.data.manga.LoadedMangaExtensionTest' :app:assembleFossDebug --no-daemon --stacktrace --console=plain > /tmp/kitsugi-duplicate-build.log 2>&1
+          ./gradlew :app:testFossDebugUnitTest --tests 'com.kitsugi.animelist.data.manga.LoadedMangaExtensionTest' --tests 'com.kitsugi.animelist.data.manga.SourceConfigRecursionTest' :app:assembleFossDebug --no-daemon --stacktrace --console=plain > /tmp/kitsugi-duplicate-build.log 2>&1
           result=$?
           tail -100 /tmp/kitsugi-duplicate-build.log
           if [ "$result" -ne 0 ]; then

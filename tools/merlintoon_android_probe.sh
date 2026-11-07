@@ -7,6 +7,16 @@ PKG=$(adb shell pm list packages | sed -n 's/^package://p' | grep -i kitsugi | h
 echo "Installed package: $PKG"
 adb root
 adb wait-for-device
+# This is a disposable rooted emulator: map the test hostname to adb reverse
+# without using the app's domain override (which has a separate recursion bug).
+adb disable-verity
+adb reboot
+adb wait-for-device
+adb root
+adb wait-for-device
+adb shell 'while [ "$(getprop sys.boot_completed)" != 1 ]; do sleep 1; done'
+adb remount
+adb shell "echo '127.0.0.1 merlintoon.com' >> /system/etc/hosts"
 adb shell id
 adb push prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.11.apk /data/local/tmp/merlin.apk
 adb push /tmp/merlin-v1.6.9.apk /data/local/tmp/merlin-old.apk
@@ -20,12 +30,8 @@ adb push /tmp/merlin-trust.xml /data/local/tmp/merlin-trust.xml
 cat > /tmp/merlin-profile.xml <<'XML'
 <map><boolean name="repo_first_manga_profile_v2" value="true"/><boolean name="disabled_default_source_eu.kanade.tachiyomi.extension.tr.merlinscans" value="true"/></map>
 XML
-cat > /tmp/merlin-config.xml <<'XML'
-<map><string name="eu.kanade.tachiyomi.extension.tr.merlinscans::active_domain">127.0.0.1</string><boolean name="eu.kanade.tachiyomi.extension.tr.merlinscans::user_domain_explicit" value="true"/></map>
-XML
 adb push /tmp/merlin-profile.xml /data/local/tmp/merlin-profile.xml
-adb push /tmp/merlin-config.xml /data/local/tmp/merlin-config.xml
-adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/manga_extensions \$D/shared_prefs; cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; cp /data/local/tmp/merlin-trust.xml \$D/shared_prefs/security_trust.xml; cp /data/local/tmp/merlin-profile.xml \$D/shared_prefs/kitsugi_manga_default_profile.xml; cp /data/local/tmp/merlin-config.xml \$D/shared_prefs/manga_source_config.xml; chown -R \$U \$D/files/manga_extensions \$D/shared_prefs; restorecon -R \$D/files/manga_extensions \$D/shared_prefs"
+adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/manga_extensions \$D/shared_prefs; cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; cp /data/local/tmp/merlin-trust.xml \$D/shared_prefs/security_trust.xml; cp /data/local/tmp/merlin-profile.xml \$D/shared_prefs/kitsugi_manga_default_profile.xml; chown -R \$U \$D/files/manga_extensions \$D/shared_prefs; restorecon -R \$D/files/manga_extensions \$D/shared_prefs"
 # Isolated synthetic fixture: only the disposable emulator uses this hostname override.
 openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/fixture.key -out /tmp/fixture.crt -days 1 -subj '/CN=127.0.0.1' >/dev/null 2>&1
 FIXTURE_KEY=/tmp/fixture.key FIXTURE_CERT=/tmp/fixture.crt python3 tools/merlintoon_android_fixture.py > /tmp/merlin-android/fixture.log 2>&1 &
