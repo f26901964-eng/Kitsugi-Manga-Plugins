@@ -52,3 +52,11 @@ bir okuyucu düzeltmesi içermez; söz konusu bölümün HTML'i ve cihazdaki son
 Kitsugi-Beta'nın incelenen [MangaRepoClient](https://github.com/f26901964-eng/Kitsugi-Beta/blob/b78cbc4cdc39808cb0ec475026edef6b464b71ed/app/src/main/java/com/kitsugi/animelist/data/remote/MangaRepoClient.kt) kodu, V1 JSON listesinin `trim()` sonrası uzunluğu 5.000 UTF-16 karakterinden azsa bunu sahte katalog sayıp kullanıcı deposu yerine Keiyoushi'ye yönlendiriyor. Gerçek V1 yayın kataloğu 4.433 karakterdi; bu, özel depo yüklemesini ve güncelleme görünürlüğünü etkileyebilir. Cihazdaki gerçek repo adresi ve durum doğrulanmadığından tek neden olduğu söylenemez.
 
 V1 çıktısı, dizi içindeki geçerli JSON boşluklarıyla en az 5.100 UTF-16 karakterine tamamlanır; liste ve APK'lar değişmez. Boş ve küçük kataloglar dahil birim testleri bu eşiği denetler. V2 kataloğu alternatif adresi: `https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/builds/index.v2.json`. Ayrı olarak, aynı uygulama sürümünün otomatik güncelleyicisi özel repoları değil Keiyoushi adresini kontrol eder; özel repo üzerinden manuel yenileme gerekebilir. Bu katalog değişikliği okuyucu hatasını çözmez.
+
+### Düzeltme: yayınlanan Kitsugi sürümünün kaynak kodu
+
+Yukarıdaki elle güncelleme önbelleği tespiti yalnız incelenen `b78cbc4` **main**
+commit'i içindir. Yayınlanan v2.4.454 (`f5bdacb`) ve v2.4.455 (`eba2240`)
+etiketlerinin `installMangaApk` uygulaması farklıdır ve yüklemeden önce
+`unloadExtension` çağırır. Bu nedenle tespit, o sürümlerde katalogdan elle kurulum
+hakkında genelleştirilemez; kullanıcının sürümü ve hatanın gerçek nedeni bilinmiyor.

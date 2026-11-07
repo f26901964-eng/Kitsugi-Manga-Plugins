@@ -21,9 +21,12 @@ uygulama/yol çalışması ihtimalini düşündürür; **hangisinin geçerli old
 kanıtlamaz**. Eklentinin sayfa listesi oluşup daha sonra görsel indirmesinde hata
 alınması ise farklı bir aşamadır.
 
-Uygulamanın manuel eklenti güncelleme yolu yükleyicinin bellek önbelleğini
-boşaltmadığı için eski kaynak nesnesini yeniden kullanabilir; uygulamanın tamamen
-kapatılıp açılması bir teşhis adımıdır, doğrulanmış bir kök neden değildir.
+İlk inceleme `main` üzerindeki `b78cbc4` kaynağındaydı ve onun elle kurma yolunda
+bellek önbelleği temizlenmiyordu. **Düzeltme:** yayınlanan v2.4.454 ve v2.4.455
+etiketlerindeki kaynak kodu `main` ile aynı değildir; bu yayınların `installMangaApk`
+yolu yüklemeden önce `unloadExtension` çağırır. Dolayısıyla önceki tespit bu iki
+yayının katalogdan elle kurma yolu için geçerli değildir. Kullanıcının kurulu
+uygulama sürümü ve izlediği kurulum yolu bilinmemektedir.
 
 ## İstek ve HTML sınırları
 
