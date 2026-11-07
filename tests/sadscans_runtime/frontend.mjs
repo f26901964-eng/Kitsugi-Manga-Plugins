@@ -78,10 +78,12 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
 // ---------------------------------------------------------------------------
 {
   let requested = null;
+  let requestedInit = null;
   const options = {query: 'Chainsaw Man', sort: 'views', type: null, status: null, page: 1};
   const env = environment('<html><body><input placeholder="Aramak istediğiniz seriyi yazın"><main></main></body></html>', {
-    fetchImpl: url => {
-      requested = url;
+    fetchImpl: (url, init) => {
+      requested = typeof url === 'string' ? url : String(url);
+      requestedInit = init || null;
       return jsonResponse(trpc([
         {id: '1', href: '/seriler/chainsaw-man', name: 'Chainsaw Man', thumb: '/uploads/a.jpg'},
         {id: '2', href: '/seriler/jujutsu-kaisen', name: 'Jujutsu Kaisen', thumb: null},
@@ -97,9 +99,14 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   assert.equal(result.hasMore, false);
   assert.ok(requested.includes('/api/trpc/_s4d7g2k9m0.getSeries'), 'doğru tRPC prosedürü çağrılmalı');
   assert.ok(requested.includes('batch=1'), 'batch zarfı korunmalı');
-  assert.ok(requested.includes('sortBy%22%3A%22views'), 'sıralama değeri sitedeki gibi iletilmeli');
-  assert.ok(decodeURIComponent(requested).includes('"search":"chainsaw man"'), 'arama Türkçe normalizasyondan geçmeli');
-  console.log('PASS: liste API yolu — prosedür, batch zarfı, sortBy ve normalize edilmiş arama');
+  // Cloudflare WAF sorgu dizesindeki JSON'u "malformed data" sayıp sert blok uyguluyor:
+  // JSON gövdede olmalı, URL'de input= parametresi bulunmamalı.
+  assert.ok(!requested.includes('input='), 'JSON sorgu dizesinde olmamalı (WAF bloğu)');
+  assert.match(String(requestedInit && requestedInit.method), /post/i, 'istek POST olmalı');
+  const sent = JSON.parse(requestedInit.body);
+  assert.equal(sent[0].json.sortBy, 'views', 'sıralama gövdede iletilmeli');
+  assert.equal(sent[0].json.search, 'chainsaw man', 'arama Türkçe normalizasyondan geçmeli');
+  console.log('PASS: liste API yolu — POST gövde, batch zarfı, sortBy ve normalize edilmiş arama');
 }
 
 // ---------------------------------------------------------------------------
@@ -192,9 +199,11 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
   let calls = 0;
   const env = environment('<html><body></body></html>', {
     path: '/seriler/chainsaw-man',
-    fetchImpl: url => {
+    fetchImpl: (url, init) => {
       calls++;
-      const page = decodeURIComponent(url).includes('"page":1') ? 1 : 2;
+      // JSON artık POST gövdesinde (WAF, sorgu dizesindeki JSON'u blokluyor).
+      const payload = (init && init.body) ? String(init.body) : decodeURIComponent(String(url));
+      const page = payload.includes('"page":1') ? 1 : 2;
       const rows = page === 1
         ? [{chap_id: 'aaa', name: '1. Bölüm - Köpek ve Testere', no: 1, createdAt: '2026-11-01T10:00:00.000Z'}]
         : [{chap_id: 'bbb', name: '2. Bölüm - İkinci', no: 2, createdAt: '2026-11-02T10:00:00.000Z'}];

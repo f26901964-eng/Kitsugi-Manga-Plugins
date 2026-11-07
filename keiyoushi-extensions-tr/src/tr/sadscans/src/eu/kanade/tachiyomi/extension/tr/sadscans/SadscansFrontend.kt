@@ -28,6 +28,10 @@ internal object SadscansFrontend {
     private val CF_PRELUDE = """
               // ── Cloudflare: geçici doğrulama ekranı genelde 2-5 sn içinde kendiliğinden geçer,
               // bu yüzden hemen hata vermek yerine beklenir (12 sn). Sert WAF bloğu ayrı ele alınır.
+              // Site yeni alan adına taşınıyor: "SİTE YAPIM AŞAMASINDA / YAKINDA GELİYOR" sayfası.
+              if (/YAPIM AŞAMASINDA|YAKINDA GELİYOR|yeni adresimiz/i.test(text)) {
+                return out({error: 'SadScans yeni adresine taşınıyor (sadscans.org); site henüz yayında değil. Yakında tekrar deneyin.', migrating: true});
+              }
               var hardBlock = /Sorry, you have been blocked|Attention Required|cf-error-details/i.test(text);
               var challenge = !hardBlock && (
                 /Just a moment|Checking your browser|Verifying you are human|Verify you are human|Doğrulanıyor|Bir dakika lütfen/i.test(text) ||
@@ -46,7 +50,7 @@ internal object SadscansFrontend {
               var UA = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
 """
 
-    fun listScript(query: String, sort: String, type: String?, status: String?, page: Int): String {
+    fun listScript(query: String, sort: String, type: String?, status: String?, page: Int, router: String? = null): String {
         require(page > 0)
         val options = buildString {
             append("{query:").append(JsonPrimitive(query))
@@ -54,6 +58,7 @@ internal object SadscansFrontend {
             append(",type:").append(type?.let { JsonPrimitive(it) } ?: "null")
             append(",status:").append(status?.let { JsonPrimitive(it) } ?: "null")
             append(",page:").append(page)
+            append(",router:").append(router?.let { JsonPrimitive(it) } ?: "null")
             append('}')
         }
         return """
@@ -118,9 +123,15 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
               // sayfanın kendi JS parçalarındaki "getSeries" çağrısından öğrenilir.
               function discoverRouters() {
                 var box = {state: 'pending', map: {}};
+                if (options.router) {
+                  // Önceki aramada öğrenilen ad: sayfayı yeniden taramaya gerek yok.
+                  box.map.getSeries = options.router;
+                  box.state = 'ok';
+                  return box;
+                }
                 var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
                 var urls = [];
-                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                for (var i = 0; i < scripts.length && urls.length < 6; i++) urls.push(scripts[i].src);
                 if (!urls.length || typeof fetch !== 'function') {
                   box.state = 'ok';
                   return box;
@@ -147,18 +158,27 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                 return box;
               }
 
+              function activeRouter() {
+                return options.router || routerName(state.routers) || DEFAULT_ROUTER;
+              }
+
               function routerName(box) {
                 var discovered = box && box.map ? box.map.getSeries : null;
                 return discovered || DEFAULT_ROUTER;
               }
 
-              function trpcUrl(search, pageNumber, router) {
+              function trpcUrl(pageNumber, router) {
+                // Cloudflare WAF, sorgu dizesinde JSON (%22, %7B) görünce "malformed data" kuralıyla
+                // sert blok uyguluyor. Bu yüzden gövde POST ile gönderilir; URL temiz kalır.
+                return '/api/trpc/' + (router || options.router || DEFAULT_ROUTER) + '.getSeries?batch=1';
+              }
+
+              function trpcBody(search, pageNumber) {
                 var payload = {sortBy: options.sort, page: pageNumber, limit: 15};
                 if (search) payload.search = search;
                 if (options.type) payload.type = options.type;
                 if (options.status) payload.status = options.status;
-                return '/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input=' +
-                  encodeURIComponent(JSON.stringify({0: {json: payload}}));
+                return JSON.stringify({0: {json: payload}});
               }
 
               function parseBatch(body) {
@@ -187,7 +207,12 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   return box;
                 }
                 try {
-                  fetch(trpcUrl(search, pageNumber, router), {credentials: 'same-origin', headers: {accept: 'application/json'}})
+                  fetch(trpcUrl(pageNumber, router), {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'content-type': 'application/json', accept: 'application/json'},
+                    body: trpcBody(search, pageNumber)
+                  })
                     .then(function(response) { return response.ok ? response.text() : null; })
                     .then(function(body) {
                       var items = body ? parseBatch(body) : null;
@@ -288,7 +313,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   api.state = 'bad';
                 }
                 if (api.state === 'ok' && api.items.length) {
-                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api', ua: UA});
+                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api', ua: UA, router: activeRouter()});
                 }
                 // Sabit yönlendirici adı işe yaramadıysa sayfadan öğrenilen adla bir kez dene.
                 if (!state.retried) {
@@ -311,7 +336,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                     state.raw.state = 'bad';
                   }
                   if (state.raw.state === 'ok' && state.raw.items.length) {
-                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api', ua: UA});
+                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api', ua: UA, router: activeRouter()});
                   }
                 }
                 state.phase = 'dom';
@@ -413,7 +438,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
               // hasMore yalnızca tam bir sayfa dolduysa true olabilir; aksi hâlde uygulama
               // sonsuz sayfalama isteğine girer (boş sayfa → tekrar istek).
               var full = items.length >= options.page * 15;
-              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom', ua: UA});
+              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom', ua: UA, router: activeRouter()});
             })();
         """.trimIndent()
     }
@@ -436,7 +461,7 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/seriler/') !== 0) ret
               function discoverRouters() {
                 var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
                 var urls = [];
-                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                for (var i = 0; i < scripts.length && urls.length < 6; i++) urls.push(scripts[i].src);
                 if (!urls.length || typeof fetch !== 'function') {
                   routerBox.state = 'ok';
                   return;
@@ -469,10 +494,14 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/seriler/') !== 0) ret
               function request(pageNumber, router) {
                 if (typeof fetch !== 'function') return Promise.resolve(null);
                 var payload = {sef: slug, page: pageNumber, limit: 10};
-                var url = '/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input=' +
-                  encodeURIComponent(JSON.stringify({0: {json: payload}}));
+                var url = '/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1';
                 try {
-                  return fetch(url, {credentials: 'same-origin', headers: {accept: 'application/json'}})
+                  return fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'content-type': 'application/json', accept: 'application/json'},
+                    body: JSON.stringify({0: {json: payload}})
+                  })
                     .then(function(response) { return response.ok ? response.text() : null; })
                     .then(function(body) {
                       if (!body) return null;
