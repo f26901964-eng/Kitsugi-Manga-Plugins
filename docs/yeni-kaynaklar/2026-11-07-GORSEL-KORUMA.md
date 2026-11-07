@@ -77,3 +77,37 @@ Bu siteler resimleri **nasıl** koruyor ve her katman **nasıl** aşılır?
 - Kitsugi uygulamasındaki **aynı paketten eski APK kalması** kusuru (bkz.
   docs/merlintoon/OKUYUCU-TESHIS.md): kullanıcı 1.6.4 kurduğunda sürümün
   gerçekten 1.6.4 olduğu "Kaynaklar → sürüm"den teyit edilmeli.
+
+## EK (okuyucu JS'i tam çözümlemesi — 22g9e7_wv23lw.js)
+
+Okuyucu bileşeni (ScrambledImage) resmi şu akışla indirir; **eksik olan her
+kalem 403/kilit adayıdır**:
+
+1. `await C()` — `__duckInstallReaderSecurity` tarafından kurulan tarayıcı
+   güvenlik kontrolü; engellenmişse istek hiç başlamaz.
+   `POST /api/reader-guard/verify` (`hcaptcha` Duck'ta açık, Oblivion'da kapalı;
+   boş token ile verify 200 `{"verified":true}` döner).
+2. URL dönüşümleri: `k` parametresi varsa **`cv=5` eklenir**; kripto modunda
+   **`rk=<cacheKey>`** eklenir.
+3. Başlıklar: `Accept: image/webp,image/*;q=0.8`, **`X-Duck-Scramble-Version: 5`**,
+   kripto modunda `X-Duck-Reader-Crypto: 1` + **`X-Duck-Reader-Key: <publicKey>`**
+   (tarayıcı anahtar çifti üretir, sunucu yanıtı o anahtarla şifreler).
+4. Yanıt: kripto modunda `application/octet-stream` → JS worker çözer →
+   **scramble'lı satırlar canvas'a programatik çizilir** (ham dosya bozuk gelir);
+   düz modda `image/*` blob'u doğrudan `<img>`'ye gider.
+5. 429 + `x-duck-reader-guard: slow` → retry-after bekleyip yeniden dener.
+
+Chunk md5 duckscans = oblivionscans (`575e79d0401b`) → header adları iki sitede
+aynı ("Duck" marka ismine rağmen).
+
+### 1.6.5 (versionCode 4) — okuyucu-birebir görsel isteği
+
+- `imageRequest`: `Referer` = **bölüm sayfası** (Page.url), `Accept` =
+  `image/webp,image/*;q=0.8`, **`X-Duck-Scramble-Version: 5`**,
+  `Sec-Fetch-Dest: empty`, `Sec-Fetch-Mode: cors`, `Sec-Fetch-Site: same-origin`.
+- Sayfa yollarına `k` parametresi varsa **`cv=5`** eklenir.
+- 1.6.4'ün WebView ısıtması (cf_clearance + WebView UA) korunur.
+- Runner'dan doğrulama imkânsız (IP katmanı); cihaz tek doğrulayıcı.
+- Kalıntı risk: site kripto modundaysa (octet-stream) OkHttp katmanı çözemez;
+  o ihtimalde tek yol WebView içinde render edilen canvas'ın toDataURL ile
+  aktarılması (yerel sunucu köprüsü) — plan B olarak belgelendi.

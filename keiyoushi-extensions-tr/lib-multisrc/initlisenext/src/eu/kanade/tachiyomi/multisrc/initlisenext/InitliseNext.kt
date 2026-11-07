@@ -108,11 +108,33 @@ abstract class InitliseNext : KeiSource() {
         }
     }
 
-    /** Görsel CDN'leri site referansı bekler; KeiSource headersBuilder'ı finaldir. */
-    override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
-        .header("Referer", "$baseUrl/")
-        .header("Accept", "image/avif,image/webp,image/apng,image/*,*/*;q=0.8")
-        .build()
+    /**
+     * Görsel isteği site okuyucusunun fetch'iyle birebir aynı olmalı
+     * (chunks/22g9e7_wv23lw.js kanıtı): cv=5 parametresi, scramble sürüm
+     * başlığı, image Accept'i ve same-origin sec-fetch seti. Eksik başlık
+     * koruma ara yazılımında 403 üretir.
+     */
+    override fun imageRequest(page: Page): Request {
+        val referer = page.url?.takeIf { it.isNotBlank() } ?: "$baseUrl/"
+        return super.imageRequest(page).newBuilder()
+            .header("Referer", referer)
+            .header("Accept", "image/webp,image/*;q=0.8")
+            .header("X-Duck-Scramble-Version", SCRAMBLE_VERSION)
+            .header("Sec-Fetch-Dest", "empty")
+            .header("Sec-Fetch-Mode", "cors")
+            .header("Sec-Fetch-Site", "same-origin")
+            .build()
+    }
+
+    /**
+     * Okuyucu, "k" imza parametresi taşıyan sayfa yoluna cv=<scramble sürümü>
+     * ekleyerek indirir; imza bu hâliyle doğrulanıyor olabilir.
+     */
+    private fun String.withScrambleVersion(): String = if (contains("k=") && !contains("cv=")) {
+        if (contains("?")) "$this&cv=$SCRAMBLE_VERSION" else "$this?cv=$SCRAMBLE_VERSION"
+    } else {
+        this
+    }
 
     protected open val seriesPath = "seri"
 
@@ -315,6 +337,7 @@ abstract class InitliseNext : KeiSource() {
             throw Exception("Beklenmeyen bölüm adresi: ${chapter.url}")
         }
         val seriesSlug = segments[1]
+        val chapterUrl = "$baseUrl/${chapter.url.trimStart('/')}"
 
         val apiUrl = "$baseUrl/api/chapters".toHttpUrl().newBuilder()
             .addQueryParameter("series", seriesSlug)
@@ -345,8 +368,9 @@ abstract class InitliseNext : KeiSource() {
                 ?.filter { it.isNotBlank() }
             if (!pages.isNullOrEmpty()) {
                 return pages.mapIndexed { index, path ->
-                    val imageUrl = if (path.startsWith("http")) path else baseUrl + path
-                    Page(index, imageUrl = imageUrl)
+                    val cleaned = path.withScrambleVersion()
+                    val imageUrl = if (cleaned.startsWith("http")) cleaned else baseUrl + cleaned
+                    Page(index, url = chapterUrl, imageUrl = imageUrl)
                 }
             }
         }
@@ -522,6 +546,9 @@ abstract class InitliseNext : KeiSource() {
     private fun String.substringOrNull(start: Int, end: Int): String? = if (start in indices && end <= length && start < end) substring(start, end) else null
 
     companion object {
+        /** Okuyucu scrambled-image şema sürümü (sv=5 / cv=5). */
+        private const val SCRAMBLE_VERSION = "5"
+
         private const val USER_AGENT =
             "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) " +
                 "Chrome/131.0.0.0 Mobile Safari/537.36"
