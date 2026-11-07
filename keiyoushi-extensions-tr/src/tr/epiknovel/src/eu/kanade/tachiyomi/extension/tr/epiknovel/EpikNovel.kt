@@ -41,11 +41,9 @@ abstract class EpikNovel : KeiSource() {
 
     // ------------------------------------------------------------- lists
 
-    override suspend fun getPopularManga(page: Int): MangasPage =
-        mangaList(page, query = null, sort = "views", direction = "DESC", status = null)
+    override suspend fun getPopularManga(page: Int): MangasPage = mangaList(page, query = null, sort = "views", direction = "DESC", status = null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage =
-        mangaList(page, query = null, sort = "lastUpdate", direction = "DESC", status = null)
+    override suspend fun getLatestUpdates(page: Int): MangasPage = mangaList(page, query = null, sort = "lastUpdate", direction = "DESC", status = null)
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val sort = filters.firstInstanceOrNull<SortFilter>()?.toUriPart()
@@ -153,10 +151,11 @@ abstract class EpikNovel : KeiSource() {
         StatusFilter(),
     )
 
-    class SortFilter : Filter.Select<String>(
-        "Sırala",
-        arrayOf("Varsayılan", "Son güncelleme", "Gösterim", "Beğeni", "Puan", "İsim"),
-    ) {
+    class SortFilter :
+        Filter.Select<String>(
+            "Sırala",
+            arrayOf("Varsayılan", "Son güncelleme", "Gösterim", "Beğeni", "Puan", "İsim"),
+        ) {
         fun toUriPart(): String? = when (state) {
             0 -> null
             1 -> "lastUpdate"
@@ -172,14 +171,20 @@ abstract class EpikNovel : KeiSource() {
         fun toUriPart(): String = if (state == 1) "ASC" else "DESC"
     }
 
-    class StatusFilter : Filter.Select<String>(
-        "Durum",
-        arrayOf("Hepsi", "Devam Eden", "Tamamlanan"),
-    ) {
+    class StatusFilter :
+        Filter.Select<String>(
+            "Durum",
+            arrayOf("Hepsi", "Devam Eden", "Tamamlanan"),
+        ) {
         fun toUriPart(): String? = when (state) {
             0 -> null
-            1 -> "0" // durum=0 → Devam ediyor
-            2 -> "1" // durum=1 → Tamamlandı
+
+            1 -> "0"
+
+            // durum=0 → Devam ediyor
+            2 -> "1"
+
+            // durum=1 → Tamamlandı
             else -> null
         }
     }

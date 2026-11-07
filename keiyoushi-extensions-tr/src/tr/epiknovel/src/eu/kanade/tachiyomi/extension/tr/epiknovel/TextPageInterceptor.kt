@@ -53,13 +53,12 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
                 "(KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36"
 
         /** Belirli bir bölümün N. metin sayfasının sanal görüntü adresi. */
-        fun pageUrl(baseUrl: String, chapterUrl: String, page: Int): String =
-            baseUrl.trimEnd('/').toHttpUrl().newBuilder()
-                .addPathSegment(PATH.removePrefix("/"))
-                .addQueryParameter("chapter", chapterUrl)
-                .addQueryParameter("page", page.toString())
-                .build()
-                .toString()
+        fun pageUrl(baseUrl: String, chapterUrl: String, page: Int): String = baseUrl.trimEnd('/').toHttpUrl().newBuilder()
+            .addPathSegment(PATH.removePrefix("/"))
+            .addQueryParameter("chapter", chapterUrl)
+            .addQueryParameter("page", page.toString())
+            .build()
+            .toString()
     }
 
     private data class CachedChapter(
@@ -69,8 +68,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
 
     // Bölüm HTML'i + sayfa sınırları; PNG'ler uygulama diskinde önbelleklenir.
     private val chapterCache = object : LinkedHashMap<String, CachedChapter>(4, 0.75f, true) {
-        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CachedChapter>): Boolean =
-            size > MAX_CACHED_CHAPTERS
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, CachedChapter>): Boolean = size > MAX_CACHED_CHAPTERS
     }
     private val cacheLock = Any()
 
@@ -134,14 +132,13 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
         }
     }
 
-    private fun errorResponse(request: Request, reason: String, detail: String): Response =
-        Response.Builder()
-            .request(request)
-            .protocol(Protocol.HTTP_1_1)
-            .code(404)
-            .message(reason)
-            .body(detail.toResponseBody("text/plain; charset=utf-8".toMediaType()))
-            .build()
+    private fun errorResponse(request: Request, reason: String, detail: String): Response = Response.Builder()
+        .request(request)
+        .protocol(Protocol.HTTP_1_1)
+        .code(404)
+        .message(reason)
+        .body(detail.toResponseBody("text/plain; charset=utf-8".toMediaType()))
+        .build()
 
     // ------------------------------------------------------------ render
 
@@ -200,6 +197,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
                 when (block) {
                     // Bölüm başlığı üstbilgide çizildi; tekrarı önlenir.
                     is ContentBlock.Title -> Unit
+
                     is ContentBlock.Paragraph -> {
                         val layout = paragraphLayout(block.text, bodyPaint, contentWidth, bottomLimit - y)
                             ?: continue
@@ -209,6 +207,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
                         canvas.restore()
                         y += layout.height + PARAGRAPH_GAP
                     }
+
                     is ContentBlock.Picture -> {
                         val image = loadImage(block.url) ?: continue
                         val scale = minOf(
@@ -254,8 +253,7 @@ internal class TextPageInterceptor(private val baseUrl: String) : Interceptor {
         return layoutFor(text, paint, width, 1.3f)
     }
 
-    private fun layoutFor(text: String, paint: Paint, width: Int, spacing: Float): StaticLayout =
-        StaticLayout(text, paint, width, Layout.Alignment.ALIGN_NORMAL, spacing, 0f, false)
+    private fun layoutFor(text: String, paint: Paint, width: Int, spacing: Float): StaticLayout = StaticLayout(text, paint, width, Layout.Alignment.ALIGN_NORMAL, spacing, 0f, false)
 
     private fun loadImage(url: String): Bitmap? {
         val request = Request.Builder()

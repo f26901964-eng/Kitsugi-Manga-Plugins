@@ -17,8 +17,7 @@ import java.io.File
  */
 class EpikNovelTest {
 
-    private fun fixture(name: String): String =
-        File(System.getProperty("epiknovel.$name") ?: error("epiknovel.$name ayarlanmadı")).readText()
+    private fun fixture(name: String): String = File(System.getProperty("epiknovel.$name") ?: error("epiknovel.$name ayarlanmadı")).readText()
 
     private fun descriptionOf(manga: SManga): String {
         val value = manga.description
