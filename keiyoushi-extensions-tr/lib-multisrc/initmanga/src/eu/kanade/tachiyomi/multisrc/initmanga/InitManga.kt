@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.multisrc.initmanga
 
 import android.content.SharedPreferences
-import android.util.Base64
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import eu.kanade.tachiyomi.source.ConfigurableSource
@@ -408,15 +407,7 @@ abstract class InitManga :
             throw Exception("Kilitli bölüm, okumak için siteye giriş yapmanız gerekiyor")
         }
 
-        val encryptedJson = document.select("script[src*=base64]").firstNotNullOfOrNull { script ->
-            val src = script.attr("src")
-            val b64 = src.substringAfter("base64,").substringBeforeLast("\"").trimEnd('\'', '"')
-            runCatching {
-                val decoded = String(Base64.decode(b64, Base64.DEFAULT), Charsets.UTF_8)
-                ENCRYPTED_CHAPTER_REGEX.find(decoded)?.groupValues?.get(1)
-                    ?: decoded.substringAfter("InitMangaEncryptedChapter=").substringBeforeLast(";").takeIf { it.isNotBlank() }
-            }.getOrNull()
-        } ?: AesDecrypt.REGEX_ENCRYPTED_DATA.find(document.html())?.groupValues?.get(1)
+        val encryptedJson = ReaderImageParser.encryptedPayload(document)
             ?: return fallbackPages(document)
 
         val payload = runCatching { encryptedJson.parseAs<EncryptedPayloadDto>() }.getOrNull()
@@ -459,7 +450,7 @@ abstract class InitManga :
                     if (includeNonce && !nonce.isNullOrBlank()) {
                         add("X-WP-Nonce", nonce)
                     }
-                    add("Referer", chapterUrl)
+                    set("Referer", chapterUrl)
                 }
                 .build()
             val response = client.post(keyUrl, requestHeaders, requestDto.toJsonRequestBody(), ensureSuccess = false)
@@ -482,10 +473,8 @@ abstract class InitManga :
 
         return if (trimmed.startsWith("<")) {
             val doc = Jsoup.parseBodyFragment(trimmed, baseUrl)
-            doc.select("img").mapIndexedNotNull { i, img ->
-                val finalSrc = img.imgAttr() ?: return@mapIndexedNotNull null
-                Page(i, imageUrl = finalSrc)
-            }
+            ReaderImageParser.imageUrls(doc, "img, canvas[data-enc]")
+                .mapIndexed { i, src -> Page(i, imageUrl = src) }
         } else {
             runCatching {
                 trimmed.parseAs<JsonArray>().mapIndexed { i, el ->
@@ -504,10 +493,14 @@ abstract class InitManga :
         }
     }
 
-    private fun fallbackPages(document: Document): List<Page> = document.select("div#chapter-content img, div.chapter-content img, div.reader-area img, div.entry-content img, div#readerarea img").mapIndexedNotNull { i, img ->
-        val src = img.imgAttr() ?: return@mapIndexedNotNull null
-        Page(i, imageUrl = src)
-    }
+    private fun fallbackPages(document: Document): List<Page> = ReaderImageParser.imageUrls(
+        document,
+        "#chapter-content img, #chapter-content canvas[data-enc], " +
+            ".chapter-content img, .chapter-content canvas[data-enc], " +
+            ".reader-area img, .reader-area canvas[data-enc], " +
+            ".entry-content img, .entry-content canvas[data-enc], " +
+            "#readerarea img, #readerarea canvas[data-enc]",
+    ).mapIndexed { i, src -> Page(i, imageUrl = src) }
 
     // ============================== Filters ===============================
 
@@ -562,7 +555,6 @@ abstract class InitManga :
     companion object {
         const val PREF_HIDE_LOCKED_KEY = "pref_hide_locked_chapters"
         const val PREF_HIDE_LOCKED_DEFAULT = false
-        private val ENCRYPTED_CHAPTER_REGEX = Regex("""InitMangaEncryptedChapter\s*=\s*(\{.*?\})""", RegexOption.DOT_MATCHES_ALL)
         private val REGEX_INIT_MANGA_DATA = Regex("""var\s+InitMangaData\s*=\s*(\{.*?\});""", RegexOption.DOT_MATCHES_ALL)
         private val REGEX_POST_ID = Regex("""(?:postid-|window\.post_id\s*=\s*|post_id["']?\s*:\s*["']?)(\d+)""")
         private val restDateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")

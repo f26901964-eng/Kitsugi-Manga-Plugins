@@ -1,5 +1,6 @@
 package eu.kanade.tachiyomi.extension.tr.merlinscans
 
+import eu.kanade.tachiyomi.multisrc.initmanga.ReaderImageParser
 import eu.kanade.tachiyomi.source.model.Page
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import org.jsoup.nodes.Document
@@ -8,12 +9,10 @@ internal data class SearchResult(val title: String, val url: String, val thumbna
 internal data class SearchPage(val mangas: List<SearchResult>, val hasNextPage: Boolean)
 
 internal object MerlinParser {
-    fun readerPages(document: Document): List<Page> = document.select("#chapter-content img, .chapter-content img")
-        .mapNotNull { image ->
-            listOf("data-original-src", "data-src", "data-lazy-src", "src")
-                .map { image.absUrl(it) }
-                .firstOrNull { it.startsWith("https://") || it.startsWith("http://") }
-        }.mapIndexed { index, url -> Page(index, imageUrl = url) }
+    fun readerPages(document: Document): List<Page> = ReaderImageParser.imageUrls(
+        document,
+        "#chapter-content img, #chapter-content canvas[data-enc], .chapter-content img, .chapter-content canvas[data-enc]",
+    ).mapIndexed { index, url -> Page(index, imageUrl = url) }
 
     fun searchResults(document: Document, baseUrl: String): SearchPage {
         val host = baseUrl.toHttpUrlOrNull()?.host

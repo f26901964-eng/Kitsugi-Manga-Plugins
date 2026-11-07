@@ -1,10 +1,12 @@
 package eu.kanade.tachiyomi.extension.tr.merlinscans
 
+import eu.kanade.tachiyomi.multisrc.initmanga.ReaderImageParser
 import org.jsoup.Jsoup
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import java.util.Base64
 
 class MerlinParserTest {
     @Test
@@ -36,6 +38,42 @@ class MerlinParserTest {
         """.trimIndent()
         val pages = MerlinParser.readerPages(Jsoup.parse(html, "https://merlintoon.com/seri/test/bolum-1/"))
         assertEquals(listOf("https://merlintoon.com/0001.jpg", "https://merlintoon.com/0002-part-001.jpg", "https://merlintoon.com/0002-part-002.jpg"), pages.map { it.imageUrl })
+    }
+
+    @Test
+    fun readerPreservesMixedPlainAndProtectedCanvasOrder() {
+        val protected = Base64.getEncoder().encodeToString("/pages/002.jpg".reversed().toByteArray())
+        val html = """
+            <img src="/outside.jpg"><div id="chapter-content">
+              <img data-original-src="/pages/001.jpg" src="data:image/svg+xml,placeholder">
+              <canvas data-enc="$protected"></canvas>
+              <canvas data-enc="not-base64!"></canvas>
+              <img src="data:image/svg+xml,placeholder">
+              <img data-lazy-src="//cdn.example/pages/003.jpg">
+            </div>
+        """.trimIndent()
+        val pages = MerlinParser.readerPages(Jsoup.parse(html, "https://merlintoon.com/seri/test/bolum-1/"))
+        assertEquals(listOf("https://merlintoon.com/pages/001.jpg", "https://merlintoon.com/pages/002.jpg", "https://cdn.example/pages/003.jpg"), pages.map { it.imageUrl })
+        assertEquals(listOf(0, 1, 2), pages.map { it.index })
+    }
+
+    @Test
+    fun decryptedMarkupSupportsProtectedCanvasAndImages() {
+        val encoded = Base64.getEncoder().encodeToString("https://cdn.example/two.jpg".reversed().toByteArray())
+        val html = "<img src='/one.jpg'><canvas data-enc='$encoded'></canvas>"
+        val doc = Jsoup.parseBodyFragment(html, "https://merlintoon.com")
+        assertEquals(listOf("https://merlintoon.com/one.jpg", "https://cdn.example/two.jpg"), ReaderImageParser.imageUrls(doc, "img, canvas[data-enc]"))
+    }
+
+    @Test
+    fun unrelatedBase64ScriptsDoNotMaskEncryptedChapter() {
+        val unrelated = Base64.getEncoder().encodeToString("console.log('other')".toByteArray())
+        val payload = "{\"ciphertext\":\"abc\",\"iv\":\"def\"}"
+        val encrypted = Base64.getEncoder().encodeToString("var InitMangaEncryptedChapter = $payload;".toByteArray())
+        val doc = Jsoup.parse("<script src='data:text/javascript;base64,$unrelated'></script><script src='data:text/javascript;base64,$encrypted'></script>")
+        assertEquals(payload, ReaderImageParser.encryptedPayload(doc))
+        assertEquals(null, ReaderImageParser.encryptedPayload(Jsoup.parse("<script src='data:text/javascript;base64,$unrelated'></script>")))
+        assertEquals(payload, ReaderImageParser.encryptedPayload(Jsoup.parse("<script>var InitMangaEncryptedChapter = $payload;</script>")))
     }
 
     @Test
