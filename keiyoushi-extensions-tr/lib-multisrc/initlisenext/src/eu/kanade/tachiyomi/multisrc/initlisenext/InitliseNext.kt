@@ -11,10 +11,10 @@ import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.parseAs
 import kotlinx.serialization.json.JsonElement
-import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
+import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.Jsoup
 import java.time.Instant
@@ -41,9 +41,11 @@ abstract class InitliseNext : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient() = rateLimit(2, 1.seconds)
 
-    override fun headersBuilder(): Headers = Headers.Builder()
-        .add("Referer", "$baseUrl/")
-        .build()
+    /** Görsel CDN'leri site referansı bekler; KeiSource headersBuilder'ı finaldir. */
+    override fun imageRequest(page: Page): Request =
+        super.imageRequest(page).newBuilder()
+            .header("Referer", "$baseUrl/")
+            .build()
 
     protected open val seriesPath = "seri"
 
