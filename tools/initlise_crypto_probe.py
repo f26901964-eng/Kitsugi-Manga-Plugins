@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import re
 import sys
+import traceback
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -95,8 +96,7 @@ def probe(name: str, cfg: dict) -> dict:
         out["runtimeFlags"] = {
             k: runtime.get(k) for k in ("scramble", "scrambleVersion", "readerCrypto", "hcaptcha", "readerGuard", "reader") if k in runtime
         }
-        if not out["runtimeFlags"]:
-            out["runtimeKeys"] = list(runtime.keys())[:20]
+        out["runtimeKeys"] = list(runtime.keys())[:24]
     except ValueError:
         out["runtimeFlags"] = "parse-yok"
 
@@ -171,7 +171,10 @@ def main() -> int:
         try:
             report["sites"][name] = probe(name, cfg)
         except Exception as exc:  # noqa: BLE001
-            report["sites"][name] = {"error": f"{type(exc).__name__}: {exc}"[:200]}
+            report["sites"][name] = {
+                "error": f"{type(exc).__name__}: {exc}"[:200],
+                "trace": traceback.format_exc()[-600:],
+            }
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=1))
     return 0
