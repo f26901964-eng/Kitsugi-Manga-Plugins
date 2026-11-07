@@ -15,8 +15,8 @@ import keiyoushi.utils.firstInstanceOrNull
 import keiyoushi.utils.parseAs
 import keiyoushi.utils.runWebView
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonElement
@@ -336,8 +336,11 @@ abstract class Sadscans : KeiSource() {
     private fun slugToTitle(slug: String): String = slug.split('-', '_')
         .filter { it.isNotBlank() }
         .joinToString(" ") { word ->
-            if (word.length <= 1) word.uppercase()
-            else word[0].uppercase() + word.substring(1)
+            if (word.length <= 1) {
+                word.uppercase()
+            } else {
+                word[0].uppercase() + word.substring(1)
+            }
         }
 
     private fun slugKey(value: String): String {
