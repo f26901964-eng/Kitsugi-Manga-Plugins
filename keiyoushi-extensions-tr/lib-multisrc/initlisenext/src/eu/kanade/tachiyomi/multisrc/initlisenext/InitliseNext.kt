@@ -117,12 +117,7 @@ abstract class InitliseNext : KeiSource() {
     override fun imageRequest(page: Page): Request {
         val referer = page.url?.takeIf { it.isNotBlank() } ?: "$baseUrl/"
         return super.imageRequest(page).newBuilder()
-            .header("Referer", referer)
-            .header("Accept", "image/webp,image/*;q=0.8")
-            .header("X-Duck-Scramble-Version", SCRAMBLE_VERSION)
-            .header("Sec-Fetch-Dest", "empty")
-            .header("Sec-Fetch-Mode", "cors")
-            .header("Sec-Fetch-Site", "same-origin")
+            .headers(imageHeaders(referer))
             .build()
     }
 
@@ -353,8 +348,9 @@ abstract class InitliseNext : KeiSource() {
             warmBrowserSession()
             if (!hasClearance()) {
                 throw Exception(
-                    "Site koruması (Cloudflare) geçilemedi. Uygulamada bu kaynağın web sayfasını " +
-                        "bir kez açıp doğrulamayı geçirdikten sonra tekrar deneyin.",
+                    "Initlise v$THEME_VERSION: Site koruması (Cloudflare) geçilemedi. " +
+                        "Uygulamada bu kaynağın web sayfasını bir kez açıp doğrulamayı " +
+                        "geçirdikten sonra tekrar deneyin.",
                 )
             }
             response = client.get(apiUrl, apiHeaders(chapter.url), ensureSuccess = false)
@@ -367,6 +363,22 @@ abstract class InitliseNext : KeiSource() {
                 ?.pages
                 ?.filter { it.isNotBlank() }
             if (!pages.isNullOrEmpty()) {
+                // Canlı tahlil: ilk imzalı görseli OkHttp ile deneyip sonucu
+                // hataya damgalıyoruz; kullanıcı ekranı tam teşhis olur.
+                val firstPath = pages.first().withScrambleVersion()
+                val firstUrl = if (firstPath.startsWith("http")) firstPath else baseUrl + firstPath
+                val canary = client.get(firstUrl.toHttpUrl(), imageHeaders(chapterUrl), ensureSuccess = false)
+                val canaryType = canary.header("content-type").orEmpty()
+                val canaryOk = canary.code == 200 && canaryType.startsWith("image/")
+                canary.close()
+                if (!canaryOk) {
+                    throw Exception(
+                        "Initlise v$THEME_VERSION: API yanıt verdi (${pages.size} sayfa) ama görsel " +
+                            "testi başarısız (HTTP ${canary.code}, tip=${canaryType.ifBlank { "-" }}). " +
+                            "Cloudflare görsel katmanı bu oturumu reddetti; kaynağın web sayfasını " +
+                            "uygulama içinde bir kez açıp tekrar deneyin.",
+                    )
+                }
                 return pages.mapIndexed { index, path ->
                     val cleaned = path.withScrambleVersion()
                     val imageUrl = if (cleaned.startsWith("http")) cleaned else baseUrl + cleaned
@@ -376,11 +388,21 @@ abstract class InitliseNext : KeiSource() {
         }
 
         throw Exception(
-            "Bu bölümün görselleri sitede korumalı (oturum veya coin gerekiyor). " +
+            "Initlise v$THEME_VERSION: Bu bölüm için API sayfa vermedi (oturum/coin koruması). " +
                 "Uygulamada kaynağın WebView'ını açıp Discord ile giriş yapın; çerezler " +
                 "otomatik kullanılır. Girişten sonra bölümü yeniden açın.",
         )
     }
+
+    /** Canlı tahlilin ve görsel isteklerinin ortak başlık seti. */
+    private fun imageHeaders(referer: String): Headers = Headers.Builder()
+        .add("Referer", referer)
+        .add("Accept", "image/webp,image/*;q=0.8")
+        .add("X-Duck-Scramble-Version", SCRAMBLE_VERSION)
+        .add("Sec-Fetch-Dest", "empty")
+        .add("Sec-Fetch-Mode", "cors")
+        .add("Sec-Fetch-Site", "same-origin")
+        .build()
 
     /** Okuyucu API'sinin beklediği CORS/origin başlık seti. */
     private fun apiHeaders(refererPath: String): Headers = Headers.Builder()
@@ -546,6 +568,9 @@ abstract class InitliseNext : KeiSource() {
     private fun String.substringOrNull(start: Int, end: Int): String? = if (start in indices && end <= length && start < end) substring(start, end) else null
 
     companion object {
+        /** Hata mesajlarına damgalanan teşhis sürümü. */
+        private const val THEME_VERSION = "1.6.6"
+
         /** Okuyucu scrambled-image şema sürümü (sv=5 / cv=5). */
         private const val SCRAMBLE_VERSION = "5"
 
