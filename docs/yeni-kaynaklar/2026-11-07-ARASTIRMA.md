@@ -117,3 +117,24 @@ Erişim matrisi (7 Kasım 2026):
 - `tools/candidate_live_probe.py`: `/bolum/<N>` sayısal bölüm deseni ve
   Initlise-Next okuyucu kapsayıcıları için güncellendi.
 - Bu dosya.
+
+## FAZ 2 SONUCU — aynı gün tamamlandı
+
+Kullanıcının tarayıcı dump'ları (docs/html-dumps/*/browser/) ve v3 yakalama
+koşusu iki kırıcı bulgu verdi:
+
+1. Seri detay sayfasının uçuş verisi `initialChapters` dizisinde TÜM
+   bölümlerin sayfa yolları gömülü geliyor — `allowUnauthenticated=false`
+   olsa bile. Okuyucu kilidi yalnız site arayüzünü ilgilendirir.
+2. `/api/series` ailesi anonim ve runner dostu: `?q=` arama, `?page=`
+   katalog, `?sort=createdAt` yeniler (runner'da 200 doğrulandı).
+
+Bu iki bulguyla `lib-multisrc/initlisenext` teması yazıldı; DuckScans,
+LunariScans, AiluraScans ve Oblivion Scans (NSFW) eklendi, `initlise-release.yml`
+derleyip `1.6.2` (106002) APK'larını kataloğa işledi. `prepare_extension_release.py`
+çok modüllü yayında sync'i sona aldığı için düzeltildi. Hesap girişi
+(Discord OAuth) eklentiye gömülmedi: okuma uçuş verisiyle girişsiz çalışır;
+coin ile kilitli ve uçuşta sayfası olmayan bölümde açıklayıcı hata döner.
+
+Kalan: MTL Scans ve ShadowFanSub erişilemez durumda (dönemsel yeniden yoklama),
+novel siteleri ayrı metin kaynağı altyapısı gerektirir.
