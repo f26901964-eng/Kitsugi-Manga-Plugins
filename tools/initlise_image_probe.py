@@ -150,6 +150,20 @@ def probe_site(name: str, base: str, slug: str) -> dict:
         "Sec-Fetch-Mode": "cors",
         "Sec-Fetch-Site": "same-origin",
     }
+    # --- Tarayıcı benzeri tam başlık seti + _next/image optimizer denemeleri
+    encoded = base + raw_path.replace(" ", "%20")
+    browser_headers = {
+        "Referer": chapter_url,
+        "Origin": base,
+        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
+        "Sec-Fetch-Dest": "image",
+        "Sec-Fetch-Mode": "no-cors",
+        "Sec-Fetch-Site": "same-origin",
+        "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
+        "sec-ch-ua-mobile": "?1",
+        "sec-ch-ua-platform": '"Android"',
+    }
+
     combos = {
         "slug+number": f"series={slug}&chapter={number}",
         "slug+chslug": f"series={slug}&chapter={first.get('slug')}",
@@ -157,27 +171,31 @@ def probe_site(name: str, base: str, slug: str) -> dict:
     }
     api_out = {}
     for label, q in combos.items():
-        info = try_get(
-            s,
-            f"{base}/api/chapters?{q}&includepages=true&limit=1",
-            xhr_headers,
+        entry: dict = {"query": q}
+        try:
+            resp = s.get(
+                f"{base}/api/chapters?{q}&includepages=true&limit=1",
+                headers=xhr_headers,
+                timeout=TIMEOUT,
+            )
+        except requests.RequestException as exc:
+            entry["error"] = type(exc).__name__
+            api_out[label] = entry
+            continue
+        entry["status"] = resp.status_code
+        body = resp.text
+        entry["contentType"] = resp.headers.get("content-type", "")[:40]
+        entry["bodyHead"] = body[:260]
+        # sayfa yolu adayları: mutlak URL veya /uploads ile başlayan yol
+        candidates = re.findall(r'"(/uploads/[^"]+?\.(?:webp|jpe?g|png))"', body) + re.findall(
+            r'"(https?://[^"]+?\.(?:webp|jpe?g|png)[^"]*)"', body
         )
-        if info.get("status") not in (None, 200):
-            try:
-                body = s.get(f"{base}/api/chapters?{q}&includepages=true&limit=1", timeout=TIMEOUT).text
-                info["body"] = body[:220]
-            except requests.RequestException:
-                pass
-        if info.get("status") == 200:
-            body = s.get(f"{base}/api/chapters?{q}&includepages=true&limit=1", timeout=TIMEOUT).text
-            info["body"] = body[:600]
-            m = re.search(r'https?://[^"\\\s]+?\.(?:webp|jpe?g|png)[^"\\\s]*', body)
-            if m:
-                info["signedUrlFound"] = True
-                info["signedUrlFetch"] = try_get(s, m.group(0), {"Referer": chapter_url, "Origin": base})
-                out["apiSignedUrl"] = m.group(0)
-                out["apiSignedCombo"] = label
-        api_out[label] = info
+        entry["pageCandidates"] = candidates[:3]
+        if candidates:
+            cand = candidates[0]
+            url = cand if cand.startswith("http") else base + cand.replace(" ", "%20")
+            entry["pageFetch"] = try_get(s, url, browser_headers)
+        api_out[label] = entry
     out["apiMatrix"] = api_out
 
     # --- Okuyucu rotasının JS chunk'ını kanıt olarak indir; URL imzalama
@@ -199,19 +217,6 @@ def probe_site(name: str, base: str, slug: str) -> dict:
                 saved.append(target.name)
         out["readerChunksSaved"] = saved
 
-    # --- Tarayıcı benzeri tam başlık seti + _next/image optimizer denemeleri
-    encoded = base + raw_path.replace(" ", "%20")
-    browser_headers = {
-        "Referer": chapter_url,
-        "Origin": base,
-        "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-        "Sec-Fetch-Dest": "image",
-        "Sec-Fetch-Mode": "no-cors",
-        "Sec-Fetch-Site": "same-origin",
-        "sec-ch-ua": '"Chromium";v="131", "Not_A Brand";v="24"',
-        "sec-ch-ua-mobile": "?1",
-        "sec-ch-ua-platform": '"Android"',
-    }
     out["imageBrowserHeaders"] = try_get(s, encoded, browser_headers)
     out["imageOriginOnly"] = try_get(s, encoded, {"Origin": base})
     out["imageOriginReferer"] = try_get(s, encoded, {"Origin": base, "Referer": f"{base}/"})
