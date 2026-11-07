@@ -15,3 +15,10 @@ tr/turkmanga
 tr/tortugaceviri
 tr/mangadenizi
 tr/merlinscans
+# Initlise-Next ailesi (7 Kasım 2026 araştırması; docs/yeni-kaynaklar/):
+# okuyucu verisi seri sayfası uçuş verisinden gelir, site arayüzündeki
+# giriş kilidi eklentiyi etkilemez. Oblivion Scans NSFW (18+) kaynaklıdır.
+tr/duckscans
+tr/lunariscans
+tr/ailurascans
+tr/oblivionscans
