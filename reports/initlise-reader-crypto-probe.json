@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T16:15:16.404735+00:00",
+  "probedAt": "2026-11-07T16:15:47.664545+00:00",
   "sites": {
     "duckscans": {
       "error": "ValueError: not enough values to unpack (expected 3, got 2)",
