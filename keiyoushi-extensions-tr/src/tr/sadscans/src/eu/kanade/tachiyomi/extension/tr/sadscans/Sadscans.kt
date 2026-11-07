@@ -9,6 +9,7 @@ import eu.kanade.tachiyomi.source.model.SManga
 import eu.kanade.tachiyomi.source.model.SMangaUpdate
 import keiyoushi.annotation.Source
 import keiyoushi.network.get
+import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.WebViewTimeoutException
 import keiyoushi.utils.firstInstanceOrNull
@@ -30,10 +31,9 @@ import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import keiyoushi.network.rateLimit
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import java.io.IOException
 import java.text.Normalizer
@@ -214,9 +214,13 @@ abstract class Sadscans : KeiSource() {
                     markBlocked()
                     throw IOException(BLOCKED_MESSAGE)
                 }
+
                 !response.isSuccessful -> throw IOException("SadScans API HTTP ${response.code}")
+
                 text.trimStart().startsWith("<") -> throw IOException("SadScans API koruması (HTML yanıt)")
+
                 text.isBlank() -> throw IOException("SadScans API boş yanıt")
+
                 else -> text
             }
         }
@@ -236,11 +240,9 @@ abstract class Sadscans : KeiSource() {
         put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
     }
 
-
-    private fun isWafBlocked(body: String, code: Int): Boolean =
-        body.contains("Sorry, you have been blocked", ignoreCase = true) ||
-            body.contains("cf-error-details", ignoreCase = true) ||
-            (code == 403 && body.contains("Cloudflare", ignoreCase = true) && body.contains("blocked", ignoreCase = true))
+    private fun isWafBlocked(body: String, code: Int): Boolean = body.contains("Sorry, you have been blocked", ignoreCase = true) ||
+        body.contains("cf-error-details", ignoreCase = true) ||
+        (code == 403 && body.contains("Cloudflare", ignoreCase = true) && body.contains("blocked", ignoreCase = true))
 
     private fun markBlocked() {
         blockedUntil = System.currentTimeMillis() + BLOCK_COOLDOWN_MS
