@@ -1,4 +1,4 @@
-commit: f2d4b006f66cf184d0eb1bc59cbff681979343c2
+commit: eb93f9a884e1e5835eaf7609c3ff9b978af67c4f
 --- live probe ---
 --- publish ---
 --- artifacts ---
@@ -13,204 +13,46 @@ Type-safe project accessors is an incubating feature.
 > Task :build-logic:processResources UP-TO-DATE
 > Task :build-logic:classes UP-TO-DATE
 > Task :build-logic:jar UP-TO-DATE
-> Task :core:spotlessJava
 > Task :core:spotlessXml
 > Task :core:spotlessXmlCheck
+> Task :core:spotlessJava
 > Task :core:spotlessJavaCheck
+> Task :core:spotlessGradle FROM-CACHE
+> Task :core:spotlessGradleCheck UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessJava UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessJavaCheck UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessGradle UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessGradleCheck UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessXml UP-TO-DATE
 > Task :src:tr:epiknovel:spotlessXmlCheck UP-TO-DATE
-> Task :src:tr:epiknovel:spotlessKotlin UP-TO-DATE
-> Task :src:tr:epiknovel:spotlessKotlinCheck UP-TO-DATE
-> Task :src:tr:epiknovel:spotlessCheck UP-TO-DATE
-> Task :src:tr:epiknovel:preBuild UP-TO-DATE
-> Task :src:tr:epiknovel:preDebugBuild UP-TO-DATE
-> Task :core:spotlessGradle FROM-CACHE
-> Task :core:spotlessGradleCheck UP-TO-DATE
 > Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :src:tr:epiknovel:generateDebugResources
-> Task :src:tr:epiknovel:generateDebugBuildConfig
 > Task :compiler:processResources
-> Task :src:tr:epiknovel:mapDebugSourceSetPaths
-> Task :src:tr:epiknovel:createDebugCompatibleScreenManifests
-> Task :src:tr:epiknovel:extractDeepLinksDebug
 > Task :src:tr:epiknovel:generateExtensionManifest
-> Task :src:tr:epiknovel:preDebugUnitTestBuild UP-TO-DATE
-> Task :src:tr:epiknovel:packageDebugResources
 > Task :src:tr:epiknovel:generateSourceInfo
-> Task :src:tr:epiknovel:preReleaseBuild UP-TO-DATE
-> Task :src:tr:epiknovel:javaPreCompileDebugUnitTest
-> Task :src:tr:epiknovel:mergeReleaseJniLibFolders
-> Task :src:tr:epiknovel:checkReleaseDuplicateClasses
-> Task :src:tr:epiknovel:generateReleaseResources FROM-CACHE
-> Task :src:tr:epiknovel:generateReleaseBuildConfig
-> Task :src:tr:epiknovel:mapReleaseSourceSetPaths
-> Task :src:tr:epiknovel:createReleaseCompatibleScreenManifests
-> Task :src:tr:epiknovel:extractDeepLinksRelease FROM-CACHE
-> Task :src:tr:epiknovel:packageReleaseResources
-> Task :src:tr:epiknovel:mergeReleaseStartupProfile
 > Task :core:generateReleaseAssets UP-TO-DATE
 > Task :src:tr:epiknovel:generateReleaseAssets UP-TO-DATE
-> Task :src:tr:epiknovel:extractProguardFiles
-> Task :src:tr:epiknovel:validateSigningRelease
-> Task :src:tr:epiknovel:writeReleaseAppMetadata
-> Task :src:tr:epiknovel:writeReleaseSigningConfigVersions
+> Task :src:tr:epiknovel:spotlessKotlin
+> Task :src:tr:epiknovel:spotlessKotlinCheck FAILED
 > Task :core:spotlessKotlin
-> Task :core:spotlessKotlinCheck
-> Task :core:spotlessCheck
-> Task :core:preBuild
-> Task :core:preDebugBuild
-> Task :core:javaPreCompileDebug FROM-CACHE
-> Task :core:generateDebugResources
-> Task :core:processDebugNavigationResources
-> Task :core:mapDebugSourceSetPaths
-> Task :src:tr:epiknovel:processDebugNavigationResources
-> Task :core:writeDebugAarMetadata
-> Task :core:packageDebugResources
-> Task :src:tr:epiknovel:checkDebugAarMetadata
-> Task :core:compileDebugLibraryResources
-> Task :src:tr:epiknovel:compileDebugNavigationResources
-> Task :src:tr:epiknovel:mergeDebugResources
-> Task :core:extractDeepLinksDebug
-> Task :src:tr:epiknovel:parseDebugLocalResources
-> Task :core:parseDebugLocalResources
-> Task :core:processDebugManifest
-> Task :core:generateDebugRFile
-> Task :src:tr:epiknovel:generateDebugRFile
-> Task :core:preReleaseBuild
-> Task :core:mergeReleaseJniLibFolders
-> Task :core:mergeReleaseNativeLibs NO-SOURCE
-> Task :core:copyReleaseJniLibsProjectOnly
-> Task :src:tr:epiknovel:processDebugMainManifest
-> Task :src:tr:epiknovel:mergeReleaseNativeLibs NO-SOURCE
-> Task :src:tr:epiknovel:stripReleaseDebugSymbols NO-SOURCE
-> Task :src:tr:epiknovel:extractReleaseNativeSymbolTables NO-SOURCE
-> Task :src:tr:epiknovel:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :core:generateReleaseResources FROM-CACHE
-> Task :core:packageReleaseResources
-> Task :core:processReleaseNavigationResources FROM-CACHE
-> Task :core:parseReleaseLocalResources FROM-CACHE
-> Task :core:generateReleaseRFile FROM-CACHE
-> Task :src:tr:epiknovel:processDebugManifest
-> Task :src:tr:epiknovel:processDebugManifestForPackage
 > Task :compiler:compileKotlin
-> Task :compiler:compileJava NO-SOURCE
-> Task :compiler:classes
-> Task :compiler:jar
-> Task :src:tr:epiknovel:javaPreCompileDebug
-> Task :core:javaPreCompileRelease FROM-CACHE
-> Task :src:tr:epiknovel:processReleaseNavigationResources FROM-CACHE
-> Task :src:tr:epiknovel:parseReleaseLocalResources FROM-CACHE
-> Task :src:tr:epiknovel:generateReleaseRFile FROM-CACHE
-> Task :src:tr:epiknovel:javaPreCompileRelease FROM-CACHE
-> Task :core:prepareReleaseArtProfile
-> Task :src:tr:epiknovel:processDebugResources
-> Task :src:tr:epiknovel:mergeReleaseArtProfile
-> Task :core:mapReleaseSourceSetPaths
-> Task :core:writeReleaseAarMetadata
-> Task :src:tr:epiknovel:checkReleaseAarMetadata
-> Task :src:tr:epiknovel:compileReleaseNavigationResources FROM-CACHE
-> Task :src:tr:epiknovel:mergeReleaseResources
-> Task :core:extractDeepLinksRelease FROM-CACHE
-> Task :core:processReleaseManifest FROM-CACHE
-> Task :core:compileReleaseLibraryResources
-> Task :src:tr:epiknovel:processReleaseMainManifest
-> Task :core:mergeReleaseAssets
-> Task :src:tr:epiknovel:processReleaseManifest
-> Task :src:tr:epiknovel:mergeReleaseAssets
-> Task :src:tr:epiknovel:processReleaseManifestForPackage
-> Task :src:tr:epiknovel:compressReleaseAssets
-> Task :src:tr:epiknovel:processReleaseResources
-> Task :src:tr:epiknovel:optimizeReleaseResources
-> Task :core:compileReleaseKotlin
-> Task :core:compileReleaseJavaWithJavac NO-SOURCE
-> Task :core:compileDebugKotlin
-> Task :core:mergeReleaseGeneratedProguardFiles
-> Task :core:compileDebugJavaWithJavac NO-SOURCE
-> Task :core:processReleaseJavaRes
-> Task :core:processDebugJavaRes
-> Task :core:exportReleaseConsumerProguardFiles
-> Task :core:bundleLibCompileToJarRelease
-> Task :core:bundleLibRuntimeToJarDebug
-> Task :core:bundleLibCompileToJarDebug
-> Task :core:bundleLibRuntimeToJarRelease
-> Task :src:tr:epiknovel:kspDebugKotlin
-> Task :src:tr:epiknovel:kspReleaseKotlin
-
-> Task :src:tr:epiknovel:compileReleaseKotlin
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:182:57 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:188:23 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:190:23 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:206:65 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:228:43 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:257:103 'constructor(p0: CharSequence!, p1: TextPaint!, p2: Int, p3: Layout.Alignment!, p4: Float, p5: Float, p6: Boolean): StaticLayout' is deprecated. Deprecated in Java.
-
-> Task :src:tr:epiknovel:compileDebugKotlin
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:182:57 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:188:23 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:190:23 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:206:65 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:228:43 Redundant call of conversion method.
-w: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/src/eu/kanade/tachiyomi/extension/tr/epiknovel/TextPageInterceptor.kt:257:103 'constructor(p0: CharSequence!, p1: TextPaint!, p2: Int, p3: Layout.Alignment!, p4: Float, p5: Float, p6: Boolean): StaticLayout' is deprecated. Deprecated in Java.
-
-> Task :src:tr:epiknovel:processDebugJavaRes
-> Task :src:tr:epiknovel:processReleaseJavaRes
-> Task :src:tr:epiknovel:mergeReleaseJavaResource
-> Task :src:tr:epiknovel:compileDebugJavaWithJavac
-> Task :src:tr:epiknovel:compileReleaseJavaWithJavac
-> Task :src:tr:epiknovel:mergeReleaseGeneratedProguardFiles
-> Task :src:tr:epiknovel:expandReleaseArtProfileWildcards
-> Task :src:tr:epiknovel:bundleDebugClassesToCompileJar
-> Task :src:tr:epiknovel:kspDebugUnitTestKotlin SKIPPED
-> Task :src:tr:epiknovel:bundleDebugClassesToRuntimeJar
-> Task :src:tr:epiknovel:compileDebugUnitTestKotlin
-> Task :src:tr:epiknovel:compileDebugUnitTestJavaWithJavac NO-SOURCE
-> Task :src:tr:epiknovel:processDebugUnitTestJavaRes
-
-> Task :src:tr:epiknovel:testDebugUnitTest
-
-EpikNovelTest > searchAndCompletedFilterPagesParse FAILED
-    java.lang.Exception at EpikNovelTest.kt:67
-
-EpikNovelTest > listCardsUseLazyCoverAndParseAllFifty FAILED
-    java.lang.Exception at EpikNovelTest.kt:33
-
-EpikNovelTest > pageTwoHasDifferentCardsThanPageOne FAILED
-    java.lang.Exception at EpikNovelTest.kt:49
-
-EpikNovelTest > detailsParseTitleTranslatorStatusAndSummary FAILED
-    java.lang.Exception at EpikNovelTest.kt:100
-
-EpikNovelTest > chapterListKeepsSiteOrderAndParsesNumbers FAILED
-    java.lang.Exception at EpikNovelTest.kt:137
-
-EpikNovelTest > completedSeriesMapsStatusAndEmptyTranslator FAILED
-    java.lang.Exception at EpikNovelTest.kt:121
-
-EpikNovelTest > completedSeriesChapterListParses FAILED
-    java.lang.Exception at EpikNovelTest.kt:162
-
-14 tests completed, 7 failed
-
-> Task :src:tr:epiknovel:testDebugUnitTest FAILED
-> Task :src:tr:epiknovel:minifyReleaseWithR8
 
 [Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
 
 FAILURE: Build failed with an exception.
 
 * What went wrong:
-Execution failed for task ':src:tr:epiknovel:testDebugUnitTest'.
-> There were failing tests. See the report at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/build/reports/tests/testDebugUnitTest/index.html
+Execution failed for task ':src:tr:epiknovel:spotlessKotlinCheck' (registered by plugin 'kei.plugins.spotless').
+> There were 1 lint error(s), they must be fixed or suppressed.
+  src/eu/kanade/tachiyomi/extension/tr/epiknovel/EpikNovelParser.kt:L10 ktlint(standard:kdoc) A dangling toplevel KDoc is not allowed
+  Resolve these lints or suppress with `suppressLintsFor`
 
 * Try:
+> Run with --info or --debug option to get more log output.
 > Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':src:tr:epiknovel:testDebugUnitTest'.
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':src:tr:epiknovel:spotlessKotlinCheck' (registered by plugin 'kei.plugins.spotless').
 	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.lambda$doExecute$1(DefaultTaskNodeExecutor.java:367)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
 	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:365)
@@ -239,10 +81,11 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':src:tr:
 	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:392)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:65)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
-Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There were failing tests. See the report at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/src/tr/epiknovel/build/reports/tests/testDebugUnitTest/index.html
-	at org.gradle.api.tasks.testing.AbstractTestTask.executeTests(AbstractTestTask.java:637)
-	at org.gradle.api.tasks.testing.Test.executeTests(Test.java:778)
-	at com.android.build.gradle.tasks.factory.AndroidUnitTest.executeTests(AndroidUnitTest.java:204)
+Caused by: org.gradle.api.GradleException: There were 1 lint error(s), they must be fixed or suppressed.
+src/eu/kanade/tachiyomi/extension/tr/epiknovel/EpikNovelParser.kt:L10 ktlint(standard:kdoc) A dangling toplevel KDoc is not allowed
+Resolve these lints or suppress with `suppressLintsFor`
+	at com.diffplug.gradle.spotless.SpotlessCheck.performAction(SpotlessCheck.java:88)
+	at com.diffplug.gradle.spotless.SpotlessCheck.performAction(SpotlessCheck.java:60)
 	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
 	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
 	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
@@ -288,13 +131,8 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:28)
 	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
 	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
-	at org.gradle.internal.execution.steps.BuildCacheStep.executeAndStoreInCache(BuildCacheStep.java:145)
-	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$3(BuildCacheStep.java:104)
-	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$1(BuildCacheStep.java:104)
-	at org.gradle.internal.Try$Success.map(Try.java:170)
-	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithCache(BuildCacheStep.java:88)
-	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$0(BuildCacheStep.java:75)
-	at org.gradle.internal.Either$Left.fold(Either.java:116)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:76)
+	at org.gradle.internal.Either$Right.fold(Either.java:176)
 	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
 	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:74)
 	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:49)
@@ -322,7 +160,7 @@ Caused by: org.gradle.api.internal.exceptions.MarkedVerificationException: There
 	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:65)
 	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:45)
 	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeWithNonEmptySources(SkipEmptyMutableWorkStep.java:210)
-	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:90)
+	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:85)
 	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:53)
 	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
 	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
@@ -357,103 +195,8 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD FAILED in 57s
-124 actionable tasks: 95 executed, 16 from cache, 13 up-to-date
+BUILD FAILED in 18s
+23 actionable tasks: 11 executed, 1 from cache, 11 up-to-date
 Configuration cache entry stored.
 GRADLE_FAILED
 --- test sonuç XMLleri (varsa) ---
-== keiyoushi-extensions-tr/src/tr/epiknovel/build/test-results/testDebugUnitTest/TEST-eu.kanade.tachiyomi.extension.tr.epiknovel.EpikNovelTest.xml ==
-tRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.runRequest(JUnitTestExecutor.java:174)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:84)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:47)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestDefinitionProcessor.processTestDefinition(AbstractJUnitTestDefinitionProcessor.java:65)
-	at org.gradle.api.internal.tasks.testing.SuiteTestDefinitionProcessor.processTestDefinition(SuiteTestDefinitionProcessor.java:53)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.MethodInvocation.invokeOn(MethodInvocation.java:77)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:28)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:19)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:88)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestDefinition(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:178)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
-</failure>
-  </testcase>
-  <testcase name="completedSeriesChapterListParses" classname="eu.kanade.tachiyomi.extension.tr.epiknovel.EpikNovelTest" time="0.022">
-    <failure message="java.lang.Exception: Stub!" type="java.lang.Exception">java.lang.Exception: Stub!
-	at eu.kanade.tachiyomi.source.model.SChapter$Companion.create(SChapter.kt:32)
-	at eu.kanade.tachiyomi.extension.tr.epiknovel.EpikNovelParser.chaptersFromDetails(EpikNovelParser.kt:237)
-	at eu.kanade.tachiyomi.extension.tr.epiknovel.EpikNovelTest.completedSeriesChapterListParses(EpikNovelTest.kt:162)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
-	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
-	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
-	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
-	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
-	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
-	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
-	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
-	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
-	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
-	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
-	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
-	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:137)
-	at org.junit.runner.JUnitCore.run(JUnitCore.java:115)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.runRequest(JUnitTestExecutor.java:174)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:84)
-	at org.gradle.api.internal.tasks.testing.junit.JUnitTestExecutor.accept(JUnitTestExecutor.java:47)
-	at org.gradle.api.internal.tasks.testing.junit.AbstractJUnitTestDefinitionProcessor.processTestDefinition(AbstractJUnitTestDefinitionProcessor.java:65)
-	at org.gradle.api.internal.tasks.testing.SuiteTestDefinitionProcessor.processTestDefinition(SuiteTestDefinitionProcessor.java:53)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
-	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
-	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
-	at java.base/java.lang.reflect.Method.invoke(Method.java:569)
-	at org.gradle.internal.dispatch.MethodInvocation.invokeOn(MethodInvocation.java:77)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:28)
-	at org.gradle.internal.dispatch.ReflectionDispatch.dispatch(ReflectionDispatch.java:19)
-	at org.gradle.internal.dispatch.ContextClassLoaderDispatch.dispatch(ContextClassLoaderDispatch.java:33)
-	at org.gradle.internal.dispatch.ProxyDispatchAdapter$DispatchingInvocationHandler.invoke(ProxyDispatchAdapter.java:88)
-	at jdk.proxy1/jdk.proxy1.$Proxy4.processTestDefinition(Unknown Source)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker$2.run(TestWorker.java:178)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.executeAndMaintainThreadName(TestWorker.java:126)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:103)
-	at org.gradle.api.internal.tasks.testing.worker.TestWorker.execute(TestWorker.java:63)
-	at org.gradle.process.internal.worker.child.ActionExecutionWorker.execute(ActionExecutionWorker.java:56)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:122)
-	at org.gradle.process.internal.worker.child.SystemApplicationClassLoaderWorker.call(SystemApplicationClassLoaderWorker.java:72)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.run(GradleWorkerMain.java:69)
-	at worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
-</failure>
-  </testcase>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
