@@ -57,6 +57,34 @@ def unescape_js(raw: str) -> str:
     return "".join(out)
 
 
+def flight_array(flight: str, key: str) -> str | None:
+    ki = flight.find(f'"{key}":')
+    if ki < 0:
+        return None
+    start = flight.find("[", ki)
+    depth = instr = esc = 0
+    for i in range(start, len(flight)):
+        c = flight[i]
+        if esc:
+            esc = 0
+            continue
+        if c == "\\" and instr:
+            esc = 1
+            continue
+        if c == '"':
+            instr = not instr
+            continue
+        if instr:
+            continue
+        if c == "[":
+            depth += 1
+        elif c == "]":
+            depth -= 1
+            if depth == 0:
+                return flight[start : i + 1]
+    return None
+
+
 def signed_first_page(base: str, slug: str, number: int, jar_path: str) -> str | None:
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "tr-TR,tr;q=0.9"})
@@ -65,10 +93,11 @@ def signed_first_page(base: str, slug: str, number: int, jar_path: str) -> str |
         print(f"{slug}: series page {r.status_code}", file=sys.stderr)
         return None
     flight = "".join(unescape_js(m.group(1)) for m in FLIGHT.finditer(r.text))
-    m = re.search(rf'"chapterNumber":{number}\b.{0,2000}?"pages":\["([^"]+)"', flight, re.S)
-    if not m:
+    chapters = json.loads(flight_array(flight, "initialChapters"))
+    first = next((c for c in chapters if c.get("pages")), None)
+    if not first:
         return None
-    path = m.group(1)
+    path = first["pages"][0]
     if not path.startswith("http"):
         path = base + path
     # API yanıtı çerezler de verebilir; oturumu jar'a yaz.
