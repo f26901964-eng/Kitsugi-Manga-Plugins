@@ -14,7 +14,7 @@ keiyoushi {
     //    Giriş, Discord OAuth'a dayandığı için eklenti içi oturum açma
     //    yerine uçuş verisi stratejisi seçildi; coin ile kilitli ve
     //    uçuşta sayfası bulunmayan bölümlerde açıklayıcı hata verilir.
-    versionCode = 3
+    versionCode = 4
     contentWarning = ContentWarning.NSFW
     libVersion = "1.6"
     theme = "initlisenext"
