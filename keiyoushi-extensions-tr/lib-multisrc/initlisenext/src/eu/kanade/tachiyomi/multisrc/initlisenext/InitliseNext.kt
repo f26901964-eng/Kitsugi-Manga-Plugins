@@ -130,12 +130,11 @@ abstract class InitliseNext : KeiSource() {
      * Okuyucu, "k" imza parametresi taşıyan sayfa yoluna cv=<scramble sürümü>
      * ekleyerek indirir; imza bu hâliyle doğrulanıyor olabilir.
      */
-    private fun String.withScrambleVersion(): String =
-        if (contains("k=") && !contains("cv=")) {
-            if (contains("?")) "$this&cv=$SCRAMBLE_VERSION" else "$this?cv=$SCRAMBLE_VERSION"
-        } else {
-            this
-        }
+    private fun String.withScrambleVersion(): String = if (contains("k=") && !contains("cv=")) {
+        if (contains("?")) "$this&cv=$SCRAMBLE_VERSION" else "$this?cv=$SCRAMBLE_VERSION"
+    } else {
+        this
+    }
 
     protected open val seriesPath = "seri"
 
@@ -339,7 +338,6 @@ abstract class InitliseNext : KeiSource() {
         }
         val seriesSlug = segments[1]
         val chapterUrl = "$baseUrl/${chapter.url.trimStart('/')}"
-
             .addQueryParameter("series", seriesSlug)
             .addQueryParameter("chapter", formatNumber(chapter.chapter_number))
             .addQueryParameter("includepages", "true")
