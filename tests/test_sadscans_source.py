@@ -83,8 +83,9 @@ class SadscansSourceTests(unittest.TestCase):
         # Yönlendirici adı sabit koda gömülü metin değil, sabit + sayfadan keşifle kurulur.
         self.assertIn("var DEFAULT_ROUTER = '_s4d7g2k9m0'", script)
         self.assertIn("var DEFAULT_DETAIL_ROUTER = '_n3p6q1v8x5'", script)
-        self.assertIn("'/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input='", script)
-        self.assertIn("'/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input='", script)
+        self.assertIn("'.getSeries?batch=1'", script, 'tRPC yolu batch disinda parametre tasimamali')
+        self.assertIn("'.getSeriesData?batch=1'", script)
+        self.assertIn("'.getSeriesData?batch=1'", script)
 
     def test_list_search_does_not_depend_on_the_search_box(self):
         """1.6.11'de arama, kutu bulunamayınca tRPC kademesine hiç ulaşmadan ölüyordu.""" 
@@ -114,16 +115,16 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('timeout = 18.seconds', source, 'liste WebView suresi challenge beklemesini karsilamali')
         self.assertNotIn('callTimeout(45', source)
 
-    def test_sitemap_tier_runs_before_webview(self):
-        """tRPC engelliyse JS'siz sitemap kademesi devreye girmeli (WebView'den once)."""
+    def test_sitemap_is_the_last_resort(self):
+        """Sitemap kademesi JS/Cloudflare gerektirmez ama kapak döndürmez: en sonda denenir."""
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('sitemapSearch(', source)
         self.assertIn('SITEMAP_TTL_MS', source)
         self.assertIn('/sitemap.xml', source)
-        self.assertLess(source.index('sitemapSearch(query)'), source.index('SadscansFrontend.listScript'),
-                        'sitemap kademesi WebView kademesinden once cagrilmali')
         self.assertIn('"/seriler/${entry.slug}"', source, 'sitemap girdisi detay rotasina baglanmali')
         self.assertIn('Normalizer.normalize', source, 'Turkce karakterler ASCII anahtara cevrilmeli')
+        self.assertLess(source.index('SadscansFrontend.listScript'),
+                        source.index('attempt { sitemapSearch(query) }'))
 
     def test_cloudflare_challenge_is_waited_not_failed_fast(self):
         """Doğrulama ekranı görüldüğü an hata verilmemeli; JS challenge 2-5 sn'de geçer."""
@@ -141,7 +142,7 @@ class SadscansSourceTests(unittest.TestCase):
         """cf_clearance yokken tRPC denenirse uygulamanın 25 sn bütçesi challenge'ta biter."""
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('private fun hasClearance()', source)
-        self.assertIn('loadForRequest("$baseUrl/".toHttpUrl())', source)
+        self.assertIn('loadForRequest("$siteBase/".toHttpUrl())', source)
         self.assertIn('val direct = if (hasClearance())', source)
         self.assertIn('val direct = if (hasClearance()) attempt { fetchAllViaApi(slug) } else null', source)
 
@@ -152,6 +153,78 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('private fun rememberUserAgent(result: JsonObject)', source)
         self.assertIn('add("User-Agent", ua)', source)
         self.assertGreaterEqual(source.count('rememberUserAgent('), 4, 'liste/detay/okuyucu UA yakalamalı')
+
+    def test_trpc_uses_post_body_not_query_json(self):
+        """Cloudflare WAF, sorgu dizesindeki JSON'u (input=) 'malformed data' sayıp sert blok uyguluyor."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertNotIn('addQueryParameter("input"', source, 'JSON sorgu dizesine konmamalı')
+        self.assertIn('addQueryParameter("batch", "1")', source)
+        self.assertIn('.post(envelope.toRequestBody(JSON_MEDIA_TYPE))', source)
+        self.assertNotIn("input=", frontend.split("function trpcUrl")[1].split("function trpcBody")[0],
+                         'sayfa ici fetch de JSON u URL e koymamali')
+        self.assertIn("method: 'POST'", frontend)
+        self.assertIn('?batch=1', frontend)
+
+    def test_covers_and_reader_images(self):
+        """Kapak ve bölüm görselleri: lazy/srcset/_next/image ve sorgu dizili CDN adresleri."""
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        source = SOURCE.read_text(encoding='utf-8')
+        # Kart kapağı: currentSrc || src || data-src || srcset, _next/image çözümü
+        self.assertIn('function imageUrl(node)', frontend)
+        self.assertIn("image.getAttribute('data-src')", frontend)
+        self.assertIn('srcset', frontend)
+        self.assertIn('/_next/image', frontend)
+        self.assertIn('anchor.querySelector(\'img, picture source\')', frontend)
+        # Okuyucu: uzantı sorgu dizesinden önce de gelebilir, CDN/upload yolları da kabul
+        self.assertIn("(\\?|$)/.test(lower)", frontend)
+        self.assertIn("lower.indexOf('/uploads/') >= 0", frontend)
+        # Kotlin: kapak adresi alanları esnek + next/image sarmalayıcısı çözülür
+        self.assertIn('"thumb", "thumbnail", "cover", "image"', source)
+        self.assertIn('private fun unwrapNextImage(', source)
+        self.assertIn('absolute(it)', source)
+
+    def test_cover_capable_tier_runs_before_sitemap(self):
+        """Sitemap kademesi kapak döndürmez: kapaklı arayüz kademesi ondan önce denenmeli."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertLess(source.index('SadscansFrontend.listScript'),
+                        source.index('attempt { sitemapSearch(query) }'),
+                        'WebView (kapakli) kademesi sitemap tan once olmali')
+
+    def test_new_domain_support(self):
+        """Site sadscans.org'a taşınıyor; sert blokta bir kez yedek alan adına geçilmeli."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertIn('MIRROR_BASES', source)
+        self.assertIn('sadscans.org', source)
+        self.assertIn('private val siteBase: String get() = activeBase ?: baseUrl', source)
+        self.assertIn('private var failoverDone', source)
+        self.assertIn('activeBase = alternative', source)
+        # URL üretiminde siteBase kullanılmalı (baseUrl sabit kalırsa taşınma çalışmaz)
+        self.assertIn('"$siteBase/seriler"', source)
+        self.assertIn('"$siteBase/api/trpc/$procedure"', source)
+        self.assertIn('"$siteBase/sitemap.xml"', source)
+        # "Site yapım aşamasında" sayfası ayrı ve anlaşılır hata vermeli
+        self.assertIn('YAPIM AŞAMASINDA', frontend)
+        self.assertIn('migrating: true', frontend)
+
+    def test_waf_block_cools_down_without_requests(self):
+        """Sert blok yiyince siteye istek atmaya devam etmek bloğu uzatır."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('private fun isWafBlocked(', source)
+        self.assertIn('Sorry, you have been blocked', source)
+        self.assertIn('BLOCK_COOLDOWN_MS', source)
+        self.assertGreaterEqual(source.count('ensureNotBlocked()'), 3, 'liste/detay/okuyucu blok kontrolü yapmalı')
+        self.assertIn('rateLimit(2)', source, 'istek hızı sınırlanmalı')
+
+    def test_router_is_cached_between_searches(self):
+        """Her aramada 24 JS parçası indirmek WAF'ı üzen toplu trafik üretiyordu."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertIn('private var seriesRouter: String?', source)
+        self.assertIn('seriesRouter = it', source)
+        self.assertIn('urls.length < 6', frontend)
+        self.assertIn('if (options.router)', frontend)
 
     def test_sitemap_tier_uses_short_budget(self):
         source = SOURCE.read_text(encoding='utf-8')
@@ -172,7 +245,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 15', gradle)
+        self.assertIn('versionCode = 17', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

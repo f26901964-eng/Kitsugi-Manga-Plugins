@@ -28,6 +28,10 @@ internal object SadscansFrontend {
     private val CF_PRELUDE = """
               // ── Cloudflare: geçici doğrulama ekranı genelde 2-5 sn içinde kendiliğinden geçer,
               // bu yüzden hemen hata vermek yerine beklenir (12 sn). Sert WAF bloğu ayrı ele alınır.
+              // Site yeni alan adına taşınıyor: "SİTE YAPIM AŞAMASINDA / YAKINDA GELİYOR" sayfası.
+              if (/YAPIM AŞAMASINDA|YAKINDA GELİYOR|yeni adresimiz/i.test(text)) {
+                return out({error: 'SadScans yeni adresine taşınıyor (sadscans.org); site henüz yayında değil. Yakında tekrar deneyin.', migrating: true});
+              }
               var hardBlock = /Sorry, you have been blocked|Attention Required|cf-error-details/i.test(text);
               var challenge = !hardBlock && (
                 /Just a moment|Checking your browser|Verifying you are human|Verify you are human|Doğrulanıyor|Bir dakika lütfen/i.test(text) ||
@@ -46,7 +50,7 @@ internal object SadscansFrontend {
               var UA = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
 """
 
-    fun listScript(query: String, sort: String, type: String?, status: String?, page: Int): String {
+    fun listScript(query: String, sort: String, type: String?, status: String?, page: Int, router: String? = null): String {
         require(page > 0)
         val options = buildString {
             append("{query:").append(JsonPrimitive(query))
@@ -54,6 +58,7 @@ internal object SadscansFrontend {
             append(",type:").append(type?.let { JsonPrimitive(it) } ?: "null")
             append(",status:").append(status?.let { JsonPrimitive(it) } ?: "null")
             append(",page:").append(page)
+            append(",router:").append(router?.let { JsonPrimitive(it) } ?: "null")
             append('}')
         }
         return """
@@ -118,9 +123,15 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
               // sayfanın kendi JS parçalarındaki "getSeries" çağrısından öğrenilir.
               function discoverRouters() {
                 var box = {state: 'pending', map: {}};
+                if (options.router) {
+                  // Önceki aramada öğrenilen ad: sayfayı yeniden taramaya gerek yok.
+                  box.map.getSeries = options.router;
+                  box.state = 'ok';
+                  return box;
+                }
                 var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
                 var urls = [];
-                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                for (var i = 0; i < scripts.length && urls.length < 6; i++) urls.push(scripts[i].src);
                 if (!urls.length || typeof fetch !== 'function') {
                   box.state = 'ok';
                   return box;
@@ -147,18 +158,27 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                 return box;
               }
 
+              function activeRouter() {
+                return options.router || routerName(state.routers) || DEFAULT_ROUTER;
+              }
+
               function routerName(box) {
                 var discovered = box && box.map ? box.map.getSeries : null;
                 return discovered || DEFAULT_ROUTER;
               }
 
-              function trpcUrl(search, pageNumber, router) {
+              function trpcUrl(pageNumber, router) {
+                // Cloudflare WAF, sorgu dizesinde JSON (%22, %7B) görünce "malformed data" kuralıyla
+                // sert blok uyguluyor. Bu yüzden gövde POST ile gönderilir; URL temiz kalır.
+                return '/api/trpc/' + (router || options.router || DEFAULT_ROUTER) + '.getSeries?batch=1';
+              }
+
+              function trpcBody(search, pageNumber) {
                 var payload = {sortBy: options.sort, page: pageNumber, limit: 15};
                 if (search) payload.search = search;
                 if (options.type) payload.type = options.type;
                 if (options.status) payload.status = options.status;
-                return '/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input=' +
-                  encodeURIComponent(JSON.stringify({0: {json: payload}}));
+                return JSON.stringify({0: {json: payload}});
               }
 
               function parseBatch(body) {
@@ -187,7 +207,12 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   return box;
                 }
                 try {
-                  fetch(trpcUrl(search, pageNumber, router), {credentials: 'same-origin', headers: {accept: 'application/json'}})
+                  fetch(trpcUrl(pageNumber, router), {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'content-type': 'application/json', accept: 'application/json'},
+                    body: trpcBody(search, pageNumber)
+                  })
                     .then(function(response) { return response.ok ? response.text() : null; })
                     .then(function(body) {
                       var items = body ? parseBatch(body) : null;
@@ -200,6 +225,37 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   box.items = [];
                 }
                 return box;
+              }
+
+              // Görsel adresi: Next.js `next/image` sarmalayıcısı, srcset ve lazy alanları
+              // tek tek denenir. Boş/placeholder/veri URI'ları elenir.
+              function imageUrl(node) {
+                if (!node) return null;
+                var image = node.tagName === 'IMG' ? node : node.querySelector('img');
+                if (!image) {
+                  var source = node.querySelector ? node.querySelector('picture source') : null;
+                  if (source) image = source;
+                }
+                if (!image) return null;
+                var raw = image.currentSrc || image.src || image.getAttribute('data-src') ||
+                  image.getAttribute('data-lazy-src') || image.getAttribute('srcset') ||
+                  image.getAttribute('data-srcset') || '';
+                raw = String(raw).trim();
+                if (!raw) return null;
+                // srcset: ilk aday ("url 320w, url2 640w")
+                if (raw.indexOf(',') > 0 && raw.indexOf(' ') > 0) raw = raw.split(',')[0].trim().split(' ')[0];
+                if (raw.indexOf('data:') === 0) return null;
+                // next/image: /_next/image?url=%2Fuploads%2Fx.jpg&w=384
+                if (raw.indexOf('/_next/image') >= 0) {
+                  var match = raw.match(/[?&]url=([^&]+)/);
+                  if (match) {
+                    try { raw = decodeURIComponent(match[1]); } catch (e) { /* yoksay */ }
+                  }
+                }
+                if (!raw || raw.indexOf('data:') === 0) return null;
+                if (/logo|placeholder|spinner|blur|blank\./i.test(raw)) return null;
+                if (raw.charAt(0) === '/' || raw.indexOf('http') === 0) return raw;
+                try { return new URL(raw, location.href).href; } catch (e) { return null; }
               }
 
               function cards() {
@@ -217,15 +273,21 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   var label = anchor.querySelector('h3, h2, h4, [class*="title"], [class*="Title"]');
                   var name = label ? label.textContent.trim() : '';
                   if (!name) name = (anchor.getAttribute('title') || anchor.getAttribute('aria-label') || '').trim();
-                  var image = anchor.querySelector('img');
-                  if (!name && image) name = (image.getAttribute('alt') || '').trim();
+                  if (!name) {
+                    var alt = anchor.querySelector('img');
+                    if (alt) name = (alt.getAttribute('alt') || '').trim();
+                  }
                   if (!name) continue;
+                  // Görsel kartın kendisinde değil, kapsayıcı öğede olabilir; ama başka bir
+                  // kartın görselini almak yanlış kapak üretir (data: URI'lar boş sayılır).
+                  var own = anchor.querySelector('img, picture source');
+                  var thumb = own ? imageUrl(own) : null;
+                  if (!own) {
+                    var holder = anchor.parentElement;
+                    if (holder && holder.tagName !== 'BODY' && holder.tagName !== 'MAIN') thumb = imageUrl(holder);
+                  }
                   seen[path] = 1;
-                  result.push({
-                    href: path,
-                    name: name,
-                    thumb: image ? (image.currentSrc || image.src || null) : null
-                  });
+                  result.push({href: path, name: name, thumb: thumb});
                 }
                 return result;
               }
@@ -288,7 +350,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   api.state = 'bad';
                 }
                 if (api.state === 'ok' && api.items.length) {
-                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api', ua: UA});
+                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api', ua: UA, router: activeRouter()});
                 }
                 // Sabit yönlendirici adı işe yaramadıysa sayfadan öğrenilen adla bir kez dene.
                 if (!state.retried) {
@@ -311,7 +373,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                     state.raw.state = 'bad';
                   }
                   if (state.raw.state === 'ok' && state.raw.items.length) {
-                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api', ua: UA});
+                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api', ua: UA, router: activeRouter()});
                   }
                 }
                 state.phase = 'dom';
@@ -413,7 +475,7 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
               // hasMore yalnızca tam bir sayfa dolduysa true olabilir; aksi hâlde uygulama
               // sonsuz sayfalama isteğine girer (boş sayfa → tekrar istek).
               var full = items.length >= options.page * 15;
-              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom', ua: UA});
+              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom', ua: UA, router: activeRouter()});
             })();
         """.trimIndent()
     }
@@ -436,7 +498,7 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/seriler/') !== 0) ret
               function discoverRouters() {
                 var scripts = document.querySelectorAll('script[src*="/_next/static/"]');
                 var urls = [];
-                for (var i = 0; i < scripts.length && urls.length < 24; i++) urls.push(scripts[i].src);
+                for (var i = 0; i < scripts.length && urls.length < 6; i++) urls.push(scripts[i].src);
                 if (!urls.length || typeof fetch !== 'function') {
                   routerBox.state = 'ok';
                   return;
@@ -469,10 +531,14 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/seriler/') !== 0) ret
               function request(pageNumber, router) {
                 if (typeof fetch !== 'function') return Promise.resolve(null);
                 var payload = {sef: slug, page: pageNumber, limit: 10};
-                var url = '/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input=' +
-                  encodeURIComponent(JSON.stringify({0: {json: payload}}));
+                var url = '/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1';
                 try {
-                  return fetch(url, {credentials: 'same-origin', headers: {accept: 'application/json'}})
+                  return fetch(url, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {'content-type': 'application/json', accept: 'application/json'},
+                    body: JSON.stringify({0: {json: payload}})
+                  })
                     .then(function(response) { return response.ok ? response.text() : null; })
                     .then(function(body) {
                       if (!body) return null;
@@ -658,21 +724,31 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/reader/') !== 0) retu
                     if (srcset) raw = srcset.split(',')[0].trim().split(' ')[0];
                   }
                   if (!raw) continue;
+                  // next/image sarmalayıcısı: gerçek adres ?url= içinde
+                  if (raw.indexOf('/_next/image') >= 0) {
+                    var wrapped = raw.match(/[?&]url=([^&]+)/);
+                    if (wrapped) { try { raw = decodeURIComponent(wrapped[1]); } catch (e) { /* yoksay */ } }
+                  }
                   var url;
                   try { url = new URL(raw, location.href); } catch (e) { continue; }
                   var path = url.pathname;
-                  var lower = path.toLowerCase();
+                  var lower = (path + url.search).toLowerCase();
                   // Site arayüz görselleri (logo, banner, slider, küçük resim) bölüm sayılmaz.
                   if (lower.indexOf('logo') >= 0 || lower.indexOf('/slider/') >= 0) continue;
                   if (lower.indexOf('favicon') >= 0 || lower.indexOf('/icons/') >= 0) continue;
                   if (lower.indexOf('thumb_') >= 0 || lower.indexOf('/avatar') >= 0 || lower.indexOf('/banner') >= 0) continue;
                   // Bölüm görselleri CDN'e taşınmış olabilir: alan adına değil, yola bakılır.
-                  var looksLikeImage = /\.(jpe?g|png|webp|gif|avif)$/.test(lower) || lower.indexOf('/images/') >= 0;
+                  // Uzantı sorgu dizesinden önce gelebilir; CDN ve upload yolları da kabul edilir.
+                  var looksLikeImage = /\.(jpe?g|png|webp|gif|avif)(\?|$)/.test(lower) ||
+                    lower.indexOf('/images/') >= 0 || lower.indexOf('/uploads/') >= 0 ||
+                    lower.indexOf('/upload/') >= 0 || /\/(api)\/.*(image|upload|file)/.test(lower);
                   if (!looksLikeImage) continue;
                   var entry = {url: url.href, order: index};
                   if (path.indexOf('/' + id + '/') >= 0) {
                     scoped.push(entry);
-                  } else if (lower.indexOf('/images/') >= 0 || lower.indexOf('/api/uploads/') >= 0) {
+                  } else {
+                    // Bölüm kimliği yolda olmasa da görsel sayılan her adres yedek listede tutulur:
+                    // CDN, /uploads ve sorgu dizili adresler burada yakalanır.
                     loose.push(entry);
                   }
                 }

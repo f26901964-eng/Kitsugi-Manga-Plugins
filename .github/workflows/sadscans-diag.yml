@@ -1,0 +1,35 @@
+name: SadScans live HTML probe
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/2e32af8d-kitsugi-manga-plugins, main]
+    paths:
+      - .github/workflows/sadscans-diag.yml
+      - tools/sadscans_probe.mjs
+
+permissions:
+  contents: write
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Probe sadscans.net / sadscans.org
+        run: node tools/sadscans_probe.mjs > /tmp/probe.json
+      - name: Show result
+        run: head -c 4000 /tmp/probe.json
+      - name: Commit report
+        run: |
+          mkdir -p docs/sadscans
+          cp /tmp/probe.json docs/sadscans/live-probe.json
+          git config user.name "sadscans-probe"
+          git config user.email "probe@example.invalid"
+          git add docs/sadscans/live-probe.json
+          git commit -m "sadscans: live HTML probe report [skip ci]" || echo "degisiklik yok"
+          git push
