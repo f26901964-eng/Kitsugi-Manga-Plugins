@@ -102,7 +102,7 @@ abstract class Sadscans : KeiSource() {
         client.newBuilder()
             .connectTimeout(4, TimeUnit.SECONDS)
             .readTimeout(4, TimeUnit.SECONDS)
-            .callTimeout(4, TimeUnit.SECONDS)
+            .callTimeout(3, TimeUnit.SECONDS)
             .build()
     }
 
@@ -110,6 +110,10 @@ abstract class Sadscans : KeiSource() {
 
     @Volatile
     private var sitemapCache: Pair<Long, List<SitemapEntry>>? = null
+
+    /** Sitemap ulaşılamadıysa 10 dk boyunca yeniden denenmez (her aramada 3 sn kaybetmemek için). */
+    @Volatile
+    private var sitemapFailedAt: Long = 0L
 
     private val locRegex = Regex("<loc>\\s*([^<\\s]+)\\s*</loc>", RegexOption.IGNORE_CASE)
 
@@ -287,10 +291,15 @@ abstract class Sadscans : KeiSource() {
     }
 
     private suspend fun sitemapEntries(): List<SitemapEntry> {
+        val now = System.currentTimeMillis()
         sitemapCache?.let { (at, cached) ->
-            if (System.currentTimeMillis() - at < SITEMAP_TTL_MS) return cached
+            if (now - at < SITEMAP_TTL_MS) return cached
         }
-        val root = fetchSitemapText("$baseUrl/sitemap.xml") ?: return emptyList()
+        if (now - sitemapFailedAt < SITEMAP_RETRY_MS) return emptyList()
+        val root = fetchSitemapText("$baseUrl/sitemap.xml") ?: run {
+            sitemapFailedAt = now
+            return emptyList()
+        }
         val children = locRegex.findAll(root).map { it.groupValues[1] }
             .filter { it.endsWith(".xml", ignoreCase = true) }
             .take(4).toList()
@@ -698,6 +707,7 @@ abstract class Sadscans : KeiSource() {
         private const val DETAIL_ROUTER = "_n3p6q1v8x5"
         private const val PAGE_SIZE = 15
         private const val SITEMAP_TTL_MS = 6 * 60 * 60 * 1000L
+        private const val SITEMAP_RETRY_MS = 10 * 60 * 1000L
         private const val CHAPTER_PAGE_LIMIT = 10
         private const val MAX_CHAPTER_PAGES = 200
         private const val MAX_DOM_CHAPTER_PAGES = 10
