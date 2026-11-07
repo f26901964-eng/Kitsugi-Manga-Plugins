@@ -24,7 +24,9 @@ adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1
 sleep 35
 # Return from any first-run card opened while the home screen was loading.
 adb shell input keyevent KEYCODE_BACK
-sleep 15
+sleep 3
+adb shell input tap 179 376
+sleep 10
 adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
 adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
 adb shell screencap -p /sdcard/screenshot.png
