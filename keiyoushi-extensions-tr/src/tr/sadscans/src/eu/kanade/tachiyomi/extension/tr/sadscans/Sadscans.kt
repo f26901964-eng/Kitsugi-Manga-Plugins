@@ -344,16 +344,6 @@ abstract class Sadscans : KeiSource() {
             return MangasPage(direct, hasMore)
         }
 
-        // Kademe 2: sitemap (statik SEO rotası — Cloudflare/JS gerektirmez, ~300 ms).
-        // tRPC engelliyse arama yine de sonuç döndürür; detay sayfası WebView ile zenginleşir.
-        if (page == 1 && !query.isNullOrBlank()) {
-            val fromSitemap = attempt { sitemapSearch(query) }
-            if (!fromSitemap.isNullOrEmpty()) {
-                listCache = ListCache(query.orEmpty(), sort, type, status, page, fromSitemap, false, System.currentTimeMillis())
-                return MangasPage(fromSitemap, false)
-            }
-        }
-
         val result = frontendPage(
             "$siteBase/seriler",
             SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page, seriesRouter),
@@ -369,6 +359,15 @@ abstract class Sadscans : KeiSource() {
         val hasMore = explicitMore ?: (items.size >= PAGE_SIZE)
         if (items.isNotEmpty() || !hasMore) {
             listCache = ListCache(query.orEmpty(), sort, type, status, page, items, hasMore, System.currentTimeMillis())
+        }
+        // Kademe 3: sitemap (son çare). Kapak döndürmez; arayüz kademesi başarısız olduğunda
+        // kullanıcı en azından doğru seriye ulaşsın diye vardır.
+        if (items.isEmpty() && page == 1 && !query.isNullOrBlank()) {
+            val fromSitemap = attempt { sitemapSearch(query) }
+            if (!fromSitemap.isNullOrEmpty()) {
+                listCache = ListCache(query.orEmpty(), sort, type, status, page, fromSitemap, false, System.currentTimeMillis())
+                return MangasPage(fromSitemap, false)
+            }
         }
         return MangasPage(items, hasMore)
     }
@@ -493,7 +492,9 @@ abstract class Sadscans : KeiSource() {
         SManga.create().apply {
             url = if (href.startsWith("/")) href else "/$href"
             title = name
-            thumbnail_url = item["thumb"].stringOrNull()?.takeIf { it.isNotBlank() }?.let { absolute(it) }
+            thumbnail_url = listOf("thumb", "thumbnail", "cover", "image")
+                .firstNotNullOfOrNull { key -> item[key].stringOrNull()?.takeIf { it.isNotBlank() } }
+                ?.let { absolute(it) }
         }
     }.distinctBy { it.url }
 
@@ -763,9 +764,20 @@ abstract class Sadscans : KeiSource() {
         }
     }.lowercase(Locale.ROOT)
 
-    private fun absolute(path: String): String = when {
-        path.startsWith("http://") || path.startsWith("https://") -> path
-        else -> siteBase.trimEnd('/') + "/" + path.trimStart('/')
+    private fun absolute(path: String): String {
+        val unwrapped = unwrapNextImage(path)
+        return when {
+            unwrapped.startsWith("http://") || unwrapped.startsWith("https://") -> unwrapped
+            else -> siteBase.trimEnd('/') + "/" + unwrapped.trimStart('/')
+        }
+    }
+
+    /** `/_next/image?url=%2Fuploads%2Fx.jpg&w=384` → `/uploads/x.jpg` */
+    private fun unwrapNextImage(url: String): String {
+        if (!url.contains("/_next/image")) return url
+        val raw = url.substringAfter("url=", "").substringBefore('&')
+        if (raw.isBlank()) return url
+        return runCatching { java.net.URLDecoder.decode(raw, "UTF-8") }.getOrDefault(url)
     }
 
     private fun ChapterItemDto.toSChapter(): SChapter? {

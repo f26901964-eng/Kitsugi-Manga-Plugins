@@ -434,3 +434,40 @@ const listScript = (options) => templates[0].replace('$options', JSON.stringify(
 }
 
 console.log('Tüm SadScans frontend sözleşme testleri geçti.');
+
+// ---------------------------------------------------------------------------
+// 16. Kapak görseli: lazy/srcset/_next/image kartlarda da bulunur
+// ---------------------------------------------------------------------------
+{
+  const env = environment(`<html><body><input placeholder="Aramak istediğiniz seriyi yazın">
+    <a href="/seriler/lazy" title="Lazy"><img data-src="/uploads/lazy.jpg" alt="Lazy"></a>
+    <a href="/seriler/srcset" title="Srcset"><img srcset="/uploads/srcset-320.jpg 320w, /uploads/srcset-640.jpg 640w" alt="Srcset"></a>
+    <a href="/seriler/nextimg" title="Next"><img src="/_next/image?url=%2Fuploads%2Fnextimg.webp&amp;w=384&amp;q=75" alt="Next"></a>
+    <a href="/seriler/placeholder" title="Placeholder"><img src="data:image/gif;base64,R0lGOD" alt="Placeholder"></a>
+    </body></html>`);
+  const raw = await drive(env, listScript({query: '', sort: 'name', type: null, status: null, page: 1}), 30);
+  const items = JSON.parse(raw).items;
+  const byHref = Object.fromEntries(items.map(i => [i.href, i.thumb]));
+  assert.equal(byHref['/seriler/lazy'], '/uploads/lazy.jpg', 'data-src okunmalı');
+  assert.equal(byHref['/seriler/srcset'], '/uploads/srcset-320.jpg', 'srcset ilk aday okunmalı');
+  assert.equal(byHref['/seriler/nextimg'], '/uploads/nextimg.webp', '_next/image sarmalayıcısı çözülmeli');
+  assert.equal(byHref['/seriler/placeholder'], null, 'data: URI kapak sayılmamalı');
+  console.log('PASS: kart kapakları lazy/srcset/_next/image üzerinden bulunuyor');
+}
+
+// ---------------------------------------------------------------------------
+// 17. Okuyucu: sorgu dizeli ve _next/image görselleri bölüm sayfası olarak alınır
+// ---------------------------------------------------------------------------
+{
+  const html = `<html><body>
+    <img src="/uploads/ch1/001.jpg?w=800&q=75">
+    <img src="/_next/image?url=%2Fuploads%2Fch1%2F002.webp&w=1080&q=80">
+    <img src="/api/uploads/003-abc">${'</body></html>'}`;
+  const env = environment(html, {path: '/reader/chainsaw-man/1/abc'});
+  const raw = await drive(env, templates[2].replace('$id', JSON.stringify('abc')), 40);
+  const urls = JSON.parse(raw).urls;
+  assert.ok(urls.some(u => u.includes('001.jpg')), 'sorgu dizeli görsel alınmalı');
+  assert.ok(urls.some(u => u.includes('002.webp')), '_next/image çözülüp alınmalı');
+  assert.ok(urls.some(u => u.includes('003-abc')), 'uzantısız /api/uploads görseli alınmalı');
+  console.log('PASS: okuyucu sorgu dizeli/CDN görsellerini alıyor');
+}
