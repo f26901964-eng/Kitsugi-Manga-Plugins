@@ -10,9 +10,9 @@ import keiyoushi.network.get
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
 import keiyoushi.utils.WebViewTimeoutException
+import keiyoushi.utils.parseAs
 import keiyoushi.utils.runWebView
 import kotlinx.coroutines.CancellationException
-import keiyoushi.utils.parseAs
 import kotlinx.serialization.json.JsonElement
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -20,8 +20,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
-import java.io.IOException
 import org.jsoup.Jsoup
+import java.io.IOException
 import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
 
