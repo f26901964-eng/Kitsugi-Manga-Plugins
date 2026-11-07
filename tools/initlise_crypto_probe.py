@@ -148,10 +148,9 @@ def probe(name: str, cfg: dict) -> dict:
         "Sec-Fetch-Mode": "no-cors",
         "Sec-Fetch-Site": "same-origin",
     }
-    for label, target, hdrs in {
-        "plain-signed": url, "cv5+scramble": url_cv,
-    }.items():
-        rr = s.get(target, headers=hdrs, timeout=30)
+    variants = {"plain-signed": url, "cv5+scramble": url_cv}
+    for label, target in variants.items():
+        rr = s.get(target, headers=img_headers, timeout=30)
         info = {
             "status": rr.status_code,
             "ct": rr.headers.get("content-type", "")[:40],
