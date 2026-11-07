@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Fresh, disposable emulator: no user data or account is used.
-set -euo pipefail
+set -Eeuo pipefail
+trap 'code=$?; echo "::error title=Android probe::Command failed with exit $code: $BASH_COMMAND"' ERR
 mkdir -p /tmp/merlin-android
 adb install /tmp/kitsugi/*.apk
 PKG=$(adb shell pm list packages | sed -n 's/^package://p' | grep -i kitsugi | head -1 | tr -d '\r')
