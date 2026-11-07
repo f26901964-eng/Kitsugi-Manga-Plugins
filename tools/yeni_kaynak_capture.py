@@ -124,7 +124,7 @@ def scan_chunks(session: requests.Session, base: str, body: str) -> dict:
         for m in re.findall(r'fetch\(\s*["\'`]([^"\'`]+)["\'`]', js)[:30]:
             fetch_hits.add(m)
         # template literals such as `/api/series/search?q=${query}`
-        for m in re.findall(r"["'`](/[a-z0-9/-]*(?:series|search|manga|chapter)[a-z0-9/-]*)[?'\"`]", js)[:30]:
+        for m in re.findall(r"[\"'`](/[a-z0-9/-]*(?:series|search|manga|chapter)[a-z0-9/-]*)[?\"'`]", js)[:30]:
             api_hits.add(m + "  <template?>")
     return {
         "chunksScanned": len(chunks[:24]),
