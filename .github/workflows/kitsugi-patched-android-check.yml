@@ -1,0 +1,59 @@
+name: Kitsugi patched app Android verification
+on:
+  push:
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
+    paths:
+      - .github/workflows/kitsugi-patched-android-check.yml
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  patched:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download the patched debug app from the completed build
+        uses: actions/download-artifact@v4
+        with:
+          name: kitsugi-duplicate-fix-debug-not-release
+          path: /tmp/kitsugi
+          run-id: 42323291206
+          github-token: ${{ github.token }}
+      - name: Download the historical source APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          gh api 'repos/f26901964-eng/Kitsugi-Manga-Plugins/git/blobs/64baa8a80e72a025ae1ba53edff1809e14bba24f' --jq '.content' | base64 -d > /tmp/merlin-v1.6.9.apk
+          ls -lh /tmp/kitsugi /tmp/merlin-v1.6.9.apk
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: TEST_MODE=patched bash tools/merlintoon_android_probe.sh
+      - name: Check patched app reached the synthetic manga browser without crashing
+        run: |
+          if [ -s /tmp/merlin-android/crash.txt ]; then
+            echo '::error::The patched app crashed.'
+            exit 1
+          fi
+          grep -q 'GET /seri/' /tmp/merlin-android/fixture.log
+          grep -q '1 manga' /tmp/merlin-android/window.xml
+          echo '::notice title=Patched Android app::With both APKs installed, the patched debug app opened the manga browser and loaded one synthetic manga without the duplicate-key crash.'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: patched-app-android-diagnostics
+          path: /tmp/merlin-android/
+          if-no-files-found: ignore
+          retention-days: 1

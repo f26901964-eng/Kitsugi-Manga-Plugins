@@ -6,6 +6,8 @@ on:
     paths:
       - .github/workflows/merlintoon-android-investigation.yml
       - tools/merlintoon_android_probe.sh
+      - tools/merlintoon_android_fixture.py
+      - tools/merlintoon_android_proxy.py
 permissions:
   contents: read
 jobs:
@@ -15,7 +17,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        mode: [duplicate, single]
+        mode: [duplicate, single, single-empty]
     steps:
       - uses: actions/checkout@v4
       - name: Download released Kitsugi APK

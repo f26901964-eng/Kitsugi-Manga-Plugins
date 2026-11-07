@@ -1,13 +1,20 @@
 #!/usr/bin/env python3
 """Local synthetic site for exercising a disposable emulator, not a live-site test."""
-import base64
 import json
 import os
 import ssl
+import struct
+import zlib
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlsplit
 
-PNG = base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/fZkAAAAASUVORK5CYII=')
+def png_chunk(kind, data):
+    return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data))
+
+
+# A valid small RGB PNG; no actual manga artwork is included.
+PNG = (b'\x89PNG\r\n\x1a\n' + png_chunk(b'IHDR', struct.pack('>IIBBBBB', 8, 8, 8, 2, 0, 0, 0))
+       + png_chunk(b'IDAT', zlib.compress((b'\x00' + b'\x55\x88\xaa' * 8) * 8)) + png_chunk(b'IEND', b''))
 BASE = 'https://merlintoon.com'
 
 class Handler(BaseHTTPRequestHandler):
@@ -23,9 +30,13 @@ class Handler(BaseHTTPRequestHandler):
             body = f'<html><head><title>Buyucu Coban</title><meta property="og:image" content="{BASE}/cover.png"></head><body class="postid-123"><h1>Buyucu Coban</h1><div id="manga-description">Test</div></body></html>'.encode()
             mime = 'text/html'
         elif path == '/seri/buyucu-coban/bolum-1/':
-            # An intentionally empty reader reproduces the reported empty-list symptom
-            # only if an old source returns empty; v1.6.11 must instead throw its own error.
-            body = b'<html><body><div id="chapter-content"></div></body></html>'
+            # Both variants are synthetic. The empty case probes error propagation;
+            # the full case probes actual page loading using test-only image bytes.
+            if os.environ.get('FIXTURE_READER') == 'single-empty':
+                images = ''
+            else:
+                images = ''.join(f'<img src="{BASE}/pages/{i:04}.png">' for i in range(1, 4))
+            body = f'<html><body><div id="chapter-content" class="image-based">{images}</div></body></html>'.encode()
             mime = 'text/html'
         elif path.endswith('.png'):
             body = PNG

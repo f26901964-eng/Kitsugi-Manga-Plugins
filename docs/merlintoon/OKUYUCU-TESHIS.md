@@ -96,9 +96,11 @@ kanıtlanmadı. `tools/kitsugi-beta-domain-recursion.patch` bu kontrolün deği�
 
 Çift APK seçme yardımcı kodunun üç JVM birim testi bağımsız çalıştırmada geçti
 ([42323036793](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42323036793)).
-Tüm uygulama derlemesi ilk denemede bellek nedeniyle durdu, ikinci denemede Kotlin
-4 GB heap ile `OutOfMemoryError` verdi; Android derlemesi başarıyla doğrulanmış
-sayılmamalıdır. Ayrı JVM testleri uygulamanın cihazda çalıştığını kanıtlamaz.
+Tüm uygulama derlemesi ilk iki denemede yetersiz bellek nedeniyle durdu. Kotlin
+heap artırılarak yapılan üçüncü denemede iki yama, gerçek v2.4.455 kaynaklarına
+uygulandı; uygulama birim testleri ve `assembleFossDebug` başarılı oldu
+([42323291206](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42323291206)).
+Bu bir debug derlemesidir; uygulama yayınlanmış veya kullanıcının cihazında güncellenmiş değildir.
 
 ## Çift APK için Android karşılaştırması
 
