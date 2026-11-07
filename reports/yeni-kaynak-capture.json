@@ -1,0 +1,186 @@
+{
+  "capturedAt": "2026-11-07T14:43:09.220276+00:00",
+  "sites": {
+    "ailurascans": {
+      "baseUrl": "https://ailurascans.com",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 403,
+          "bytes": 5630,
+          "finalUrl": "https://ailurascans.com/",
+          "lockMarkers": []
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 403,
+          "bytes": 5648,
+          "finalUrl": "https://ailurascans.com/series",
+          "lockMarkers": []
+        },
+        "series": {
+          "path": "/seri/hooky",
+          "status": 403,
+          "bytes": 5660,
+          "finalUrl": "https://ailurascans.com/seri/hooky",
+          "lockMarkers": []
+        },
+        "reader": {
+          "path": "/seri/hooky/bolum/1",
+          "status": 403,
+          "bytes": 5683,
+          "finalUrl": "https://ailurascans.com/seri/hooky/bolum/1",
+          "lockMarkers": []
+        }
+      }
+    },
+    "oblivionscans": {
+      "baseUrl": "https://oblivionscans.com",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 200,
+          "bytes": 65015,
+          "finalUrl": "https://oblivionscans.com/",
+          "lockMarkers": [],
+          "imageUrlSamples": [
+            "https://oblivionscans.com/uploads/og-image.webp?v=1788632128243"
+          ],
+          "imageCandidateCount": 1,
+          "chapterHrefSamples": [],
+          "chapterHrefCount": 0,
+          "dump": "docs/html-dumps/oblivionscans/home.html"
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 200,
+          "bytes": 51638,
+          "finalUrl": "https://oblivionscans.com/series",
+          "lockMarkers": [],
+          "imageUrlSamples": [
+            "https://oblivionscans.com/uploads/og-image.webp?v=1788632128243"
+          ],
+          "imageCandidateCount": 1,
+          "chapterHrefSamples": [],
+          "chapterHrefCount": 0,
+          "dump": "docs/html-dumps/oblivionscans/series-list.html"
+        },
+        "series": {
+          "path": "/seri/ts-cezasi",
+          "status": 200,
+          "bytes": 211903,
+          "finalUrl": "https://oblivionscans.com/seri/ts-cezasi",
+          "lockMarkers": [],
+          "imageUrlSamples": [],
+          "imageCandidateCount": 0,
+          "chapterHrefSamples": [
+            "/seri/ts-cezasi/bolum/1",
+            "/seri/ts-cezasi/bolum/10",
+            "/seri/ts-cezasi/bolum/11",
+            "/seri/ts-cezasi/bolum/12",
+            "/seri/ts-cezasi/bolum/13",
+            "/seri/ts-cezasi/bolum/2",
+            "/seri/ts-cezasi/bolum/3",
+            "/seri/ts-cezasi/bolum/4"
+          ],
+          "chapterHrefCount": 13,
+          "dump": "docs/html-dumps/oblivionscans/series.html"
+        },
+        "reader": {
+          "path": "/seri/ts-cezasi/bolum/1",
+          "status": 200,
+          "bytes": 64951,
+          "finalUrl": "https://oblivionscans.com/seri/ts-cezasi/bolum/1",
+          "lockMarkers": [],
+          "imageUrlSamples": [],
+          "imageCandidateCount": 0,
+          "chapterHrefSamples": [
+            "/seri/ts-cezasi/bolum/2",
+            "https://oblivionscans.com/seri/ts-cezasi/bolum/1"
+          ],
+          "chapterHrefCount": 2,
+          "dump": "docs/html-dumps/oblivionscans/reader.html"
+        }
+      }
+    },
+    "lunariscans": {
+      "baseUrl": "https://lunariscans.com",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 403,
+          "bytes": 5608,
+          "finalUrl": "https://lunariscans.com/",
+          "lockMarkers": []
+        },
+        "series-list": {
+          "path": "/series",
+          "status": 403,
+          "bytes": 5648,
+          "finalUrl": "https://lunariscans.com/series",
+          "lockMarkers": []
+        },
+        "series": {
+          "path": "/seri/bu-reenkarnasyonu-bozmaliyim",
+          "status": 403,
+          "bytes": 5771,
+          "finalUrl": "https://lunariscans.com/seri/bu-reenkarnasyonu-bozmaliyim",
+          "lockMarkers": []
+        }
+      }
+    },
+    "duckscans": {
+      "baseUrl": "https://duckscans.com",
+      "pages": {
+        "home": {
+          "path": "/",
+          "status": 200,
+          "bytes": 76154,
+          "finalUrl": "https://duckscans.com/",
+          "lockMarkers": [],
+          "imageUrlSamples": [],
+          "imageCandidateCount": 0,
+          "chapterHrefSamples": [],
+          "chapterHrefCount": 0,
+          "dump": "docs/html-dumps/duckscans/home.html"
+        },
+        "series": {
+          "path": "/seri/regresorun-kullanim-kilavuzu",
+          "status": 200,
+          "bytes": 417385,
+          "finalUrl": "https://duckscans.com/seri/regresorun-kullanim-kilavuzu",
+          "lockMarkers": [],
+          "imageUrlSamples": [],
+          "imageCandidateCount": 0,
+          "chapterHrefSamples": [
+            "/seri/regresorun-kullanim-kilavuzu/bolum/1",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/10",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/100",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/101",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/102",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/103",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/104",
+            "/seri/regresorun-kullanim-kilavuzu/bolum/105"
+          ],
+          "chapterHrefCount": 114,
+          "dump": "docs/html-dumps/duckscans/series.html"
+        },
+        "reader": {
+          "path": "/seri/regresorun-kullanim-kilavuzu/bolum/1",
+          "status": 200,
+          "bytes": 71039,
+          "finalUrl": "https://duckscans.com/seri/regresorun-kullanim-kilavuzu/bolum/1",
+          "lockMarkers": [],
+          "imageUrlSamples": [],
+          "imageCandidateCount": 0,
+          "chapterHrefSamples": [
+            "/seri/regresorun-kullanim-kilavuzu/bolum/2",
+            "https://duckscans.com/seri/regresorun-kullanim-kilavuzu/bolum/1"
+          ],
+          "chapterHrefCount": 2,
+          "dump": "docs/html-dumps/duckscans/reader.html"
+        }
+      }
+    }
+  }
+}
