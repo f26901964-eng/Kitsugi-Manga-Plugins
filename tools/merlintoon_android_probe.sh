@@ -58,8 +58,13 @@ for node in root.iter('node'):
         print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
 for line in open('/tmp/merlin-android/fixture.log', errors='replace'):
     print(f"::notice title=Synthetic fixture::{line.strip().replace('%', '%25')}")
-for line in open('/tmp/merlin-android/crash.txt', errors='replace').readlines()[:70]:
-    print(f"::warning title=Android crash::{line.strip().replace('%', '%25')}")
+crash = open('/tmp/merlin-android/crash.txt', errors='replace').read()
+if crash:
+    import re
+    match = re.search(r'▶ HATA ZİNCİRİ(.*?)(?:▶ SON BİLİNEN EKRAN|$)', crash, re.S)
+    excerpt = (match.group(1) if match else crash)[-14000:]
+    escaped = excerpt.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
+    print(f"::warning title=Android crash report::{escaped}")
 lines = open('/tmp/merlin-android/logcat.txt', errors='replace').readlines()
 selected = [line for line in lines if any(tag in line.lower() for tag in ('merlinscans', 'merlintoon', 'mangaextensionloader'))]
 for line in selected[-35:]:
