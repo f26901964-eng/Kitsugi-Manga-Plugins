@@ -1,5 +1,9 @@
 name: Kitsugi patched app Android verification
 on:
+  push:
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
+    paths:
+      - .github/workflows/kitsugi-patched-android-check.yml
   workflow_dispatch:
     inputs:
       build_run_id:
@@ -20,7 +24,7 @@ jobs:
         with:
           name: kitsugi-duplicate-fix-debug-not-release
           path: /tmp/kitsugi
-          run-id: ${{ inputs.build_run_id }}
+          run-id: ${{ inputs.build_run_id || '42323291206' }}
           github-token: ${{ github.token }}
       - name: Download the historical source APK
         env:
@@ -41,16 +45,18 @@ jobs:
           arch: x86_64
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: TEST_MODE=patched bash tools/merlintoon_android_probe.sh
-      - name: Check patched app reached the synthetic manga browser without crashing
+          script: TEST_MODE=patched-empty bash tools/merlintoon_android_probe.sh
+      - name: Check the patched app selected the newest APK in a synthetic reader
         run: |
           if [ -s /tmp/merlin-android/crash.txt ]; then
             echo '::error::The patched app crashed.'
             exit 1
           fi
           grep -q 'GET /seri/' /tmp/merlin-android/fixture.log
-          grep -q '1 manga' /tmp/merlin-android/window.xml
-          echo '::notice title=Patched Android app::With both APKs installed, the patched debug app opened the manga browser and loaded one synthetic manga without the duplicate-key crash.'
+          grep -q 'GET /seri/buyucu-coban/bolum-1/' /tmp/merlin-android/fixture.log
+          grep -q '1 manga' /tmp/merlin-android/browse.xml
+          grep -q 'Bölüm görselleri alınamadı' /tmp/merlin-android/window.xml
+          echo '::notice title=Patched Android app::With both APKs installed, the patched debug app reached the empty synthetic reader and displayed the newer 1.6.11 source error without the duplicate-key crash.'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

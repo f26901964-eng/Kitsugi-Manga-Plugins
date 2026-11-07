@@ -26,7 +26,7 @@ adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/ma
 if [[ "${TEST_MODE:-duplicate}" != legacy-empty ]]; then
     adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; chown \$U \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; restorecon \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk"
 fi
-if [[ "${TEST_MODE:-duplicate}" == duplicate || "${TEST_MODE:-duplicate}" == patched || "${TEST_MODE:-duplicate}" == legacy-empty ]]; then
+if [[ "${TEST_MODE:-duplicate}" == duplicate || "${TEST_MODE:-duplicate}" == patched* || "${TEST_MODE:-duplicate}" == legacy-empty ]]; then
     adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; chown \$U \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; restorecon \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk"
 fi
 # Isolated synthetic fixture and CONNECT proxy, used only by the disposable emulator.
@@ -48,7 +48,7 @@ adb shell am start -a android.intent.action.VIEW -d 'Kitsugianimelist://v1/manga
 sleep 30
 adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
 adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
-if [[ "${TEST_MODE:-duplicate}" == single* || "${TEST_MODE:-duplicate}" == legacy-empty ]]; then
+if [[ "${TEST_MODE:-duplicate}" == single* || "${TEST_MODE:-duplicate}" == legacy-empty || "${TEST_MODE:-duplicate}" == patched-empty ]]; then
     cp /tmp/merlin-android/window.xml /tmp/merlin-android/browse.xml
     tap_matching() {
         local needle="$1" coords

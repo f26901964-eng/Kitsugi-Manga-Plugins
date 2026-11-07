@@ -1,4 +1,8 @@
-# MerlinToon — 1.6.9 (106009)
+# MerlinToon — tarihsel 1.6.9 (106009) notları
+
+Bu bölüm ilk 1.6.9 yayınını anlatır; güncel eklenti 1.6.11'dir. Daha yeni Android
+emülatör testleri, açık kalan okuyucu sorunu ve uygulama yaması için
+[OKUYUCU-TESHIS.md](OKUYUCU-TESHIS.md) dosyasına bakın.
 
 `tr/merlinscans` bu çalışma dalının etkin listesine ve kataloglarına eklendi. Paket kimliği
 `eu.kanade.tachiyomi.extension.tr.merlinscans` ve eski DSL adından hesaplanan kaynak kimliği açıkça sabitlenmiştir; katalog adı
