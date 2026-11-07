@@ -186,6 +186,13 @@ def probe_site(name: str, base: str, slug: str) -> dict:
         body = resp.text
         entry["contentType"] = resp.headers.get("content-type", "")[:40]
         entry["bodyHead"] = body[:260]
+        if resp.status_code == 200 and '"pages"' in body:
+            folder = ROOT / "docs" / "html-dumps" / name
+            folder.mkdir(parents=True, exist_ok=True)
+            (folder / f"api-chapters-{label}.json").write_text(body, encoding="utf-8")
+            entry["bodyBytes"] = len(body)
+            pages_field = re.search(r'"pages":\[([^\]]{0,400})', body)
+            entry["pagesFieldHead"] = pages_field.group(1)[:300] if pages_field else "bos"
         # sayfa yolu adayları: mutlak URL veya /uploads ile başlayan yol
         candidates = re.findall(r'"(/uploads/[^"]+?\.(?:webp|jpe?g|png))"', body) + re.findall(
             r'"(https?://[^"]+?\.(?:webp|jpe?g|png)[^"]*)"', body
@@ -197,6 +204,28 @@ def probe_site(name: str, base: str, slug: str) -> dict:
             entry["pageFetch"] = try_get(s, url, browser_headers)
         api_out[label] = entry
     out["apiMatrix"] = api_out
+
+    # --- reader-guard: görsellerin 403 yemesinin arkasında cookie üreten
+    #     bir koruma olabilir. Doğrula, sonra aynı URL'yi tekrar dene.
+    guard_info = {}
+    for method in ("GET", "POST"):
+        try:
+            gr = s.request(
+                method,
+                f"{base}/api/reader-guard/verify",
+                headers={"Referer": chapter_url, "Origin": base},
+                json={} if method == "POST" else None,
+                timeout=TIMEOUT,
+            )
+            guard_info[method] = {
+                "status": gr.status_code,
+                "setCookie": gr.headers.get("set-cookie", "")[:160],
+                "body": gr.text[:150],
+            }
+        except requests.RequestException as exc:
+            guard_info[method] = {"error": type(exc).__name__}
+    out["readerGuard"] = guard_info
+    out["imageAfterGuard"] = try_get(s, encoded, browser_headers)
 
     # --- Okuyucu rotasının JS chunk'ını kanıt olarak indir; URL imzalama
     #     mantığı yerel inceleme için burada olmalı.
