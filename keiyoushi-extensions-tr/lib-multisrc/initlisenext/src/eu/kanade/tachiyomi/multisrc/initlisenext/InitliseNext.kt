@@ -54,11 +54,9 @@ abstract class InitliseNext : KeiSource() {
 
     // ============================== Katalog ===============================
 
-    override suspend fun getPopularManga(page: Int): MangasPage =
-        catalogPage(page, sort = null)
+    override suspend fun getPopularManga(page: Int): MangasPage = catalogPage(page, sort = null)
 
-    override suspend fun getLatestUpdates(page: Int): MangasPage =
-        catalogPage(page, sort = "createdAt")
+    override suspend fun getLatestUpdates(page: Int): MangasPage = catalogPage(page, sort = "createdAt")
 
     override suspend fun getSearchMangaList(page: Int, query: String, filters: FilterList): MangasPage {
         val trimmed = query.trim()
@@ -95,8 +93,7 @@ abstract class InitliseNext : KeiSource() {
         return MangasPage(mangas, hasNext)
     }
 
-    private fun pageOf(url: HttpUrl): Int =
-        url.queryParameter("page")?.toIntOrNull() ?: 1
+    private fun pageOf(url: HttpUrl): Int = url.queryParameter("page")?.toIntOrNull() ?: 1
 
     protected fun SeriesDto.toSManga(base: String): SManga = SManga.create().apply {
         title = this@toSManga.title.trim()
@@ -139,53 +136,52 @@ abstract class InitliseNext : KeiSource() {
         return SMangaUpdate(updated, updatedChapters)
     }
 
-    protected open fun parseDetails(html: String, flight: String, mangaUrl: String): SManga =
-        SManga.create().apply {
-            val slug = mangaUrl.trim('/').substringAfterLast('/')
-            // Seri kaydı "title":"...","slug":"<slug>" çifti halinde gömülür;
-            // başlığı bölüm kayıtlarından ayırt etmek için çift aranır.
-            title = seriesTitle(flight, slug)
-                ?: htmlTitle(html)
-                ?: slug
+    protected open fun parseDetails(html: String, flight: String, mangaUrl: String): SManga = SManga.create().apply {
+        val slug = mangaUrl.trim('/').substringAfterLast('/')
+        // Seri kaydı "title":"...","slug":"<slug>" çifti halinde gömülür;
+        // başlığı bölüm kayıtlarından ayırt etmek için çift aranır.
+        title = seriesTitle(flight, slug)
+            ?: htmlTitle(html)
+            ?: slug
 
-            val document = Jsoup.parse(html, baseUrl)
+        val document = Jsoup.parse(html, baseUrl)
 
-            description = buildString {
-                flightString(flight, "about")?.let { append(it.replace("\\n", "\n").trim()) }
-                val alts = flightArray(flight, "alternativeNames")
-                    ?.parseAs<List<String>>()
-                    .orEmpty()
-                    .filter { it.isNotBlank() }
-                val original = flightString(flight, "originalName")
-                val altList = (alts + listOfNotNull(original?.takeIf { it.isNotBlank() }))
-                    .distinct()
-                    .filterNot { it.equals(title, ignoreCase = true) }
-                if (altList.isNotEmpty()) {
-                    if (isNotEmpty()) append("\n\n")
-                    append("Alternatif Başlıklar: ").append(altList.joinToString(", "))
-                }
-            }
-
-            if (description.isNullOrBlank()) {
-                description = document.selectFirst("meta[property=og:description], meta[name=description]")
-                    ?.attr("content")
-                    ?.trim()
-                    ?.takeIf { it.isNotEmpty() }
-            }
-
-            genre = flightArray(flight, "genre")
+        description = buildString {
+            flightString(flight, "about")?.let { append(it.replace("\\n", "\n").trim()) }
+            val alts = flightArray(flight, "alternativeNames")
                 ?.parseAs<List<String>>()
                 .orEmpty()
                 .filter { it.isNotBlank() }
-                .joinToString(", ")
-
-            author = flightString(flight, "author").orEmpty().trim()
-            artist = flightString(flight, "artist").orEmpty().trim()
-
-            status = statusOf(flight)
-
-            thumbnail_url = document.selectFirst("meta[property=og:image]")?.attr("content")
+            val original = flightString(flight, "originalName")
+            val altList = (alts + listOfNotNull(original?.takeIf { it.isNotBlank() }))
+                .distinct()
+                .filterNot { it.equals(title, ignoreCase = true) }
+            if (altList.isNotEmpty()) {
+                if (isNotEmpty()) append("\n\n")
+                append("Alternatif Başlıklar: ").append(altList.joinToString(", "))
+            }
         }
+
+        if (description.isNullOrBlank()) {
+            description = document.selectFirst("meta[property=og:description], meta[name=description]")
+                ?.attr("content")
+                ?.trim()
+                ?.takeIf { it.isNotEmpty() }
+        }
+
+        genre = flightArray(flight, "genre")
+            ?.parseAs<List<String>>()
+            .orEmpty()
+            .filter { it.isNotBlank() }
+            .joinToString(", ")
+
+        author = flightString(flight, "author").orEmpty().trim()
+        artist = flightString(flight, "artist").orEmpty().trim()
+
+        status = statusOf(flight)
+
+        thumbnail_url = document.selectFirst("meta[property=og:image]")?.attr("content")
+    }
 
     private fun statusOf(flight: String): Int {
         // "type":"Manhwa","status":"Devam Ediyor","country":"kr" üçlüsü seri kaydına aittir.
@@ -229,8 +225,7 @@ abstract class InitliseNext : KeiSource() {
         }.sortedByDescending { it.chapter_number }
     }
 
-    protected open fun formatNumber(number: Float): String =
-        if (number == number.toLong().toFloat()) number.toLong().toString() else number.toString()
+    protected open fun formatNumber(number: Float): String = if (number == number.toLong().toFloat()) number.toLong().toString() else number.toString()
 
     private fun parseDate(raw: String?): Long {
         if (raw.isNullOrBlank()) return 0L
@@ -301,12 +296,36 @@ abstract class InitliseNext : KeiSource() {
                             i += 2
                         }
                     }
-                    'n' -> { sb.append('\n'); i += 2 }
-                    't' -> { sb.append('\t'); i += 2 }
-                    'r' -> { sb.append('\r'); i += 2 }
-                    'b' -> { sb.append('\b'); i += 2 }
-                    'f' -> { sb.append('\u000C'); i += 2 }
-                    else -> { sb.append(next); i += 2 }
+
+                    'n' -> {
+                        sb.append('\n')
+                        i += 2
+                    }
+
+                    't' -> {
+                        sb.append('\t')
+                        i += 2
+                    }
+
+                    'r' -> {
+                        sb.append('\r')
+                        i += 2
+                    }
+
+                    'b' -> {
+                        sb.append('\b')
+                        i += 2
+                    }
+
+                    'f' -> {
+                        sb.append('\u000C')
+                        i += 2
+                    }
+
+                    else -> {
+                        sb.append(next)
+                        i += 2
+                    }
                 }
             } else {
                 sb.append(c)
@@ -330,10 +349,15 @@ abstract class InitliseNext : KeiSource() {
                 val next = flight.getOrNull(i + 1) ?: return sb.toString()
                 when (next) {
                     '"' -> sb.append('"')
+
                     '\\' -> sb.append('\\')
+
                     '/' -> sb.append('/')
+
                     'n' -> sb.append('\n')
+
                     't' -> sb.append('\t')
+
                     'u' -> {
                         val hex = flight.substringOrNull(i + 2, i + 6)
                         if (hex != null && hex.length == 4) {
@@ -341,6 +365,7 @@ abstract class InitliseNext : KeiSource() {
                             i += 4
                         }
                     }
+
                     else -> sb.append(next)
                 }
                 i += 2
@@ -378,8 +403,11 @@ abstract class InitliseNext : KeiSource() {
             }
             when {
                 c == '\\' && inString -> escaped = true
+
                 c == '"' -> inString = !inString
+
                 !inString && c == '[' -> depth++
+
                 !inString && c == ']' -> {
                     depth--
                     if (depth == 0) return flight.substring(start, i + 1)
@@ -389,6 +417,5 @@ abstract class InitliseNext : KeiSource() {
         return null
     }
 
-    private fun String.substringOrNull(start: Int, end: Int): String? =
-        if (start in indices && end <= length && start < end) substring(start, end) else null
+    private fun String.substringOrNull(start: Int, end: Int): String? = if (start in indices && end <= length && start < end) substring(start, end) else null
 }
