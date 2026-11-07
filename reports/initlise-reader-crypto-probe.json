@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T16:16:18.938071+00:00",
+  "probedAt": "2026-11-07T16:25:36.079710+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -18,7 +18,7 @@
         "hcaptcha"
       ],
       "apiStatus": 200,
-      "signedPathSample": "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794068480&s=hkFDo16m1FexpR3dD-dZh4&k=zrm-Q2W2V",
+      "signedPathSample": "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794069037&s=2RwIXPZn49O8yi2rijWQJs&k=zrm-Q2W2V",
       "guardStatus": 200,
       "guardBody": "{\"success\":true,\"verified\":true}",
       "guardSetCookie": "",
