@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:32:45.404338+00:00",
+  "probedAt": "2026-11-07T15:33:53.972700+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -16,6 +16,13 @@
         "seriesNumeric": null
       },
       "apiMatrix": {
+        "slug+number": {
+          "status": 200,
+          "type": "application/json",
+          "bytes": 1418,
+          "head": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69d",
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+        },
         "slug+chslug": {
           "status": 400,
           "type": "application/json",
@@ -23,18 +30,6 @@
           "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
         "mongo+mongo": {
-          "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
-        },
-        "mongo+chslug": {
-          "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
-        },
-        "slug+mongo": {
           "status": 400,
           "type": "application/json",
           "bytes": 65,
@@ -81,6 +76,13 @@
         "seriesNumeric": "6"
       },
       "apiMatrix": {
+        "slug+number": {
+          "status": 200,
+          "type": "application/json",
+          "bytes": 798,
+          "head": "{\"success\":true,\"data\":[{\"_id\":\"0381abdab8b910d3e990c536\",\"legacyWordPressId\":22",
+          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+        },
         "slug+chslug": {
           "status": 400,
           "type": "application/json",
@@ -88,18 +90,6 @@
           "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
         },
         "mongo+mongo": {
-          "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
-        },
-        "mongo+chslug": {
-          "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
-        },
-        "slug+mongo": {
           "status": 400,
           "type": "application/json",
           "bytes": 65,
