@@ -1,0 +1,43 @@
+name: MerlinToon Android investigation
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
+    paths:
+      - .github/workflows/merlintoon-android-investigation.yml
+      - tools/merlintoon_android_probe.sh
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download released Kitsugi APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download v2.4.455 --repo f26901964-eng/Kitsugi-Beta --pattern '*-foss.apk' --dir /tmp/kitsugi
+          ls -lh /tmp/kitsugi
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          target: google_apis
+          arch: x86_64
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: bash tools/merlintoon_android_probe.sh
+      - name: Upload fresh-emulator diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merlintoon-android-diagnostics
+          path: /tmp/merlin-android/
+          if-no-files-found: ignore
+          retention-days: 1
