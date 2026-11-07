@@ -8,16 +8,6 @@ PKG=$(adb shell pm list packages | sed -n 's/^package://p' | grep -i kitsugi | h
 echo "Installed package: $PKG"
 adb root
 adb wait-for-device
-# This is a disposable rooted emulator: map the test hostname to adb reverse
-# without using the app's domain override (which has a separate recursion bug).
-adb disable-verity
-adb reboot
-adb wait-for-device
-adb root
-adb wait-for-device
-adb shell 'while [ "$(getprop sys.boot_completed)" != 1 ]; do sleep 1; done'
-adb remount
-adb shell "echo '127.0.0.1 merlintoon.com' >> /system/etc/hosts"
 adb shell id
 adb push prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.11.apk /data/local/tmp/merlin.apk
 adb push /tmp/merlin-v1.6.9.apk /data/local/tmp/merlin-old.apk
@@ -33,12 +23,14 @@ cat > /tmp/merlin-profile.xml <<'XML'
 XML
 adb push /tmp/merlin-profile.xml /data/local/tmp/merlin-profile.xml
 adb shell "D=/data/user/0/$PKG; U=\$(stat -c '%u:%g' \$D); mkdir -p \$D/files/manga_extensions \$D/shared_prefs; cp /data/local/tmp/merlin.apk \$D/files/manga_extensions/eu_kanade_tachiyomi_extension_tr_merlinscans.apk; cp /data/local/tmp/merlin-old.apk \$D/files/manga_extensions/tachiyomi-tr.merlinscans-v1.6.9.apk; cp /data/local/tmp/merlin-trust.xml \$D/shared_prefs/security_trust.xml; cp /data/local/tmp/merlin-profile.xml \$D/shared_prefs/kitsugi_manga_default_profile.xml; chown -R \$U \$D/files/manga_extensions \$D/shared_prefs; restorecon -R \$D/files/manga_extensions \$D/shared_prefs"
-# Isolated synthetic fixture: only the disposable emulator uses this hostname override.
-openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/fixture.key -out /tmp/fixture.crt -days 1 -subj '/CN=127.0.0.1' >/dev/null 2>&1
+# Isolated synthetic fixture and CONNECT proxy, used only by the disposable emulator.
+openssl req -x509 -newkey rsa:2048 -nodes -keyout /tmp/fixture.key -out /tmp/fixture.crt -days 1 -subj '/CN=merlintoon.com' >/dev/null 2>&1
 FIXTURE_KEY=/tmp/fixture.key FIXTURE_CERT=/tmp/fixture.crt python3 tools/merlintoon_android_fixture.py > /tmp/merlin-android/fixture.log 2>&1 &
 FIXTURE_PID=$!
-trap 'kill "$FIXTURE_PID" 2>/dev/null || true' EXIT
-adb reverse tcp:443 tcp:8443
+python3 tools/merlintoon_android_proxy.py > /tmp/merlin-android/proxy.log 2>&1 &
+PROXY_PID=$!
+trap 'kill "$FIXTURE_PID" "$PROXY_PID" 2>/dev/null || true' EXIT
+adb shell settings put global http_proxy 10.0.2.2:8888
 adb shell pm grant "$PKG" android.permission.READ_EXTERNAL_STORAGE || true
 adb shell pm grant "$PKG" android.permission.WRITE_EXTERNAL_STORAGE || true
 adb logcat -G 20M || true
@@ -63,8 +55,9 @@ for node in root.iter('node'):
     if text or node.get('clickable') == 'true':
         safe = (text or '<clickable>').replace('%', '%25').replace('\n', ' ')
         print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
-for line in open('/tmp/merlin-android/fixture.log', errors='replace'):
-    print(f"::notice title=Synthetic fixture::{line.strip().replace('%', '%25')}")
+for name in ('fixture', 'proxy'):
+    for line in open(f'/tmp/merlin-android/{name}.log', errors='replace'):
+        print(f"::notice title=Synthetic {name}::{line.strip().replace('%', '%25')}")
 crash = open('/tmp/merlin-android/crash.txt', errors='replace').read()
 if crash:
     import re
