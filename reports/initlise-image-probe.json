@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:34:58.698799+00:00",
+  "probedAt": "2026-11-07T15:35:46.739553+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -21,6 +21,8 @@
           "status": 200,
           "contentType": "application/json",
           "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69dfcd6c1d3de4efa1773cf3\",\"slug\":\"hazbin-otelde-cinayet\",\"allowUnauthenticated\":true,\"title\":\"Hazbin Otel\\\\'de Cinayet\"},\"series_slug\":\"hazbin-otelde-cinayet\",\"chapterNumber\":48,\"titl",
+          "bodyBytes": 1416,
+          "pagesFieldHead": "\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066048&s=JzDokXlQvtb56USznJb57x&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5\",\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066048&s=nrBqzBwindR8W4zDQnTdAW&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5\",\"/uploads/seri/haz",
           "pageCandidates": []
         },
         "slug+chslug": {
@@ -37,6 +39,23 @@
           "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
           "pageCandidates": []
         }
+      },
+      "readerGuard": {
+        "GET": {
+          "status": 405,
+          "setCookie": "",
+          "body": ""
+        },
+        "POST": {
+          "status": 200,
+          "setCookie": "",
+          "body": "{\"success\":true,\"verified\":true}"
+        }
+      },
+      "imageAfterGuard": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
       },
       "readerChunksSaved": [
         "3tldac6wxrrvc.js",
@@ -83,6 +102,8 @@
           "status": 200,
           "contentType": "application/json",
           "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"0381abdab8b910d3e990c536\",\"legacyWordPressId\":227,\"legacyGhostChapterId\":1960,\"seriesId\":{\"_id\":\"ff98f474b146769cdca828ec\",\"title\":\"Patron! Kızınızı İstiyorum!\",\"slug\":\"patron-kizinizi-istiyorum\",\"allowUnauthenticated\":false},\"s",
+          "bodyBytes": 791,
+          "pagesFieldHead": "",
           "pageCandidates": []
         },
         "slug+chslug": {
@@ -99,6 +120,23 @@
           "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
           "pageCandidates": []
         }
+      },
+      "readerGuard": {
+        "GET": {
+          "status": 405,
+          "setCookie": "",
+          "body": ""
+        },
+        "POST": {
+          "status": 200,
+          "setCookie": "",
+          "body": "{\"success\":true,\"verified\":true}"
+        }
+      },
+      "imageAfterGuard": {
+        "status": 403,
+        "type": "",
+        "bytes": 0
       },
       "readerChunksSaved": [
         "3tldac6wxrrvc.js",
