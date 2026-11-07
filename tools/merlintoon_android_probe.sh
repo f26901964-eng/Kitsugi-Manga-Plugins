@@ -21,9 +21,9 @@ adb shell pm grant "$PKG" android.permission.READ_EXTERNAL_STORAGE || true
 adb shell pm grant "$PKG" android.permission.WRITE_EXTERNAL_STORAGE || true
 adb shell monkey -p "$PKG" -c android.intent.category.LAUNCHER 1
 sleep 35
-# Allow any system permission prompt on this disposable emulator.
-adb shell input tap 155 380
-sleep 20
+# Return from any first-run card opened while the home screen was loading.
+adb shell input keyevent KEYCODE_BACK
+sleep 15
 adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
 adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
 adb shell screencap -p /sdcard/screenshot.png
@@ -38,7 +38,8 @@ for node in root.iter('node'):
     if text:
         safe = text.replace('%', '%25').replace('\n', ' ')
         print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
-for line in open('/tmp/merlin-android/logcat.txt', errors='replace'):
-    if ('merlinscans' in line.lower() or 'merlintoon' in line.lower()):
-        print(f"::notice title=Android Merlin::{line[-450:].strip().replace('%', '%25')}")
+lines = open('/tmp/merlin-android/logcat.txt', errors='replace').readlines()
+selected = [line for line in lines if any(tag in line.lower() for tag in ('merlinscans', 'merlintoon', 'mangaextensionloader'))]
+for line in selected[-35:]:
+    print(f"::notice title=Android Merlin::{line[-450:].strip().replace('%', '%25')}")
 PY

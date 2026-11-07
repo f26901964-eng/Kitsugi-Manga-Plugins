@@ -60,3 +60,6 @@ commit'i içindir. Yayınlanan v2.4.454 (`f5bdacb`) ve v2.4.455 (`eba2240`)
 etiketlerinin `installMangaApk` uygulaması farklıdır ve yüklemeden önce
 `unloadExtension` çağırır. Bu nedenle tespit, o sürümlerde katalogdan elle kurulum
 hakkında genelleştirilemez; kullanıcının sürümü ve hatanın gerçek nedeni bilinmiyor.
+Aynı şekilde yukarıdaki yalnız Keiyoushi otomatik güncelleyici tespiti `b78cbc4`
+main commit'i içindir; v2.4.455 yayımlı sürümün otomatik güncelleyicisi kullanıcı
+repolarını da kontrol eder ve özel repoya öncelik verir.

@@ -52,3 +52,10 @@ isteği HTTP 500 döndürdü.
 
 Bu kanıtlar olmadan yeni bir sürümün bu hatayı düzelttiğini söylemek veya tekrar
 varsayıma dayalı yayın yapmak mümkün değildir.
+
+## Gerçek tarayıcı denemesi
+
+GitHub Actions üzerinde TLS profilleri Chrome/Safari/Firefox ve gerçek Chromium/Firefox
+pencereleri ayrı ayrı denendi. Beşi de HTTP 403 Cloudflare challenge döndürdü; test
+sunucu yanıtını alamadı ve başarısız olarak işaretlendi. Bu bir görsel/okuyucu testi
+veya Cloudflare geçişi değildir. Kullanıcının ağından sonuç farklı olabilir.
