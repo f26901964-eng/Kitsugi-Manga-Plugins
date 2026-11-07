@@ -179,3 +179,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+# v5: curl_cffi testi
