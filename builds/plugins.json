@@ -97,5 +97,49 @@
     "nsfw": 0,
     "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.merlinscans-v1.6.12.apk",
     "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.merlinscans.png"
+  },
+  {
+    "name": "DuckScans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.duckscans",
+    "apk": "tachiyomi-tr.duckscans-v1.6.2.apk",
+    "lang": "tr",
+    "code": 106002,
+    "version": "1.6.2",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.duckscans-v1.6.2.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.duckscans.png"
+  },
+  {
+    "name": "LunariScans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.lunariscans",
+    "apk": "tachiyomi-tr.lunariscans-v1.6.2.apk",
+    "lang": "tr",
+    "code": 106002,
+    "version": "1.6.2",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.lunariscans-v1.6.2.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.lunariscans.png"
+  },
+  {
+    "name": "AiluraScans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.ailurascans",
+    "apk": "tachiyomi-tr.ailurascans-v1.6.2.apk",
+    "lang": "tr",
+    "code": 106002,
+    "version": "1.6.2",
+    "nsfw": 0,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.ailurascans-v1.6.2.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.ailurascans.png"
+  },
+  {
+    "name": "Oblivion Scans",
+    "pkg": "eu.kanade.tachiyomi.extension.tr.oblivionscans",
+    "apk": "tachiyomi-tr.oblivionscans-v1.6.2.apk",
+    "lang": "tr",
+    "code": 106002,
+    "version": "1.6.2",
+    "nsfw": 1,
+    "url": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/tachiyomi-tr.oblivionscans-v1.6.2.apk",
+    "iconUrl": "https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/apk/eu.kanade.tachiyomi.extension.tr.oblivionscans.png"
   }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           ]
+]
