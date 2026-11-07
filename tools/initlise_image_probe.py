@@ -194,7 +194,7 @@ def probe_site(name: str, base: str, slug: str) -> dict:
             pages_field = re.search(r'"pages":\[([^\]]{0,400})', body)
             entry["pagesFieldHead"] = pages_field.group(1)[:300] if pages_field else "bos"
         # sayfa yolu adayları: mutlak URL veya /uploads ile başlayan yol
-        candidates = re.findall(r'"(/uploads/[^"]+?\.(?:webp|jpe?g|png))"', body) + re.findall(
+        candidates = re.findall(r'"(/uploads/[^"]+?\.(?:webp|jpe?g|png)[^"]*)"', body) + re.findall(
             r'"(https?://[^"]+?\.(?:webp|jpe?g|png)[^"]*)"', body
         )
         entry["pageCandidates"] = candidates[:3]
