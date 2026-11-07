@@ -25,6 +25,7 @@ Bu dal, `main`deki beş kaynağı (SadScans dahil) koruyup Turkmanga'yı altınc
 | OkuToon | https://okutoon.com | 1.6.11 | 106011 |
 | SadScans | https://sadscans.net | 1.6.1 | 106001 |
 | Turkmanga | https://turkmanga.org | 1.6.2 (CI doğrulandı) | 106002 |
+| Epik Novel | https://www.epiknovel.com | 1.6.1 (CI yayını) | 106001 |
 
 ## Turkmanga CI doğrulaması
 

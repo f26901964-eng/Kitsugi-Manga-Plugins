@@ -1,0 +1,123 @@
+name: Epik Novel APK yayını
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/d00ca1e9-kitsugi-manga-plugins, main]
+    paths:
+      - keiyoushi-extensions-tr/src/tr/epiknovel/**
+      - tests/epiknovel_runtime/**
+      - .github/workflows/epiknovel-release.yml
+
+permissions:
+  contents: write
+
+concurrency:
+  group: epiknovel-release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Biçimi otomatik düzelt (spotlessApply)
+        working-directory: keiyoushi-extensions-tr
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          ./gradlew :src:tr:epiknovel:spotlessApply > /tmp/spotless.log 2>&1 || true
+          tail -5 /tmp/spotless.log
+          cd ..
+          git config user.name 'kitsugi-spotless'
+          git config user.email 'kitsugi-spotless@users.noreply.github.com'
+          git add keiyoushi-extensions-tr/src/tr/epiknovel
+          if ! git diff --cached --quiet; then
+            git commit -m "style: spotlessApply (epiknovel) [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase -q origin "$BRANCH" || true
+              if git push origin "HEAD:$BRANCH"; then break; fi
+              sleep 4
+            done
+          fi
+      - name: Derle ve test et
+        working-directory: keiyoushi-extensions-tr
+        run: |
+          ./gradlew :src:tr:epiknovel:testDebugUnitTest :src:tr:epiknovel:assembleRelease --stacktrace > /tmp/gradle.log 2>&1 || echo "GRADLE_FAILED" >> /tmp/gradle.log
+          tail -60 /tmp/gradle.log
+          if grep -q GRADLE_FAILED /tmp/gradle.log; then exit 1; fi
+      - name: Canlı sözleşme koşusu (site kontrolü)
+        run: |
+          set -o pipefail
+          REPORT=reports/epiknovel-runtime.json node tests/epiknovel_runtime/run.mjs 2>&1 | tee /tmp/epiknovel-probe.log
+      - name: APK'yı kataloğa işle ve tutarlılığı doğrula
+        run: |
+          set -o pipefail
+          {
+            python3 tools/prepare_extension_release.py epiknovel
+            python3 -m unittest discover -s tests
+          } 2>&1 | tee /tmp/publish.log
+      - name: Yayın dosyalarını dala işle
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -o pipefail
+          {
+            set -euo pipefail
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add -f prebuilt/apk apk builds/apk index.json plugins.json \
+              builds/index.json builds/plugins.json builds/index.v2.json \
+              registry/extensions.json registry/extensions.v2.json \
+              reports/epiknovel-runtime.json
+            echo '--- staged ---'
+            git status --porcelain
+            if git diff --cached --quiet; then
+              echo 'Yayın zaten güncel.'
+              exit 0
+            fi
+            git commit -m "ci: Epik Novel APK yayını (1.6.1) [skip ci]"
+            for i in 1 2 3; do
+              git pull --rebase -q origin "$BRANCH" || true
+              if git push origin "HEAD:$BRANCH"; then exit 0; fi
+              sleep 4
+            done
+            exit 1
+          } 2>&1 | tee /tmp/artifacts.log
+      - name: Derleme kaydını dala işle
+        if: always()
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          mkdir -p docs/build-logs
+          {
+            echo "commit: ${GITHUB_SHA}"
+            echo '--- live probe ---'
+            cat /tmp/epiknovel-probe.log 2>/dev/null || true
+            echo '--- publish ---'
+            cat /tmp/publish.log 2>/dev/null || true
+            echo '--- artifacts ---'
+            cat /tmp/artifacts.log 2>/dev/null || true
+            echo '--- build tail ---'
+            grep -iE "^e: |error:|Unresolved|Cannot|FAILURE|What went wrong" /tmp/gradle.log || true
+            tail -30 /tmp/gradle.log
+          } > docs/build-logs/epiknovel-build.log || true
+          git config user.name 'kitsugi-buildlog'
+          git config user.email 'kitsugi-buildlog@users.noreply.github.com'
+          git add -f docs/build-logs/epiknovel-build.log
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "ci: record the epiknovel build log [skip ci]"
+          for i in 1 2 3; do
+            git pull --rebase -q origin "$BRANCH" || true
+            if git push origin "HEAD:$BRANCH"; then exit 0; fi
+            sleep 4
+          done

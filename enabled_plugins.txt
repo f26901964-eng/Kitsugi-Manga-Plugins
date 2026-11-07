@@ -22,3 +22,6 @@ tr/duckscans
 tr/lunariscans
 tr/ailurascans
 tr/oblivionscans
+# Epik Novel (7 Kasım 2026): tam katalog (keşfet/arama/detay/bölüm) ve
+# metin bölümlerinin PNG sayfaya çevrilerek görüntü okuyucuda açılışı.
+tr/epiknovel
