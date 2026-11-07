@@ -45,6 +45,45 @@ adb shell am start -a android.intent.action.VIEW -d 'Kitsugianimelist://v1/manga
 sleep 30
 adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
 adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
+if [[ "${TEST_MODE:-duplicate}" == single ]]; then
+    cp /tmp/merlin-android/window.xml /tmp/merlin-android/browse.xml
+    tap_matching() {
+        local needle="$1" coords
+        coords=$(python3 - "$needle" /tmp/merlin-android/window.xml <<'PY'
+import re, sys, xml.etree.ElementTree as ET
+needle = sys.argv[1].casefold()
+root = ET.parse(sys.argv[2]).getroot()
+for node in root.iter('node'):
+    text = ' '.join((node.get('text', ''), node.get('content-desc', ''))).casefold()
+    if needle not in text:
+        continue
+    match = re.fullmatch(r'\[(\d+),(\d+)\]\[(\d+),(\d+)\]', node.get('bounds', ''))
+    if match:
+        x1, y1, x2, y2 = map(int, match.groups())
+        if x2 > x1 and y2 > y1:
+            print((x1+x2)//2, (y1+y2)//2)
+            break
+PY
+        )
+        if [[ -n "$coords" ]]; then
+            adb shell input tap $coords
+            return 0
+        fi
+        echo "::warning title=Android navigation::Could not find $needle on the current screen"
+        return 1
+    }
+    if tap_matching 'Buyucu Coban'; then
+        sleep 25
+        adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
+        adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
+        cp /tmp/merlin-android/window.xml /tmp/merlin-android/detail.xml
+        if tap_matching 'Bölüm 1'; then
+            sleep 25
+            adb shell uiautomator dump /sdcard/window.xml >/dev/null || true
+            adb pull /sdcard/window.xml /tmp/merlin-android/window.xml || true
+        fi
+    fi
+fi
 adb shell screencap -p /sdcard/screenshot.png
 adb pull /sdcard/screenshot.png /tmp/merlin-android/screenshot.png
 adb logcat -d -v time > /tmp/merlin-android/logcat.txt
@@ -52,17 +91,23 @@ adb shell cat "/data/user/0/$PKG/files/crash_log.txt" > /tmp/merlin-android/cras
 printf 'UI dump: ' && wc -c /tmp/merlin-android/window.xml
 python3 - <<'PY'
 import xml.etree.ElementTree as ET
-root = ET.parse('/tmp/merlin-android/window.xml').getroot()
+from pathlib import Path
 for name in ('fixture', 'proxy'):
     log = open(f'/tmp/merlin-android/{name}.log', errors='replace').read()
     if log:
         safe = log[-4000:].replace('%', '%25').replace('\n', '%0A').replace('\r', '%0D')
         print(f"::notice title=Synthetic {name}::{safe}")
-for node in root.iter('node'):
-    text = node.get('text') or node.get('content-desc')
-    if text or node.get('clickable') == 'true':
-        safe = (text or '<clickable>').replace('%', '%25').replace('\n', ' ')
-        print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
+for filename in ('browse.xml', 'detail.xml', 'window.xml'):
+    path = Path('/tmp/merlin-android') / filename
+    if not path.exists():
+        continue
+    items = []
+    for node in ET.parse(path).getroot().iter('node'):
+        text = node.get('text') or node.get('content-desc')
+        if text or node.get('clickable') == 'true':
+            safe = (text or '<clickable>').replace('%', '%25').replace('\n', ' ')
+            items.append(f"{safe} {node.get('bounds', '')}")
+    print(f"::notice title=Android UI {filename}::{'%0A'.join(items)[:9000]}")
 crash = open('/tmp/merlin-android/crash.txt', errors='replace').read()
 if crash:
     import re

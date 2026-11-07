@@ -99,3 +99,21 @@ kanıtlanmadı. `tools/kitsugi-beta-domain-recursion.patch` bu kontrolün deği�
 Tüm uygulama derlemesi ilk denemede bellek nedeniyle durdu, ikinci denemede Kotlin
 4 GB heap ile `OutOfMemoryError` verdi; Android derlemesi başarıyla doğrulanmış
 sayılmamalıdır. Ayrı JVM testleri uygulamanın cihazda çalıştığını kanıtlamaz.
+
+## Çift APK için Android karşılaştırması
+
+Yayımlanmış Kitsugi v2.4.455 ile gerçek MerlinToon 1.6.9 ve 1.6.11 APK'ları
+aynı temiz emülatöre ayrı dosyalar olarak konuldu. Keşfet ekranında uygulama,
+`eu.kanade.tachiyomi.extension.tr.merlinscans` anahtarı iki defa kullanıldığı için
+`IllegalArgumentException: Key ... was already used` ile çöktü. Aynı denemenin
+yalnız 1.6.11 yüklü kontrolünde keşfet ekranı açıldı ve **sentetik yerel** siteden
+1 seri gösterdi ([karşılaştırma 42324196229](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42324196229)).
+Bu gerçek bir çift APK kusurunun cihaz emülatöründeki kanıtıdır; kullanıcının cihazında
+çift kopya bulunduğunu veya bildirilen KTS-SRC-9008 hatasının bundan kaynaklandığını
+göstermez. Eklenti ve uygulama sürümleri gerçektir, sunulan seri HTML'i canlı site değildir.
+
+Alan adı özyineleme yaması için bağımsız JVM testinde yayınlanmış kodun
+`StackOverflowError` ile başarısız olduğu, yamanın aynı testi geçtiği negatif kontrolle
+doğrulandı ([42323291324](https://github.com/f26901964-eng/Kitsugi-Manga-Plugins/actions/runs/42323291324)).
+Bu test Android çerçevesinin yerine JVM stub'ları kullanır; uygulama derlemesinin veya
+cihazda yamanın başarıyla çalışmasının yerine geçmez.
