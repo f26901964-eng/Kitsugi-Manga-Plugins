@@ -144,6 +144,18 @@ abstract class Sadscans : KeiSource() {
     @Volatile
     private var blockedUntil: Long = 0L
 
+    /**
+     * Site yeni alan adına taşınıyor (sadscans.org). Sert WAF bloğu yendiğinde bir kez
+     * yedek alan adına geçilir; böylece site taşındığında eklenti güncellemesi beklemeden çalışır.
+     */
+    @Volatile
+    private var activeBase: String? = null
+
+    @Volatile
+    private var failoverDone = false
+
+    private val siteBase: String get() = activeBase ?: baseUrl
+
     private val apiHeaders: Headers
         get() = Headers.Builder().apply {
             val ua = webViewUserAgent
@@ -157,7 +169,7 @@ abstract class Sadscans : KeiSource() {
                 add("Sec-Ch-Ua-Platform", "\"Android\"")
             }
             add("Accept", "application/json, text/plain, */*")
-            add("Referer", "$baseUrl/seriler")
+            add("Referer", "$siteBase/seriler")
         }.build()
 
     private val trpcJson = Json {
@@ -198,7 +210,7 @@ abstract class Sadscans : KeiSource() {
         }.toString()
         // Sorgu dizesinde JSON (%22/%7B) göndermek Cloudflare WAF'ın "malformed data" kuralını
         // tetikliyor ve sert blok yiyor. Bu yüzden gövde POST ile taşınır; URL temiz kalır.
-        val url = "$baseUrl/api/trpc/$procedure".toHttpUrl().newBuilder()
+        val url = "$siteBase/api/trpc/$procedure".toHttpUrl().newBuilder()
             .addQueryParameter("batch", "1")
             .build()
         val request = Request.Builder()
@@ -245,6 +257,15 @@ abstract class Sadscans : KeiSource() {
         (code == 403 && body.contains("Cloudflare", ignoreCase = true) && body.contains("blocked", ignoreCase = true))
 
     private fun markBlocked() {
+        // Site taşınıyorsa (sadscans.org) bir kez yedek alan adına geçilir.
+        if (!failoverDone) {
+            failoverDone = true
+            MIRROR_BASES.firstOrNull { it != siteBase }?.let { alternative ->
+                activeBase = alternative
+                Log.w(LOG_TAG, "SadScans: WAF bloğu — yedek alan adına geçildi: $alternative")
+                return
+            }
+        }
         blockedUntil = System.currentTimeMillis() + BLOCK_COOLDOWN_MS
     }
 
@@ -262,7 +283,7 @@ abstract class Sadscans : KeiSource() {
 
     /** Cloudflare doğrulaması bu oturumda geçilmiş mi? (cf_clearance çerezi paylaşılan kavanozda) */
     private fun hasClearance(): Boolean = runCatching {
-        client.cookieJar.loadForRequest("$baseUrl/".toHttpUrl())
+        client.cookieJar.loadForRequest("$siteBase/".toHttpUrl())
             .any { it.name == "cf_clearance" && it.value.isNotBlank() }
     }.getOrDefault(false)
 
@@ -334,7 +355,7 @@ abstract class Sadscans : KeiSource() {
         }
 
         val result = frontendPage(
-            "$baseUrl/seriler",
+            "$siteBase/seriler",
             SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page, seriesRouter),
             timeout = 18.seconds,
         )
@@ -387,7 +408,7 @@ abstract class Sadscans : KeiSource() {
             if (now - at < SITEMAP_TTL_MS) return cached
         }
         if (now - sitemapFailedAt < SITEMAP_RETRY_MS) return emptyList()
-        val root = fetchSitemapText("$baseUrl/sitemap.xml") ?: run {
+        val root = fetchSitemapText("$siteBase/sitemap.xml") ?: run {
             sitemapFailedAt = now
             return emptyList()
         }
@@ -478,10 +499,10 @@ abstract class Sadscans : KeiSource() {
 
     // ============================== Detay + bölümler ==============================
 
-    override fun getMangaUrl(manga: SManga): String = baseUrl + manga.url
+    override fun getMangaUrl(manga: SManga): String = siteBase + manga.url
 
     override suspend fun getMangaByUrl(url: HttpUrl): SManga? {
-        if (url.host != baseUrl.toHttpUrl().host) return null
+        if (MIRROR_BASES.none { it.toHttpUrl().host == url.host }) return null
         if (url.pathSegments.firstOrNull() != "seriler") return null
         val slug = url.pathSegments.getOrNull(1)?.takeIf { it.isNotBlank() } ?: return null
         return SManga.create().apply {
@@ -525,7 +546,7 @@ abstract class Sadscans : KeiSource() {
         }
 
         val result = frontendPage(
-            "$baseUrl/seriler/$slug",
+            "$siteBase/seriler/$slug",
             SadscansFrontend.detailsScript(1),
             timeout = 18.seconds,
         ).also { rememberUserAgent(it) }
@@ -541,7 +562,7 @@ abstract class Sadscans : KeiSource() {
             val next = attempt {
                 decodeFrontend(
                     frontendPage(
-                        "$baseUrl/seriler/$slug",
+                        "$siteBase/seriler/$slug",
                         SadscansFrontend.detailsScript(page),
                         timeout = 12.seconds,
                     ).also { rememberUserAgent(it) },
@@ -644,7 +665,7 @@ abstract class Sadscans : KeiSource() {
 
     // ============================== Okuyucu ==============================
 
-    override fun getChapterUrl(chapter: SChapter): String = baseUrl + chapter.url
+    override fun getChapterUrl(chapter: SChapter): String = siteBase + chapter.url
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
         ensureNotBlocked()
@@ -666,7 +687,7 @@ abstract class Sadscans : KeiSource() {
     }
 
     override fun imageRequest(page: Page): Request = super.imageRequest(page).newBuilder()
-        .header("Referer", page.url.takeIf { it.startsWith("$baseUrl/reader/") } ?: "$baseUrl/")
+        .header("Referer", page.url.takeIf { it.startsWith("$siteBase/reader/") } ?: "$siteBase/")
         .build()
 
     // ============================== WebView köprüsü ==============================
@@ -744,7 +765,7 @@ abstract class Sadscans : KeiSource() {
 
     private fun absolute(path: String): String = when {
         path.startsWith("http://") || path.startsWith("https://") -> path
-        else -> baseUrl.trimEnd('/') + "/" + path.trimStart('/')
+        else -> siteBase.trimEnd('/') + "/" + path.trimStart('/')
     }
 
     private fun ChapterItemDto.toSChapter(): SChapter? {
@@ -805,6 +826,8 @@ abstract class Sadscans : KeiSource() {
         private const val PAGE_SIZE = 15
         private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
         private const val BLOCK_COOLDOWN_MS = 10 * 60 * 1000L
+        /** Site 2026-11 itibarıyla sadscans.org adresine taşınıyor. */
+        private val MIRROR_BASES = listOf("https://sadscans.net", "https://sadscans.org")
         private const val BLOCKED_MESSAGE =
             "SadScans (Cloudflare WAF) bu bağlantıyı geçici olarak engelledi. 10-15 dakika bekleyip tekrar deneyin; " +
                 "Wi-Fi ile mobil veri arasında geçiş yapmak yeni IP verir."

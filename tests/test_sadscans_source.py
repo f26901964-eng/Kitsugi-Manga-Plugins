@@ -142,7 +142,7 @@ class SadscansSourceTests(unittest.TestCase):
         """cf_clearance yokken tRPC denenirse uygulamanın 25 sn bütçesi challenge'ta biter."""
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('private fun hasClearance()', source)
-        self.assertIn('loadForRequest("$baseUrl/".toHttpUrl())', source)
+        self.assertIn('loadForRequest("$siteBase/".toHttpUrl())', source)
         self.assertIn('val direct = if (hasClearance())', source)
         self.assertIn('val direct = if (hasClearance()) attempt { fetchAllViaApi(slug) } else null', source)
 
@@ -165,6 +165,23 @@ class SadscansSourceTests(unittest.TestCase):
                          'sayfa ici fetch de JSON u URL e koymamali')
         self.assertIn("method: 'POST'", frontend)
         self.assertIn('?batch=1', frontend)
+
+    def test_new_domain_support(self):
+        """Site sadscans.org'a taşınıyor; sert blokta bir kez yedek alan adına geçilmeli."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertIn('MIRROR_BASES', source)
+        self.assertIn('sadscans.org', source)
+        self.assertIn('private val siteBase: String get() = activeBase ?: baseUrl', source)
+        self.assertIn('private var failoverDone', source)
+        self.assertIn('activeBase = alternative', source)
+        # URL üretiminde siteBase kullanılmalı (baseUrl sabit kalırsa taşınma çalışmaz)
+        self.assertIn('"$siteBase/seriler"', source)
+        self.assertIn('"$siteBase/api/trpc/$procedure"', source)
+        self.assertIn('"$siteBase/sitemap.xml"', source)
+        # "Site yapım aşamasında" sayfası ayrı ve anlaşılır hata vermeli
+        self.assertIn('YAPIM AŞAMASINDA', frontend)
+        self.assertIn('migrating: true', frontend)
 
     def test_waf_block_cools_down_without_requests(self):
         """Sert blok yiyince siteye istek atmaya devam etmek bloğu uzatır."""

@@ -28,6 +28,10 @@ internal object SadscansFrontend {
     private val CF_PRELUDE = """
               // ── Cloudflare: geçici doğrulama ekranı genelde 2-5 sn içinde kendiliğinden geçer,
               // bu yüzden hemen hata vermek yerine beklenir (12 sn). Sert WAF bloğu ayrı ele alınır.
+              // Site yeni alan adına taşınıyor: "SİTE YAPIM AŞAMASINDA / YAKINDA GELİYOR" sayfası.
+              if (/YAPIM AŞAMASINDA|YAKINDA GELİYOR|yeni adresimiz/i.test(text)) {
+                return out({error: 'SadScans yeni adresine taşınıyor (sadscans.org); site henüz yayında değil. Yakında tekrar deneyin.', migrating: true});
+              }
               var hardBlock = /Sorry, you have been blocked|Attention Required|cf-error-details/i.test(text);
               var challenge = !hardBlock && (
                 /Just a moment|Checking your browser|Verifying you are human|Verify you are human|Doğrulanıyor|Bir dakika lütfen/i.test(text) ||
