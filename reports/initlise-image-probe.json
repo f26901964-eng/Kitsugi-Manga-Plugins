@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:33:53.972700+00:00",
+  "probedAt": "2026-11-07T15:34:58.698799+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -17,23 +17,25 @@
       },
       "apiMatrix": {
         "slug+number": {
+          "query": "series=hazbin-otelde-cinayet&chapter=48",
           "status": 200,
-          "type": "application/json",
-          "bytes": 1418,
-          "head": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69d",
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69dfcd6c1d3de4efa1773cf3\",\"slug\":\"hazbin-otelde-cinayet\",\"allowUnauthenticated\":true,\"title\":\"Hazbin Otel\\\\'de Cinayet\"},\"series_slug\":\"hazbin-otelde-cinayet\",\"chapterNumber\":48,\"titl",
+          "pageCandidates": []
         },
         "slug+chslug": {
+          "query": "series=hazbin-otelde-cinayet&chapter=hazbin-otelde-cinayet-bolum-048",
           "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
         },
         "mongo+mongo": {
+          "query": "series=69dfcd6c1d3de4efa1773cf3&chapter=69e52923f4ac9dfee1b75f19",
           "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
         }
       },
       "readerChunksSaved": [
@@ -77,23 +79,25 @@
       },
       "apiMatrix": {
         "slug+number": {
+          "query": "series=patron-kizinizi-istiyorum&chapter=79",
           "status": 200,
-          "type": "application/json",
-          "bytes": 798,
-          "head": "{\"success\":true,\"data\":[{\"_id\":\"0381abdab8b910d3e990c536\",\"legacyWordPressId\":22",
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"0381abdab8b910d3e990c536\",\"legacyWordPressId\":227,\"legacyGhostChapterId\":1960,\"seriesId\":{\"_id\":\"ff98f474b146769cdca828ec\",\"title\":\"Patron! Kızınızı İstiyorum!\",\"slug\":\"patron-kizinizi-istiyorum\",\"allowUnauthenticated\":false},\"s",
+          "pageCandidates": []
         },
         "slug+chslug": {
+          "query": "series=patron-kizinizi-istiyorum&chapter=patron-kizinizi-istiyorum-bolum-79",
           "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
         },
         "mongo+mongo": {
+          "query": "series=ff98f474b146769cdca828ec&chapter=0381abdab8b910d3e990c536",
           "status": 400,
-          "type": "application/json",
-          "bytes": 65,
-          "body": "{\"success\":false,\"error\":\"CORS policy: Origin header required\",\"message\":\"Bu endpoint için Origin veya Referer header zorunludur.\"}"
+          "contentType": "application/json",
+          "bodyHead": "{\"success\":false,\"message\":\"GeÃ§ersiz bÃ¶lÃ¼m numarasÄ±\"}",
+          "pageCandidates": []
         }
       },
       "readerChunksSaved": [
