@@ -1,0 +1,485 @@
+  
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]> <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]> <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Against The God - Bölüm 1: Yun Che, Xiao Che Oku | Epik Novel</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="yandex-verification" content="d6d0e15ff54c9a42" />
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" async></script>
+
+ 
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.js async"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.5.4/bootstrap-select.css">
+  <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.12.0/jquery.validate.min.js" type="text/javascript" async></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.2/sweetalert2.all.min.js"></script>
+  <script type="text/javascript">//<![CDATA[
+$(window).on('load', function() {
+ $('.selectpicker').selectpicker({
+          style: 'btn-default',
+          size: 4
+      });
+});//]]> 
+
+</script>
+
+  <link rel="stylesheet" type="text/css" media="screen" href="https://fonts.googleapis.com/css?family=Noto+Sans:400,700"><link rel="stylesheet" type="text/css" media="screen" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css"><link rel="stylesheet" type="text/css" media="screen" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/acp/assets/css/animation.css"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/acp/assets/css/extended.min.css"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/acp/assets/css/custom.css"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/acp/assets/css/fontello.css"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/yeti.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/manga.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/ekstyle.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/fancyinput.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/owl.carousel.min.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/owlthemedefault.css?v=1.11"><link rel="stylesheet" type="text/css" media="screen" href="https://www.epiknovel.com/app/assets/css/fontawesome-stars.css?v=1.11"><style></style><script src="https://www.epiknovel.com/app/assets/js/jquery.form.js" async></script><script src="https://www.epiknovel.com/app/assets/js/fancyinput.js" async></script><script src="https://www.epiknovel.com/app/assets/js/owl.carousel.js" async></script><script src="https://www.epiknovel.com/app/assets/js/unweil.js" async></script> 
+  <!-- Modernizr -->
+    <!--[if IE 8]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.1/modernizr.min.js"></script>
+    <![endif]-->
+	<script src='https://www.google.com/recaptcha/api.js' async></script>
+	<script type='text/javascript' src='//platform-api.sharethis.com/js/sharethis.js#property=5ab90bee1fff98001395a52c&product=inline-share-buttons' async='async'></script>
+  <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.16/dist/summernote.min.js"></script>
+  <!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js%27);
+fbq('init', '799029343568514');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=799029343568514&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Facebook Pixel Code -->
+  </head>  <body>
+    
+    <div id="blog-page" style="padding-top: 45px;">
+
+      <div id="wrapper" class="container">
+
+      	
+<!-- Popüler --->
+
+    	  <!-- navigation area -->
+<style>
+  /* Note: Try to remove the following lines to see the effect of CSS positioning */
+  .affix {
+      top: 0;
+      width: 100%;
+      z-index: 9999 !important;
+  }
+
+  .affix + .container-fluid {
+      padding-top: 70px;
+  }
+  </style>
+  <script type="text/javascript">
+    var headheight = $('header').height();
+    $('#nav').attr('data-offset-top', headheight);
+  </script>
+
+    <div id="nav" class="navbar navbar-fixed-top navbar-default"  data-spy="affix" data-offset-top="200" role="navigation">
+      <div class="container">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+		  <a class="navbar-brand" href="https://www.epiknovel.com/"><img src="https://www.epiknovel.com/upload/epiklogo.png" alt="logo" /></a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav site-header">
+            <li><a href="https://www.epiknovel.com/seri-listesi"><i class="fa fa-compass fa-lg" aria-hidden="true"></i>
+ Keşfet</a></li>
+            <li class="hidden"><a href="https://www.epiknovel.com/sayfa/faq"><i class="fa fa-paper-plane fa-lg" aria-hidden="true"></i>
+ Site Rehberi</a></li>
+            <li><a href="https://www.epiknovel.com/premium/paketler"><i class="fa fa-leaf fa-lg" aria-hidden="true"></i> 
+Premium</a></li>
+            <li><a href="https://epikmanga.com" target="_blank"><i class="fa fa-book fa-lg" aria-hidden="true"></i> 
+Manga</a></li>
+          </ul>
+           <ul class="nav navbar-nav navbar-right site-header-right">
+				<li id="search-expanding" class="hidden">
+					<a id="icon-search">
+						<i class="fa fa-search fa-lg" aria-hidden="true"></i> <span class="hidden-mg hidden-lg"> Arama Yap</span>
+					</a>
+					<form class="navbar-form" method="get" action="https://www.epiknovel.com/seri-listesi" role="search" id="search-input">
+						<div class="form-group navbar-right">
+							<input type="search" class="form-control" placeholder="Arama Yap" name="q">
+						</div>
+					</form>
+				</li>
+        <li id="mode"><a onclick="Modeday()"><i class="fa fa-moon-o fa-lg" aria-hidden="true"></i></a></li>
+                                <li><a href="https://www.epiknovel.com/register"><i class="fa fa-sign-in fa-lg" aria-hidden="true"></i><span class="hidden-mg hidden-lg"> Giriş / Kayıt</span>
+</a></li>
+                      </ul>
+        </div><!-- /.navbar-collapse -->
+      </div>
+    </div>
+
+<!-- /navigation area -->        
+        <!-- article area -->
+        <div class="row">
+
+          <div class="col-md-9">	
+
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- esneknovel -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-5687037429311224"
+     data-ad-slot="7408768397"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>            <!-- Seri İnfo -->
+            <div class="col-md-12 boluminfo">
+            	<div class="row">
+            		<h3><strong>Bölüm 1: Yun Che, Xiao Che</strong></h3>
+            	</div>
+            	<div class="row">
+            		<a href="https://www.epiknovel.com/seri/against-the-god">Against The God</a>             	</div>
+            	<div class="row">
+            		<img class="thumbnail manga-cover img-bordered-primary" src="https://www.epiknovel.com/upload/cover/5929e018e06d0.gif" alt="avatar">
+            	</div>
+            	<div class="row">
+            		<span><i class="fa fa-eye" aria-hidden="true"></i> 58778					</span>   
+					<span id="bolumkalp">
+													<a><i class="fa fa-heart noheart" aria-hidden="true"></i></a> 88											</span>
+            	</div>
+            </div>
+            <hr>
+            <!-- Seri Content -->
+			<div class="col-md-12 bolumconfig">
+				<div class="col-md-4"><a style="margin:0px 0 20px 0;" href="https://www.epiknovel.com/seri/against-the-god/bolum/1730" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Önceki Bölüm</a></div><div class="col-md-4"></div><div class="col-md-4"><a style="margin:0px 0 20px 0;" href="https://www.epiknovel.com/seri/against-the-god/bolum/1732" class="btn btn-default btn-block">Sonraki Bölüm <span class="glyphicon glyphicon-chevron-right"></span></a></div>
+				<div class="col-md-12">
+					<div class="btn-group btn-group-justified">
+					  <a type="button" id="kucult" class="btn btn-danger"><i class="fa fa-minus" aria-hidden="true"></i> Küçült</a>
+					  <a type="button" id="sifirla" class="btn btn-primary">Sıfırla</a>
+					  <a type="button" id="buyult" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> Büyült</a>
+					</div>
+					<br>
+					<a class="btn btn-default btn-block" role="button" data-toggle="collapse" href="#renkler" aria-expanded="false" aria-controls="renkler">Yazı Rengini Değiştir</a>
+					<div class="collapse" id="renkler">
+						<div class="btn-group btn-group-justified">
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-danger" onclick="kirmizi()">Kırmızı</a>
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-info" onclick="mavi()">Mavi</a>
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-sari" onclick="sari()">Sarı</a>
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-default" onclick="beyaz()">Beyaz</a>
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-black" onclick="siyah()">Siyah</a>
+						  <a data-toggle="collapse" href="#renkler" class="btn btn-success" onclick="yesil()">Yeşil</a>
+						</div>
+					</div>
+					<br>
+				</div>
+			</div>
+          	<div id="icerik" class="noselectt">
+				<center>
+					<h4><b>Against The God - Bölüm 1: Yun Che, Xiao Che</b></h4>
+				</center>
+				<hr>
+				<p><br></p><p><b>Çeviri için Avare, kontrol / düzenleme için Bora arkadaşımıza teşekkürler. Keyifli okumalar…</b></p><p><br></p><p>Yun Che’nin şuuru yavaş yavaş yerine geliyordu.</p><p><br></p><p>Neler oluyor… Nasıl olur da ben ölmedim? Jue Yun Uçurumu’ndan atladığımı canlı bir şekilde hatırlıyorum, nasıl hayatta olabilirim! Nasılsa vücudum acı içerisinde değil… Ve en ufak bir rahatsızlık dahi hissetmiyorum? Nasıl oluyor bu?</p><p><br></p><p>Yun Che aniden gözlerini açtı ve çabucak doğruldu. Kendisini, rahat bir şekilde yumuşak yatakta yatarken buldu. Yatağın üzerinde kırmızı bir pankart asılı olduğundan, ortalık festival havasını andırıyordu.</p><p><br></p><p><b>“Ah! Xiao Che! Sen… Sen uyandın!”</b></p><p><br></p><p>Bir kızın sürpriz dolu iç çekişini duydu ve aynı kız görüş alanında belirdi.</p><p><br></p><p>Yeşil giyimli kız 15 ya da 16 yaşlarında görünüyordu. Çekici gül gibi dudaklar ve narin bir burun ile birlikte kar kadar açık tenliydi. Yarı saydam, pınar suyu gibi temiz ve şeffaf gözlerinden derin şaşkınlık ve birazda acıklı bir bakış vardı. Yüzü, göz kamaştırıcı kibarlığını ve yumuşaklığını dışarı vuruyordu. Bu genç yaşta, çoktan böyle bir güzellik sergiliyorken, gelecekte nasıl bir güzellikte olabileceğini kimse tahmin bile edemezdi.</p><p><br></p><p>Yanındaki kıza bakarken, Yun Che’nin ağzından bilinçsiz bir şekilde, iki kelime çıktı: <b>“Küçük Hala?”</b></p><p><br></p><p>Açık tenli kız yeşimsi ellerini Yun Che’nin alnına koyup ve rahat bir iç çekti ve sevinçli bir ifade ile konuşuyordu:&nbsp; <b>“Ne kadar rahatlatıcı; ateşin neredeyse normale dönmüş. Beni neredeyse ölesiye korkuttun. Xiao Che, iyi misin? Herhangi bir yerinde rahatsızlık hissediyorsan söyle bana.”</b></p><p><br></p><p>Derin kaygısı bulunan kızın gözlerinin karşısında, Yun Che odun gibi, kafasını salladı. Boşluğa boş gözlerle bakıyordu.</p><p><br></p><p><b>“Burada dinlen biraz. Dedene uyandığını söyleyeceğim. Bugün senin günün! Bayıldığın zaman, deden neredeyse delirdi ve Doktor Seto’yu bulmaya şahsen gitti.”</b></p><p><br></p><p>Kız o kadar telaş içindeydi ki Yun Che’nin şimdiki halinin anormalliğini fark etmedi. Yatakta uzanmasını işaret edercesine, Yun Che’nin omuzlarını itti ve çabucak gitti.</p><p><br></p><p>Kapı kapandığı gibi Yun Che, başını ellerinin arasına alarak, yatağın üzerinde doğruldu.</p><p><br></p><p>Burası, Engin Gökyüzü Kıtası’ndaki Yedi İmparatorluk’tan birinin en uç doğusunda bulunan şehirlerden biri olan – Yüzen Bulut Şehri idi. Ve kendisi Xiao klanının Beşinci Elderin tek torunu – Xiao Che idi! Daha yeni on altı yaşına basmıştı.Bu, şu anki kimliğiydi.</p><p><br></p><p>Aniden, hatıraları Cang Yun Kıtası’nın yaklaşık 20 yıllık hatıraları ile üst üste bindi ve kafası bayağı bir karışmaya başlamıştı.</p><p><br></p><p>Ben, Xiao Che isem… O zaman neden Cang Yun Kıtasının anılarına sahibim?</p><p><br></p><p>Cang Yun’da öldükten sonra bu bedene yolculuk ettiğimden dolayı mı?</p><p><br></p><p>Hayır! Ben kesinlikle Xiao Che’yim! Tüm bu odaya aşinayım ve çocukluğumdaki olayların hepsini açıkça hatırlıyorum. Hatıralarımdaki her şey kişisel deneyimim ve başkasının hatıralarını çalmış olmamın hiçbir yolu yok!</p><p><br></p><p>Öyleyse Cang Yun’daki her şey rüya mıydı? Jue Yun uçurumundan atladıktan sonra mı gerçekten uyandım?</p><p><br></p><p>Ama Cang Yun’daki hayatının hatıraları gün gibi aşikardı… O Yirmi dört yıllık sevgi ve nefret nasıl olur da sadece bir rüya olabilir!</p><p><br></p><p>Ne haltlar dönüyordu böyle?</p><p><br></p><p>Yun Che… Şimdiki Xiao Che, yavaşça sakinleşmeye başladı, uzun bir süre sonra durgunlaşmıştı ve düşüncelerini düzene sokmuştu.</p><p><br></p><p>Sabah daha erkendi ve gökyüzü daha tam aydınlanmamıştı. Bugün kendisinin ve Xia klanın büyük düğün günü. İki saat önce Küçük Halası tarafından uyandırıldı ve kırmızı düğün elbisesini giydi. Küçük Halasının bizzat yaptığı lapayı yedi ve bedenindeki bütün gücü kaybetti. Ondan sonra olan hiçbir şeyi hatırlamıyordu.Şu ana kadar uyanmadı.</p><p><br></p><p>Dudaklarından garip bir koku geldi ve Xiao Che’nin dudakları kıvrıldı. Birden yüz ifadesi değişti.</p><p><br></p><p>Bu… Katleden Kalp Tozu!</p><p><br></p><p>Cang Yun kıtasında, vücudundaki Gökyüzü Zehir Sedefi ile yaşadığı o yıllarda Yun Che dünyadaki mevcut bütün zehirleri öğrendi ve denilebilir ki aşina olmadığı hiçbir zehir yoktu. Sadece bir kokudan zehrin ismini ve etkilerini tanımlayabilirdi. Aynı zamanda Gökyüzü Zehir Sedefi’nden dolayı zehir geçirmezdi. Ne kadar toksin olursa olsun hiçbir zehir tarafından zarar göremezdi.</p><p><br></p><p>Gökyüzü Zehir Sedefi</p><p><br></p><p>Katleden Kalp Tozu, eşsiz ruh çimeni ve kiraz elması ağacından mor damarların birleştirilmesi sonucu yapılır. Eğer suyun içinde çözünürse, zehir renksiz ve tatsız olur. Zehir vücuda girdikten on saniye sonra insan hayatını kaybeder ve kimse de, izi sürülemez bir zehir olduğu için esas ölüm nedenini bilemez.</p><p><br></p><p>Xiao Che’nin gözleri bir an bulutlandı ve anında ne olduğunu anladı.</p><p><br></p><p>Esasında, gerçekten bayılmadı ama onu yerine Katleden Kalp Tozu içeren lapayı içti ve ölümüne zehirlenmişti! Cang Yun’da doğdu ama Jue Yun uçurumundan atladıktan sonra… Bu dünyada ölü bir bedenin içine reankarne olmuştu.</p><p><br></p><p>Eğer biri bunu duysaydı, Arap Gecelerindeki hikâyelerinden biri gibi gelirdi ama o, Xiao Che’nin düşünebildiği tek mantıklı açıklama idi!</p><p><br></p><p>Bekle bir dakika… Gerçekten öyle ise, o zaman bu bedenin antitoksin(zehri engelleme) yeteneği olmaması gerek. Bedenin önceki sahibi kısa zaman önce ölmüşken, kendisi nasıl olur da Katleden Kalp Tozundan güvende olabilirdi.</p><p><br></p><p>Sol elinin ayasından hafif, garip bir his geliyordu. Xiao Che sol elini kaldırıp ayasındaki yeşil yuvarlak bir damgaya şaşkın bir şekilde bakıyordu.</p><p><br></p><p>Bu şekil, bu renk, bu boyut… Açıkça, Gökyüzü Zehir Sedefi ile aynıydı!</p><p><br></p><p>Jue Yun uçurumundan atlamadan önce, Gökyüzü Zehir Sedefini umutsuzca yutmuştu ama kendisine ne olacağını aslında bilmiyordu. Elindeki bu iz, beklenmedik bir şekilde Gökyüzü Zehir Sedefi idi ve fiilen kendisiyle beraber bu dünyaya geçmişti.</p><p><br></p><p>Sanki bir transtaymış gibi, Xiao Che Gökyüzü Zehir Sedefine baktı ve bilinçsizce fısıldadı. <b>“Gökyüzü Zehir Sedefi…”</b></p><p><br></p><p>Sesi azalmaya başlamıştı ki, ayasındaki yeşil iz, aniden yeşil bir ışık yaymaya başladı. Anında, hafif bir baş dönmesi geldi ve bilinçsizce gözlerini kapattı. Gözlerini açtığında ise bütün dünyası yeşile boyanmıştı.</p><p><br></p><p>Bu yeşilin dünyası, geniş ve açıktı. Görülecek hiçbir sınır yoktu ve bu mekân boyunca Gökyüzü Zehir Sedefi’nin kokusu vardı. Uzun bir sersemlikten sonra, Xiao Che anlamıştı, Gökyüzü Zehir Sedefi’nin dünyası girmişti.</p><p><br></p><p>Gökyüzü Zehir Sedefi’nin içinde böyle geniş ve açık bir dünyanın olacağını kim düşünebilirdi ki! Daha da akıl almaz olanı ise, sonuçlarını düşünmeden Gökyüzü Zehir Sedefi’ni yedikten sonra, Gökyüzü Zehir Sedefi fiilen kendisiyle birlikte seyahat etmişti ve dahası vücudunun bir parçası olmuş gibi görünüyordu.</p><p><br></p><p>Eğer giriş yolu varsa, bir çıkış yolu da olmak zorundaydı.</p><p><br></p><p>Xiao Che gözlerini kapatıp düşüncelerine yoğunlaşıyordu. Aniden, yeşilin dünyası dağıldı ve gözlerini tekrar açtığında, görüş alanında, aşina olduğu oda vardı.</p><p><br></p><p>Ayasındaki zayıf yeşil ize bakarak, Xiao Che yavaşça gülümsedi… Bu saçma olayın neden olduğunu bilmesen de, sadece reankarne olmakla kalmayıp, ayrıca iki yaşamdan da hatıralarını barındırıyordu. Belki, tanrılar bile iki yaşamın acı çekmesini izleyememişti, ona acıyıp kendisine tekrar yaşama şans vermişlerdi!</p><p><br></p><p>Azure Bulut Kıtasında sayısız güçlü kişilerin zulmüne kurban olmuştu. Sonunda ölmesine rağmen, dünyayı kendisi sarsmıştı; ne kadar ilham verici ve hayrette bırakan bir durumdur bu! Yine de, şu an vücudu sadece normaldi… Hayır, kısıtlama olmadan konuşacak olursak, zayıflığın simgesi olarak kabul edilebilirdi.</p><p><br></p><p>Kaynak Bulut Kıtasında, kaynak kuvveti en önemlisidir. Xiao Che, Xiao Klanında doğmuş olsa da ve en güçlü Beşinci Elder Xiao Lie’nin torunu olsa bile, on altı yaşında olmasına rağmen, kaynak gücü hala İlk Kaynak Âleminin birinci seviyesinde. Yedi buçuk yaşındayken ruh gücünü geliştirmeye başladı, sekiz yaşında İlk Kaynak Âlemi birinci seviyeye girdi ve sonrasında tam sekiz yıl boyunca hiçbir gelişme olmadı. Bütün Xiao Klanı tarafından dalga geçilmişti.</p><p><br></p><p>Sonrasında, Xiao Lie Yüzen Bulut Şehrinin birinci sınıf doktoru Dr. Seto’yu vücudunu incelemesi için davet etti ve çok şaşırtıcı bir şekilde Xiao Che’nin hasarlı kaynak damarları ile doğduğunu buldu. Hasar o kadar ciddi ki iyileşmek neredeyse imkânsızdı. Bu halde, Xiao Che, İlk Kaynak Âleminin ilk seviyesinde kalacaktı ve ne kadar sıkı çalışırsa çalışsın asla ilerleyemeyecekti.</p><p><br></p><p>Hayatı pahasına çalışsa bile, ömrü boyunca İlk Kaynak Âlem’inin birinci seviyesinde kalırdı. Bu tür bir insan şüphesiz Kaynak Gökyüzü Kıtasındaki en aşağı varlıktı ve Xiao Klanında tamamen bir maskara durumundaydı. Eğer dedesi Xiao Lie, Xiao Klanındaki en güçlü, ayrıca Yüzen Bulut Şehrindeki en güçlü kişi olduğu söylenebilen, kişi olmasaydı, kimse onun için kılını bile kımıldatamazdı.</p><p><br></p><p>Xiao Klanı, Yüzen Bulut Şehrinde Kaynak yollarında terbiye gören üç büyük aileden biridir ve sayısız güçlü varlıkları vardı.</p><p><br></p><p>Aynı nesilden gelen çok sayıdaki genç arasında, Xiao Che’nin gereksiz bir varoluş olduğu söylenebilirdi. Bir gün ölse bile, birkaç kişi dışında kimse umursamazdı. Ama bugün bazıları elde edilmesi çok güç ve pahalı olan Katleden Kalp Tozu’nu kullanarak onu fiilen onu öldürmeye çalıştılar. Xiao Che nedenini şimdi açıkça biliyordu.</p><p><br></p><p>Çünkü bugün, kendisi ve Xia Qingyue arasındaki düğün günüydü.</p><p><br></p><p>Xia Qingyue kendisiyle aynı yaştaydı. Fakat onun bu kadar genç yaşta, Kaynak kuvvetini İlk Kaynak Âleminin onuncu seviyesine kadar ulaştığı belirlenmişti, neredeyse İlk seviyeden çıkmak ve Başlangıç Kaynak Âlemine adım atmak üzereydi.&nbsp;</p><p><br></p><p>Xia klanında, yüz yıldan beri, on altı yaşında kaynak gücünde bu seviyeye gelen tek kişiydi. Bazı dedikodulara göre, bu şekilde gelişmeye devam ederse, on yıl sonra Xia klanının tarihinde Yeryüzü Kaynak Âlemine adım atacak ilk kişi olacaktı ya da Yüzen Bulut Şehri’nde kimsenin ulaşamadığı, geçen birkaç yüzyılda kimsenin ulaşma düşüncesinin bile olmadığı, Gökyüzü Kaynak Âlemine bile ulaşabilirdi.</p><p><br></p><p>Daha da önemlisi o, son derece akıllı olmasının yanı sıra aşırı derecede güzeldi ve bütün Yüzen Bulut Şehrince en güzel kız olarak kabul görüyordu. Ona karşı, ilgisi olan Yüzen Bulut Şehrinin bütün gençlerinin ağzının suyu akıyordu.&nbsp;</p><p><br></p><p>Eğer Xia klanı damat bakmaya başlasaydı, bekleyenlerin sırası büyük ihtimalle Yüzen Bulut Şehri’nin güney ve kuzey kapısına uzayacak kadar uzun olurdu.</p><p><br></p><p>Yüzen Bulut Şehrinde zekâ ve güzelliğin en üst noktası olan bu kız, fiilen bu neslin hiç geleceği olmayan, en değersiz genci ile evleniyordu.&nbsp;</p><p><br></p><p>Kim bilir kaç kişi kıskançlık ve öfke ile ayağını yere vuruyordur. Bu vaka tamamen, göz kamaştırıcı nilüfer çiçeğinin kimsenin dönüp bakmayacağı bir gübre yığınının içine gömülmesidir.</p><p><br></p><p>Xia Qingyue’ye platonik aşk duyanlar tabi ki Xiao Che’ye karşı aşırı kıskançlık ve nefret besliyorlardı. Daha da vazgeçmeyeceklerdi. Anlaşılan onu zehirle öldürmeyi bile denemişlerdi. Şimdiki Xiao Che bunu düşündükçe, bu durum hiç de acayip görünmüyordu.</p><p><br></p><p><b>“Kadınlar gerçekten sorunların kökü.”</b> Xiao Che yataktan kalkarken kendi kendine konuşuyordu.. Ama Xia Qingyue’nin bütün bir şehri etkileyebilecek güzelliği ve çekiciliğini düşünürken, ağzında bir gülümseme belirdi: <b>“Yine de, böyle bir gelinle evleneceğim, bu gerçekten iyi bir başlangıç.”</b></p><p><b><br></b></p>
+							</div>
+
+            <div class="clearfix"></div>
+            <div class="col-md-12">
+            	<div class="row" id="kalpbelow">
+            			            	</div>
+            </div>
+			<div class="col-md-12">
+				<div class="col-md-4"><a style="margin:0px 0 20px 0;" href="https://www.epiknovel.com/seri/against-the-god/bolum/1730" class="btn btn-default btn-block"><span class="glyphicon glyphicon-chevron-left"></span> Önceki Bölüm</a></div><div class="col-md-4"></div><div class="col-md-4"><a style="margin:0px 0 20px 0;" href="https://www.epiknovel.com/seri/against-the-god/bolum/1732" class="btn btn-default btn-block">Sonraki Bölüm <span class="glyphicon glyphicon-chevron-right"></span></a></div>
+			</div>
+            <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- esneknovel -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-5687037429311224"
+     data-ad-slot="7408768397"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>			<div class="clearfix"><br><br><br></div>
+							
+			<div id="yorumlar" class="col-md-12">
+				<h3><i class='fa fa-comments-o' aria-hidden='true'></i> Yorumlar</h3>
+				
+				<a onclick="show_yorum();" class="btn btn-warning btn-lg btn-block">Yorumları Göster</a>
+
+												
+			</div>
+						
+          </div>
+		  <div class="col-md-3">
+		  <center>
+<a target="_blank" href="https://www.instagram.com/epiknovel/" class="sa fa fa-instagram"></a>
+<a target="_blank" href="https://www.facebook.com/Epiknovel/" class="sa fa fa-facebook"></a>
+<a target="_blank" href="https://www.youtube.com/channel/UC-tCHUsJYOKx-h-1shJ_ODA" class="sa fa fa-youtube"></a>
+
+<br>
+<br>
+	<div class="panel panel-default">
+	  <div class="panel-heading"><h4><i class="fa fa-user-circle-o fa-4" aria-hidden="true"></i> Giriş Yap</h4></div>
+	  <div class="panel-body">
+	    
+                        <form action="https://www.epiknovel.com/login" method="POST" class="form-horizontal" accept-charset="utf-8">              <input name="action" value="login" type="hidden" />              <input name="token" value="5fcd9eb79e9bb653d0796ca4d2ab638b" type="hidden" />              <fieldset>
+                <div class="form-group ">
+                  <div class="col-lg-12">
+                    <input autocomplete="off" required="required" placeholder="Kullanıcı Adı veya Email" class="form-control" name="username_email" value="" type="text" />                  </div>
+
+                </div>
+                <div class="form-group" >
+                  <div class="col-lg-12">
+                    <input autocomplete="off" required="required" placeholder="Şifreniz" class="form-control" type="password" name="password" value="" />                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-12">
+                     <a href="https://www.epiknovel.com/hatirla">Şifremi Unuttum?</a>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <div class="col-lg-12 col-lg-offset-3">
+                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                  </div>
+                </div>
+              </fieldset>
+            </form>          
+	  </div>
+	</div>
+</center>
+ 
+
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<!-- esneknovel -->
+<ins class="adsbygoogle"
+     style="display:block"
+     data-ad-client="ca-pub-5687037429311224"
+     data-ad-slot="7408768397"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+<h3>Site İstatistikleri</h3>
+<ul class="list-group">
+  <li class="list-group-item">
+    <span class="badge">60677</span>
+    Üye Sayısı
+  </li>
+  <li class="list-group-item">
+    <span class="badge">417</span>
+    Seri Sayısı
+  </li>
+  <li class="list-group-item">
+    <span class="badge">44793</span>
+    Bölüm Sayısı
+  </li><!---
+  <li class="list-group-item">
+    <span class="badge">21</span>
+    Premium Seri Sayısı
+  </li>--->
+</ul>
+
+		  </div>
+        </div>
+        <!-- /article area -->
+
+		  <!-- footer and copyright -->
+      <div class="clearfix"><br /><br /></div>
+        <div class="well well-lg">
+      	<!-- footer -->
+<div class="row">
+
+  <div class="col-sm-4">
+    <p>
+          </p>
+    <p>
+      <h4>Kurumsal</h4>
+        <a href="https://www.epiknovel.com/sayfa/hakkimizda">Hakkımızda</a><br>
+        <a href="https://www.epiknovel.com/sayfa/teslimat-ve-iade">Teslimat ve İade</a><br>
+        <a href="https://www.epiknovel.com/sayfa/gizlilik-sozlesmesi">Gizlilik Sözleşmesi</a><br>
+        <a href="https://www.epiknovel.com/sayfa/mesafeli-satis-sozlesmesi">Mesafeli Satış Sözleşmesi</a><br>
+        <a href="https://www.epiknovel.com/sayfa/iletisim">İletişim</a>
+    </p>
+  </div>
+  
+  <div class="col-sm-4 text-center">
+    <p>
+      <h4>Faydalı Linkler</h4>
+		<a href="https://www.epiknovel.com/premium/paketler">Premium Paketler</a><br>
+        <a href="https://www.epiknovel.com/ayarlar">Profil Ayarları</a><br>
+        <a href="http://epikmanga.com">Epik Manga</a><br>
+        <a href="http://epikkitap.com">Epik Kitap</a><br>
+    </p>
+  </div>
+
+  <div class="col-sm-4 text-right">
+    <p>
+      <a target="_blank" href="https://epiknovel.com">Epik Novel</a> &copy; 2017 | Tüm hakları saklıdır..<p><!---<img src="https://www.epiknovel.com/upload/footerlogo.png" alt="footerlogo"></p><p><img src="https://www.epiknovel.com/upload/visamaster.png" alt="visamaster"> ---></p>
+        
+    </p>
+  </div>
+</div>
+<!-- /footer -->
+
+
+<script src='//cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js' defer=”defer”></script>
+<script src="https://www.epiknovel.com/app/assets/tinymce/jquery.tinymce.min.js" async></script><script src="https://www.epiknovel.com/app/assets/js/jquery.bootstrap-autohidingnavbar.js" async></script><script src="https://www.epiknovel.com/acp/assets/js/custom.js" async></script><script src="https://www.epiknovel.com/app/assets/js/jquery.barrating.js" async></script><script src="https://www.epiknovel.com/app/assets/js/color.js" async></script><script src="https://www.epiknovel.com/app/assets/js/jquery.validate.js" async></script><script src="https://epiknovel.com/app/assets/tinymce/tinymce.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous" async></script>
+
+<script type="text/javascript" defer=”defer”>
+  $(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+});
+</script>
+<script>
+function update(jscolor) {
+    // 'jscolor' instance can be used as a string
+    document.getElementById('maincontent').style.color = '#' + jscolor
+}
+</script>
+<script type="text/javascript" defer=”defer”>
+        function getSize() {
+  size = $( "article" ).css( "font-size" );
+  size = parseInt(size, 10);
+  $( "#font-size" ).text(  size  );
+}
+
+//get inital font size
+getSize();
+
+$( "#up" ).on( "click", function() {
+
+  // parse font size, if less than 50 increase font size
+  if ((size + 2) <= 50) {
+    $( "article" ).css( "font-size", "+=2" );
+    $( "#font-size" ).text(  size += 2 );
+  }
+});
+
+$( "#down" ).on( "click", function() {
+  if ((size - 2) >= 12) {
+    $( "article" ).css( "font-size", "-=2" );
+    $( "#font-size" ).text(  size -= 2  );
+  }
+});
+    </script>
+<script type="text/javascript" defer=”defer”>
+    $(function(){
+      // bind change event to select
+      $('#dynamic_select').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+	$(function(){
+      // bind change event to select
+      $('#dynamic_select1').on('change', function () {
+          var url = $(this).val(); // get selected value
+          if (url) { // require a URL
+              window.location = url; // redirect
+          }
+          return false;
+      });
+    });
+</script>
+
+<script type="text/javascript" defer=”defer”>
+   $(function() {
+      $('#rating').barrating({
+        theme: 'fontawesome-stars',
+        showSelectedRating: true
+      });
+   });
+   $(function() {
+      $('#rating1').barrating({
+        theme: 'fontawesome-stars',
+        showSelectedRating: true
+      });
+   });
+   $(function() {
+      $('#rating2').barrating({
+        theme: 'fontawesome-stars',
+        showSelectedRating: true
+      });
+   });
+   $(function() {
+      $('#rating3').barrating({
+        theme: 'fontawesome-stars',
+        showSelectedRating: true
+      });
+   });
+</script>
+<!-- 
+<script type="text/javascript">tinymce.init({ selector:'textarea#yorum', language: 'tr' });</script>
+<script type="text/javascript">tinymce.init({
+  selector: 'textarea#icerik',
+  height: 500,
+  language: 'tr',
+  theme: 'modern',
+  plugins: [
+    'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+    'searchreplace wordcount visualblocks visualchars code fullscreen',
+    'insertdatetime media nonbreaking save table contextmenu directionality',
+    'emoticons template paste textcolor colorpicker textpattern imagetools codesample toc'
+  ],
+  toolbar1: 'undo redo | insert | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+  toolbar2: 'print preview media | forecolor backcolor emoticons | codesample',
+  image_advtab: true,
+  content_css: [
+    '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+    '//www.tinymce.com/css/codepen.min.css'
+  ],
+  relative_urls: false
+ });
+  </script>
+  <!-- Global Site Tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-106570457-1"></script>
+<script type="text/javascript" defer=”defer”>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments)};
+  gtag('js', new Date());
+
+  gtag('config', 'UA-106570457-1');
+</script>
+<script type="text/javascript">
+  $(document).ready(function() {
+      $(".navbar-fixed-top").autoHidingNavbar({
+      // see next for specifications
+    });
+  });
+  </script>
+
+  				        </div>
+        		<script type="text/javascript">
+			function show_yorum() {
+				  $.ajax({
+					   type: "POST",
+		               url: "https://www.epiknovel.com/yorum/bolum/1731",
+			           dataType: "text",
+					   success:function(msg) {
+						 $('#yorumlar').html(msg);
+					   }
+
+				  });
+			 }
+		</script>
+        <center style="margin-bottom: 10px;"><a data-toggle="tooltip" data-placement="top" title="H.Burak Taşyürek | Web Geliştiricisi" href="http://hburaktasyurek.com" data-original-title="H.Burak Taşyürek | Web Geliştiricisi"><img src="https://i.hizliresim.com/5GRBND.png" alt="creator"></a></center>
+      <h6><a href="https://puzzmos.com" rel="external">manga tr</a></h6>
+	  </div>
+    </div>
+
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/vce701823e78c4301a35b7e07294d87301792088814092" integrity="sha512-UKNk8GbxkABxKcXYuLkO16EleLGUkcvJWtpSNmExE0Too3ZaFAxTscNWEc1OdAv5/BikHawapSCaiD2XCmp+Bw==" data-cf-beacon='{"version":"2024.11.0","token":"8fe0a679e4b94fe9a2172874e699a116","r":1,"spa":2}' crossorigin="anonymous"></script>
+</body>
+  </html>
