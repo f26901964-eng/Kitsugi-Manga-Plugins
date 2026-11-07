@@ -47,6 +47,20 @@ class SyncTest(unittest.TestCase):
         self.assertTrue((self.root / 'builds/apk' / removed['apk']).is_file())
         self.assertEqual(len(json.loads((self.root / 'index.json').read_text())), 2)
 
+    def test_v1_catalog_survives_kitsugi_decoy_check_after_trim(self):
+        # Kitsugi checks trimmed String.length (UTF-16 units) before parsing V1.
+        # Test several list sizes, including empty, to guard against regressions.
+        for modules, count in (('', 0), ('tr/mangatr\n', 1), ('tr/mangatr\ntr/afroditscans\n', 2)):
+            with self.subTest(modules=modules):
+                self.activate(modules)
+                for path in ('index.json', 'plugins.json', 'builds/index.json', 'builds/plugins.json'):
+                    payload = (self.root / path).read_text(encoding='utf-8').strip()
+                    self.assertGreaterEqual(len(payload.encode('utf-16-le')) // 2, 5000)
+                    self.assertEqual(len(json.loads(payload)), count)
+                    self.assertFalse(any(marker.lower() in payload.lower() for marker in (
+                        'Outdated App', 'Update to Mihon', 'Update to Tachiyomi',
+                    )))
+
     def test_invalid_list_does_not_change_published_catalog(self):
         self.activate('tr/mangatr\n')
         before = (self.root / 'index.json').read_bytes()
