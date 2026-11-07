@@ -50,19 +50,21 @@ printf 'UI dump: ' && wc -c /tmp/merlin-android/window.xml
 python3 - <<'PY'
 import xml.etree.ElementTree as ET
 root = ET.parse('/tmp/merlin-android/window.xml').getroot()
+for name in ('fixture', 'proxy'):
+    log = open(f'/tmp/merlin-android/{name}.log', errors='replace').read()
+    if log:
+        safe = log[-4000:].replace('%', '%25').replace('\n', '%0A').replace('\r', '%0D')
+        print(f"::notice title=Synthetic {name}::{safe}")
 for node in root.iter('node'):
     text = node.get('text') or node.get('content-desc')
     if text or node.get('clickable') == 'true':
         safe = (text or '<clickable>').replace('%', '%25').replace('\n', ' ')
         print(f"::notice title=Android UI::{safe} {node.get('bounds', '')}")
-for name in ('fixture', 'proxy'):
-    for line in open(f'/tmp/merlin-android/{name}.log', errors='replace'):
-        print(f"::notice title=Synthetic {name}::{line.strip().replace('%', '%25')}")
 crash = open('/tmp/merlin-android/crash.txt', errors='replace').read()
 if crash:
     import re
     match = re.search(r'▶ HATA ZİNCİRİ(.*?)(?:▶ SON BİLİNEN EKRAN|$)', crash, re.S)
-    excerpt = (match.group(1) if match else crash)[-14000:]
+    excerpt = (match.group(1) if match else crash)[:8000]
     escaped = excerpt.replace('%', '%25').replace('\r', '%0D').replace('\n', '%0A')
     print(f"::warning title=Android crash report::{escaped}")
 lines = open('/tmp/merlin-android/logcat.txt', errors='replace').readlines()
