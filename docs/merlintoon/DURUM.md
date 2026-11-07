@@ -46,3 +46,9 @@ InitManga davranışı korunur; giriş veya ücret gerektiren içeriğe erişim 
 Kullanıcının uygulamadan güncelleyip yeniden deneyebilmesi için 1.6.10'daki aynı okuyucu
 mantığı sürüm artırılarak yeniden derlenmiştir. Bu sürüm Büyücü Çoban hatasına yönelik yeni
 bir okuyucu düzeltmesi içermez; söz konusu bölümün HTML'i ve cihazdaki sonuç doğrulanmamıştır.
+
+### Katalog güncellemesinin görünmemesi
+
+Kitsugi-Beta'nın incelenen [MangaRepoClient](https://github.com/f26901964-eng/Kitsugi-Beta/blob/b78cbc4cdc39808cb0ec475026edef6b464b71ed/app/src/main/java/com/kitsugi/animelist/data/remote/MangaRepoClient.kt) kodu, V1 JSON listesinin `trim()` sonrası uzunluğu 5.000 UTF-16 karakterinden azsa bunu sahte katalog sayıp kullanıcı deposu yerine Keiyoushi'ye yönlendiriyor. Gerçek V1 yayın kataloğu 4.433 karakterdi; bu, özel depo yüklemesini ve güncelleme görünürlüğünü etkileyebilir. Cihazdaki gerçek repo adresi ve durum doğrulanmadığından tek neden olduğu söylenemez.
+
+V1 çıktısı, dizi içindeki geçerli JSON boşluklarıyla en az 5.100 UTF-16 karakterine tamamlanır; liste ve APK'lar değişmez. Boş ve küçük kataloglar dahil birim testleri bu eşiği denetler. V2 kataloğu alternatif adresi: `https://raw.githubusercontent.com/f26901964-eng/Kitsugi-Manga-Plugins/builds/builds/index.v2.json`. Ayrı olarak, aynı uygulama sürümünün otomatik güncelleyicisi özel repoları değil Keiyoushi adresini kontrol eder; özel repo üzerinden manuel yenileme gerekebilir. Bu katalog değişikliği okuyucu hatasını çözmez.

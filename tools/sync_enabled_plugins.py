@@ -13,6 +13,21 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 PREFIX = 'eu.kanade.tachiyomi.extension.'
 MODULE = re.compile(r'[a-z0-9_-]+/[a-z0-9_-]+\Z')
+# Kitsugi-Beta currently redirects any V1 JSON response under 5,000 UTF-16
+# code units to the unrelated Keiyoushi repository, even for custom repos.
+# Keep the JSON array valid, including for an empty selection, by placing
+# harmless whitespace *inside* the outer array (outside would be trimmed).
+KITSUGI_V1_MIN_CODE_UNITS = 5100
+
+
+def format_v1_catalog(entries):
+    content = json.dumps(entries, ensure_ascii=False, indent=2)
+    units = len(content.encode('utf-16-le')) // 2
+    padding = max(0, KITSUGI_V1_MIN_CODE_UNITS - units)
+    if padding:
+        closing = content.rfind(']')
+        content = content[:closing] + (' ' * padding) + content[closing:]
+    return content + '\n'
 
 
 def load_json(path):
@@ -77,8 +92,9 @@ def sync(root):
             if file.name not in artifacts:
                 file.unlink()
     v2_data['extensionList']['extensions'] = selected_v2
+    v1_catalog = format_v1_catalog(selected)
     for name in ('index.json', 'plugins.json', 'builds/index.json', 'builds/plugins.json'):
-        (root / name).write_text(json.dumps(selected, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        (root / name).write_text(v1_catalog, encoding='utf-8')
     (root / 'builds/index.v2.json').write_text(json.dumps(v2_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     return modules
 
