@@ -43,7 +43,7 @@ def catalog_entry(root: Path, package: str) -> dict:
     return entry
 
 
-def release(module_name: str, root: Path = ROOT) -> tuple[str, int]:
+def release(module_name: str, root: Path = ROOT, run_sync: bool = True) -> tuple[str, int]:
     package = PREFIX + module_name
     module = root / "keiyoushi-extensions-tr/src/tr" / module_name
     expected_name, expected_code = module_version(f"tr/{module_name}", root)
@@ -108,7 +108,10 @@ def release(module_name: str, root: Path = ROOT) -> tuple[str, int]:
     v2_entry["resources"]["apkUrl"] = APK_BASE_URL + apk_name
     write_json(v2_path, v2_data)
 
-    sync(root)
+    # Çok modüllü yayında sync en sonda bir kez çağrılır: arada yapılırsa henüz
+    # kopyalanmamış diğer APK'lar "Arşiv dosyası yok" ile durur.
+    if run_sync:
+        sync(root)
     digest = hashlib.sha256(prebuilt.read_bytes()).hexdigest()
     print(
         f"{module_name}: {version_name} ({catalog_code}) apk={apk_name} "
@@ -121,7 +124,8 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit("Kullanım: prepare_extension_release.py <modül> [modül...]")
     try:
-        for name in sys.argv[1:]:
-            release(name)
+        for index, name in enumerate(sys.argv[1:]):
+            # Son modülden sonra tek bir toplu sync yapılır.
+            release(name, run_sync=index == len(sys.argv) - 2)
     except (OSError, ValueError, KeyError) as exc:
         sys.exit(f"Hata: {exc}")
