@@ -1,0 +1,22 @@
+{
+  "probedAt": "2026-11-07T16:14:43.623211+00:00",
+  "sites": {
+    "duckscans": {
+      "error": "ValueError: not enough values to unpack (expected 3, got 2)"
+    },
+    "oblivionscans": {
+      "base": "https://oblivionscans.com",
+      "settingsStatus": 200,
+      "runtimeFlags": {
+        "hcaptcha": {
+          "enabled": false,
+          "siteKey": "",
+          "protectSignup": false,
+          "protectContact": false
+        }
+      },
+      "apiStatus": 200,
+      "pages": "bos"
+    }
+  }
+}
