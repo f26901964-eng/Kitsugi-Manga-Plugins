@@ -30,8 +30,7 @@ UA = (
 )
 
 SITES = {
-    "duckscans": {"base": "https://duckscans.com", "series": "hazbin-otelde-cinayet", "chapter": 48},
-    "oblivionscans": {"base": "https://oblivionscans.com", "series": "patron-kizinizi-istiyorum", "chapter": 1},
+    "duckscans": {"base": "https://duckscans.com", "series": "hazbin-otelde-cinayet"},
 }
 CURL_IMPERSONATE = "https://github.com/lwthiker/curl-impersonate/releases/download/v0.6.1/curl-impersonate-v0.6.1.x86_64-linux-gnu.tar.gz"
 
@@ -85,39 +84,59 @@ def flight_array(flight: str, key: str) -> str | None:
     return None
 
 
-def signed_first_page(base: str, slug: str, number: int, jar_path: str) -> str | None:
+def signed_first_page(base: str, slug: str, jar_path: str) -> tuple[str | None, int]:
+    """Okuyucu API'sinden imzalı ilk sayfa yolunu al (+ çerezleri jar'a yaz)."""
     s = requests.Session()
     s.headers.update({"User-Agent": UA, "Accept-Language": "tr-TR,tr;q=0.9"})
     r = s.get(f"{base}/seri/{slug}/", timeout=30)
     if r.status_code != 200:
         print(f"{slug}: series page {r.status_code}", file=sys.stderr)
-        return None
+        return None, 0
     flight = "".join(unescape_js(m.group(1)) for m in FLIGHT.finditer(r.text))
     chapters = json.loads(flight_array(flight, "initialChapters"))
-    first = next((c for c in chapters if c.get("pages")), None)
+    first = next((c for c in chapters if c.get("chapterNumber")), None)
     if not first:
-        return None
-    path = first["pages"][0]
+        return None, 0
+    number = first["chapterNumber"]
+    api = s.get(
+        f"{base}/api/chapters?series={slug}&chapter={number}&includepages=true&limit=1",
+        headers={
+            "Referer": f"{base}/seri/{slug}/",
+            "Origin": base,
+            "Accept": "*/*",
+            "Sec-Fetch-Dest": "empty",
+            "Sec-Fetch-Mode": "cors",
+            "Sec-Fetch-Site": "same-origin",
+        },
+        timeout=30,
+    )
+    if api.status_code != 200:
+        print(f"{slug}: api {api.status_code}", file=sys.stderr)
+        return None, number
+    pages = json.loads(api.text)["data"][0].get("pages") or []
+    if not pages:
+        return None, number
+    path = pages[0]
     if not path.startswith("http"):
-        path = base + path
-    # API yanıtı çerezler de verebilir; oturumu jar'a yaz.
+        path = base + path.replace(" ", "%20")
     open(jar_path, "w").write("")
     for cookie in s.cookies:
         open(jar_path, "a").write(
             f"{cookie.domain}\tFALSE\t{cookie.path}\tFALSE\t{cookie.expires or 0}\t{cookie.name}\t{cookie.value}\n"
         )
-    return path
+    return path, number
 
 
 def fetch_status(cmd: list[str]) -> dict:
+    write_out = "'{\"code\":%{http_code},\"size\":%{size_download},\"ct\":\"%{content_type}\"}'"
     try:
-        proc = subprocess.run(cmd, capture_output=True, timeout=40, text=False)
-        head = proc.stdout[:120]
-        ctype = ""
-        for line in proc.stderr.decode(errors="replace").splitlines():
-            if line.lower().startswith("content-type:"):
-                ctype = line.split(":", 1)[1].strip()
-        return {"status": proc.returncode and None or 200, "curlCode": proc.returncode, "type": ctype[:30], "bytes": len(proc.stdout), "head": head[:40].hex()[:40] if not ctype else ""}
+        proc = subprocess.run(cmd[:-1] + ["-w", write_out, "-o", "/dev/null"], capture_output=True, timeout=40, text=False)
+        line = proc.stdout.decode(errors="replace").strip()
+        try:
+            parsed = json.loads(line)
+            return {"http": parsed.get("code"), "bytes": parsed.get("size"), "ct": (parsed.get("ct") or "")[:30]}
+        except json.JSONDecodeError:
+            return {"raw": line[:80], "curlCode": proc.returncode}
     except subprocess.TimeoutExpired:
         return {"error": "timeout"}
 
@@ -135,32 +154,19 @@ def main() -> int:
     report = {"probedAt": datetime.now(timezone.utc).isoformat(), "sites": {}}
     for name, cfg in SITES.items():
         jar = str(workdir / f"{name}.jar")
-        url = signed_first_page(cfg["base"], cfg["series"], cfg["chapter"], jar)
+        url, number = signed_first_page(cfg["base"], cfg["series"], jar)
         if not url:
-            report["sites"][name] = {"error": "imzalı URL alınamadı"}
+            report["sites"][name] = {"error": "imzalı URL alınamadı", "chapter": number}
             continue
-        out: dict = {"signedUrl": url[:110]}
-        out["python-requests"] = fetch_status(["python3", "-c", f"""
-import urllib.request
-req = urllib.request.Request({url!r}, headers={{'User-Agent': {UA!r}, 'Referer': {cfg['base']!r}}})
-try:
-    r = urllib.request.urlopen(req, timeout=30)
-    print(r.status, len(r.read()), r.headers.get('content-type',''))
-except Exception as e:
-    print('ERR', e)
-"""])
-        out["curl-plain"] = fetch_status([
-            "curl", "-s", "-o", "/dev/null", "-w", "%{http_code} %{size_download} %{content_type}",
-            "-A", UA, "-e", f"{cfg['base']}/", url,
-        ])
-        out["curl-chrome116"] = fetch_status([
-            str(chrome), "-s", "-o", "/dev/null", "-w", "%{http_code} %{size_download} %{content_type}",
-            "-A", UA, "-e", f"{cfg['base']}/", url,
-        ])
-        out["curl-chrome116-cookies"] = fetch_status([
-            str(chrome), "-s", "-o", "/dev/null", "-w", "%{http_code} %{size_download} %{content_type}",
-            "-b", jar, "-c", jar, "-A", UA, "-e", f"{cfg['base']}/", url,
-        ])
+        out: dict = {"signedUrl": url[:120]}
+        try:
+            rr = requests.get(url, headers={"User-Agent": UA, "Referer": f"{cfg['base']}/seri/{cfg['series']}/"}, timeout=30, allow_redirects=False)
+            out["python-requests"] = {"http": rr.status_code, "bytes": len(rr.content), "ct": rr.headers.get("content-type", "")[:30]}
+        except requests.RequestException as exc:
+            out["python-requests"] = {"error": type(exc).__name__}
+        out["curl-plain"] = fetch_status(["curl", "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
+        out["curl-chrome116"] = fetch_status([str(chrome), "-s", "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
+        out["curl-chrome116-cookies"] = fetch_status([str(chrome), "-s", "-b", jar, "-c", jar, "-A", UA, "-e", f"{cfg['base']}/seri/{cfg['series']}/", url])
         report["sites"][name] = out
 
     REPORT.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
