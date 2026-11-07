@@ -1,51 +1,37 @@
-Fetching distribution.
-Downloading https://services.gradle.org/distributions/gradle-9.8.2-bin.zip
-..............10%..............20%...............30%..............40%...............50%..............60%...............70%..............80%...............90%..............100%
-
-Welcome to Gradle 9.8.2!
-
-Here are the highlights of this release:
- - Java 27 support
- - Maven mirror settings reuse
- - Linked problem locations in build output
-
-For more details see https://docs.gradle.org/9.8.2/release-notes.html
-
-Starting a Gradle Daemon (subsequent builds will be faster)
 Configuration on demand is an incubating feature.
 Calculating task graph as no cached configuration is available for tasks: :src:tr:duckscans:testDebugUnitTest :src:tr:duckscans:assembleRelease :src:tr:lunariscans:testDebugUnitTest :src:tr:lunariscans:assembleRelease :src:tr:ailurascans:testDebugUnitTest :src:tr:ailurascans:assembleRelease :src:tr:oblivionscans:testDebugUnitTest :src:tr:oblivionscans:assembleRelease
 Type-safe project accessors is an incubating feature.
 > Task :build-logic:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :build-logic:pluginDescriptors
-> Task :build-logic:processResources
-> Task :build-logic:compileKotlin
+> Task :build-logic:compileKotlin UP-TO-DATE
 > Task :build-logic:compileJava NO-SOURCE
-> Task :build-logic:classes
-> Task :build-logic:jar
-> Task :core:spotlessGradle
-> Task :core:spotlessGradleCheck
-> Task :lib-multisrc:initlisenext:spotlessGradle FROM-CACHE
+> Task :build-logic:pluginDescriptors UP-TO-DATE
+> Task :build-logic:processResources UP-TO-DATE
+> Task :build-logic:classes UP-TO-DATE
+> Task :build-logic:jar UP-TO-DATE
+> Task :core:spotlessGradle FROM-CACHE
+> Task :core:spotlessGradleCheck UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessGradle UP-TO-DATE
 > Task :lib-multisrc:initlisenext:spotlessGradleCheck UP-TO-DATE
-> Task :core:spotlessJava
 > Task :core:spotlessXml
-> Task :core:spotlessJavaCheck
 > Task :core:spotlessXmlCheck
-> Task :lib-multisrc:initlisenext:spotlessJava
-> Task :lib-multisrc:initlisenext:spotlessJavaCheck
-> Task :lib-multisrc:initlisenext:spotlessXml
-> Task :lib-multisrc:initlisenext:spotlessXmlCheck
-> Task :src:tr:duckscans:spotlessGradle FROM-CACHE
+> Task :core:spotlessJava
+> Task :core:spotlessJavaCheck
+> Task :lib-multisrc:initlisenext:spotlessJava UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessJavaCheck UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessXml UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessXmlCheck UP-TO-DATE
+> Task :src:tr:duckscans:spotlessGradle UP-TO-DATE
 > Task :src:tr:duckscans:spotlessGradleCheck UP-TO-DATE
-> Task :src:tr:duckscans:spotlessJava
-> Task :src:tr:duckscans:spotlessJavaCheck
-> Task :src:tr:duckscans:spotlessXml
-> Task :src:tr:duckscans:spotlessXmlCheck
+> Task :src:tr:duckscans:spotlessJava UP-TO-DATE
+> Task :src:tr:duckscans:spotlessJavaCheck UP-TO-DATE
+> Task :src:tr:duckscans:spotlessKotlin UP-TO-DATE
+> Task :src:tr:duckscans:spotlessKotlinCheck UP-TO-DATE
 > Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :src:tr:duckscans:spotlessKotlin
-> Task :src:tr:duckscans:spotlessKotlinCheck
-> Task :src:tr:duckscans:spotlessCheck
-> Task :src:tr:duckscans:preBuild
-> Task :src:tr:duckscans:preDebugBuild
+> Task :src:tr:duckscans:spotlessXml UP-TO-DATE
+> Task :src:tr:duckscans:spotlessXmlCheck UP-TO-DATE
+> Task :src:tr:duckscans:spotlessCheck UP-TO-DATE
+> Task :src:tr:duckscans:preBuild UP-TO-DATE
+> Task :src:tr:duckscans:preDebugBuild UP-TO-DATE
 > Task :src:tr:duckscans:generateDebugBuildConfig
 > Task :src:tr:duckscans:generateDebugResources
 > Task :src:tr:duckscans:packageDebugResources
@@ -54,198 +40,355 @@ Type-safe project accessors is an incubating feature.
 > Task :src:tr:duckscans:createDebugCompatibleScreenManifests
 > Task :src:tr:duckscans:extractDeepLinksDebug
 > Task :src:tr:duckscans:generateExtensionManifest
-> Task :src:tr:duckscans:preDebugUnitTestBuild
+> Task :src:tr:duckscans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:duckscans:javaPreCompileDebugUnitTest
 > Task :src:tr:duckscans:generateSourceInfo
-> Task :src:tr:duckscans:preReleaseBuild
+> Task :src:tr:duckscans:preReleaseBuild UP-TO-DATE
 > Task :src:tr:duckscans:mergeReleaseJniLibFolders
+> Task :lib-multisrc:initlisenext:spotlessKotlin
+> Task :lib-multisrc:initlisenext:spotlessKotlinCheck
+> Task :lib-multisrc:initlisenext:spotlessCheck
+> Task :lib-multisrc:initlisenext:preBuild
+> Task :lib-multisrc:initlisenext:preDebugBuild
 > Task :src:tr:duckscans:checkReleaseDuplicateClasses
+> Task :lib-multisrc:initlisenext:generateDebugResources
+> Task :lib-multisrc:initlisenext:processDebugNavigationResources
+> Task :lib-multisrc:initlisenext:javaPreCompileDebug FROM-CACHE
+> Task :lib-multisrc:initlisenext:mapDebugSourceSetPaths
+> Task :lib-multisrc:initlisenext:packageDebugResources
+> Task :lib-multisrc:initlisenext:writeDebugAarMetadata
+> Task :lib-multisrc:initlisenext:compileDebugLibraryResources
+> Task :lib-multisrc:initlisenext:extractDeepLinksDebug
+> Task :lib-multisrc:initlisenext:processDebugManifest
+> Task :lib-multisrc:initlisenext:preReleaseBuild
+> Task :lib-multisrc:initlisenext:mergeReleaseJniLibFolders
+> Task :lib-multisrc:initlisenext:mergeReleaseNativeLibs NO-SOURCE
+> Task :lib-multisrc:initlisenext:copyReleaseJniLibsProjectOnly
+> Task :lib-multisrc:initlisenext:generateReleaseResources FROM-CACHE
+> Task :lib-multisrc:initlisenext:packageReleaseResources
+> Task :core:spotlessKotlin
+> Task :core:spotlessKotlinCheck
+> Task :core:spotlessCheck
+> Task :core:preBuild
+> Task :core:preDebugBuild
+> Task :core:generateDebugResources
+> Task :lib-multisrc:initlisenext:processReleaseNavigationResources FROM-CACHE
+> Task :core:processDebugNavigationResources
+> Task :core:javaPreCompileDebug FROM-CACHE
+> Task :core:packageDebugResources
+> Task :src:tr:duckscans:processDebugNavigationResources
+> Task :lib-multisrc:initlisenext:parseDebugLocalResources
+> Task :src:tr:duckscans:parseDebugLocalResources
+> Task :core:parseDebugLocalResources
+> Task :lib-multisrc:initlisenext:generateDebugRFile
+> Task :src:tr:duckscans:generateDebugRFile
+> Task :core:generateDebugRFile
+> Task :core:mapDebugSourceSetPaths
+> Task :core:writeDebugAarMetadata
+> Task :src:tr:duckscans:checkDebugAarMetadata
+> Task :core:compileDebugLibraryResources
+> Task :src:tr:duckscans:compileDebugNavigationResources
+> Task :core:extractDeepLinksDebug FROM-CACHE
+> Task :core:processDebugManifest
+> Task :src:tr:duckscans:processDebugMainManifest
+> Task :src:tr:duckscans:processDebugManifest
+> Task :src:tr:duckscans:processDebugManifestForPackage
+> Task :core:preReleaseBuild
+> Task :src:tr:duckscans:mergeDebugResources
+> Task :core:mergeReleaseJniLibFolders
+> Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:duckscans:processDebugResources
+> Task :core:generateReleaseResources FROM-CACHE
+> Task :core:packageReleaseResources
+> Task :core:processReleaseNavigationResources FROM-CACHE
+> Task :core:parseReleaseLocalResources FROM-CACHE
+> Task :core:generateReleaseRFile FROM-CACHE
+> Task :core:copyReleaseJniLibsProjectOnly
+> Task :src:tr:duckscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:duckscans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:duckscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:duckscans:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :core:javaPreCompileRelease FROM-CACHE
+> Task :lib-multisrc:initlisenext:parseReleaseLocalResources FROM-CACHE
+> Task :lib-multisrc:initlisenext:generateReleaseRFile FROM-CACHE
+> Task :lib-multisrc:initlisenext:javaPreCompileRelease FROM-CACHE
 > Task :src:tr:duckscans:generateReleaseBuildConfig
 > Task :src:tr:duckscans:generateReleaseResources FROM-CACHE
 > Task :src:tr:duckscans:packageReleaseResources
+> Task :src:tr:duckscans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:duckscans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:duckscans:generateReleaseRFile FROM-CACHE
+> Task :core:prepareReleaseArtProfile
+> Task :lib-multisrc:initlisenext:prepareReleaseArtProfile
+> Task :src:tr:duckscans:mergeReleaseArtProfile
+> Task :core:mapReleaseSourceSetPaths
+> Task :core:compileReleaseLibraryResources
+> Task :lib-multisrc:initlisenext:mapReleaseSourceSetPaths
+> Task :lib-multisrc:initlisenext:compileReleaseLibraryResources
+> Task :core:writeReleaseAarMetadata
+> Task :lib-multisrc:initlisenext:writeReleaseAarMetadata
+> Task :src:tr:duckscans:checkReleaseAarMetadata
 > Task :src:tr:duckscans:mapReleaseSourceSetPaths
+> Task :src:tr:duckscans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:duckscans:mergeReleaseResources
 > Task :src:tr:duckscans:createReleaseCompatibleScreenManifests
+> Task :core:extractDeepLinksRelease FROM-CACHE
+> Task :core:processReleaseManifest FROM-CACHE
+> Task :lib-multisrc:initlisenext:extractDeepLinksRelease FROM-CACHE
+> Task :lib-multisrc:initlisenext:processReleaseManifest FROM-CACHE
 > Task :src:tr:duckscans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:duckscans:processReleaseMainManifest
+> Task :src:tr:duckscans:processReleaseManifest
+> Task :src:tr:duckscans:processReleaseManifestForPackage
+> Task :src:tr:duckscans:processReleaseResources
 > Task :src:tr:duckscans:extractProguardFiles
 > Task :src:tr:duckscans:mergeReleaseStartupProfile
 > Task :core:generateReleaseAssets UP-TO-DATE
+> Task :core:mergeReleaseAssets
 > Task :lib-multisrc:initlisenext:generateReleaseAssets UP-TO-DATE
+> Task :lib-multisrc:initlisenext:mergeReleaseAssets
 > Task :src:tr:duckscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:duckscans:mergeReleaseAssets
+> Task :src:tr:duckscans:compressReleaseAssets
+> Task :src:tr:duckscans:optimizeReleaseResources
 > Task :src:tr:duckscans:validateSigningRelease
 > Task :src:tr:duckscans:writeReleaseAppMetadata
 > Task :src:tr:duckscans:writeReleaseSigningConfigVersions
-> Task :src:tr:lunariscans:spotlessGradle FROM-CACHE
+> Task :src:tr:lunariscans:spotlessGradle UP-TO-DATE
 > Task :src:tr:lunariscans:spotlessGradleCheck UP-TO-DATE
-> Task :src:tr:lunariscans:spotlessJava
-> Task :src:tr:lunariscans:spotlessJavaCheck
-> Task :src:tr:lunariscans:spotlessKotlin
-> Task :src:tr:lunariscans:spotlessKotlinCheck
-> Task :src:tr:lunariscans:spotlessXml
-> Task :src:tr:lunariscans:spotlessXmlCheck
-> Task :src:tr:lunariscans:spotlessCheck
-> Task :src:tr:lunariscans:preBuild
-> Task :src:tr:lunariscans:preDebugBuild
+> Task :src:tr:lunariscans:spotlessJava UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessJavaCheck UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessKotlin UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessKotlinCheck UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessXml UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessXmlCheck UP-TO-DATE
+> Task :src:tr:lunariscans:spotlessCheck UP-TO-DATE
+> Task :src:tr:lunariscans:preBuild UP-TO-DATE
+> Task :src:tr:lunariscans:preDebugBuild UP-TO-DATE
 > Task :src:tr:lunariscans:generateDebugBuildConfig
 > Task :src:tr:lunariscans:generateDebugResources
 > Task :src:tr:lunariscans:packageDebugResources
+> Task :src:tr:lunariscans:processDebugNavigationResources
+> Task :src:tr:lunariscans:parseDebugLocalResources
+> Task :src:tr:lunariscans:generateDebugRFile FROM-CACHE
+> Task :src:tr:lunariscans:checkDebugAarMetadata
 > Task :src:tr:lunariscans:mapDebugSourceSetPaths
+> Task :src:tr:lunariscans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:mergeDebugResources
 > Task :src:tr:lunariscans:createDebugCompatibleScreenManifests
 > Task :src:tr:lunariscans:extractDeepLinksDebug
 > Task :src:tr:lunariscans:generateExtensionManifest
-> Task :src:tr:lunariscans:preDebugUnitTestBuild
+> Task :src:tr:lunariscans:processDebugMainManifest
+> Task :src:tr:lunariscans:processDebugManifest
+> Task :src:tr:lunariscans:processDebugManifestForPackage
+> Task :src:tr:lunariscans:processDebugResources
+> Task :src:tr:lunariscans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:lunariscans:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :src:tr:lunariscans:generateSourceInfo
-> Task :src:tr:lunariscans:preReleaseBuild
+> Task :src:tr:lunariscans:preReleaseBuild UP-TO-DATE
 > Task :src:tr:lunariscans:mergeReleaseJniLibFolders
+> Task :src:tr:lunariscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:lunariscans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:lunariscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:lunariscans:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :src:tr:lunariscans:checkReleaseDuplicateClasses
 > Task :src:tr:lunariscans:generateReleaseBuildConfig
 > Task :src:tr:lunariscans:generateReleaseResources FROM-CACHE
 > Task :src:tr:lunariscans:packageReleaseResources
+> Task :src:tr:lunariscans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:lunariscans:generateReleaseRFile FROM-CACHE
+> Task :src:tr:lunariscans:mergeReleaseArtProfile
+> Task :src:tr:lunariscans:checkReleaseAarMetadata
 > Task :src:tr:lunariscans:mapReleaseSourceSetPaths
+> Task :src:tr:lunariscans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:mergeReleaseResources
 > Task :src:tr:lunariscans:createReleaseCompatibleScreenManifests
 > Task :src:tr:lunariscans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:lunariscans:processReleaseMainManifest
+> Task :src:tr:lunariscans:processReleaseManifest
+> Task :src:tr:lunariscans:processReleaseManifestForPackage
+> Task :src:tr:lunariscans:processReleaseResources
 > Task :src:tr:lunariscans:extractProguardFiles
 > Task :src:tr:lunariscans:mergeReleaseStartupProfile
 > Task :src:tr:lunariscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:lunariscans:mergeReleaseAssets
+> Task :src:tr:lunariscans:compressReleaseAssets FROM-CACHE
+> Task :src:tr:lunariscans:optimizeReleaseResources
 > Task :src:tr:lunariscans:validateSigningRelease
 > Task :src:tr:lunariscans:writeReleaseAppMetadata
 > Task :src:tr:lunariscans:writeReleaseSigningConfigVersions
-> Task :src:tr:ailurascans:spotlessGradle FROM-CACHE
+> Task :src:tr:ailurascans:spotlessGradle UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessGradleCheck UP-TO-DATE
-> Task :src:tr:ailurascans:spotlessJava
-> Task :src:tr:ailurascans:spotlessJavaCheck
-> Task :src:tr:ailurascans:spotlessKotlin
-> Task :src:tr:ailurascans:spotlessKotlinCheck
-> Task :src:tr:ailurascans:spotlessXml
-> Task :src:tr:ailurascans:spotlessXmlCheck
-> Task :src:tr:ailurascans:spotlessCheck
-> Task :src:tr:ailurascans:preBuild
-> Task :src:tr:ailurascans:preDebugBuild
+> Task :src:tr:ailurascans:spotlessJava UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessJavaCheck UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessKotlin UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessKotlinCheck UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessXml UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessXmlCheck UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessCheck UP-TO-DATE
+> Task :src:tr:ailurascans:preBuild UP-TO-DATE
+> Task :src:tr:ailurascans:preDebugBuild UP-TO-DATE
 > Task :src:tr:ailurascans:generateDebugBuildConfig
 > Task :src:tr:ailurascans:generateDebugResources
 > Task :src:tr:ailurascans:packageDebugResources
+> Task :src:tr:ailurascans:processDebugNavigationResources
+> Task :src:tr:ailurascans:parseDebugLocalResources
+> Task :src:tr:ailurascans:generateDebugRFile FROM-CACHE
+> Task :src:tr:ailurascans:checkDebugAarMetadata
 > Task :src:tr:ailurascans:mapDebugSourceSetPaths
+> Task :src:tr:ailurascans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:mergeDebugResources
 > Task :src:tr:ailurascans:createDebugCompatibleScreenManifests
 > Task :src:tr:ailurascans:extractDeepLinksDebug
 > Task :src:tr:ailurascans:generateExtensionManifest
-> Task :src:tr:ailurascans:preDebugUnitTestBuild
+> Task :compiler:compileKotlin
+> Task :src:tr:ailurascans:processDebugMainManifest
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :src:tr:ailurascans:processDebugManifest
+> Task :src:tr:ailurascans:processDebugManifestForPackage
+> Task :compiler:jar
+> Task :src:tr:ailurascans:processDebugResources
+> Task :src:tr:duckscans:javaPreCompileDebug
+> Task :src:tr:duckscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:lunariscans:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:lunariscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:ailurascans:preDebugUnitTestBuild UP-TO-DATE
+> Task :src:tr:ailurascans:javaPreCompileDebug FROM-CACHE
 > Task :src:tr:ailurascans:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :src:tr:ailurascans:preReleaseBuild UP-TO-DATE
 > Task :src:tr:ailurascans:generateSourceInfo
-> Task :src:tr:ailurascans:preReleaseBuild
 > Task :src:tr:ailurascans:mergeReleaseJniLibFolders
 > Task :src:tr:ailurascans:checkReleaseDuplicateClasses
+> Task :src:tr:ailurascans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:ailurascans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:ailurascans:extractReleaseNativeSymbolTables NO-SOURCE
 > Task :src:tr:ailurascans:generateReleaseBuildConfig
+> Task :src:tr:ailurascans:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :src:tr:ailurascans:generateReleaseResources FROM-CACHE
-> Task :src:tr:ailurascans:packageReleaseResources
+> Task :src:tr:ailurascans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:ailurascans:mergeReleaseArtProfile
+> Task :src:tr:ailurascans:checkReleaseAarMetadata
 > Task :src:tr:ailurascans:mapReleaseSourceSetPaths
+> Task :src:tr:ailurascans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:packageReleaseResources
+> Task :src:tr:ailurascans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:ailurascans:generateReleaseRFile FROM-CACHE
 > Task :src:tr:ailurascans:createReleaseCompatibleScreenManifests
 > Task :src:tr:ailurascans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:ailurascans:processReleaseMainManifest
+> Task :src:tr:ailurascans:processReleaseManifest
+> Task :src:tr:ailurascans:processReleaseManifestForPackage
 > Task :src:tr:ailurascans:extractProguardFiles
 > Task :src:tr:ailurascans:mergeReleaseStartupProfile
 > Task :src:tr:ailurascans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:ailurascans:mergeReleaseAssets
+> Task :src:tr:ailurascans:compressReleaseAssets FROM-CACHE
 > Task :src:tr:ailurascans:validateSigningRelease
 > Task :src:tr:ailurascans:writeReleaseAppMetadata
 > Task :src:tr:ailurascans:writeReleaseSigningConfigVersions
-> Task :src:tr:oblivionscans:spotlessGradle FROM-CACHE
+> Task :src:tr:oblivionscans:spotlessGradle UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessGradleCheck UP-TO-DATE
-> Task :src:tr:oblivionscans:spotlessJava
-> Task :src:tr:oblivionscans:spotlessJavaCheck
-> Task :src:tr:oblivionscans:spotlessKotlin
-> Task :src:tr:oblivionscans:spotlessKotlinCheck
-> Task :src:tr:oblivionscans:spotlessXml
-> Task :src:tr:oblivionscans:spotlessXmlCheck
-> Task :src:tr:oblivionscans:spotlessCheck
-> Task :src:tr:oblivionscans:preBuild
-> Task :src:tr:oblivionscans:preDebugBuild
+> Task :src:tr:oblivionscans:spotlessJava UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessJavaCheck UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessKotlin UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessKotlinCheck UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessXml UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessXmlCheck UP-TO-DATE
+> Task :src:tr:oblivionscans:spotlessCheck UP-TO-DATE
+> Task :src:tr:oblivionscans:preBuild UP-TO-DATE
+> Task :src:tr:oblivionscans:preDebugBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:generateDebugBuildConfig
 > Task :src:tr:oblivionscans:generateDebugResources
 > Task :src:tr:oblivionscans:packageDebugResources
+> Task :src:tr:oblivionscans:processDebugNavigationResources
+> Task :src:tr:oblivionscans:parseDebugLocalResources
+> Task :src:tr:oblivionscans:generateDebugRFile FROM-CACHE
+> Task :src:tr:oblivionscans:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:oblivionscans:checkDebugAarMetadata
 > Task :src:tr:oblivionscans:mapDebugSourceSetPaths
+> Task :src:tr:oblivionscans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:oblivionscans:mergeDebugResources
 > Task :src:tr:oblivionscans:createDebugCompatibleScreenManifests
 > Task :src:tr:oblivionscans:extractDeepLinksDebug
 > Task :src:tr:oblivionscans:generateExtensionManifest
-> Task :src:tr:oblivionscans:preDebugUnitTestBuild
+> Task :src:tr:ailurascans:mergeReleaseResources
+> Task :src:tr:oblivionscans:processDebugMainManifest
+> Task :src:tr:oblivionscans:processDebugManifest
+> Task :src:tr:oblivionscans:processDebugManifestForPackage
+> Task :src:tr:ailurascans:processReleaseResources
+> Task :src:tr:oblivionscans:processDebugResources
+> Task :src:tr:oblivionscans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :src:tr:oblivionscans:generateSourceInfo
-> Task :src:tr:oblivionscans:preReleaseBuild
+> Task :src:tr:oblivionscans:preReleaseBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:mergeReleaseJniLibFolders
+> Task :src:tr:ailurascans:optimizeReleaseResources
+> Task :src:tr:oblivionscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:oblivionscans:stripReleaseDebugSymbols NO-SOURCE
 > Task :src:tr:oblivionscans:checkReleaseDuplicateClasses
+> Task :src:tr:oblivionscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:oblivionscans:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :src:tr:oblivionscans:generateReleaseBuildConfig
-> Task :lib-multisrc:initlisenext:spotlessKotlin
+> Task :src:tr:oblivionscans:processReleaseNavigationResources FROM-CACHE
 > Task :src:tr:oblivionscans:generateReleaseResources FROM-CACHE
+> Task :src:tr:oblivionscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:oblivionscans:mergeReleaseArtProfile
+> Task :src:tr:oblivionscans:checkReleaseAarMetadata
 > Task :src:tr:oblivionscans:packageReleaseResources
 > Task :src:tr:oblivionscans:mapReleaseSourceSetPaths
+> Task :src:tr:oblivionscans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:oblivionscans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:oblivionscans:generateReleaseRFile FROM-CACHE
 > Task :src:tr:oblivionscans:createReleaseCompatibleScreenManifests
 > Task :src:tr:oblivionscans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:oblivionscans:processReleaseMainManifest
+> Task :src:tr:oblivionscans:processReleaseManifest
+> Task :src:tr:oblivionscans:processReleaseManifestForPackage
 > Task :src:tr:oblivionscans:extractProguardFiles
 > Task :src:tr:oblivionscans:mergeReleaseStartupProfile
 > Task :src:tr:oblivionscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:oblivionscans:mergeReleaseAssets
+> Task :src:tr:oblivionscans:compressReleaseAssets FROM-CACHE
 > Task :src:tr:oblivionscans:validateSigningRelease
 > Task :src:tr:oblivionscans:writeReleaseAppMetadata
 > Task :src:tr:oblivionscans:writeReleaseSigningConfigVersions
-> Task :lib-multisrc:initlisenext:spotlessKotlinCheck FAILED
-> Task :core:spotlessKotlin
-> Task :compiler:compileKotlin
+> Task :src:tr:oblivionscans:mergeReleaseResources
+> Task :src:tr:oblivionscans:processReleaseResources
+> Task :src:tr:oblivionscans:optimizeReleaseResources
+> Task :core:compileReleaseKotlin
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:processReleaseJavaRes
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:bundleLibRuntimeToJarRelease
+> Task :core:bundleLibCompileToJarRelease
+> Task :core:compileDebugKotlin
+> Task :core:compileDebugJavaWithJavac NO-SOURCE
+> Task :core:processDebugJavaRes
+> Task :core:bundleLibCompileToJarDebug
+> Task :core:bundleLibRuntimeToJarDebug
+
+> Task :lib-multisrc:initlisenext:compileReleaseKotlin FAILED
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:44:5 'headersBuilder' in 'KeiSource' is final and cannot be overridden.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:44:36 Return type of 'fun headersBuilder(): Headers' is not a subtype of the return type of the overridden member 'fun headersBuilder(): Headers.Builder' defined in 'keiyoushi.source.KeiSource'.
+
+> Task :lib-multisrc:initlisenext:compileDebugKotlin FAILED
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:44:5 'headersBuilder' in 'KeiSource' is final and cannot be overridden.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:44:36 Return type of 'fun headersBuilder(): Headers' is not a subtype of the return type of the overridden member 'fun headersBuilder(): Headers.Builder' defined in 'keiyoushi.source.KeiSource'.
 
 [Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
 
-FAILURE: Build failed with an exception.
+FAILURE: Build completed with 2 failures.
 
+1: Task failed with an exception.
+-----------
 * What went wrong:
-Execution failed for task ':lib-multisrc:initlisenext:spotlessKotlinCheck' (registered by plugin 'kei.plugins.spotless').
-> The following files had format violations:
-      src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt
-          @@ -54,11 +54,9 @@
-           
-           ····//·==============================·Katalog·===============================
-           
-          -····override·suspend·fun·getPopularManga(page:·Int):·MangasPage·=
-          -········catalogPage(page,·sort·=·null)
-          +····override·suspend·fun·getPopularManga(page:·Int):·MangasPage·=·catalogPage(page,·sort·=·null)
-           
-          -····override·suspend·fun·getLatestUpdates(page:·Int):·MangasPage·=
-          -········catalogPage(page,·sort·=·"createdAt")
-          +····override·suspend·fun·getLatestUpdates(page:·Int):·MangasPage·=·catalogPage(page,·sort·=·"createdAt")
-           
-           ····override·suspend·fun·getSearchMangaList(page:·Int,·query:·String,·filters:·FilterList):·MangasPage·{
-           ········val·trimmed·=·query.trim()
-          @@ -95,8 +93,7 @@
-           ········return·MangasPage(mangas,·hasNext)
-           ····}
-           
-          -····private·fun·pageOf(url:·HttpUrl):·Int·=
-          -········url.queryParameter("page")?.toIntOrNull()·?:·1
-          +····private·fun·pageOf(url:·HttpUrl):·Int·=·url.queryParameter("page")?.toIntOrNull()·?:·1
-           
-           ····protected·fun·SeriesDto.toSManga(base:·String):·SManga·=·SManga.create().apply·{
-           ········title·=·this@toSManga.title.trim()
-          @@ -139,53 +136,52 @@
-           ········return·SMangaUpdate(updated,·updatedChapters)
-           ····}
-           
-          -····protected·open·fun·parseDetails(html:·String,·flight:·String,·mangaUrl:·String):·SManga·=
-          -········SManga.create().apply·{
-          -············val·slug·=·mangaUrl.trim('/').substringAfterLast('/')
-          -············//·Seri·kaydı·"title":"...","slug":"<slug>"·çifti·halinde·gömülür;
-          -············//·başlığı·bölüm·kayıtlarından·ayırt·etmek·için·çift·aranır.
-          -············title·=·seriesTitle(flight,·slug)
-          -················?:·htmlTitle(html)
-          -················?:·slug
-          +····protected·open·fun·parseDetails(html:·String,·flight:·String,·mangaUrl:·String):·SManga·=·SManga.create().apply·{
-          +········val·slug·=·mangaUrl.trim('/').substringAfterLast('/')
-          +········//·Seri·kaydı·"title":"...","slug":"<slug>"·çifti·halinde·gömülür;
-          +········//·başlığı·bölüm·kayıtlarından·ayırt·etmek·için·çift·aranır.
-          +········title·=·seriesTitle(flight,·slug)
-          +············?:·htmlTitle(html)
-          +············?:·slug
-           
-          -············val·document·=·Jsoup.parse(html,·baseUrl)
-          +········val·document·=·Jsoup.parse(html,·baseUrl)
-           
-          -············description·=·buildString·{
-          -················flightString(flight,·"about")?.let·{·append(it.replace("\\n",·"\n").trim())·}
-      ... (164 more lines that didn't fit)
-  Run './gradlew spotlessApply' to fix all violations.
+Execution failed for task ':lib-multisrc:initlisenext:compileReleaseKotlin' (registered by plugin 'com.android.internal.library').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Compilation error. See log for more details
 
 * Try:
 > Run with --info or --debug option to get more log output.
@@ -253,7 +396,7 @@ Execution failed for task ':lib-multisrc:initlisenext:spotlessKotlinCheck' (regi
 > Get more help at https://help.gradle.org.
 
 * Exception is:
-org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':lib-multisrc:initlisenext:spotlessKotlinCheck' (registered by plugin 'kei.plugins.spotless').
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':lib-multisrc:initlisenext:compileReleaseKotlin' (registered by plugin 'com.android.internal.library').
 	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.lambda$doExecute$1(DefaultTaskNodeExecutor.java:367)
 	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
 	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:365)
@@ -312,66 +455,24 @@ org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':lib-mul
 	at org.gradle.composite.internal.DefaultBuildController$BuildOpRunnable.run(DefaultBuildController.java:199)
 	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:65)
 	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
-Caused by: org.gradle.api.GradleException: The following files had format violations:
-    src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt
-        @@ -54,11 +54,9 @@
-         
-         ····//·==============================·Katalog·===============================
-         
-        -····override·suspend·fun·getPopularManga(page:·Int):·MangasPage·=
-        -········catalogPage(page,·sort·=·null)
-        +····override·suspend·fun·getPopularManga(page:·Int):·MangasPage·=·catalogPage(page,·sort·=·null)
-         
-        -····override·suspend·fun·getLatestUpdates(page:·Int):·MangasPage·=
-        -········catalogPage(page,·sort·=·"createdAt")
-        +····override·suspend·fun·getLatestUpdates(page:·Int):·MangasPage·=·catalogPage(page,·sort·=·"createdAt")
-         
-         ····override·suspend·fun·getSearchMangaList(page:·Int,·query:·String,·filters:·FilterList):·MangasPage·{
-         ········val·trimmed·=·query.trim()
-        @@ -95,8 +93,7 @@
-         ········return·MangasPage(mangas,·hasNext)
-         ····}
-         
-        -····private·fun·pageOf(url:·HttpUrl):·Int·=
-        -········url.queryParameter("page")?.toIntOrNull()·?:·1
-        +····private·fun·pageOf(url:·HttpUrl):·Int·=·url.queryParameter("page")?.toIntOrNull()·?:·1
-         
-         ····protected·fun·SeriesDto.toSManga(base:·String):·SManga·=·SManga.create().apply·{
-         ········title·=·this@toSManga.title.trim()
-        @@ -139,53 +136,52 @@
-         ········return·SMangaUpdate(updated,·updatedChapters)
-         ····}
-         
-        -····protected·open·fun·parseDetails(html:·String,·flight:·String,·mangaUrl:·String):·SManga·=
-        -········SManga.create().apply·{
-        -············val·slug·=·mangaUrl.trim('/').substringAfterLast('/')
-        -············//·Seri·kaydı·"title":"...","slug":"<slug>"·çifti·halinde·gömülür;
-        -············//·başlığı·bölüm·kayıtlarından·ayırt·etmek·için·çift·aranır.
-        -············title·=·seriesTitle(flight,·slug)
-        -················?:·htmlTitle(html)
-        -················?:·slug
-        +····protected·open·fun·parseDetails(html:·String,·flight:·String,·mangaUrl:·String):·SManga·=·SManga.create().apply·{
-        +········val·slug·=·mangaUrl.trim('/').substringAfterLast('/')
-        +········//·Seri·kaydı·"title":"...","slug":"<slug>"·çifti·halinde·gömülür;
-        +········//·başlığı·bölüm·kayıtlarından·ayırt·etmek·için·çift·aranır.
-        +········title·=·seriesTitle(flight,·slug)
-        +············?:·htmlTitle(html)
-        +············?:·slug
-         
-        -············val·document·=·Jsoup.parse(html,·baseUrl)
-        +········val·document·=·Jsoup.parse(html,·baseUrl)
-         
-        -············description·=·buildString·{
-        -················flightString(flight,·"about")?.let·{·append(it.replace("\\n",·"\n").trim())·}
-    ... (164 more lines that didn't fit)
-Run './gradlew spotlessApply' to fix all violations.
-	at com.diffplug.gradle.spotless.SpotlessCheck.performAction(SpotlessCheck.java:82)
-	at com.diffplug.gradle.spotless.SpotlessCheck.performAction(SpotlessCheck.java:60)
-	at org.gradle.internal.reflect.JavaMethod.invoke(JavaMethod.java:125)
-	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.doExecute(StandardTaskAction.java:58)
-	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:51)
-	at org.gradle.api.internal.project.taskfactory.StandardTaskAction.execute(StandardTaskAction.java:29)
-	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:268)
+Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+	at org.gradle.workers.internal.DefaultWorkerExecutor$WorkItemExecution.waitForCompletion(DefaultWorkerExecutor.java:273)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFailures$2(DefaultAsyncWorkTracker.java:132)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.lambda$withoutLocksBlocking$0(DefaultWorkerLeaseService.java:406)
+	at org.gradle.internal.work.ResourceLockStatistics$1.measure(ResourceLockStatistics.java:43)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocksBlocking(DefaultWorkerLeaseService.java:401)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.blocking(DefaultWorkerLeaseService.java:261)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.blocking(DefaultWorkerLeaseService.java:243)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFailures$1(DefaultAsyncWorkTracker.java:128)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.resources.AbstractResourceLockRegistry.whileDisallowingLockChanges(AbstractResourceLockRegistry.java:51)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.whileDisallowingProjectLockChanges(DefaultWorkerLeaseService.java:266)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:127)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:93)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForAll(DefaultAsyncWorkTracker.java:79)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForCompletion(DefaultAsyncWorkTracker.java:67)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:276)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:30)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:27)
 	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
@@ -412,8 +513,13 @@ Run './gradlew spotlessApply' to fix all violations.
 	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:28)
 	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
 	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
-	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$1(BuildCacheStep.java:76)
-	at org.gradle.internal.Either$Right.fold(Either.java:176)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeAndStoreInCache(BuildCacheStep.java:145)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$3(BuildCacheStep.java:104)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$1(BuildCacheStep.java:104)
+	at org.gradle.internal.Try$Success.map(Try.java:170)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithCache(BuildCacheStep.java:88)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$0(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Left.fold(Either.java:116)
 	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
 	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:74)
 	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:49)
@@ -441,7 +547,7 @@ Run './gradlew spotlessApply' to fix all violations.
 	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:65)
 	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:45)
 	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeWithNonEmptySources(SkipEmptyMutableWorkStep.java:210)
-	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:85)
+	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:90)
 	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:53)
 	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
 	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
@@ -468,7 +574,249 @@ Run './gradlew spotlessApply' to fix all violations.
 	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:68)
 	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:364)
 	... 55 more
+Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilation error. See log for more details
+	at org.jetbrains.kotlin.gradle.tasks.TasksUtilsKt.throwExceptionIfCompilationFailed(tasksUtils.kt:21)
+	at org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork.execute(BuildToolsApiCompilationWork.kt:320)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:68)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:64)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:61)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:103)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:61)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:210)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:205)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:167)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:54)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:58)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$1(DefaultWorkerExecutor.java:169)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:191)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$600(DefaultConditionalExecutionQueue.java:112)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:168)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.lambda$runAndReleaseLocks$0(DefaultWorkerLeaseService.java:296)
+	at org.gradle.internal.work.ResourceLockStatistics$1.measure(ResourceLockStatistics.java:43)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAndReleaseLocks(DefaultWorkerLeaseService.java:294)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocksAcquired(DefaultWorkerLeaseService.java:290)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:282)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:132)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:138)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:163)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:125)
+	... 2 more
 
+==============================================================================
+
+2: Task failed with an exception.
+-----------
+* What went wrong:
+Execution failed for task ':lib-multisrc:initlisenext:compileDebugKotlin' (registered by plugin 'com.android.internal.library').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+* Exception is:
+org.gradle.api.tasks.TaskExecutionException: Execution failed for task ':lib-multisrc:initlisenext:compileDebugKotlin' (registered by plugin 'com.android.internal.library').
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.lambda$doExecute$1(DefaultTaskNodeExecutor.java:367)
+	at org.gradle.internal.Try$Failure.ifSuccessfulOrElse(Try.java:288)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:365)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeTrackingTaskIdentity(DefaultTaskNodeExecutor.java:332)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeFinalizingProperties(DefaultTaskNodeExecutor.java:318)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeSkippingWithNoActions(DefaultTaskNodeExecutor.java:289)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeSkippingOnlyIf(DefaultTaskNodeExecutor.java:272)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeCatchingFailures(DefaultTaskNodeExecutor.java:228)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeWithFallbackOperationId(DefaultTaskNodeExecutor.java:197)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.executeWithLifecycle(DefaultTaskNodeExecutor.java:171)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.access$000(DefaultTaskNodeExecutor.java:67)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor$1.run(DefaultTaskNodeExecutor.java:136)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:30)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:27)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:167)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:48)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.execute(DefaultTaskNodeExecutor.java:133)
+	at org.gradle.execution.plan.LocalTaskNode.execute(LocalTaskNode.java:229)
+	at org.gradle.execution.DefaultBuildWorkExecutor.lambda$executePlan$0(DefaultBuildWorkExecutor.java:153)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.lambda$execute$0(DefaultPlanExecutor.java:476)
+	at org.gradle.internal.operations.CurrentBuildOperationRef.with(CurrentBuildOperationRef.java:85)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.execute(DefaultPlanExecutor.java:475)
+	at org.gradle.execution.plan.DefaultPlanExecutor$ExecutorWorker.run(DefaultPlanExecutor.java:392)
+	at org.gradle.internal.concurrent.ExecutorPolicy$CatchAndRecordFailures.onExecute(ExecutorPolicy.java:65)
+	at org.gradle.internal.concurrent.AbstractManagedExecutor$1.run(AbstractManagedExecutor.java:47)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:840)
+Caused by: org.gradle.workers.internal.DefaultWorkerExecutor$WorkExecutionException: A failure occurred while executing org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork
+	at org.gradle.workers.internal.DefaultWorkerExecutor$WorkItemExecution.waitForCompletion(DefaultWorkerExecutor.java:273)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFailures$2(DefaultAsyncWorkTracker.java:132)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.lambda$withoutLocksBlocking$0(DefaultWorkerLeaseService.java:406)
+	at org.gradle.internal.work.ResourceLockStatistics$1.measure(ResourceLockStatistics.java:43)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withoutLocksBlocking(DefaultWorkerLeaseService.java:401)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.blocking(DefaultWorkerLeaseService.java:261)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.blocking(DefaultWorkerLeaseService.java:243)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.lambda$waitForItemsAndGatherFailures$1(DefaultAsyncWorkTracker.java:128)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.resources.AbstractResourceLockRegistry.whileDisallowingLockChanges(AbstractResourceLockRegistry.java:51)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.whileDisallowingProjectLockChanges(DefaultWorkerLeaseService.java:266)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:127)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForItemsAndGatherFailures(DefaultAsyncWorkTracker.java:93)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForAll(DefaultAsyncWorkTracker.java:79)
+	at org.gradle.internal.work.DefaultAsyncWorkTracker.waitForCompletion(DefaultAsyncWorkTracker.java:67)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$3.run(TaskExecution.java:276)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:30)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$1.execute(DefaultBuildOperationRunner.java:27)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:167)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.run(DefaultBuildOperationRunner.java:48)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeAction(TaskExecution.java:253)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeActions(TaskExecution.java:236)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.executeWithPreviousOutputFiles(TaskExecution.java:219)
+	at org.gradle.api.internal.tasks.execution.TaskExecution.execute(TaskExecution.java:185)
+	at org.gradle.internal.execution.steps.ExecuteStep.executeInternal(ExecuteStep.java:167)
+	at org.gradle.internal.execution.steps.ExecuteStep.access$000(ExecuteStep.java:47)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:137)
+	at org.gradle.internal.execution.steps.ExecuteStep$1.call(ExecuteStep.java:134)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:210)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:205)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:167)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:54)
+	at org.gradle.internal.execution.steps.ExecuteStep.execute(ExecuteStep.java:134)
+	at org.gradle.internal.execution.steps.ExecuteStep$Mutable.execute(ExecuteStep.java:80)
+	at org.gradle.internal.execution.steps.CancelExecutionStep.execute(CancelExecutionStep.java:42)
+	at org.gradle.internal.execution.steps.TimeoutStep.executeWithoutTimeout(TimeoutStep.java:75)
+	at org.gradle.internal.execution.steps.TimeoutStep.execute(TimeoutStep.java:55)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:51)
+	at org.gradle.internal.execution.steps.PreCreateOutputParentsStep.execute(PreCreateOutputParentsStep.java:29)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.executeMutable(RemovePreviousOutputsStep.java:67)
+	at org.gradle.internal.execution.steps.RemovePreviousOutputsStep.executeMutable(RemovePreviousOutputsStep.java:39)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:42)
+	at org.gradle.internal.execution.steps.BroadcastChangingOutputsStep.execute(BroadcastChangingOutputsStep.java:24)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:69)
+	at org.gradle.internal.execution.steps.CaptureOutputsAfterExecutionStep.execute(CaptureOutputsAfterExecutionStep.java:46)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:39)
+	at org.gradle.internal.execution.steps.ResolveInputChangesStep.executeMutable(ResolveInputChangesStep.java:28)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithoutCache(BuildCacheStep.java:189)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeAndStoreInCache(BuildCacheStep.java:145)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$3(BuildCacheStep.java:104)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$executeWithCache$1(BuildCacheStep.java:104)
+	at org.gradle.internal.Try$Success.map(Try.java:170)
+	at org.gradle.internal.execution.steps.BuildCacheStep.executeWithCache(BuildCacheStep.java:88)
+	at org.gradle.internal.execution.steps.BuildCacheStep.lambda$execute$0(BuildCacheStep.java:75)
+	at org.gradle.internal.Either$Left.fold(Either.java:116)
+	at org.gradle.internal.execution.caching.CachingState.fold(CachingState.java:62)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:74)
+	at org.gradle.internal.execution.steps.BuildCacheStep.execute(BuildCacheStep.java:49)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.executeMutable(StoreExecutionStateStep.java:46)
+	at org.gradle.internal.execution.steps.StoreExecutionStateStep.executeMutable(StoreExecutionStateStep.java:35)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.executeBecause(SkipUpToDateStep.java:75)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.lambda$execute$2(SkipUpToDateStep.java:53)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:53)
+	at org.gradle.internal.execution.steps.SkipUpToDateStep.execute(SkipUpToDateStep.java:35)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:37)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsFinishedStep.execute(MarkSnapshottingInputsFinishedStep.java:27)
+	at org.gradle.internal.execution.steps.ResolveMutableCachingStateStep.executeDelegate(ResolveMutableCachingStateStep.java:70)
+	at org.gradle.internal.execution.steps.ResolveMutableCachingStateStep.executeDelegate(ResolveMutableCachingStateStep.java:32)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:69)
+	at org.gradle.internal.execution.steps.AbstractResolveCachingStateStep.execute(AbstractResolveCachingStateStep.java:37)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:63)
+	at org.gradle.internal.execution.steps.ResolveChangesStep.executeMutable(ResolveChangesStep.java:34)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.ValidateStep$Mutable.executeDelegate(ValidateStep.java:79)
+	at org.gradle.internal.execution.steps.ValidateStep$Mutable.executeDelegate(ValidateStep.java:65)
+	at org.gradle.internal.execution.steps.ValidateStep.execute(ValidateStep.java:105)
+	at org.gradle.internal.execution.steps.ValidateStep$Mutable.execute(ValidateStep.java:65)
+	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.executeMutable(CaptureMutableStateBeforeExecutionStep.java:86)
+	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:65)
+	at org.gradle.internal.execution.steps.CaptureMutableStateBeforeExecutionStep.execute(CaptureMutableStateBeforeExecutionStep.java:45)
+	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeWithNonEmptySources(SkipEmptyMutableWorkStep.java:210)
+	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:90)
+	at org.gradle.internal.execution.steps.SkipEmptyMutableWorkStep.executeMutable(SkipEmptyMutableWorkStep.java:53)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.legacy.MarkSnapshottingInputsStartedStep.execute(MarkSnapshottingInputsStartedStep.java:38)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.executeMutable(LoadPreviousExecutionStateStep.java:36)
+	at org.gradle.internal.execution.steps.LoadPreviousExecutionStateStep.executeMutable(LoadPreviousExecutionStateStep.java:23)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:77)
+	at org.gradle.internal.execution.steps.HandleStaleOutputsStep.executeMutable(HandleStaleOutputsStep.java:43)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.lambda$executeMutable$0(AssignMutableWorkspaceStep.java:34)
+	at org.gradle.api.internal.tasks.execution.TaskExecution$4.withWorkspace(TaskExecution.java:314)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.executeMutable(AssignMutableWorkspaceStep.java:30)
+	at org.gradle.internal.execution.steps.AssignMutableWorkspaceStep.executeMutable(AssignMutableWorkspaceStep.java:21)
+	at org.gradle.internal.execution.steps.MutableStep.execute(MutableStep.java:26)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:40)
+	at org.gradle.internal.execution.steps.ChoosePipelineStep.execute(ChoosePipelineStep.java:23)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.lambda$execute$2(ExecuteWorkBuildOperationFiringStep.java:67)
+	at java.base/java.util.Optional.orElseGet(Optional.java:364)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:67)
+	at org.gradle.internal.execution.steps.ExecuteWorkBuildOperationFiringStep.execute(ExecuteWorkBuildOperationFiringStep.java:39)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:46)
+	at org.gradle.internal.execution.steps.IdentityCacheStep.execute(IdentityCacheStep.java:34)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:56)
+	at org.gradle.internal.execution.steps.IdentifyStep.execute(IdentifyStep.java:38)
+	at org.gradle.internal.execution.impl.DefaultExecutionEngine$1.execute(DefaultExecutionEngine.java:68)
+	at org.gradle.api.internal.tasks.execution.DefaultTaskNodeExecutor.doExecute(DefaultTaskNodeExecutor.java:364)
+	... 28 more
+Caused by: org.jetbrains.kotlin.gradle.tasks.CompilationErrorException: Compilation error. See log for more details
+	at org.jetbrains.kotlin.gradle.tasks.TasksUtilsKt.throwExceptionIfCompilationFailed(tasksUtils.kt:21)
+	at org.jetbrains.kotlin.compilerRunner.btapi.BuildToolsApiCompilationWork.execute(BuildToolsApiCompilationWork.kt:320)
+	at org.gradle.workers.internal.DefaultWorkerServer.execute(DefaultWorkerServer.java:68)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:64)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1$1.create(NoIsolationWorkerFactory.java:61)
+	at org.gradle.internal.classloader.ClassLoaderUtils.executeInClassloader(ClassLoaderUtils.java:103)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.lambda$execute$0(NoIsolationWorkerFactory.java:61)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:44)
+	at org.gradle.workers.internal.AbstractWorker$1.call(AbstractWorker.java:41)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:210)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$CallableBuildOperationWorker.execute(DefaultBuildOperationRunner.java:205)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:67)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner$2.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:167)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.execute(DefaultBuildOperationRunner.java:60)
+	at org.gradle.internal.operations.DefaultBuildOperationRunner.call(DefaultBuildOperationRunner.java:54)
+	at org.gradle.workers.internal.AbstractWorker.executeWrappedInBuildOperation(AbstractWorker.java:41)
+	at org.gradle.workers.internal.NoIsolationWorkerFactory$1.execute(NoIsolationWorkerFactory.java:58)
+	at org.gradle.workers.internal.DefaultWorkerExecutor.lambda$submitWork$1(DefaultWorkerExecutor.java:169)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runExecution(DefaultConditionalExecutionQueue.java:191)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.access$600(DefaultConditionalExecutionQueue.java:112)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner$1.run(DefaultConditionalExecutionQueue.java:168)
+	at org.gradle.internal.Factories$1.create(Factories.java:30)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.lambda$runAndReleaseLocks$0(DefaultWorkerLeaseService.java:296)
+	at org.gradle.internal.work.ResourceLockStatistics$1.measure(ResourceLockStatistics.java:43)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAndReleaseLocks(DefaultWorkerLeaseService.java:294)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocksAcquired(DefaultWorkerLeaseService.java:290)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.withLocks(DefaultWorkerLeaseService.java:282)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:132)
+	at org.gradle.internal.work.DefaultWorkerLeaseService.runAsWorkerThread(DefaultWorkerLeaseService.java:138)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.runBatch(DefaultConditionalExecutionQueue.java:163)
+	at org.gradle.internal.work.DefaultConditionalExecutionQueue$ExecutionRunner.run(DefaultConditionalExecutionQueue.java:125)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	... 5 more
+
+==============================================================================
 
 Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
 
@@ -476,7 +824,7 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD FAILED in 1m 59s
-141 actionable tasks: 120 executed, 16 from cache, 5 up-to-date
+BUILD FAILED in 40s
+311 actionable tasks: 207 executed, 61 from cache, 43 up-to-date
 Configuration cache entry stored.
 GRADLE_FAILED
