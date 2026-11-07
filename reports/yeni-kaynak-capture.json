@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-07T14:58:47.800231+00:00",
+  "capturedAt": "2026-11-07T15:25:55.011138+00:00",
   "sites": {
     "ailurascans": {
       "baseUrl": "https://ailurascans.com",
@@ -228,7 +228,7 @@
         "series": {
           "path": "/seri/ts-cezasi",
           "status": 200,
-          "bytes": 211907,
+          "bytes": 211910,
           "lockMarkers": [],
           "chapterHrefCount": 13,
           "pageArrayCount": 13,
