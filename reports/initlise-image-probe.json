@@ -1,0 +1,108 @@
+{
+  "probedAt": "2026-11-07T15:30:19.644280+00:00",
+  "sites": {
+    "duckscans": {
+      "base": "https://duckscans.com",
+      "series": "hazbin-otelde-cinayet",
+      "seriesPage": {
+        "status": 200
+      },
+      "chapter": {
+        "number": 48,
+        "id": "69e52923f4ac9dfee1b75f19",
+        "samplePath": "/uploads/seri/hazbin-otelde-cinayet/bolum 48/001.jpg"
+      },
+      "imageVariants": {
+        "encoded-no-headers": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "encoded-root-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "encoded-chapter-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "raw-space-chapter-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        }
+      },
+      "includePagesApi": {
+        "status": 400,
+        "type": "application/json",
+        "bytes": 65
+      },
+      "coverProbe": {
+        "status": 200,
+        "type": "image/webp",
+        "bytes": 54776,
+        "ok": true
+      }
+    },
+    "oblivionscans": {
+      "base": "https://oblivionscans.com",
+      "series": "patron-kizinizi-istiyorum",
+      "seriesPage": {
+        "status": 200
+      },
+      "chapter": {
+        "number": 79,
+        "id": "0381abdab8b910d3e990c536",
+        "samplePath": "/uploads/seri/wp-content/uploads/init-manga/1879/79/0001.jpg"
+      },
+      "imageVariants": {
+        "encoded-no-headers": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "encoded-root-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "encoded-chapter-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        },
+        "raw-space-chapter-referer": {
+          "status": 403,
+          "type": "",
+          "bytes": 0
+        }
+      },
+      "includePagesApi": {
+        "status": 400,
+        "type": "application/json",
+        "bytes": 65
+      },
+      "coverProbe": {
+        "status": 404,
+        "type": "",
+        "bytes": 0
+      }
+    },
+    "lunariscans": {
+      "base": "https://lunariscans.com",
+      "series": "ana-karakter-sagligima-takintili",
+      "seriesPage": {
+        "status": 403
+      }
+    },
+    "ailurascans": {
+      "base": "https://ailurascans.com",
+      "series": "hooky",
+      "seriesPage": {
+        "status": 403
+      }
+    }
+  }
+}
