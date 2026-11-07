@@ -45,10 +45,9 @@ private val INLINE_TAGS = setOf(
 )
 
 /** NBSP temizliği + boşluk kırpma; boş metinlerde null. */
-private fun String.clean(): String? =
-    replace(' ', ' ')
-        .trim()
-        .takeIf { it.isNotEmpty() }
+private fun String.clean(): String? = replace(' ', ' ')
+    .trim()
+    .takeIf { it.isNotEmpty() }
 
 /** Kapak görseli: `data-src` yer tutucusuz gerçek kaynak; `src` (ajax-loader) son çare. */
 private fun coverUrl(image: Element?): String? {
@@ -61,14 +60,13 @@ private fun coverUrl(image: Element?): String? {
 }
 
 /** İçerik görselleri: lazy-src önceliği, yer tutucu/data: atlanır, göreli mutlaklaşır. */
-private fun contentImageUrl(element: Element): String? =
-    sequenceOf("data-src-retina", "data-src", "data-original", "src")
-        .mapNotNull { attr ->
-            element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
-        }
-        .firstOrNull {
-            it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
-        }
+private fun contentImageUrl(element: Element): String? = sequenceOf("data-src-retina", "data-src", "data-original", "src")
+    .mapNotNull { attr ->
+        element.attr("abs:$attr").trim().takeIf { it.isNotEmpty() }
+    }
+    .firstOrNull {
+        it.startsWith("http") && "ajax-loader" !in it && !it.startsWith("data:")
+    }
 
 /** `/seri/<slug>` yolunu doğrular; bozuk kartları (`/seri/`) atlar. */
 private fun seriesPath(url: String): String? {
@@ -101,8 +99,7 @@ internal object EpikNovelParser {
     // ---------------------------------------------------------------- list
 
     /** Liste/arama sayfasındaki kartlardan seri listesi. */
-    fun mangasFromListPage(document: Document): List<SManga> =
-        document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
+    fun mangasFromListPage(document: Document): List<SManga> = document.select("#pop-href div.media").mapNotNull(::mangaFromCard)
 
     private fun mangaFromCard(card: Element): SManga? {
         val heading = card.selectFirst("h3.media-heading") ?: return null
@@ -208,9 +205,11 @@ internal object EpikNovelParser {
                     element.text().clean()?.let(into::add)
                 }
             }
+
             element.tagName() in setOf("ul", "ol") -> {
                 element.select("li").forEach { li -> li.text().clean()?.let(into::add) }
             }
+
             else -> {
                 val paragraphs = element.select("p")
                 if (paragraphs.isNotEmpty()) {
@@ -290,14 +289,19 @@ private class ChapterWalker {
         val tag = element.tagName().lowercase(Locale.ROOT)
         when {
             tag in SKIP_TAGS -> Unit
+
             tag == "br" -> flush()
+
             tag == "img" -> picture(element)
+
             tag in INLINE_TAGS -> element.childNodes().forEach(::walk)
+
             tag == "p" || tag == "li" -> {
                 flush()
                 element.text().clean()?.let { blocks += ContentBlock.Paragraph(it) }
                 element.select("img").forEach(::picture)
             }
+
             tag.length == 2 && tag[0] == 'h' && tag[1] in '1'..'6' -> {
                 flush()
                 val text = element.text().clean() ?: return
@@ -308,6 +312,7 @@ private class ChapterWalker {
                     blocks += ContentBlock.Paragraph(text)
                 }
             }
+
             tag == "center" -> {
                 if (!titleTaken && element.selectFirst("h4, h5, h6") != null) {
                     val text = element.text().clean() ?: return
@@ -318,6 +323,7 @@ private class ChapterWalker {
                     element.childNodes().forEach(::walk)
                 }
             }
+
             else -> {
                 flush()
                 element.childNodes().forEach(::walk)
