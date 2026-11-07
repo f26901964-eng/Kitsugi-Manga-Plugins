@@ -8,90 +8,152 @@ Type-safe project accessors is an incubating feature.
 > Task :build-logic:processResources UP-TO-DATE
 > Task :build-logic:classes UP-TO-DATE
 > Task :build-logic:jar UP-TO-DATE
-> Task :core:spotlessJava
-> Task :core:spotlessJavaCheck
 > Task :core:spotlessGradle FROM-CACHE
 > Task :core:spotlessGradleCheck UP-TO-DATE
-> Task :lib-multisrc:initlisenext:spotlessGradle UP-TO-DATE
+> Task :core:spotlessJava
+> Task :core:spotlessJavaCheck
 > Task :core:spotlessXml
 > Task :core:spotlessXmlCheck
-> Task :lib-multisrc:initlisenext:spotlessJava UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessGradle UP-TO-DATE
 > Task :lib-multisrc:initlisenext:spotlessGradleCheck UP-TO-DATE
-> Task :lib-multisrc:initlisenext:spotlessKotlin UP-TO-DATE
-> Task :lib-multisrc:initlisenext:spotlessKotlinCheck UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessJava UP-TO-DATE
 > Task :lib-multisrc:initlisenext:spotlessJavaCheck UP-TO-DATE
 > Task :lib-multisrc:initlisenext:spotlessXml UP-TO-DATE
 > Task :lib-multisrc:initlisenext:spotlessXmlCheck UP-TO-DATE
-> Task :lib-multisrc:initlisenext:spotlessCheck UP-TO-DATE
-> Task :lib-multisrc:initlisenext:preBuild UP-TO-DATE
-> Task :lib-multisrc:initlisenext:preDebugBuild UP-TO-DATE
-> Task :src:tr:duckscans:spotlessJava UP-TO-DATE
 > Task :src:tr:duckscans:spotlessGradle UP-TO-DATE
-> Task :lib-multisrc:initlisenext:generateDebugResources
-> Task :lib-multisrc:initlisenext:processDebugNavigationResources
 > Task :src:tr:duckscans:spotlessGradleCheck UP-TO-DATE
+> Task :src:tr:duckscans:spotlessJava UP-TO-DATE
 > Task :src:tr:duckscans:spotlessJavaCheck UP-TO-DATE
 > Task :src:tr:duckscans:spotlessKotlin UP-TO-DATE
 > Task :src:tr:duckscans:spotlessKotlinCheck UP-TO-DATE
-> Task :lib-multisrc:initlisenext:javaPreCompileDebug
+> Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
 > Task :src:tr:duckscans:spotlessXml UP-TO-DATE
 > Task :src:tr:duckscans:spotlessXmlCheck UP-TO-DATE
 > Task :src:tr:duckscans:spotlessCheck UP-TO-DATE
 > Task :src:tr:duckscans:preBuild UP-TO-DATE
 > Task :src:tr:duckscans:preDebugBuild UP-TO-DATE
-> Task :compiler:checkKotlinGradlePluginConfigurationErrors SKIPPED
-> Task :src:tr:duckscans:generateDebugResources
 > Task :src:tr:duckscans:generateDebugBuildConfig
-> Task :lib-multisrc:initlisenext:packageDebugResources
+> Task :src:tr:duckscans:generateDebugResources
 > Task :src:tr:duckscans:packageDebugResources
 > Task :compiler:processResources
-> Task :lib-multisrc:initlisenext:mapDebugSourceSetPaths
-> Task :lib-multisrc:initlisenext:compileDebugLibraryResources
-> Task :lib-multisrc:initlisenext:writeDebugAarMetadata
 > Task :src:tr:duckscans:mapDebugSourceSetPaths
 > Task :src:tr:duckscans:createDebugCompatibleScreenManifests
-> Task :lib-multisrc:initlisenext:extractDeepLinksDebug
-> Task :lib-multisrc:initlisenext:processDebugManifest
 > Task :src:tr:duckscans:extractDeepLinksDebug
 > Task :src:tr:duckscans:generateExtensionManifest
 > Task :src:tr:duckscans:preDebugUnitTestBuild UP-TO-DATE
-> Task :src:tr:duckscans:javaPreCompileDebugUnitTest FROM-CACHE
+> Task :src:tr:duckscans:javaPreCompileDebugUnitTest
 > Task :src:tr:duckscans:generateSourceInfo
-> Task :lib-multisrc:initlisenext:preReleaseBuild UP-TO-DATE
+> Task :src:tr:duckscans:preReleaseBuild UP-TO-DATE
+> Task :lib-multisrc:initlisenext:spotlessKotlin
+> Task :lib-multisrc:initlisenext:spotlessKotlinCheck
+> Task :lib-multisrc:initlisenext:spotlessCheck
+> Task :lib-multisrc:initlisenext:preBuild
+> Task :lib-multisrc:initlisenext:preDebugBuild
+> Task :lib-multisrc:initlisenext:generateDebugResources
+> Task :lib-multisrc:initlisenext:packageDebugResources
+> Task :lib-multisrc:initlisenext:processDebugNavigationResources
+> Task :src:tr:duckscans:mergeReleaseJniLibFolders
+> Task :lib-multisrc:initlisenext:javaPreCompileDebug FROM-CACHE
+> Task :lib-multisrc:initlisenext:mapDebugSourceSetPaths
+> Task :lib-multisrc:initlisenext:compileDebugLibraryResources
+> Task :lib-multisrc:initlisenext:writeDebugAarMetadata
+> Task :lib-multisrc:initlisenext:extractDeepLinksDebug
+> Task :lib-multisrc:initlisenext:processDebugManifest
+> Task :lib-multisrc:initlisenext:preReleaseBuild
 > Task :lib-multisrc:initlisenext:mergeReleaseJniLibFolders
 > Task :lib-multisrc:initlisenext:mergeReleaseNativeLibs NO-SOURCE
 > Task :lib-multisrc:initlisenext:copyReleaseJniLibsProjectOnly
-> Task :src:tr:duckscans:preReleaseBuild UP-TO-DATE
-> Task :src:tr:duckscans:mergeReleaseJniLibFolders
 > Task :lib-multisrc:initlisenext:generateReleaseResources FROM-CACHE
 > Task :lib-multisrc:initlisenext:packageReleaseResources
 > Task :lib-multisrc:initlisenext:processReleaseNavigationResources FROM-CACHE
+> Task :core:spotlessKotlin
+> Task :core:spotlessKotlinCheck
+> Task :core:spotlessCheck
+> Task :core:preBuild
+> Task :core:preDebugBuild
+> Task :core:generateDebugResources
+> Task :core:packageDebugResources
+> Task :core:processDebugNavigationResources
 > Task :lib-multisrc:initlisenext:parseDebugLocalResources
-> Task :lib-multisrc:initlisenext:parseReleaseLocalResources FROM-CACHE
-> Task :lib-multisrc:initlisenext:generateReleaseRFile
+> Task :lib-multisrc:initlisenext:parseReleaseLocalResources
+> Task :core:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:duckscans:processDebugNavigationResources
+> Task :lib-multisrc:initlisenext:generateDebugRFile
+> Task :src:tr:duckscans:parseDebugLocalResources
+> Task :core:mapDebugSourceSetPaths
+> Task :src:tr:duckscans:generateDebugRFile
+> Task :core:writeDebugAarMetadata
+> Task :core:compileDebugLibraryResources
+> Task :core:parseDebugLocalResources
+> Task :src:tr:duckscans:checkDebugAarMetadata
+> Task :src:tr:duckscans:compileDebugNavigationResources
+> Task :core:extractDeepLinksDebug FROM-CACHE
+> Task :core:generateDebugRFile
+> Task :core:processDebugManifest
+> Task :src:tr:duckscans:mergeDebugResources
+> Task :core:preReleaseBuild
+> Task :core:mergeReleaseJniLibFolders
+> Task :src:tr:duckscans:processDebugMainManifest
+> Task :core:mergeReleaseNativeLibs NO-SOURCE
+> Task :core:copyReleaseJniLibsProjectOnly
+> Task :src:tr:duckscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:duckscans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:duckscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:duckscans:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :core:generateReleaseResources FROM-CACHE
+> Task :core:packageReleaseResources
+> Task :core:processReleaseNavigationResources FROM-CACHE
+> Task :core:parseReleaseLocalResources FROM-CACHE
+> Task :core:generateReleaseRFile FROM-CACHE
+> Task :src:tr:duckscans:processDebugManifest
+> Task :src:tr:duckscans:processDebugManifestForPackage
+> Task :src:tr:duckscans:processDebugResources
+> Task :core:javaPreCompileRelease FROM-CACHE
+> Task :lib-multisrc:initlisenext:generateReleaseRFile FROM-CACHE
 > Task :lib-multisrc:initlisenext:javaPreCompileRelease FROM-CACHE
 > Task :src:tr:duckscans:checkReleaseDuplicateClasses
 > Task :src:tr:duckscans:generateReleaseBuildConfig
-> Task :lib-multisrc:initlisenext:generateDebugRFile
 > Task :src:tr:duckscans:generateReleaseResources FROM-CACHE
+> Task :src:tr:duckscans:packageReleaseResources
+> Task :src:tr:duckscans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:duckscans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:duckscans:generateReleaseRFile FROM-CACHE
+> Task :core:prepareReleaseArtProfile
 > Task :lib-multisrc:initlisenext:prepareReleaseArtProfile
+> Task :src:tr:duckscans:mergeReleaseArtProfile
+> Task :core:mapReleaseSourceSetPaths
+> Task :core:compileReleaseLibraryResources
 > Task :lib-multisrc:initlisenext:mapReleaseSourceSetPaths
 > Task :lib-multisrc:initlisenext:compileReleaseLibraryResources
-> Task :src:tr:duckscans:packageReleaseResources
+> Task :core:writeReleaseAarMetadata
 > Task :lib-multisrc:initlisenext:writeReleaseAarMetadata
+> Task :src:tr:duckscans:checkReleaseAarMetadata
 > Task :src:tr:duckscans:mapReleaseSourceSetPaths
+> Task :src:tr:duckscans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:duckscans:mergeReleaseResources
 > Task :src:tr:duckscans:createReleaseCompatibleScreenManifests
+> Task :core:extractDeepLinksRelease FROM-CACHE
+> Task :core:processReleaseManifest FROM-CACHE
 > Task :lib-multisrc:initlisenext:extractDeepLinksRelease FROM-CACHE
 > Task :lib-multisrc:initlisenext:processReleaseManifest FROM-CACHE
 > Task :src:tr:duckscans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:duckscans:processReleaseMainManifest
+> Task :src:tr:duckscans:processReleaseManifest
+> Task :src:tr:duckscans:processReleaseManifestForPackage
+> Task :src:tr:duckscans:processReleaseResources
+> Task :src:tr:duckscans:extractProguardFiles
 > Task :src:tr:duckscans:mergeReleaseStartupProfile
 > Task :core:generateReleaseAssets UP-TO-DATE
+> Task :core:mergeReleaseAssets
 > Task :lib-multisrc:initlisenext:generateReleaseAssets UP-TO-DATE
-> Task :src:tr:duckscans:extractProguardFiles
-> Task :src:tr:duckscans:generateReleaseAssets UP-TO-DATE
-> Task :src:tr:duckscans:validateSigningRelease
 > Task :lib-multisrc:initlisenext:mergeReleaseAssets
+> Task :src:tr:duckscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:duckscans:mergeReleaseAssets
+> Task :src:tr:duckscans:compressReleaseAssets
+> Task :src:tr:duckscans:optimizeReleaseResources
+> Task :src:tr:duckscans:validateSigningRelease
 > Task :src:tr:duckscans:writeReleaseAppMetadata
+> Task :src:tr:duckscans:writeReleaseSigningConfigVersions
 > Task :src:tr:lunariscans:spotlessGradle UP-TO-DATE
 > Task :src:tr:lunariscans:spotlessGradleCheck UP-TO-DATE
 > Task :src:tr:lunariscans:spotlessJava UP-TO-DATE
@@ -103,283 +165,237 @@ Type-safe project accessors is an incubating feature.
 > Task :src:tr:lunariscans:spotlessCheck UP-TO-DATE
 > Task :src:tr:lunariscans:preBuild UP-TO-DATE
 > Task :src:tr:lunariscans:preDebugBuild UP-TO-DATE
-> Task :src:tr:duckscans:writeReleaseSigningConfigVersions
 > Task :src:tr:lunariscans:generateDebugBuildConfig
 > Task :src:tr:lunariscans:generateDebugResources
+> Task :src:tr:lunariscans:packageDebugResources
+> Task :src:tr:lunariscans:processDebugNavigationResources
+> Task :src:tr:lunariscans:parseDebugLocalResources
+> Task :src:tr:lunariscans:generateDebugRFile FROM-CACHE
+> Task :src:tr:lunariscans:checkDebugAarMetadata
 > Task :src:tr:lunariscans:mapDebugSourceSetPaths
+> Task :src:tr:lunariscans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:mergeDebugResources
 > Task :src:tr:lunariscans:createDebugCompatibleScreenManifests
 > Task :src:tr:lunariscans:extractDeepLinksDebug
 > Task :src:tr:lunariscans:generateExtensionManifest
+> Task :src:tr:lunariscans:processDebugMainManifest
+> Task :src:tr:lunariscans:processDebugManifest
+> Task :src:tr:lunariscans:processDebugManifestForPackage
+> Task :src:tr:lunariscans:processDebugResources
 > Task :src:tr:lunariscans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:lunariscans:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :src:tr:lunariscans:generateSourceInfo
 > Task :src:tr:lunariscans:preReleaseBuild UP-TO-DATE
-> Task :src:tr:lunariscans:packageDebugResources
 > Task :src:tr:lunariscans:mergeReleaseJniLibFolders
+> Task :src:tr:lunariscans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:lunariscans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:lunariscans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:lunariscans:mergeReleaseNativeDebugMetadata NO-SOURCE
 > Task :src:tr:lunariscans:checkReleaseDuplicateClasses
 > Task :src:tr:lunariscans:generateReleaseBuildConfig
 > Task :src:tr:lunariscans:generateReleaseResources FROM-CACHE
+> Task :src:tr:lunariscans:packageReleaseResources
+> Task :src:tr:lunariscans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:lunariscans:generateReleaseRFile FROM-CACHE
+> Task :src:tr:lunariscans:mergeReleaseArtProfile
+> Task :src:tr:lunariscans:checkReleaseAarMetadata
 > Task :src:tr:lunariscans:mapReleaseSourceSetPaths
+> Task :src:tr:lunariscans:compileReleaseNavigationResources FROM-CACHE
+> Task :src:tr:lunariscans:mergeReleaseResources
 > Task :src:tr:lunariscans:createReleaseCompatibleScreenManifests
 > Task :src:tr:lunariscans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:lunariscans:processReleaseMainManifest
+> Task :src:tr:lunariscans:processReleaseManifest
+> Task :src:tr:lunariscans:processReleaseManifestForPackage
+> Task :src:tr:lunariscans:processReleaseResources
 > Task :src:tr:lunariscans:extractProguardFiles
 > Task :src:tr:lunariscans:mergeReleaseStartupProfile
 > Task :src:tr:lunariscans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:lunariscans:mergeReleaseAssets
+> Task :src:tr:lunariscans:compressReleaseAssets FROM-CACHE
+> Task :src:tr:lunariscans:optimizeReleaseResources
 > Task :src:tr:lunariscans:validateSigningRelease
-> Task :src:tr:lunariscans:packageReleaseResources
 > Task :src:tr:lunariscans:writeReleaseAppMetadata
 > Task :src:tr:lunariscans:writeReleaseSigningConfigVersions
-> Task :src:tr:ailurascans:spotlessJava UP-TO-DATE
-> Task :src:tr:ailurascans:spotlessJavaCheck UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessGradle UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessGradleCheck UP-TO-DATE
-> Task :src:tr:ailurascans:spotlessXml UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessJava UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessJavaCheck UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessKotlin UP-TO-DATE
-> Task :src:tr:ailurascans:spotlessXmlCheck UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessKotlinCheck UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessXml UP-TO-DATE
+> Task :src:tr:ailurascans:spotlessXmlCheck UP-TO-DATE
 > Task :src:tr:ailurascans:spotlessCheck UP-TO-DATE
 > Task :src:tr:ailurascans:preBuild UP-TO-DATE
 > Task :src:tr:ailurascans:preDebugBuild UP-TO-DATE
-> Task :src:tr:ailurascans:generateExtensionManifest
 > Task :src:tr:ailurascans:generateDebugBuildConfig
-> Task :src:tr:ailurascans:mapDebugSourceSetPaths
 > Task :src:tr:ailurascans:generateDebugResources
+> Task :src:tr:ailurascans:packageDebugResources
+> Task :src:tr:ailurascans:processDebugNavigationResources
+> Task :src:tr:ailurascans:parseDebugLocalResources
+> Task :src:tr:ailurascans:generateDebugRFile FROM-CACHE
+> Task :src:tr:ailurascans:checkDebugAarMetadata
+> Task :src:tr:ailurascans:mapDebugSourceSetPaths
+> Task :src:tr:ailurascans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:mergeDebugResources
 > Task :src:tr:ailurascans:createDebugCompatibleScreenManifests
 > Task :src:tr:ailurascans:extractDeepLinksDebug
+> Task :src:tr:ailurascans:generateExtensionManifest
+> Task :src:tr:ailurascans:processDebugMainManifest
+> Task :src:tr:ailurascans:processDebugManifest
+> Task :src:tr:ailurascans:processDebugManifestForPackage
+> Task :src:tr:ailurascans:processDebugResources
 > Task :src:tr:ailurascans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:ailurascans:javaPreCompileDebugUnitTest FROM-CACHE
 > Task :src:tr:ailurascans:generateSourceInfo
 > Task :src:tr:ailurascans:preReleaseBuild UP-TO-DATE
-> Task :src:tr:ailurascans:packageDebugResources
-> Task :src:tr:ailurascans:checkReleaseDuplicateClasses
 > Task :src:tr:ailurascans:mergeReleaseJniLibFolders
+> Task :src:tr:ailurascans:mergeReleaseNativeLibs NO-SOURCE
+> Task :src:tr:ailurascans:stripReleaseDebugSymbols NO-SOURCE
+> Task :src:tr:ailurascans:extractReleaseNativeSymbolTables NO-SOURCE
+> Task :src:tr:ailurascans:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :src:tr:ailurascans:checkReleaseDuplicateClasses
 > Task :src:tr:ailurascans:generateReleaseBuildConfig
 > Task :src:tr:ailurascans:generateReleaseResources FROM-CACHE
+> Task :src:tr:ailurascans:packageReleaseResources
+> Task :src:tr:ailurascans:processReleaseNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:parseReleaseLocalResources FROM-CACHE
+> Task :src:tr:ailurascans:generateReleaseRFile FROM-CACHE
+> Task :src:tr:ailurascans:mergeReleaseArtProfile
+> Task :src:tr:ailurascans:checkReleaseAarMetadata
 > Task :src:tr:ailurascans:mapReleaseSourceSetPaths
-> Task :src:tr:ailurascans:createReleaseCompatibleScreenManifests
+> Task :src:tr:ailurascans:compileReleaseNavigationResources FROM-CACHE
+> Task :compiler:compileKotlin
+> Task :compiler:compileJava NO-SOURCE
+> Task :compiler:classes
+> Task :compiler:jar
+> Task :src:tr:ailurascans:mergeReleaseResources
+> Task :src:tr:duckscans:javaPreCompileDebug
+> Task :src:tr:lunariscans:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:duckscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:lunariscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:ailurascans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:ailurascans:javaPreCompileDebug FROM-CACHE
 > Task :src:tr:ailurascans:extractDeepLinksRelease FROM-CACHE
+> Task :src:tr:ailurascans:createReleaseCompatibleScreenManifests
 > Task :src:tr:ailurascans:extractProguardFiles
 > Task :src:tr:ailurascans:mergeReleaseStartupProfile
 > Task :src:tr:ailurascans:generateReleaseAssets UP-TO-DATE
+> Task :src:tr:ailurascans:mergeReleaseAssets
+> Task :src:tr:ailurascans:compressReleaseAssets FROM-CACHE
 > Task :src:tr:ailurascans:validateSigningRelease
 > Task :src:tr:ailurascans:writeReleaseAppMetadata
+> Task :src:tr:ailurascans:processReleaseMainManifest
 > Task :src:tr:ailurascans:writeReleaseSigningConfigVersions
+> Task :src:tr:ailurascans:processReleaseManifest
 > Task :src:tr:oblivionscans:spotlessGradle UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessGradleCheck UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessJava UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessJavaCheck UP-TO-DATE
+> Task :src:tr:ailurascans:processReleaseManifestForPackage
 > Task :src:tr:oblivionscans:spotlessKotlin UP-TO-DATE
-> Task :src:tr:ailurascans:packageReleaseResources
 > Task :src:tr:oblivionscans:spotlessKotlinCheck UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessXml UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessXmlCheck UP-TO-DATE
 > Task :src:tr:oblivionscans:spotlessCheck UP-TO-DATE
 > Task :src:tr:oblivionscans:preBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:preDebugBuild UP-TO-DATE
-> Task :src:tr:oblivionscans:generateExtensionManifest
 > Task :src:tr:oblivionscans:generateDebugBuildConfig
-> Task :src:tr:oblivionscans:mapDebugSourceSetPaths
 > Task :src:tr:oblivionscans:generateDebugResources
+> Task :src:tr:oblivionscans:packageDebugResources
+> Task :src:tr:oblivionscans:processDebugNavigationResources
+> Task :src:tr:oblivionscans:parseDebugLocalResources
+> Task :src:tr:oblivionscans:generateDebugRFile FROM-CACHE
+> Task :src:tr:oblivionscans:javaPreCompileDebug FROM-CACHE
+> Task :src:tr:oblivionscans:checkDebugAarMetadata
+> Task :src:tr:oblivionscans:mapDebugSourceSetPaths
+> Task :src:tr:ailurascans:processReleaseResources
+> Task :src:tr:oblivionscans:compileDebugNavigationResources FROM-CACHE
+> Task :src:tr:ailurascans:optimizeReleaseResources
+> Task :src:tr:oblivionscans:mergeDebugResources
 > Task :src:tr:oblivionscans:createDebugCompatibleScreenManifests
 > Task :src:tr:oblivionscans:extractDeepLinksDebug
 > Task :src:tr:oblivionscans:preDebugUnitTestBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:javaPreCompileDebugUnitTest FROM-CACHE
-> Task :src:tr:oblivionscans:packageDebugResources
-> Task :src:tr:oblivionscans:preReleaseBuild UP-TO-DATE
+> Task :src:tr:oblivionscans:generateExtensionManifest
 > Task :src:tr:oblivionscans:generateSourceInfo
+> Task :src:tr:oblivionscans:preReleaseBuild UP-TO-DATE
 > Task :src:tr:oblivionscans:mergeReleaseJniLibFolders
-> Task :src:tr:oblivionscans:checkReleaseDuplicateClasses
-> Task :src:tr:oblivionscans:generateReleaseResources FROM-CACHE
-> Task :src:tr:oblivionscans:generateReleaseBuildConfig
-> Task :src:tr:oblivionscans:mapReleaseSourceSetPaths
-> Task :src:tr:oblivionscans:createReleaseCompatibleScreenManifests
-> Task :src:tr:oblivionscans:extractDeepLinksRelease FROM-CACHE
-> Task :src:tr:oblivionscans:extractProguardFiles
-> Task :src:tr:oblivionscans:mergeReleaseStartupProfile
-> Task :src:tr:oblivionscans:generateReleaseAssets UP-TO-DATE
-> Task :src:tr:oblivionscans:packageReleaseResources
-> Task :src:tr:oblivionscans:writeReleaseAppMetadata
-> Task :src:tr:oblivionscans:validateSigningRelease
-> Task :src:tr:oblivionscans:writeReleaseSigningConfigVersions
-> Task :core:spotlessKotlin
-> Task :core:spotlessKotlinCheck
-> Task :core:spotlessCheck
-> Task :core:preBuild
-> Task :core:preDebugBuild
-> Task :core:javaPreCompileDebug FROM-CACHE
-> Task :core:mapDebugSourceSetPaths
-> Task :core:processDebugNavigationResources
-> Task :core:generateDebugResources
-> Task :core:writeDebugAarMetadata
-> Task :src:tr:duckscans:processDebugNavigationResources
-> Task :core:packageDebugResources
-> Task :src:tr:duckscans:checkDebugAarMetadata
-> Task :src:tr:duckscans:parseDebugLocalResources
-> Task :core:parseDebugLocalResources
-> Task :core:generateDebugRFile
-> Task :src:tr:duckscans:generateDebugRFile
-> Task :src:tr:duckscans:compileDebugNavigationResources
-> Task :core:compileDebugLibraryResources
-> Task :core:extractDeepLinksDebug FROM-CACHE
-> Task :core:processDebugManifest
-> Task :src:tr:duckscans:mergeDebugResources
-> Task :core:preReleaseBuild
-> Task :core:mergeReleaseJniLibFolders
-> Task :core:mergeReleaseNativeLibs NO-SOURCE
-> Task :core:copyReleaseJniLibsProjectOnly
-> Task :src:tr:duckscans:mergeReleaseNativeLibs NO-SOURCE
-> Task :src:tr:duckscans:stripReleaseDebugSymbols NO-SOURCE
-> Task :src:tr:duckscans:extractReleaseNativeSymbolTables NO-SOURCE
-> Task :src:tr:duckscans:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :core:generateReleaseResources FROM-CACHE
-> Task :src:tr:duckscans:processDebugMainManifest
-> Task :core:packageReleaseResources
-> Task :core:processReleaseNavigationResources FROM-CACHE
-> Task :core:parseReleaseLocalResources FROM-CACHE
-> Task :core:generateReleaseRFile FROM-CACHE
-> Task :src:tr:duckscans:processDebugManifest
-> Task :src:tr:duckscans:processDebugManifestForPackage
-> Task :src:tr:duckscans:processDebugResources
-> Task :core:javaPreCompileRelease FROM-CACHE
-> Task :src:tr:duckscans:processReleaseNavigationResources FROM-CACHE
-> Task :src:tr:duckscans:parseReleaseLocalResources FROM-CACHE
-> Task :src:tr:duckscans:generateReleaseRFile FROM-CACHE
-> Task :core:prepareReleaseArtProfile
-> Task :src:tr:duckscans:mergeReleaseArtProfile
-> Task :core:mapReleaseSourceSetPaths
-> Task :core:compileReleaseLibraryResources
-> Task :core:writeReleaseAarMetadata
-> Task :src:tr:duckscans:checkReleaseAarMetadata
-> Task :src:tr:duckscans:compileReleaseNavigationResources FROM-CACHE
-> Task :src:tr:duckscans:mergeReleaseResources
-> Task :core:extractDeepLinksRelease FROM-CACHE
-> Task :core:processReleaseManifest FROM-CACHE
-> Task :src:tr:duckscans:processReleaseMainManifest
-> Task :src:tr:duckscans:processReleaseManifest
-> Task :src:tr:duckscans:processReleaseManifestForPackage
-> Task :src:tr:duckscans:processReleaseResources
-> Task :core:mergeReleaseAssets
-> Task :src:tr:duckscans:mergeReleaseAssets
-> Task :src:tr:duckscans:compressReleaseAssets
-> Task :src:tr:duckscans:optimizeReleaseResources
-> Task :src:tr:lunariscans:processDebugNavigationResources
-> Task :src:tr:lunariscans:parseDebugLocalResources
-> Task :src:tr:lunariscans:generateDebugRFile FROM-CACHE
-> Task :src:tr:lunariscans:checkDebugAarMetadata
-> Task :src:tr:lunariscans:compileDebugNavigationResources FROM-CACHE
-> Task :src:tr:lunariscans:mergeDebugResources
-> Task :src:tr:lunariscans:processDebugMainManifest
-> Task :src:tr:lunariscans:processDebugManifest
-> Task :src:tr:lunariscans:processDebugManifestForPackage
-> Task :src:tr:lunariscans:processDebugResources
-> Task :src:tr:lunariscans:mergeReleaseNativeLibs NO-SOURCE
-> Task :src:tr:lunariscans:stripReleaseDebugSymbols NO-SOURCE
-> Task :src:tr:lunariscans:extractReleaseNativeSymbolTables NO-SOURCE
-> Task :src:tr:lunariscans:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :src:tr:lunariscans:processReleaseNavigationResources FROM-CACHE
-> Task :src:tr:lunariscans:parseReleaseLocalResources FROM-CACHE
-> Task :src:tr:lunariscans:generateReleaseRFile FROM-CACHE
-> Task :src:tr:lunariscans:mergeReleaseArtProfile
-> Task :src:tr:lunariscans:checkReleaseAarMetadata
-> Task :src:tr:lunariscans:compileReleaseNavigationResources FROM-CACHE
-> Task :src:tr:lunariscans:mergeReleaseResources
-> Task :src:tr:lunariscans:processReleaseMainManifest
-> Task :src:tr:lunariscans:processReleaseManifest
-> Task :src:tr:lunariscans:processReleaseManifestForPackage
-> Task :src:tr:lunariscans:processReleaseResources
-> Task :src:tr:lunariscans:mergeReleaseAssets
-> Task :src:tr:lunariscans:compressReleaseAssets FROM-CACHE
-> Task :src:tr:lunariscans:optimizeReleaseResources
-> Task :src:tr:ailurascans:processDebugNavigationResources
-> Task :src:tr:ailurascans:parseDebugLocalResources
-> Task :src:tr:ailurascans:generateDebugRFile FROM-CACHE
-> Task :src:tr:ailurascans:checkDebugAarMetadata
-> Task :src:tr:ailurascans:compileDebugNavigationResources FROM-CACHE
-> Task :src:tr:ailurascans:mergeDebugResources
-> Task :src:tr:ailurascans:processDebugMainManifest
-> Task :src:tr:ailurascans:processDebugManifest
-> Task :src:tr:ailurascans:processDebugManifestForPackage
-> Task :src:tr:ailurascans:processDebugResources
-> Task :src:tr:ailurascans:mergeReleaseNativeLibs NO-SOURCE
-> Task :src:tr:ailurascans:stripReleaseDebugSymbols NO-SOURCE
-> Task :src:tr:ailurascans:extractReleaseNativeSymbolTables NO-SOURCE
-> Task :src:tr:ailurascans:mergeReleaseNativeDebugMetadata NO-SOURCE
-> Task :src:tr:ailurascans:processReleaseNavigationResources FROM-CACHE
-> Task :src:tr:ailurascans:parseReleaseLocalResources FROM-CACHE
-> Task :src:tr:ailurascans:generateReleaseRFile FROM-CACHE
-> Task :src:tr:ailurascans:mergeReleaseArtProfile
-> Task :src:tr:ailurascans:checkReleaseAarMetadata
-> Task :src:tr:ailurascans:compileReleaseNavigationResources FROM-CACHE
-> Task :src:tr:ailurascans:mergeReleaseResources
-> Task :src:tr:ailurascans:processReleaseMainManifest
-> Task :src:tr:ailurascans:processReleaseManifest
-> Task :src:tr:ailurascans:processReleaseManifestForPackage
-> Task :src:tr:ailurascans:processReleaseResources
-> Task :src:tr:ailurascans:mergeReleaseAssets
-> Task :src:tr:ailurascans:compressReleaseAssets FROM-CACHE
-> Task :src:tr:ailurascans:optimizeReleaseResources
-> Task :src:tr:oblivionscans:processDebugNavigationResources
-> Task :src:tr:oblivionscans:parseDebugLocalResources
-> Task :src:tr:oblivionscans:generateDebugRFile FROM-CACHE
-> Task :src:tr:oblivionscans:checkDebugAarMetadata
-> Task :src:tr:oblivionscans:compileDebugNavigationResources FROM-CACHE
-> Task :src:tr:oblivionscans:mergeDebugResources
-> Task :src:tr:oblivionscans:processDebugMainManifest
-> Task :src:tr:oblivionscans:processDebugManifest
-> Task :src:tr:oblivionscans:processDebugManifestForPackage
-> Task :src:tr:oblivionscans:processDebugResources
 > Task :src:tr:oblivionscans:mergeReleaseNativeLibs NO-SOURCE
 > Task :src:tr:oblivionscans:stripReleaseDebugSymbols NO-SOURCE
 > Task :src:tr:oblivionscans:extractReleaseNativeSymbolTables NO-SOURCE
 > Task :src:tr:oblivionscans:mergeReleaseNativeDebugMetadata NO-SOURCE
+> Task :src:tr:oblivionscans:processDebugMainManifest
+> Task :src:tr:oblivionscans:checkReleaseDuplicateClasses
+> Task :src:tr:oblivionscans:processDebugManifest
+> Task :src:tr:oblivionscans:generateReleaseBuildConfig
+> Task :src:tr:oblivionscans:generateReleaseResources FROM-CACHE
+> Task :src:tr:oblivionscans:processDebugManifestForPackage
+> Task :src:tr:oblivionscans:packageReleaseResources
 > Task :src:tr:oblivionscans:processReleaseNavigationResources FROM-CACHE
 > Task :src:tr:oblivionscans:parseReleaseLocalResources FROM-CACHE
 > Task :src:tr:oblivionscans:generateReleaseRFile FROM-CACHE
+> Task :src:tr:oblivionscans:javaPreCompileRelease FROM-CACHE
 > Task :src:tr:oblivionscans:mergeReleaseArtProfile
 > Task :src:tr:oblivionscans:checkReleaseAarMetadata
+> Task :src:tr:oblivionscans:mapReleaseSourceSetPaths
 > Task :src:tr:oblivionscans:compileReleaseNavigationResources FROM-CACHE
-> Task :compiler:compileKotlin
-> Task :compiler:compileJava NO-SOURCE
-> Task :compiler:classes
-> Task :compiler:jar
-> Task :src:tr:duckscans:javaPreCompileDebug
-> Task :src:tr:duckscans:javaPreCompileRelease FROM-CACHE
-> Task :src:tr:lunariscans:javaPreCompileDebug FROM-CACHE
-> Task :src:tr:lunariscans:javaPreCompileRelease FROM-CACHE
-> Task :src:tr:ailurascans:javaPreCompileDebug FROM-CACHE
-> Task :src:tr:ailurascans:javaPreCompileRelease FROM-CACHE
-> Task :src:tr:oblivionscans:javaPreCompileDebug FROM-CACHE
-> Task :src:tr:oblivionscans:javaPreCompileRelease FROM-CACHE
+> Task :src:tr:oblivionscans:processDebugResources
+> Task :src:tr:oblivionscans:createReleaseCompatibleScreenManifests
+> Task :src:tr:oblivionscans:extractDeepLinksRelease FROM-CACHE
 > Task :src:tr:oblivionscans:processReleaseMainManifest
 > Task :src:tr:oblivionscans:processReleaseManifest
 > Task :src:tr:oblivionscans:processReleaseManifestForPackage
+> Task :src:tr:oblivionscans:extractProguardFiles
+> Task :src:tr:oblivionscans:mergeReleaseStartupProfile
+> Task :src:tr:oblivionscans:generateReleaseAssets UP-TO-DATE
 > Task :src:tr:oblivionscans:mergeReleaseAssets
 > Task :src:tr:oblivionscans:compressReleaseAssets FROM-CACHE
+> Task :src:tr:oblivionscans:validateSigningRelease
+> Task :src:tr:oblivionscans:writeReleaseAppMetadata
+> Task :src:tr:oblivionscans:writeReleaseSigningConfigVersions
 > Task :src:tr:oblivionscans:mergeReleaseResources
 > Task :src:tr:oblivionscans:processReleaseResources
 > Task :src:tr:oblivionscans:optimizeReleaseResources
-> Task :core:compileReleaseKotlin
-> Task :core:compileReleaseJavaWithJavac NO-SOURCE
-> Task :core:mergeReleaseGeneratedProguardFiles
 > Task :core:compileDebugKotlin
+> Task :core:compileReleaseKotlin
 > Task :core:compileDebugJavaWithJavac NO-SOURCE
-> Task :core:exportReleaseConsumerProguardFiles
-> Task :core:processReleaseJavaRes
+> Task :core:compileReleaseJavaWithJavac NO-SOURCE
 > Task :core:processDebugJavaRes
+> Task :core:processReleaseJavaRes
+> Task :core:mergeReleaseGeneratedProguardFiles
+> Task :core:exportReleaseConsumerProguardFiles
+> Task :core:bundleLibCompileToJarRelease
 > Task :core:bundleLibRuntimeToJarDebug
 > Task :core:bundleLibCompileToJarDebug
 > Task :core:bundleLibRuntimeToJarRelease
-> Task :core:bundleLibCompileToJarRelease
 
 > Task :lib-multisrc:initlisenext:compileDebugKotlin FAILED
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:50:37 No value passed for parameter 'value'.
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:51:28 Unresolved reference 'isNullOrEmpty'.
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:51:50 Unresolved reference 'startsWith'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:341:14 Unresolved reference 'addQueryParameter'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:347:35 Unresolved reference 'apiUrl'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:358:35 Unresolved reference 'apiUrl'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:361:22 Unresolved reference 'isSuccessful'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:363:18 Unresolved reference 'data'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:364:32 Unresolved reference 'it'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:365:19 Unresolved reference 'pages'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:366:28 Unresolved reference 'it'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:367:17 Unresolved reference 'not' for operator '!'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:368:43 Cannot infer type for value parameter 'index'. Specify it explicitly.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:368:50 Cannot infer type for value parameter 'path'. Specify it explicitly.
 
 > Task :lib-multisrc:initlisenext:compileReleaseKotlin FAILED
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:50:37 No value passed for parameter 'value'.
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:51:28 Unresolved reference 'isNullOrEmpty'.
-e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:51:50 Unresolved reference 'startsWith'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:341:14 Unresolved reference 'addQueryParameter'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:347:35 Unresolved reference 'apiUrl'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:358:35 Unresolved reference 'apiUrl'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:361:22 Unresolved reference 'isSuccessful'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:363:18 Unresolved reference 'data'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:364:32 Unresolved reference 'it'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:365:19 Unresolved reference 'pages'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:366:28 Unresolved reference 'it'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:367:17 Unresolved reference 'not' for operator '!'.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:368:43 Cannot infer type for value parameter 'index'. Specify it explicitly.
+e: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/lib-multisrc/initlisenext/src/eu/kanade/tachiyomi/multisrc/initlisenext/InitliseNext.kt:368:50 Cannot infer type for value parameter 'path'. Specify it explicitly.
 
 [Incubating] Problems report is available at: file:///home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/keiyoushi-extensions-tr/build/reports/problems/problems-report.html
 
@@ -796,7 +812,7 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD FAILED in 29s
-311 actionable tasks: 206 executed, 60 from cache, 45 up-to-date
+BUILD FAILED in 39s
+311 actionable tasks: 208 executed, 60 from cache, 43 up-to-date
 Configuration cache entry stored.
 GRADLE_FAILED
