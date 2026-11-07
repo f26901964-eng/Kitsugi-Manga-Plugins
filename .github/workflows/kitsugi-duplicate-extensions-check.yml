@@ -1,0 +1,53 @@
+name: Kitsugi duplicate extension fix
+on:
+  workflow_dispatch:
+  push:
+    branches: [arena/e4d8654c-kitsugi-manga-plugins]
+    paths:
+      - tools/kitsugi-beta-duplicate-extensions.patch
+      - .github/workflows/kitsugi-duplicate-extensions-check.yml
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: f26901964-eng/Kitsugi-Beta
+          ref: eba224032635c7a3e95949c0bbbe7231ee374c6c
+          path: kitsugi-beta
+      - name: Apply fix to released Android sources
+        working-directory: kitsugi-beta
+        run: git apply --check "$GITHUB_WORKSPACE/tools/kitsugi-beta-duplicate-extensions.patch" && git apply "$GITHUB_WORKSPACE/tools/kitsugi-beta-duplicate-extensions.patch"
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install required SDK
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses >/dev/null 2>&1 || true
+          "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" 'platforms;android-36' 'build-tools;36.0.0' 'cmake;3.22.1' >/dev/null
+      - name: Test and compile the patched app
+        working-directory: kitsugi-beta
+        shell: bash
+        run: |
+          set +e
+          ./gradlew :app:testFossDebugUnitTest --tests 'com.kitsugi.animelist.data.manga.LoadedMangaExtensionTest' :app:assembleFossDebug --no-daemon --stacktrace --console=plain > /tmp/kitsugi-duplicate-build.log 2>&1
+          result=$?
+          tail -100 /tmp/kitsugi-duplicate-build.log
+          if [ "$result" -ne 0 ]; then
+            while IFS= read -r line; do
+              echo "::error title=Android build::${line//'%'/'%25'}"
+            done < <(grep -E '^e: |FAILURE|What went wrong|Execution failed|Caused by:|error:' /tmp/kitsugi-duplicate-build.log | head -60)
+          fi
+          exit "$result"
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: kitsugi-duplicate-fix-debug-not-release
+          path: kitsugi-beta/app/build/outputs/apk/foss/debug/*.apk
+          retention-days: 2
