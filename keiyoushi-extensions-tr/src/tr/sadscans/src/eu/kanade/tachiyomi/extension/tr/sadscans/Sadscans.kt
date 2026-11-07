@@ -213,7 +213,6 @@ abstract class Sadscans : KeiSource() {
         put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
     }
 
-
     /** Cloudflare doğrulaması bu oturumda geçilmiş mi? (cf_clearance çerezi paylaşılan kavanozda) */
     private fun hasClearance(): Boolean = runCatching {
         client.cookieJar.loadForRequest("$baseUrl/".toHttpUrl())
