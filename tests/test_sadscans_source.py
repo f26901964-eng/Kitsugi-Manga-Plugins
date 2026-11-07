@@ -103,15 +103,15 @@ class SadscansSourceTests(unittest.TestCase):
     def test_browser_challenge_is_reported_separately(self):
         script = FRONTEND.read_text(encoding='utf-8')
         self.assertIn('Just a moment', script)
-        self.assertIn('tarayıcı doğrulaması', script)
+        self.assertIn('Cloudflare doğrulaması geçilemedi', script)
 
     def test_time_budget_fits_the_host_app(self):
         """Kitsugi/Mihon kaynak aramasini 25 sn'de kesiyor; toplam butce bunun altinda kalmali."""
         source = SOURCE.read_text(encoding='utf-8')
-        self.assertIn('callTimeout(6, TimeUnit.SECONDS)', source)
-        self.assertIn('connectTimeout(5, TimeUnit.SECONDS)', source)
+        self.assertIn('callTimeout(5, TimeUnit.SECONDS)', source)
+        self.assertIn('connectTimeout(4, TimeUnit.SECONDS)', source)
         self.assertIn('timeout: Duration = 20.seconds', source, 'frontendPage varsayilani 20 sn olmali')
-        self.assertIn('timeout = 13.seconds', source, 'liste WebView suresi kisa olmali')
+        self.assertIn('timeout = 18.seconds', source, 'liste WebView suresi challenge beklemesini karsilamali')
         self.assertNotIn('callTimeout(45', source)
 
     def test_sitemap_tier_runs_before_webview(self):
@@ -124,6 +124,39 @@ class SadscansSourceTests(unittest.TestCase):
                         'sitemap kademesi WebView kademesinden once cagrilmali')
         self.assertIn('"/seriler/${entry.slug}"', source, 'sitemap girdisi detay rotasina baglanmali')
         self.assertIn('Normalizer.normalize', source, 'Turkce karakterler ASCII anahtara cevrilmeli')
+
+    def test_cloudflare_challenge_is_waited_not_failed_fast(self):
+        """Doğrulama ekranı görüldüğü an hata verilmemeli; JS challenge 2-5 sn'de geçer."""
+        frontend = (SOURCE.parent / 'SadscansFrontend.kt').read_text(encoding='utf-8')
+        self.assertIn('CF_PRELUDE', frontend)
+        self.assertIn('__sadscansCfStart', frontend)
+        self.assertIn('< 12000) return null', frontend, 'doğrulama ekranında beklenmeli')
+        self.assertIn('challenge: true', frontend)
+        self.assertIn('blocked: true', frontend, 'sert WAF bloğu ayrı raporlanmalı')
+        self.assertEqual(frontend.count('${CF_PRELUDE}'), 3, 'üç script de aynı önsözü kullanmalı')
+        self.assertNotIn("return out({error: 'SadScans tarayıcı doğrulaması istiyor", frontend,
+                         'eski ani-hata metni kalmamalı')
+
+    def test_api_tier_requires_clearance_cookie(self):
+        """cf_clearance yokken tRPC denenirse uygulamanın 25 sn bütçesi challenge'ta biter."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('private fun hasClearance()', source)
+        self.assertIn('loadForRequest("$baseUrl/".toHttpUrl())', source)
+        self.assertIn('val direct = if (hasClearance())', source)
+        self.assertIn('val direct = if (hasClearance()) attempt { fetchAllViaApi(slug) } else null', source)
+
+    def test_user_agent_comes_from_webview(self):
+        """cf_clearance çerezi UA'ya bağlı; API çağrıları WebView UA'sı ile gitmeli."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('private var webViewUserAgent: String?', source)
+        self.assertIn('private fun rememberUserAgent(result: JsonObject)', source)
+        self.assertIn('add("User-Agent", ua)', source)
+        self.assertGreaterEqual(source.count('rememberUserAgent('), 4, 'liste/detay/okuyucu UA yakalamalı')
+
+    def test_sitemap_tier_uses_short_budget(self):
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('callTimeout(3, TimeUnit.SECONDS)', source)
+        self.assertIn('SITEMAP_RETRY_MS', source)
 
     def test_requests_look_like_a_mobile_browser(self):
         source = SOURCE.read_text(encoding='utf-8')
@@ -139,7 +172,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 14', gradle)
+        self.assertIn('versionCode = 15', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

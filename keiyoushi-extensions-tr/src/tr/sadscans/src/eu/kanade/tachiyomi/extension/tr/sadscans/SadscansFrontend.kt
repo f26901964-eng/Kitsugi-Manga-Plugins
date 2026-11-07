@@ -19,6 +19,33 @@ import kotlinx.serialization.json.JsonPrimitive
  */
 internal object SadscansFrontend {
 
+    /**
+     * Cloudflare önsözü: üç script de aynı davranışı kullanır.
+     * Geçici doğrulama ekranı ("Just a moment") 12 sn'ye kadar beklenir; JS challenge
+     * gerçek bir WebView'de genelde 2-5 sn içinde kendiliğinden geçer. Sert WAF bloğu
+     * ("Sorry, you have been blocked") ayrı hata olarak raporlanır.
+     */
+    private val CF_PRELUDE = """
+              // ── Cloudflare: geçici doğrulama ekranı genelde 2-5 sn içinde kendiliğinden geçer,
+              // bu yüzden hemen hata vermek yerine beklenir (12 sn). Sert WAF bloğu ayrı ele alınır.
+              var hardBlock = /Sorry, you have been blocked|Attention Required|cf-error-details/i.test(text);
+              var challenge = !hardBlock && (
+                /Just a moment|Checking your browser|Verifying you are human|Verify you are human|Doğrulanıyor|Bir dakika lütfen/i.test(text) ||
+                !!document.querySelector('#challenge-form, #cf-challenge-running, #challenge-stage, .cf-turnstile')
+              );
+              if (challenge) {
+                var cfStart = window.__sadscansCfStart || (window.__sadscansCfStart = Date.now());
+                if (Date.now() - cfStart < 12000) return null;
+                return out({error: 'SadScans Cloudflare doğrulaması geçilemedi. Kaynağı uygulamada WebView ile bir kez açıp doğrulayın.', challenge: true});
+              }
+              window.__sadscansCfStart = 0;
+              if (hardBlock) {
+                return out({error: 'SadScans bağlantıyı engelledi (Cloudflare WAF). Kaynağı uygulamada WebView ile bir kez açıp doğrulayın.', blocked: true});
+              }
+              // cf_clearance çerezi bu UA'ya bağlıdır; API çağrıları aynı UA ile yapılmalı.
+              var UA = (typeof navigator !== 'undefined' && navigator.userAgent) || '';
+"""
+
     fun listScript(query: String, sort: String, type: String?, status: String?, page: Int): String {
         require(page > 0)
         val options = buildString {
@@ -35,13 +62,7 @@ internal object SadscansFrontend {
               var out = function(o) { return JSON.stringify(o); };
               var now = Date.now();
               var text = document.body ? (document.body.innerText || document.body.textContent || '') : '';
-              if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
-                return out({error: 'SadScans bu bağlantıyı engelledi (Cloudflare). Siteyi tarayıcıda bir kez açıp tekrar deneyin.'});
-              }
-              if (/Just a moment|Checking your browser|Verifying you are human|Verify you are human/i.test(text)) {
-                return out({error: 'SadScans tarayıcı doğrulaması istiyor. Uygulama içi tarayıcıda sadscans.net adresini açıp doğrulamayı geçin, sonra tekrar deneyin.'});
-              }
-              var route = location.pathname.replace(/\/+$/, '');
+${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
               if (route !== '/seriler' && route.indexOf('/seriler/') !== 0) return null;
 
               // Arama kutusu tRPC kademesi için gerekli değil: kutu adı değişse bile arama
@@ -267,7 +288,7 @@ internal object SadscansFrontend {
                   api.state = 'bad';
                 }
                 if (api.state === 'ok' && api.items.length) {
-                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api'});
+                  return out({items: api.items, hasMore: api.items.length >= 15, page: options.page, source: 'api', ua: UA});
                 }
                 // Sabit yönlendirici adı işe yaramadıysa sayfadan öğrenilen adla bir kez dene.
                 if (!state.retried) {
@@ -290,7 +311,7 @@ internal object SadscansFrontend {
                     state.raw.state = 'bad';
                   }
                   if (state.raw.state === 'ok' && state.raw.items.length) {
-                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api'});
+                    return out({items: state.raw.items, hasMore: state.raw.items.length >= 15, page: options.page, source: 'api', ua: UA});
                   }
                 }
                 state.phase = 'dom';
@@ -392,7 +413,7 @@ internal object SadscansFrontend {
               // hasMore yalnızca tam bir sayfa dolduysa true olabilir; aksi hâlde uygulama
               // sonsuz sayfalama isteğine girer (boş sayfa → tekrar istek).
               var full = items.length >= options.page * 15;
-              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom'});
+              return out({items: items, hasMore: full && (items.length > start + 15 || !!sentinel), page: options.page, source: 'dom', ua: UA});
             })();
         """.trimIndent()
     }
@@ -405,13 +426,7 @@ internal object SadscansFrontend {
               var out = function(o) { return JSON.stringify(o); };
               var now = Date.now();
               var text = document.body ? (document.body.innerText || document.body.textContent || '') : '';
-              if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
-                return out({error: 'SadScans detay sayfasını engelledi (Cloudflare).'});
-              }
-              if (/Just a moment|Checking your browser|Verifying you are human|Verify you are human/i.test(text)) {
-                return out({error: 'SadScans tarayıcı doğrulaması istiyor. Uygulama içi tarayıcıda seri sayfasını açıp doğrulamayı geçin, sonra tekrar deneyin.'});
-              }
-              if (location.pathname.indexOf('/seriler/') !== 0) return null;
+${CF_PRELUDE}              if (location.pathname.indexOf('/seriler/') !== 0) return null;
               var parts = location.pathname.split('/').filter(Boolean);
               var slug = parts.length > 1 ? parts[1] : '';
 
@@ -613,7 +628,8 @@ internal object SadscansFrontend {
                 chapters: current,
                 pagination: {page: target, totalPages: total},
                 merged: false,
-                source: 'dom'
+                source: 'dom',
+                ua: UA
               });
             })();
         """.trimIndent()
@@ -627,10 +643,7 @@ internal object SadscansFrontend {
               var out = function(o) { return JSON.stringify(o); };
               var now = Date.now();
               var text = document.body ? (document.body.innerText || document.body.textContent || '') : '';
-              if (/Sorry, you have been blocked|Attention Required/i.test(text)) {
-                return out({error: 'SadScans okuyucuyu engelledi (Cloudflare).'});
-              }
-              if (location.pathname.indexOf('/reader/') !== 0) return null;
+${CF_PRELUDE}              if (location.pathname.indexOf('/reader/') !== 0) return null;
 
               function collect() {
                 var images = document.querySelectorAll('img');
@@ -712,7 +725,7 @@ internal object SadscansFrontend {
                 return null;
               }
               if (state.stable < 2 && now - state.t0 < 20000) return null;
-              return out({urls: urls});
+              return out({urls: urls, ua: UA});
             })();
         """.trimIndent()
     }
