@@ -1,8 +1,8 @@
 {
-  "probedAt": "2026-11-07T16:05:01.093384+00:00",
+  "probedAt": "2026-11-07T16:05:43.260596+00:00",
   "sites": {
     "duckscans": {
-      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794067802&s=1nQgytbeAgJ1h",
+      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794067844&s=vjU21YMG-yQ0K",
       "python-requests": {
         "http": 403,
         "bytes": 0,
