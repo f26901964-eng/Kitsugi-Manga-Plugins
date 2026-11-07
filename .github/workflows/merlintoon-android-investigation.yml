@@ -20,6 +20,7 @@ jobs:
         run: |
           gh release download v2.4.455 --repo f26901964-eng/Kitsugi-Beta --pattern '*-foss.apk' --dir /tmp/kitsugi
           ls -lh /tmp/kitsugi
+          gh api 'repos/f26901964-eng/Kitsugi-Manga-Plugins/contents/prebuilt/apk/tachiyomi-tr.merlinscans-v1.6.9.apk?ref=c42c84baef1b563baada65e8f18531ce813963a5' -H 'Accept: application/vnd.github.raw+json' > /tmp/merlin-v1.6.9.apk
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
