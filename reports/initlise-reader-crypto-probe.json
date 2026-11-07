@@ -1,8 +1,9 @@
 {
-  "probedAt": "2026-11-07T16:14:43.623211+00:00",
+  "probedAt": "2026-11-07T16:15:16.404735+00:00",
   "sites": {
     "duckscans": {
-      "error": "ValueError: not enough values to unpack (expected 3, got 2)"
+      "error": "ValueError: not enough values to unpack (expected 3, got 2)",
+      "trace": "Traceback (most recent call last):\n  File \"/home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/tools/initlise_crypto_probe.py\", line 172, in main\n    report[\"sites\"][name] = probe(name, cfg)\n                            ^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/tools/initlise_crypto_probe.py\", line 151, in probe\n    for label, target, hdrs in {\n        ^^^^^^^^^^^^^^^^^^^\nValueError: not enough values to unpack (expected 3, got 2)\n"
     },
     "oblivionscans": {
       "base": "https://oblivionscans.com",
@@ -15,6 +16,11 @@
           "protectContact": false
         }
       },
+      "runtimeKeys": [
+        "discordAuth",
+        "googleAuth",
+        "hcaptcha"
+      ],
       "apiStatus": 200,
       "pages": "bos"
     }
