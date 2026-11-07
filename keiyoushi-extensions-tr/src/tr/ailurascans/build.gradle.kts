@@ -8,7 +8,7 @@ keiyoushi {
     name = "AiluraScans"
     // 1: İlk sürüm. Not: GitHub runner IP'sine site 403 veriyor (Cloudflare);
     //    cihaz trafiği kullanıcı tarayıcısıyla aynı koşuldadır.
-    versionCode = 2
+    versionCode = 3
     contentWarning = ContentWarning.SAFE
     libVersion = "1.6"
     theme = "initlisenext"
