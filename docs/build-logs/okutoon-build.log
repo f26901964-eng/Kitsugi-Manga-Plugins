@@ -1,47 +1,45 @@
-commit: 051e19454cb7e751bd29c0185da59de32b79a13a
+commit: aba24ebfac95262a32cfcc32b1099ef5ca73193c
 --- live probe ---
 PASS okutoon: catalogue answers 200 {"status":200}
-PASS okutoon: series cards are anchors with a title and a cover {"cards":24,"titles":24,"covers":24,"first":"/one-piece"}
+PASS okutoon: series cards are anchors with a title and a cover {"cards":24,"titles":24,"covers":24,"first":"/villain-i-ll-do-everything-except-marriage-for-you-2"}
 PASS okutoon: covers come from the image CDN {"host":"om-cdn.okutoon.com"}
-PASS okutoon: ?sayfa=2 returns a different page of the catalogue {"page1":24,"page2":24,"firstOfEach":["One Piece","I Married the Dragon I Killed"]}
+PASS okutoon: ?sayfa=2 returns a different page of the catalogue {"page1":24,"page2":24,"firstOfEach":["Villain, I&#039;ll Do Everything Except Marriage for You!","Revenge of the Iron-Blooded Sword Hound"]}
 PASS okutoon: paging exposes a rel=next link {"nextLink":1}
 PASS okutoon: search by Turkish/English title works {"hits":["Chainsaw Man"]}
-PASS okutoon: series details expose every hook the extension reads {"url":"https://okutoon.com/one-piece","title":1,"author":1,"cover":1,"genres":1,"status":1,"description":1}
-PASS okutoon: genres are .tag-link anchors {"genres":["Aksiyon","Doğaüstü","Dövüş Sanatları","Dram","Fantezi"]}
-PASS okutoon: chapter rows parse into links, names and dates {"rows":1225,"links":1225,"titles":1225,"dates":["30 Ekim 2026","18 Ekim 2026","11 Ekim 2026"]}
-PASS okutoon: chapter dates use Turkish month names {"sample":"30 Ekim 2026"}
-PASS okutoon: reader is behind a Cloudflare challenge for bots (known limitation) {"url":"https://okutoon.com/one-piece/bolum-1197","status":403,"mitigated":"challenge","dumpsCoverTheMarkup":"docs/html-dumps/okutoon/message-73.txt"}
+PASS okutoon: series details expose every hook the extension reads {"url":"https://okutoon.com/villain-i-ll-do-everything-except-marriage-for-you-2","title":1,"author":1,"cover":1,"genres":1,"status":1,"description":1}
+PASS okutoon: genres are .tag-link anchors {"genres":["Fantezi","Isekai","Romantizm","Shoujo"]}
+PASS okutoon: chapter rows parse into links, names and dates {"rows":80,"links":80,"titles":80,"dates":["6 Kasım 2026","2 Kasım 2026","30 Ekim 2026"]}
+PASS okutoon: chapter dates use Turkish month names {"sample":"6 Kasım 2026"}
+PASS okutoon: chainsaw-man/bolum-1 API returns validated pages {"status":200,"mitigated":null,"count":53}
+PASS okutoon: chainsaw-man/bolum-1 page 1 returns image bytes {"status":200,"kind":"webp","bytes":393396}
+PASS okutoon: chainsaw-man/bolum-1 page 27 returns image bytes {"status":200,"kind":"webp","bytes":565898}
+PASS okutoon: chainsaw-man/bolum-1 page 53 returns image bytes {"status":200,"kind":"webp","bytes":555076}
+PASS okutoon: chainsaw-man/bolum-2 API returns validated pages {"status":200,"mitigated":null,"count":26}
+PASS okutoon: chainsaw-man/bolum-2 page 1 returns image bytes {"status":200,"kind":"webp","bytes":393396}
+PASS okutoon: chainsaw-man/bolum-2 page 14 returns image bytes {"status":200,"kind":"webp","bytes":492924}
+PASS okutoon: chainsaw-man/bolum-2 page 26 returns image bytes {"status":200,"kind":"webp","bytes":507470}
+PASS okutoon: one-piece/bolum-1197 API returns validated pages {"status":200,"mitigated":null,"count":16}
+PASS okutoon: one-piece/bolum-1197 page 1 returns image bytes {"status":200,"kind":"webp","bytes":310970}
+PASS okutoon: one-piece/bolum-1197 page 9 returns image bytes {"status":200,"kind":"webp","bytes":433794}
+PASS okutoon: one-piece/bolum-1197 page 16 returns image bytes {"status":200,"kind":"webp","bytes":331206}
 
-11/11 checks passed
-::notice title=okutoon runtime::11/11 checks passed
+22/22 checks passed
+::notice title=okutoon runtime::22/22 checks passed
 --- artifacts ---
 --- staged ---
-R  apk/tachiyomi-tr.okutoon-v1.6.8.apk -> apk/tachiyomi-tr.okutoon-v1.6.9.apk
-R  builds/apk/tachiyomi-tr.okutoon-v1.6.8.apk -> builds/apk/tachiyomi-tr.okutoon-v1.6.9.apk
-M  builds/index.json
-M  builds/index.v2.json
-M  builds/plugins.json
-M  index.json
-M  plugins.json
-R  prebuilt/apk/tachiyomi-tr.okutoon-v1.6.8.apk -> prebuilt/apk/tachiyomi-tr.okutoon-v1.6.9.apk
-M  registry/extensions.json
-M  registry/extensions.v2.json
 M  reports/okutoon-runtime.json
-[arena/777ee838-kitsugi-manga-plugins 1f9b0ec] okutoon: publish the fixed APK and catalogs [skip ci]
- 11 files changed, 87 insertions(+), 70 deletions(-)
- rename apk/{tachiyomi-tr.okutoon-v1.6.8.apk => tachiyomi-tr.okutoon-v1.6.9.apk} (95%)
- rename builds/apk/{tachiyomi-tr.okutoon-v1.6.8.apk => tachiyomi-tr.okutoon-v1.6.9.apk} (95%)
- rename prebuilt/apk/{tachiyomi-tr.okutoon-v1.6.8.apk => tachiyomi-tr.okutoon-v1.6.9.apk} (95%)
+[main 90a5ac9] okutoon: publish the fixed APK and catalogs [skip ci]
+ 1 file changed, 16 insertions(+), 17 deletions(-)
 To https://github.com/f26901964-eng/Kitsugi-Manga-Plugins
-   051e194..1f9b0ec  HEAD -> arena/777ee838-kitsugi-manga-plugins
+   9590877..51ec070  HEAD -> main
 --- publish ---
-okutoon: 1.6.9 (106009) apk=tachiyomi-tr.okutoon-v1.6.9.apk bytes=42631 sha256=c79197398c178b78bc6dcc764004766a7eccc825c6a9e7487d3ed04c81f56983
-...........ssss...........................ssssssss
+okutoon: 1.6.11 (106011) apk=tachiyomi-tr.okutoon-v1.6.11.apk bytes=52147 sha256=c90d7001e05ae22a5522e641d46f35895b78d1b8ac6bacef8615f8f44dc00b9a
+...........ssss..........................................................ssssssss
 ----------------------------------------------------------------------
-Ran 50 tests in 0.344s
+Ran 81 tests in 0.209s
 
 OK (skipped=12)
-hayalistic: 1.6.62 (106062) apk=tachiyomi-tr.hayalistic-v1.6.62.apk bytes=12246 sha256=727692a662501eb4f9622502cdcc6927f47afe3bf3b90d828b0c404c139205cc
+hayalistic: 1.6.62 (106062) apk=tachiyomi-tr.hayalistic-v1.6.62.apk bytes=12246 sha256=04021aefe2b6319a07f4d741c5139976557f83387a299540facc662a66595a63
 --- build tail ---
 > Task :src:tr:okutoon:packageRelease
 > Task :src:tr:okutoon:createReleaseApkListingFileRedirect
@@ -60,6 +58,6 @@ You can use '--warning-mode all' to show the individual deprecation warnings and
 
 For more on this, please refer to https://docs.gradle.org/9.8.2/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
 
-BUILD SUCCESSFUL in 2m 5s
-87 actionable tasks: 85 executed, 1 from cache, 1 up-to-date
+BUILD SUCCESSFUL in 2m 39s
+129 actionable tasks: 115 executed, 13 from cache, 1 up-to-date
 Configuration cache entry stored.
