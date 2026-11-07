@@ -141,18 +141,26 @@ def probe_site(name: str, base: str, slug: str) -> dict:
 
     # --- API parametre matrisi: okuyucunun includepages çağrısı hangi
     #     kimlikle çalışıyor? (gövde ilk 200 bayt hata mesajını verir)
+    number = first.get("chapterNumber")
+    xhr_headers = {
+        "Referer": chapter_url,
+        "Origin": base,
+        "Accept": "*/*",
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "same-origin",
+    }
     combos = {
+        "slug+number": f"series={slug}&chapter={number}",
         "slug+chslug": f"series={slug}&chapter={first.get('slug')}",
         "mongo+mongo": f"series={series_mongo}&chapter={first.get('_id')}",
-        "mongo+chslug": f"series={series_mongo}&chapter={first.get('slug')}",
-        "slug+mongo": f"series={slug}&chapter={first.get('_id')}",
     }
     api_out = {}
     for label, q in combos.items():
         info = try_get(
             s,
             f"{base}/api/chapters?{q}&includepages=true&limit=1",
-            {"Referer": chapter_url, "Origin": base},
+            xhr_headers,
         )
         if info.get("status") not in (None, 200):
             try:
