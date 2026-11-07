@@ -29,6 +29,9 @@ import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import keiyoushi.network.rateLimit
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -85,6 +88,8 @@ abstract class Sadscans : KeiSource() {
 
     override fun OkHttpClient.Builder.configureClient() = apply {
         addInterceptor(CommonHeadersInterceptor())
+        // Cloudflare, kısa sürede çok istek atan istemcileri bloğa alıyor: saniyede en fazla 2 istek.
+        rateLimit(2)
     }
 
     /**
@@ -130,6 +135,14 @@ abstract class Sadscans : KeiSource() {
      */
     @Volatile
     private var webViewUserAgent: String? = null
+
+    /** Sayfadan öğrenilen tRPC yönlendirici adı; her aramada yeniden keşif yapılmaz. */
+    @Volatile
+    private var seriesRouter: String? = null
+
+    /** Cloudflare WAF sert bloğu sonrası bekleme; bu süre boyunca siteye hiç istek atılmaz. */
+    @Volatile
+    private var blockedUntil: Long = 0L
 
     private val apiHeaders: Headers
         get() = Headers.Builder().apply {
@@ -183,14 +196,24 @@ abstract class Sadscans : KeiSource() {
         val envelope = buildJsonObject {
             put("0", buildJsonObject { put("json", input ?: JsonNull) })
         }.toString()
+        // Sorgu dizesinde JSON (%22/%7B) göndermek Cloudflare WAF'ın "malformed data" kuralını
+        // tetikliyor ve sert blok yiyor. Bu yüzden gövde POST ile taşınır; URL temiz kalır.
         val url = "$baseUrl/api/trpc/$procedure".toHttpUrl().newBuilder()
             .addQueryParameter("batch", "1")
-            .addQueryParameter("input", envelope)
+            .build()
+        val request = Request.Builder()
+            .url(url)
+            .post(envelope.toRequestBody(JSON_MEDIA_TYPE))
+            .headers(apiHeaders)
             .build()
 
-        val body = apiClient.get(url, apiHeaders, ensureSuccess = false).use { response ->
+        val body = withContext(Dispatchers.IO) { apiClient.newCall(request).execute() }.use { response ->
             val text = response.body.string()
             when {
+                isWafBlocked(text, response.code) -> {
+                    markBlocked()
+                    throw IOException(BLOCKED_MESSAGE)
+                }
                 !response.isSuccessful -> throw IOException("SadScans API HTTP ${response.code}")
                 text.trimStart().startsWith("<") -> throw IOException("SadScans API koruması (HTML yanıt)")
                 text.isBlank() -> throw IOException("SadScans API boş yanıt")
@@ -211,6 +234,28 @@ abstract class Sadscans : KeiSource() {
         put("sef", JsonPrimitive(slug))
         put("page", JsonPrimitive(page))
         put("limit", JsonPrimitive(CHAPTER_PAGE_LIMIT))
+    }
+
+
+    private fun isWafBlocked(body: String, code: Int): Boolean =
+        body.contains("Sorry, you have been blocked", ignoreCase = true) ||
+            body.contains("cf-error-details", ignoreCase = true) ||
+            (code == 403 && body.contains("Cloudflare", ignoreCase = true) && body.contains("blocked", ignoreCase = true))
+
+    private fun markBlocked() {
+        blockedUntil = System.currentTimeMillis() + BLOCK_COOLDOWN_MS
+    }
+
+    /**
+     * Sert WAF bloğu yediğimizde siteye istek atmaya devam etmek bloğu uzatır; bu yüzden
+     * bekleme süresi boyunca hiç istek çıkmaz ve kullanıcıya ne yapacağı söylenir.
+     */
+    private fun ensureNotBlocked() {
+        val waitMs = blockedUntil - System.currentTimeMillis()
+        if (waitMs > 0) {
+            val minutes = ((waitMs + 59_999) / 60_000).coerceAtLeast(1)
+            throw IOException("$BLOCKED_MESSAGE (~$minutes dk kaldı)")
+        }
     }
 
     /** Cloudflare doğrulaması bu oturumda geçilmiş mi? (cf_clearance çerezi paylaşılan kavanozda) */
@@ -246,6 +291,7 @@ abstract class Sadscans : KeiSource() {
         type: String?,
         status: String?,
     ): MangasPage {
+        ensureNotBlocked()
         listCache?.let { cached ->
             val same = cached.page == page && cached.query == query.orEmpty() && cached.sort == sort &&
                 cached.type == type && cached.status == status
@@ -287,10 +333,11 @@ abstract class Sadscans : KeiSource() {
 
         val result = frontendPage(
             "$baseUrl/seriler",
-            SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page),
+            SadscansFrontend.listScript(query.orEmpty(), sort, type, status, page, seriesRouter),
             timeout = 18.seconds,
         )
         rememberUserAgent(result)
+        result["router"].stringOrNull()?.takeIf { it.startsWith("_") }?.let { seriesRouter = it }
         val rows = result["items"] as? JsonArray ?: throw IOException("SadScans arama sonuçları okunamadı.")
         val loaded = parseSeriesItems(rows)
         val fromDom = result["source"].stringOrNull() == "dom"
@@ -459,6 +506,7 @@ abstract class Sadscans : KeiSource() {
     }
 
     private suspend fun fetchSeriesData(slug: String): SeriesDataDto {
+        ensureNotBlocked()
         chapterCache[slug]?.let { cached ->
             if (cached.fresh()) {
                 return SeriesDataDto(
@@ -597,6 +645,7 @@ abstract class Sadscans : KeiSource() {
     override fun getChapterUrl(chapter: SChapter): String = baseUrl + chapter.url
 
     override suspend fun getPageList(chapter: SChapter): List<Page> {
+        ensureNotBlocked()
         val chapterUrl = getChapterUrl(chapter)
         val chapterId = chapter.url.substringBefore('?').trimEnd('/').substringAfterLast('/')
         if (chapterId.isBlank()) throw IOException("SadScans bölüm kimliği okunamadı.")
@@ -645,6 +694,7 @@ abstract class Sadscans : KeiSource() {
                         }
                         if (parsed == null) return@evaluateJs
                         val message = parsed["error"].stringOrNull()
+                        if (parsed["blocked"].stringOrNull()?.toBoolean() == true) markBlocked()
                         if (message != null) reject(IOException(message)) else resolve(parsed)
                     }
                 }
@@ -751,6 +801,11 @@ abstract class Sadscans : KeiSource() {
         private const val SERIES_ROUTER = "_s4d7g2k9m0"
         private const val DETAIL_ROUTER = "_n3p6q1v8x5"
         private const val PAGE_SIZE = 15
+        private val JSON_MEDIA_TYPE = "application/json; charset=utf-8".toMediaType()
+        private const val BLOCK_COOLDOWN_MS = 10 * 60 * 1000L
+        private const val BLOCKED_MESSAGE =
+            "SadScans (Cloudflare WAF) bu bağlantıyı geçici olarak engelledi. 10-15 dakika bekleyip tekrar deneyin; " +
+                "Wi-Fi ile mobil veri arasında geçiş yapmak yeni IP verir."
         private const val SITEMAP_TTL_MS = 6 * 60 * 60 * 1000L
         private const val SITEMAP_RETRY_MS = 10 * 60 * 1000L
         private const val CHAPTER_PAGE_LIMIT = 10

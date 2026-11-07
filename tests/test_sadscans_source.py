@@ -83,8 +83,9 @@ class SadscansSourceTests(unittest.TestCase):
         # Yönlendirici adı sabit koda gömülü metin değil, sabit + sayfadan keşifle kurulur.
         self.assertIn("var DEFAULT_ROUTER = '_s4d7g2k9m0'", script)
         self.assertIn("var DEFAULT_DETAIL_ROUTER = '_n3p6q1v8x5'", script)
-        self.assertIn("'/api/trpc/' + (router || DEFAULT_ROUTER) + '.getSeries?batch=1&input='", script)
-        self.assertIn("'/api/trpc/' + (router || DEFAULT_DETAIL_ROUTER) + '.getSeriesData?batch=1&input='", script)
+        self.assertIn("'.getSeries?batch=1'", script, 'tRPC yolu batch disinda parametre tasimamali')
+        self.assertIn("'.getSeriesData?batch=1'", script)
+        self.assertIn("'.getSeriesData?batch=1'", script)
 
     def test_list_search_does_not_depend_on_the_search_box(self):
         """1.6.11'de arama, kutu bulunamayınca tRPC kademesine hiç ulaşmadan ölüyordu.""" 
@@ -153,6 +154,36 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('add("User-Agent", ua)', source)
         self.assertGreaterEqual(source.count('rememberUserAgent('), 4, 'liste/detay/okuyucu UA yakalamalı')
 
+    def test_trpc_uses_post_body_not_query_json(self):
+        """Cloudflare WAF, sorgu dizesindeki JSON'u (input=) 'malformed data' sayıp sert blok uyguluyor."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertNotIn('addQueryParameter("input"', source, 'JSON sorgu dizesine konmamalı')
+        self.assertIn('addQueryParameter("batch", "1")', source)
+        self.assertIn('.post(envelope.toRequestBody(JSON_MEDIA_TYPE))', source)
+        self.assertNotIn("input=", frontend.split("function trpcUrl")[1].split("function trpcBody")[0],
+                         'sayfa ici fetch de JSON u URL e koymamali')
+        self.assertIn("method: 'POST'", frontend)
+        self.assertIn('?batch=1', frontend)
+
+    def test_waf_block_cools_down_without_requests(self):
+        """Sert blok yiyince siteye istek atmaya devam etmek bloğu uzatır."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertIn('private fun isWafBlocked(', source)
+        self.assertIn('Sorry, you have been blocked', source)
+        self.assertIn('BLOCK_COOLDOWN_MS', source)
+        self.assertGreaterEqual(source.count('ensureNotBlocked()'), 3, 'liste/detay/okuyucu blok kontrolü yapmalı')
+        self.assertIn('rateLimit(2)', source, 'istek hızı sınırlanmalı')
+
+    def test_router_is_cached_between_searches(self):
+        """Her aramada 24 JS parçası indirmek WAF'ı üzen toplu trafik üretiyordu."""
+        source = SOURCE.read_text(encoding='utf-8')
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        self.assertIn('private var seriesRouter: String?', source)
+        self.assertIn('seriesRouter = it', source)
+        self.assertIn('urls.length < 6', frontend)
+        self.assertIn('if (options.router)', frontend)
+
     def test_sitemap_tier_uses_short_budget(self):
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('callTimeout(3, TimeUnit.SECONDS)', source)
@@ -172,7 +203,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 15', gradle)
+        self.assertIn('versionCode = 16', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 
