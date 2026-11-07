@@ -25,6 +25,31 @@ import java.io.IOException
 import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
 
+/** WebView okuyucu taramasının sonucu. */
+private data class ReaderScan(val httpUrls: List<String>, val summary: String)
+
+/** Okuyucu sayfasındaki görsel öğeleri sayıp http kaynaklıları toplar. */
+private val READER_SCAN_SCRIPT = """
+    (function(){
+      var nodes = document.querySelectorAll('img, div[role="img"] canvas');
+      var http = 0, blob = 0, data = 0, canvasCount = 0;
+      var urls = [];
+      for (var i = 0; i < nodes.length; i++) {
+        var el = nodes[i];
+        if (el.tagName === 'CANVAS') { canvasCount++; continue; }
+        var src = el.currentSrc || el.src || '';
+        if (!src) continue;
+        if (src.indexOf('blob:') === 0) { blob++; continue; }
+        if (src.indexOf('data:') === 0) { data++; continue; }
+        if (src.indexOf('http') === 0) {
+          http++;
+          if (urls.length < 40) urls.push(src);
+        }
+      }
+      return JSON.stringify({total: nodes.length, http: http, blob: blob, data: data, canvas: canvasCount, urls: urls});
+    })()
+""".trimIndent()
+
 /**
  * Initlise-Next platformu (duckscans.com, lunariscans.com, ailurascans.com,
  * oblivionscans.com). WordPress InitManga ailesinin Next.js yeniden yazımı;
@@ -78,7 +103,7 @@ abstract class InitliseNext : KeiSource() {
      * çerez kavanozuna düşer ve UA'sı saklanır. Sonraki API + görsel
      * istekleri bu kimlikle gider (SadScans'te kanıtlanmış desen).
      */
-    private suspend fun warmBrowserSession() {
+    private suspend fun warmBrowserSession(targetUrl: String = "$baseUrl/") {
         if (hasClearance() && !webViewUserAgent.isNullOrBlank()) return
         try {
             runWebView(timeout = 60.seconds) {
@@ -97,7 +122,7 @@ abstract class InitliseNext : KeiSource() {
                     }
                     if (hasClearance() && !webViewUserAgent.isNullOrBlank()) resolve(Unit)
                 }
-                loadUrl("$baseUrl/")
+                loadUrl(targetUrl)
             }
         } catch (_: WebViewTimeoutException) {
             // UA yakalandıysa clearance'sız da denemeye değer; yoksa çağıran taraf net hata verir.
@@ -345,7 +370,7 @@ abstract class InitliseNext : KeiSource() {
         if (response.code == 403 || response.code == 429 || response.code == 503) {
             // Cloudflare düz 403 veriyorsa (challenge işareti yok) WebView oturumu
             // ile clearance kazan, UA'yı eşitle ve bir kez daha dene.
-            warmBrowserSession()
+            warmBrowserSession(chapterUrl)
             if (!hasClearance()) {
                 throw Exception(
                     "Initlise v$THEME_VERSION: Site koruması (Cloudflare) geçilemedi. " +
@@ -372,11 +397,18 @@ abstract class InitliseNext : KeiSource() {
                 val canaryOk = canary.code == 200 && canaryType.startsWith("image/")
                 canary.close()
                 if (!canaryOk) {
+                    val scanned = scanReaderInWebView(chapterUrl, pages.size)
+                    if (scanned.httpUrls.isNotEmpty()) {
+                        return scanned.httpUrls.mapIndexed { index, url ->
+                            Page(index, url = chapterUrl, imageUrl = url)
+                        }
+                    }
                     throw Exception(
-                        "Initlise v$THEME_VERSION: API yanıt verdi (${pages.size} sayfa) ama görsel " +
-                            "testi başarısız (HTTP ${canary.code}, tip=${canaryType.ifBlank { "-" }}). " +
-                            "Cloudflare görsel katmanı bu oturumu reddetti; kaynağın web sayfasını " +
-                            "uygulama içinde bir kez açıp tekrar deneyin.",
+                        "Initlise v$THEME_VERSION: API ${pages.size} sayfa verdi ama görsel indirmesi " +
+                            "başarısız (HTTP ${canary.code}, tip=${canaryType.ifBlank { "-" }}). " +
+                            "WebView taraması: ${scanned.summary}. Kaynağın web sayfasını uygulama " +
+                            "içinde bir kez açıp tekrar deneyin; sorun sürerse bu mesajın ekran " +
+                            "görüntüsünü geliştiriciye iletin.",
                     )
                 }
                 return pages.mapIndexed { index, path ->
@@ -392,6 +424,63 @@ abstract class InitliseNext : KeiSource() {
                 "Uygulamada kaynağın WebView'ını açıp Discord ile giriş yapın; çerezler " +
                 "otomatik kullanılır. Girişten sonra bölümü yeniden açın.",
         )
+    }
+
+    /**
+     * Son çare: bölümü gerçek WebView'de (cihazın Chromium'u) açıp okuyucunun
+     * KENDİ kodunun görüntülediği görselleri tarar. Tarayıcı, koruma
+     * katmanlarını (çerez, imza, şifre çözme, canvas) kendi halleder; biz
+     * sonucu sayıp http kaynaklı gerçek adresleri toplarız.
+     */
+    private suspend fun scanReaderInWebView(chapterUrl: String, expectedPages: Int): ReaderScan {
+        var httpUrls: List<String> = emptyList()
+        var counts = intArrayOf(0, 0, 0, 0)
+        var ticks = 0
+        try {
+            val result = runWebView(timeout = 120.seconds) {
+                var stable = 0
+                var lastTotal = -1
+                onReceivedError { request, _ ->
+                    if (request.isForMainFrame) reject(IOException("WebView'de bölüm açılamadı: ${request.url}"))
+                }
+                poll(1.seconds) {
+                    ticks++
+                    evaluateJs("try { window.scrollBy(0, 1600) } catch (e) {} 'ok'") { _ ->
+                        evaluateJs(READER_SCAN_SCRIPT) { value ->
+                            val raw = runCatching { value.parseAs<String?>() }.getOrNull()
+                                ?: return@evaluateJs
+                            fun field(name: String): Int =
+                                Regex(""""$name":(\d+)""").find(raw)?.groupValues?.get(1)?.toIntOrNull() ?: 0
+                            counts = intArrayOf(field("total"), field("http"), field("blob"), field("canvas"))
+                            val urls = Regex(""""(https?://[^"]+)"""")
+                                .findAll(raw.substringAfter("\"urls\":[", "]").substringBefore("]"))
+                                .map { it.groupValues[1] }
+                                .filter { it.contains("/uploads/") }
+                                .toList()
+                            val total = counts[0]
+                            stable = if (total == lastTotal) stable + 1 else 0
+                            lastTotal = total
+                            if (urls.isNotEmpty()) {
+                                httpUrls = urls
+                                resolve(urls)
+                            } else if ((stable >= 8 && ticks > 15) || ticks > 60) {
+                                resolve(emptyList())
+                            }
+                        }
+                    }
+                }
+                loadUrl(chapterUrl)
+            }
+            httpUrls = result.distinct()
+        } catch (_: WebViewTimeoutException) {
+            // zaman aşımı: sayımlar özet olarak hataya gider
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: IOException) {
+            // ana çerçeve hatası: yine de sayımları raporla
+        }
+        val summary = "toplam=${counts[0]} http=${counts[1]} blob=${counts[2]} canvas=${counts[3]} beklenen=$expectedPages"
+        return ReaderScan(httpUrls, summary)
     }
 
     /** Canlı tahlilin ve görsel isteklerinin ortak başlık seti. */
@@ -569,7 +658,7 @@ abstract class InitliseNext : KeiSource() {
 
     companion object {
         /** Hata mesajlarına damgalanan teşhis sürümü. */
-        private const val THEME_VERSION = "1.6.6"
+        private const val THEME_VERSION = "1.6.7"
 
         /** Okuyucu scrambled-image şema sürümü (sv=5 / cv=5). */
         private const val SCRAMBLE_VERSION = "5"
