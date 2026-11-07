@@ -28,7 +28,7 @@ jobs:
         run: |
           curl -fsSL --max-time 60 "$MERLIN_FIXTURE_URL" -o /tmp/merlin-reader.html
           test "$(wc -c < /tmp/merlin-reader.html)" -gt 100000
-      - name: Run the actual source against the real HTML
+      - name: Run parser tests (real fixture only when supplied)
         working-directory: keiyoushi-extensions-tr
         env:
           MERLIN_REAL_READER_HTML: /tmp/merlin-reader.html
