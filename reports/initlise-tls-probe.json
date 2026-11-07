@@ -1,24 +1,17 @@
 {
-  "probedAt": "2026-11-07T16:04:12.912535+00:00",
+  "probedAt": "2026-11-07T16:05:01.093384+00:00",
   "sites": {
     "duckscans": {
-      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794067754&s=s-SAsp8zJiIWp",
+      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794067802&s=1nQgytbeAgJ1h",
       "python-requests": {
         "http": 403,
         "bytes": 0,
         "ct": ""
       },
-      "curl-plain": {
-        "raw": "",
-        "curlCode": 2
-      },
-      "curl-chrome116": {
-        "raw": "",
-        "curlCode": 2
-      },
-      "curl-chrome116-cookies": {
-        "raw": "",
-        "curlCode": 2
+      "curlcffi-chrome124": {
+        "http": 403,
+        "bytes": 0,
+        "ct": ""
       }
     }
   }
