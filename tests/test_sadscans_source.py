@@ -115,16 +115,16 @@ class SadscansSourceTests(unittest.TestCase):
         self.assertIn('timeout = 18.seconds', source, 'liste WebView suresi challenge beklemesini karsilamali')
         self.assertNotIn('callTimeout(45', source)
 
-    def test_sitemap_tier_runs_before_webview(self):
-        """tRPC engelliyse JS'siz sitemap kademesi devreye girmeli (WebView'den once)."""
+    def test_sitemap_is_the_last_resort(self):
+        """Sitemap kademesi JS/Cloudflare gerektirmez ama kapak döndürmez: en sonda denenir."""
         source = SOURCE.read_text(encoding='utf-8')
         self.assertIn('sitemapSearch(', source)
         self.assertIn('SITEMAP_TTL_MS', source)
         self.assertIn('/sitemap.xml', source)
-        self.assertLess(source.index('sitemapSearch(query)'), source.index('SadscansFrontend.listScript'),
-                        'sitemap kademesi WebView kademesinden once cagrilmali')
         self.assertIn('"/seriler/${entry.slug}"', source, 'sitemap girdisi detay rotasina baglanmali')
         self.assertIn('Normalizer.normalize', source, 'Turkce karakterler ASCII anahtara cevrilmeli')
+        self.assertLess(source.index('SadscansFrontend.listScript'),
+                        source.index('attempt { sitemapSearch(query) }'))
 
     def test_cloudflare_challenge_is_waited_not_failed_fast(self):
         """Doğrulama ekranı görüldüğü an hata verilmemeli; JS challenge 2-5 sn'de geçer."""
@@ -165,6 +165,31 @@ class SadscansSourceTests(unittest.TestCase):
                          'sayfa ici fetch de JSON u URL e koymamali')
         self.assertIn("method: 'POST'", frontend)
         self.assertIn('?batch=1', frontend)
+
+    def test_covers_and_reader_images(self):
+        """Kapak ve bölüm görselleri: lazy/srcset/_next/image ve sorgu dizili CDN adresleri."""
+        frontend = FRONTEND.read_text(encoding='utf-8')
+        source = SOURCE.read_text(encoding='utf-8')
+        # Kart kapağı: currentSrc || src || data-src || srcset, _next/image çözümü
+        self.assertIn('function imageUrl(node)', frontend)
+        self.assertIn("image.getAttribute('data-src')", frontend)
+        self.assertIn('srcset', frontend)
+        self.assertIn('/_next/image', frontend)
+        self.assertIn('anchor.querySelector(\'img, picture source\')', frontend)
+        # Okuyucu: uzantı sorgu dizesinden önce de gelebilir, CDN/upload yolları da kabul
+        self.assertIn("(\\?|$)/.test(lower)", frontend)
+        self.assertIn("lower.indexOf('/uploads/') >= 0", frontend)
+        # Kotlin: kapak adresi alanları esnek + next/image sarmalayıcısı çözülür
+        self.assertIn('"thumb", "thumbnail", "cover", "image"', source)
+        self.assertIn('private fun unwrapNextImage(', source)
+        self.assertIn('absolute(it)', source)
+
+    def test_cover_capable_tier_runs_before_sitemap(self):
+        """Sitemap kademesi kapak döndürmez: kapaklı arayüz kademesi ondan önce denenmeli."""
+        source = SOURCE.read_text(encoding='utf-8')
+        self.assertLess(source.index('SadscansFrontend.listScript'),
+                        source.index('attempt { sitemapSearch(query) }'),
+                        'WebView (kapakli) kademesi sitemap tan once olmali')
 
     def test_new_domain_support(self):
         """Site sadscans.org'a taşınıyor; sert blokta bir kez yedek alan adına geçilmeli."""
@@ -220,7 +245,7 @@ class SadscansSourceTests(unittest.TestCase):
 
     def test_version_is_bumped_for_the_fix(self):
         gradle = GRADLE.read_text(encoding='utf-8')
-        self.assertIn('versionCode = 16', gradle)
+        self.assertIn('versionCode = 17', gradle)
         self.assertIn('baseUrl = "https://sadscans.net"', gradle)
 
 

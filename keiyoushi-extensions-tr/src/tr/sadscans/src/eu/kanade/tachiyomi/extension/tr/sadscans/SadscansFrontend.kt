@@ -227,6 +227,37 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                 return box;
               }
 
+              // Görsel adresi: Next.js `next/image` sarmalayıcısı, srcset ve lazy alanları
+              // tek tek denenir. Boş/placeholder/veri URI'ları elenir.
+              function imageUrl(node) {
+                if (!node) return null;
+                var image = node.tagName === 'IMG' ? node : node.querySelector('img');
+                if (!image) {
+                  var source = node.querySelector ? node.querySelector('picture source') : null;
+                  if (source) image = source;
+                }
+                if (!image) return null;
+                var raw = image.currentSrc || image.src || image.getAttribute('data-src') ||
+                  image.getAttribute('data-lazy-src') || image.getAttribute('srcset') ||
+                  image.getAttribute('data-srcset') || '';
+                raw = String(raw).trim();
+                if (!raw) return null;
+                // srcset: ilk aday ("url 320w, url2 640w")
+                if (raw.indexOf(',') > 0 && raw.indexOf(' ') > 0) raw = raw.split(',')[0].trim().split(' ')[0];
+                if (raw.indexOf('data:') === 0) return null;
+                // next/image: /_next/image?url=%2Fuploads%2Fx.jpg&w=384
+                if (raw.indexOf('/_next/image') >= 0) {
+                  var match = raw.match(/[?&]url=([^&]+)/);
+                  if (match) {
+                    try { raw = decodeURIComponent(match[1]); } catch (e) { /* yoksay */ }
+                  }
+                }
+                if (!raw || raw.indexOf('data:') === 0) return null;
+                if (/logo|placeholder|spinner|blur|blank\./i.test(raw)) return null;
+                if (raw.charAt(0) === '/' || raw.indexOf('http') === 0) return raw;
+                try { return new URL(raw, location.href).href; } catch (e) { return null; }
+              }
+
               function cards() {
                 var anchors = document.querySelectorAll('a[href]');
                 var result = [];
@@ -242,15 +273,21 @@ ${CF_PRELUDE}              var route = location.pathname.replace(/\/+$/, '');
                   var label = anchor.querySelector('h3, h2, h4, [class*="title"], [class*="Title"]');
                   var name = label ? label.textContent.trim() : '';
                   if (!name) name = (anchor.getAttribute('title') || anchor.getAttribute('aria-label') || '').trim();
-                  var image = anchor.querySelector('img');
-                  if (!name && image) name = (image.getAttribute('alt') || '').trim();
+                  if (!name) {
+                    var alt = anchor.querySelector('img');
+                    if (alt) name = (alt.getAttribute('alt') || '').trim();
+                  }
                   if (!name) continue;
+                  // Görsel kartın kendisinde değil, kapsayıcı öğede olabilir; ama başka bir
+                  // kartın görselini almak yanlış kapak üretir (data: URI'lar boş sayılır).
+                  var own = anchor.querySelector('img, picture source');
+                  var thumb = own ? imageUrl(own) : null;
+                  if (!own) {
+                    var holder = anchor.parentElement;
+                    if (holder && holder.tagName !== 'BODY' && holder.tagName !== 'MAIN') thumb = imageUrl(holder);
+                  }
                   seen[path] = 1;
-                  result.push({
-                    href: path,
-                    name: name,
-                    thumb: image ? (image.currentSrc || image.src || null) : null
-                  });
+                  result.push({href: path, name: name, thumb: thumb});
                 }
                 return result;
               }
@@ -687,21 +724,31 @@ ${CF_PRELUDE}              if (location.pathname.indexOf('/reader/') !== 0) retu
                     if (srcset) raw = srcset.split(',')[0].trim().split(' ')[0];
                   }
                   if (!raw) continue;
+                  // next/image sarmalayıcısı: gerçek adres ?url= içinde
+                  if (raw.indexOf('/_next/image') >= 0) {
+                    var wrapped = raw.match(/[?&]url=([^&]+)/);
+                    if (wrapped) { try { raw = decodeURIComponent(wrapped[1]); } catch (e) { /* yoksay */ } }
+                  }
                   var url;
                   try { url = new URL(raw, location.href); } catch (e) { continue; }
                   var path = url.pathname;
-                  var lower = path.toLowerCase();
+                  var lower = (path + url.search).toLowerCase();
                   // Site arayüz görselleri (logo, banner, slider, küçük resim) bölüm sayılmaz.
                   if (lower.indexOf('logo') >= 0 || lower.indexOf('/slider/') >= 0) continue;
                   if (lower.indexOf('favicon') >= 0 || lower.indexOf('/icons/') >= 0) continue;
                   if (lower.indexOf('thumb_') >= 0 || lower.indexOf('/avatar') >= 0 || lower.indexOf('/banner') >= 0) continue;
                   // Bölüm görselleri CDN'e taşınmış olabilir: alan adına değil, yola bakılır.
-                  var looksLikeImage = /\.(jpe?g|png|webp|gif|avif)$/.test(lower) || lower.indexOf('/images/') >= 0;
+                  // Uzantı sorgu dizesinden önce gelebilir; CDN ve upload yolları da kabul edilir.
+                  var looksLikeImage = /\.(jpe?g|png|webp|gif|avif)(\?|$)/.test(lower) ||
+                    lower.indexOf('/images/') >= 0 || lower.indexOf('/uploads/') >= 0 ||
+                    lower.indexOf('/upload/') >= 0 || /\/(api)\/.*(image|upload|file)/.test(lower);
                   if (!looksLikeImage) continue;
                   var entry = {url: url.href, order: index};
                   if (path.indexOf('/' + id + '/') >= 0) {
                     scoped.push(entry);
-                  } else if (lower.indexOf('/images/') >= 0 || lower.indexOf('/api/uploads/') >= 0) {
+                  } else {
+                    // Bölüm kimliği yolda olmasa da görsel sayılan her adres yedek listede tutulur:
+                    // CDN, /uploads ve sorgu dizili adresler burada yakalanır.
                     loose.push(entry);
                   }
                 }
