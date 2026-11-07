@@ -1,9 +1,41 @@
 {
-  "probedAt": "2026-11-07T16:15:47.664545+00:00",
+  "probedAt": "2026-11-07T16:16:18.938071+00:00",
   "sites": {
     "duckscans": {
-      "error": "ValueError: not enough values to unpack (expected 3, got 2)",
-      "trace": "Traceback (most recent call last):\n  File \"/home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/tools/initlise_crypto_probe.py\", line 172, in main\n    report[\"sites\"][name] = probe(name, cfg)\n                            ^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/Kitsugi-Manga-Plugins/Kitsugi-Manga-Plugins/tools/initlise_crypto_probe.py\", line 151, in probe\n    for label, target, hdrs in {\n        ^^^^^^^^^^^^^^^^^^^\nValueError: not enough values to unpack (expected 3, got 2)\n"
+      "base": "https://duckscans.com",
+      "settingsStatus": 200,
+      "runtimeFlags": {
+        "hcaptcha": {
+          "enabled": true,
+          "siteKey": "0934b9ce-f7a8-44d4-b0fe-e286e4a435e8",
+          "protectSignup": true,
+          "protectContact": true
+        }
+      },
+      "runtimeKeys": [
+        "discordAuth",
+        "googleAuth",
+        "hcaptcha"
+      ],
+      "apiStatus": 200,
+      "signedPathSample": "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794068480&s=hkFDo16m1FexpR3dD-dZh4&k=zrm-Q2W2V",
+      "guardStatus": 200,
+      "guardBody": "{\"success\":true,\"verified\":true}",
+      "guardSetCookie": "",
+      "plain-signed": {
+        "status": 403,
+        "ct": "",
+        "bytes": 0,
+        "guardHeader": "",
+        "first4": ""
+      },
+      "cv5+scramble": {
+        "status": 403,
+        "ct": "",
+        "bytes": 0,
+        "guardHeader": "",
+        "first4": ""
+      }
     },
     "oblivionscans": {
       "base": "https://oblivionscans.com",
