@@ -9,7 +9,10 @@ import eu.kanade.tachiyomi.source.model.SMangaUpdate
 import keiyoushi.network.get
 import keiyoushi.network.rateLimit
 import keiyoushi.source.KeiSource
+import keiyoushi.utils.WebViewTimeoutException
 import keiyoushi.utils.parseAs
+import keiyoushi.utils.runWebView
+import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.json.JsonElement
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -18,6 +21,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.Jsoup
+import java.io.IOException
 import java.time.Instant
 import kotlin.time.Duration.Companion.seconds
 
@@ -41,20 +45,67 @@ abstract class InitliseNext : KeiSource() {
 
     /**
      * Cloudflare clearance çerezi User-Agent'a bağlıdır; tüm istekler (API +
-     * görsel) aynı tarayıcı UA'sını taşır, aksi hâlde 403 düşer.
+     * görsel) aynı tarayıcı UA'sını taşır, aksi hâlde 403 düşer. WebView
+     * oturumu açıldıysa onun UA'sı zorunlu olur — clearance o UA'ya verilir.
      */
+    @Volatile
+    private var webViewUserAgent: String? = null
+
     override fun OkHttpClient.Builder.configureClient(): OkHttpClient.Builder {
         addInterceptor { chain ->
             val original = chain.request()
             val ua = original.header("User-Agent")
-            val request = if (ua.isNullOrEmpty() || ua.startsWith("okhttp", ignoreCase = true)) {
-                original.newBuilder().header("User-Agent", USER_AGENT).build()
+            val expected = webViewUserAgent ?: USER_AGENT
+            val request = if (ua.isNullOrEmpty() || ua.startsWith("okhttp", ignoreCase = true) || ua != expected) {
+                original.newBuilder().header("User-Agent", expected).build()
             } else {
                 original
             }
             chain.proceed(request)
         }
         return rateLimit(2, 1.seconds)
+    }
+
+    /** cf_clearance çerezi bu oturumda kazanılmış mı? */
+    private fun hasClearance(): Boolean = runCatching {
+        client.cookieJar.loadForRequest("$baseUrl/".toHttpUrl())
+            .any { it.name == "cf_clearance" && it.value.isNotBlank() }
+    }.getOrDefault(false)
+
+    /**
+     * Cloudflare katmanını cihazın kendi WebView'i ile geç: gerçek Chromium
+     * parmak izi sayfayı yükler, cf_clearance çerezi OkHttp'nin paylaşılan
+     * çerez kavanozuna düşer ve UA'sı saklanır. Sonraki API + görsel
+     * istekleri bu kimlikle gider (SadScans'te kanıtlanmış desen).
+     */
+    private suspend fun warmBrowserSession() {
+        if (hasClearance() && !webViewUserAgent.isNullOrBlank()) return
+        try {
+            runWebView(timeout = 60.seconds) {
+                onReceivedError { request, _ ->
+                    if (request.isForMainFrame) {
+                        reject(IOException("Initlise-Next sitesi WebView'de açılamadı: ${request.url}"))
+                    }
+                }
+                poll(1.seconds) {
+                    if (webViewUserAgent.isNullOrBlank()) {
+                        evaluateJs("navigator.userAgent") { value ->
+                            value.parseAs<String?>()?.takeIf { it.isNotBlank() }?.let { ua ->
+                                webViewUserAgent = ua
+                            }
+                        }
+                    }
+                    if (hasClearance() && !webViewUserAgent.isNullOrBlank()) resolve(Unit)
+                }
+                loadUrl("$baseUrl/")
+            }
+        } catch (_: WebViewTimeoutException) {
+            // UA yakalandıysa clearance'sız da denemeye değer; yoksa çağıran taraf net hata verir.
+        } catch (e: CancellationException) {
+            throw e
+        } catch (_: IOException) {
+            // ana çerçeve hatası: yakalanan UA ile devam edip sonucu görelim
+        }
     }
 
     /** Görsel CDN'leri site referansı bekler; KeiSource headersBuilder'ı finaldir. */
@@ -272,9 +323,18 @@ abstract class InitliseNext : KeiSource() {
             .addQueryParameter("limit", "1")
             .build()
 
-        val response = client.get(apiUrl, apiHeaders(chapter.url), ensureSuccess = false)
-        if (response.code == 403) {
-            throw Exception("Site koruması isteği engelledi (403). Kaynağa bir kez daha denemek için dokunun.")
+        var response = client.get(apiUrl, apiHeaders(chapter.url), ensureSuccess = false)
+        if (response.code == 403 || response.code == 429 || response.code == 503) {
+            // Cloudflare düz 403 veriyorsa (challenge işareti yok) WebView oturumu
+            // ile clearance kazan, UA'yı eşitle ve bir kez daha dene.
+            warmBrowserSession()
+            if (!hasClearance()) {
+                throw Exception(
+                    "Site koruması (Cloudflare) geçilemedi. Uygulamada bu kaynağın web sayfasını " +
+                        "bir kez açıp doğrulamayı geçirdikten sonra tekrar deneyin.",
+                )
+            }
+            response = client.get(apiUrl, apiHeaders(chapter.url), ensureSuccess = false)
         }
 
         if (response.isSuccessful) {

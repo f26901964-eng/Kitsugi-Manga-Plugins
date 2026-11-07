@@ -3,7 +3,7 @@ name: Initlise-Next kaynak APK yayını
 on:
   workflow_dispatch:
   push:
-    branches: [arena/eeee6995-kitsugi-manga-plugins, main]
+    branches: [arena/5c3aab02-kitsugi-manga-plugins, main]
     paths:
       - keiyoushi-extensions-tr/lib-multisrc/initlisenext/**
       - keiyoushi-extensions-tr/src/tr/duckscans/**

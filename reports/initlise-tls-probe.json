@@ -1,0 +1,18 @@
+{
+  "probedAt": "2026-11-07T16:05:01.093384+00:00",
+  "sites": {
+    "duckscans": {
+      "signedUrl": "https://duckscans.com/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794067802&s=1nQgytbeAgJ1h",
+      "python-requests": {
+        "http": 403,
+        "bytes": 0,
+        "ct": ""
+      },
+      "curlcffi-chrome124": {
+        "http": 403,
+        "bytes": 0,
+        "ct": ""
+      }
+    }
+  }
+}
