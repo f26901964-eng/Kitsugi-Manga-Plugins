@@ -1,5 +1,5 @@
 {
-  "probedAt": "2026-11-07T15:36:51.826399+00:00",
+  "probedAt": "2026-11-07T15:37:50.638462+00:00",
   "sites": {
     "duckscans": {
       "base": "https://duckscans.com",
@@ -22,16 +22,93 @@
           "contentType": "application/json",
           "bodyHead": "{\"success\":true,\"data\":[{\"_id\":\"69e52923f4ac9dfee1b75f19\",\"seriesId\":{\"_id\":\"69dfcd6c1d3de4efa1773cf3\",\"slug\":\"hazbin-otelde-cinayet\",\"allowUnauthenticated\":true,\"title\":\"Hazbin Otel\\\\'de Cinayet\"},\"series_slug\":\"hazbin-otelde-cinayet\",\"chapterNumber\":48,\"titl",
           "bodyBytes": 1416,
-          "pagesFieldHead": "\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066112&s=TlEzgeDj_Ym5n7vsSdckNC&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5\",\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066112&s=Bxc3oljdlKsJYbx2bdrt0V&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5\",\"/uploads/seri/haz",
+          "pagesFieldHead": "\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066172&s=pJU5_jo1m8TgFQqGmm73Yf&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5\",\"/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066172&s=xbfeibayZ5JcapuGt6PLcs&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5\",\"/uploads/seri/haz",
           "pageCandidates": [
-            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066112&s=TlEzgeDj_Ym5n7vsSdckNC&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5",
-            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066112&s=Bxc3oljdlKsJYbx2bdrt0V&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5",
-            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/003.jpg?v=1784402138794&t=1794066112&s=ZQrFmnqz-5hCqd_gHL-W64&k=nafJiPd9PxZhVcyeq1GBec&sv=5"
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/001.jpg?v=1784402138794&t=1794066172&s=pJU5_jo1m8TgFQqGmm73Yf&k=zrm-Q2W2VlTxMT7e_lDSFY&sv=5",
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/002.jpg?v=1784402138794&t=1794066172&s=xbfeibayZ5JcapuGt6PLcs&k=S1aWD4TMl6Ug5Vc-whPO6Q&sv=5",
+            "/uploads/seri/hazbin-otelde-cinayet/bolum%2048/003.jpg?v=1784402138794&t=1794066172&s=I3tVqLkTCb829E3soz-CdR&k=nafJiPd9PxZhVcyeq1GBec&sv=5"
           ],
-          "pageFetch": {
-            "status": 403,
-            "type": "",
-            "bytes": 0
+          "signedMatrix": {
+            "no-headers": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bf59e06df67-DFW"
+              }
+            },
+            "referer-chapter": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bf9afeedf67-DFW"
+              }
+            },
+            "referer-series": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfacae9df67-DFW"
+              }
+            },
+            "referer-root": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfbfee3df67-DFW"
+              }
+            },
+            "origin-only": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfd2a76df67-DFW"
+              }
+            },
+            "range-only": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bfe5d1bdf67-DFW"
+              }
+            },
+            "full-browser": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6bff7821df67-DFW"
+              }
+            },
+            "browser-range": {
+              "status": 403,
+              "type": "",
+              "bytes": 0,
+              "respHeaders": {
+                "Server": "cloudflare",
+                "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+                "CF-RAY": "a56d6c008abedf67-DFW"
+              }
+            }
           }
         },
         "slug+chslug": {
@@ -64,7 +141,12 @@
       "imageAfterGuard": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c058fc2df67-DFW"
+        }
       },
       "readerChunksSaved": [
         "3tldac6wxrrvc.js",
@@ -73,22 +155,41 @@
       "imageBrowserHeaders": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0d2ce0df67-DFW"
+        }
       },
       "imageOriginOnly": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0e2f97df67-DFW"
+        }
       },
       "imageOriginReferer": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c0f2a45df67-DFW"
+        }
       },
       "imageOptimizer": {
         "status": 400,
         "type": "",
-        "bytes": 30
+        "bytes": 30,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "CF-RAY": "a56d6c102cb4df67-DFW"
+        }
       }
     },
     "oblivionscans": {
@@ -145,7 +246,12 @@
       "imageAfterGuard": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c1dac4bd8c0-DFW"
+        }
       },
       "readerChunksSaved": [
         "3tldac6wxrrvc.js",
@@ -154,22 +260,41 @@
       "imageBrowserHeaders": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c260d4bd8c0-DFW"
+        }
       },
       "imageOriginOnly": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c270ff2d8c0-DFW"
+        }
       },
       "imageOriginReferer": {
         "status": 403,
         "type": "",
-        "bytes": 0
+        "bytes": 0,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "Cache-Control": "private, no-store, max-age=0, must-revalidate",
+          "CF-RAY": "a56d6c282b47d8c0-DFW"
+        }
       },
       "imageOptimizer": {
         "status": 400,
         "type": "",
-        "bytes": 30
+        "bytes": 30,
+        "respHeaders": {
+          "Server": "cloudflare",
+          "CF-RAY": "a56d6c293eb3d8c0-DFW"
+        }
       }
     },
     "lunariscans": {
